@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CounterStrikeLive", "CounterStrikeLive\CounterStrikeLive.csproj", "{52D58643-014A-4299-B07B-F8B810316168}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CounterStrikeLiveWeb", "CounterStrikeLiveWeb\CounterStrikeLiveWeb.csproj", "{98663CC6-E204-4707-B04D-ECE305D939C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{F6EA0622-F22E-423E-A76E-F48F6C15AEFC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LevelEditor4", "LevelEditor4\LevelEditor4.csproj", "{6132AD36-241E-47EA-BCE0-58701A525D60}"
+EndProject
+Global
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{52D58643-014A-4299-B07B-F8B810316168}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52D58643-014A-4299-B07B-F8B810316168}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52D58643-014A-4299-B07B-F8B810316168}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52D58643-014A-4299-B07B-F8B810316168}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98663CC6-E204-4707-B04D-ECE305D939C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98663CC6-E204-4707-B04D-ECE305D939C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98663CC6-E204-4707-B04D-ECE305D939C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98663CC6-E204-4707-B04D-ECE305D939C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6EA0622-F22E-423E-A76E-F48F6C15AEFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6EA0622-F22E-423E-A76E-F48F6C15AEFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6EA0622-F22E-423E-A76E-F48F6C15AEFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6EA0622-F22E-423E-A76E-F48F6C15AEFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6132AD36-241E-47EA-BCE0-58701A525D60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6132AD36-241E-47EA-BCE0-58701A525D60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6132AD36-241E-47EA-BCE0-58701A525D60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6132AD36-241E-47EA-BCE0-58701A525D60}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
