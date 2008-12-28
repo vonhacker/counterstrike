@@ -111,6 +111,7 @@
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
     <None Include="Properties\AppManifest.xml" />
+    <None Include="SubsetFontSilverlight.targets" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="CS_logo.png" />
