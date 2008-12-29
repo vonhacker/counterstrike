@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CounterStrikeLiveWeb", "Cou
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{F6EA0622-F22E-423E-A76E-F48F6C15AEFC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSLLevelEditor", "LevelEditor4\CSLLevelEditor.csproj", "{6132AD36-241E-47EA-BCE0-58701A525D60}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSL.LevelEditor", "LevelEditor4\CSL.LevelEditor.csproj", "{6132AD36-241E-47EA-BCE0-58701A525D60}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSL.Common", "CSL.Common\CSL.Common.csproj", "{06E88BCA-6011-40C3-AD3F-F6DC93147F5D}"
 EndProject
