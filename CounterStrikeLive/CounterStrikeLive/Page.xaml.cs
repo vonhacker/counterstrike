@@ -2241,8 +2241,9 @@ namespace CounterStrikeLive
             MatchCollection _MatchCollection = Regex.Matches(e.Result, @">(?<Name>[\w\s]+)</a></td><td>(?<Map>[\w/.]+?)</td><td>(?<PlayerCount>\d+)</td><td>(?<Port>\d+)</td><td>(?<Version>[\d.]+)</td><td>(?<Ip>[\d.]+)</td></tr>", RegexOptions.IgnoreCase);
             Trace.WriteLine("Matches:" + _MatchCollection.Count);
             int old = _DataGrid.SelectedIndex;
-            _List.Clear();            
-            foreach (Match _Match in _MatchCollection)
+            _List.Clear();
+            _List.Add(new Item { _Ip = "localhost" });
+            foreach (Match _Match in _MatchCollection)  
             {
                 GroupCollection g = _Match.Groups;
                 _List.Add(new Item { _Ip = g["Ip"].Value, _Name = g["Name"].Value, _Players = g["PlayerCount"].Value, _Port = g["Port"].Value ,_Map = g["Map"].Value, _Version =g["Version"].Value});
@@ -2255,7 +2256,6 @@ namespace CounterStrikeLive
             }).Start();
             
         }
-
         
         public void Download()
         {
