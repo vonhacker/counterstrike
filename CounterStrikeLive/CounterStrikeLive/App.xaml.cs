@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Diagnostics;
+using System.Threading;
 
 namespace CounterStrikeLive
 {
@@ -20,7 +21,7 @@ namespace CounterStrikeLive
         {            
             this.Startup += this.Application_Startup;
             this.Exit += this.Application_Exit;
-            //this.UnhandledException += this.Application_UnhandledException;
+            this.UnhandledException += this.Application_UnhandledException;
 
             InitializeComponent();
         }
@@ -39,13 +40,7 @@ namespace CounterStrikeLive
         ApplicationUnhandledExceptionEventArgs e;
         private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
         {
-            this.e = e;
-            _Menu.Dispatcher.BeginInvoke(delegate()
-            {
-                Trace.WriteLine(e.ExceptionObject.ToString());
-                _Menu.Dispatcher.BeginInvoke(_Menu._Console.Show);                
-            });
-            e.Handled = true;
+            if (Thread.CurrentThread.ThreadState == ThreadState.Background) Debugger.Break(); // see callstack
         }
         
     }
