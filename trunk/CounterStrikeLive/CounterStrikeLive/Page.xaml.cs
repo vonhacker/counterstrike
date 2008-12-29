@@ -603,7 +603,7 @@ namespace CounterStrikeLive
         public LocalDatabase _LocalDatabase = new LocalDatabase();
         public string host;
         void PageLoaded(object sender, RoutedEventArgs e)
-        {
+        {            
             version.Text = Assembly.GetExecutingAssembly().FullName;
             KeyDown += new KeyEventHandler(Menu_KeyDown);
 
@@ -685,9 +685,7 @@ namespace CounterStrikeLive
             _Socket.ConnectAsync(_SocketAsyncEventArgs);
             Trace.WriteLine("Connecting");
             _SocketAsyncEventArgs.Completed += delegate(object o, SocketAsyncEventArgs e)
-            {
-                Trace.WriteLine("Connected");
-                if (e.SocketError != SocketError.Success) throw new Exception("Break");
+            {                                                
                 Dispatcher.BeginInvoke(new Action(OnConnected));
             };
 
@@ -762,8 +760,9 @@ namespace CounterStrikeLive
 
         public void OnConnected()
         {
+            Trace.WriteLine("Connected");
+            if (_Socket.Connected == false) throw new Exception("Cannot Connect!");
             this.Cursor = Cursors.None;
-
             _Sender._Socket = _Listener._Socket = _Socket;            
             _Listener.Start();
             _Storyboard.Begin();
