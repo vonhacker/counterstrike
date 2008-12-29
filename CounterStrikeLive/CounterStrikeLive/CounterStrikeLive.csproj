@@ -109,7 +109,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
     <None Include="Properties\AppManifest.xml" />
     <None Include="SubsetFontSilverlight.targets" />
   </ItemGroup>

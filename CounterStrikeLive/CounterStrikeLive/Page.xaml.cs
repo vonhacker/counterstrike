@@ -579,7 +579,7 @@ namespace CounterStrikeLive
 
         public static Menu _Menu;
         public Menu()
-        {                        
+        {            
             _Menu = this;
             InitializeComponent();
             _Clients = new MyObs<SharedClient>(50);
@@ -773,7 +773,7 @@ namespace CounterStrikeLive
             MouseMove += new MouseEventHandler(Menu_MouseMove);
             //DispatcherTimer _DispatcherTimer = new DispatcherTimer();
             //_DispatcherTimer.Interval = TimeSpan.FromMilliseconds(50);
-            //_DispatcherTimer.Tick += new EventHandler(_DispatcherTimer_Tick);
+            //_DispatcherTimer.Tick += new EventHandler(_DispatcherTimer_Tick); //send keys test
             //_DispatcherTimer.Start();
             MouseLeftButtonDown += new MouseButtonEventHandler(Menu_MouseLeftButtonDown);
             MouseLeftButtonUp += new MouseButtonEventHandler(Menu_MouseLeftButtonUp);
