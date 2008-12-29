@@ -73,7 +73,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Spammer3\Helper.cs">
+    <Compile Include="..\Server\Helper.cs">
       <Link>Helper.cs</Link>
     </Compile>
     <Compile Include="App.xaml.cs">
