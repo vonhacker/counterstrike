@@ -1,4 +1,4 @@
-﻿<Window x:Class="LevelEditor4.WindowEditor"
+﻿<Window x:Class="CSL.LevelEditor.WindowEditor"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="Level Editor" Height="Auto" Width="Auto">
@@ -11,8 +11,8 @@
             <ScrollViewer Name="_ScrollViewer" HorizontalScrollBarVisibility="Visible">
                 <ScrollViewer.Resources>
                     <Style TargetType="{x:Type Canvas}">
-                        <Setter Property="Width" Value="150"></Setter>
-                        <Setter Property="Height" Value="100"></Setter>
+                        <Setter Property="Width" Value="Auto"></Setter>
+                        <Setter Property="Height" Value="Auto"></Setter>
                     </Style>
                 </ScrollViewer.Resources>
                 <Canvas Name="_Canvas">

@@ -5,7 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Windows;
 
-namespace LevelEditor
+namespace CSL.LevelEditor
 {
     /// <summary>
     /// Interaction logic for App.xaml
