@@ -34,6 +34,7 @@
         <Button Margin="7,0,12,3" Name="buttonLayer3" Grid.Column="3" Click="buttonLayer3_Click">3</Button>
         <Button Margin="0,0,9,3" Name="buttonRemoveLast" Grid.Column="4" Click="buttonRemoveLast_Click">Ctrl-Z</Button>
         <Button Margin="0,0,10,3" Name="buttonSelectMode" Grid.Column="5" Click="buttonSelectMode_Click">SelectMode</Button>
-        <Button Margin="0,0,30.797,3" Name="button1" Grid.Column="6">SelectMode</Button>
+        <Button Margin="0,0,30.797,3" Name="buttonPolygon" Grid.Column="6" Click="buttonPolygon_Click">Polygon</Button>
+        <Button Margin="1.68,0,0,3" Name="buttonErase" Grid.Column="7" Click="buttonErase_Click">Erase</Button>
     </Grid>
 </Window>

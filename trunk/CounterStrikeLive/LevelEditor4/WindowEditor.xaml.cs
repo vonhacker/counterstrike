@@ -125,25 +125,37 @@ namespace CSL.LevelEditor
             }
         }
 
+        private void buttonPolygon_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                _userControlCanvas.SetMode(InkCanvasEditingMode.None, CustomMode.polygon);
+            }
+            catch (Exception ex)
+            {
+                ErrorMessageBox.Show(ex);
+            }
+
+        }
+
+        private void buttonErase_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                _userControlCanvas.SetMode(InkCanvasEditingMode.EraseByPoint, CustomMode.erase);
+            }
+            catch (Exception ex)
+            {
+                ErrorMessageBox.Show(ex);
+            }
+        }
+
+
+        //TODO: DO NOT REMOVE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         Key oldkey;
         void InkCanvasKeyDown(object sender, KeyEventArgs e)
         {
             oldkey = e.Key;
-
-
-
-
-
-            //if (e.Key == Key.W)
-            //{
-            //    SetMode(InkCanvasEditingMode.None, CustomMode.polygon);
-            //}
-            //if (e.Key == Key.E)
-            //{
-            //    SetMode(InkCanvasEditingMode.EraseByPoint, CustomMode.erase);
-            //}
-
-
 
             //TODO:
             //if (e.Key == Key.Add || e.Key == Key.Subtract)
@@ -229,6 +241,8 @@ namespace CSL.LevelEditor
             //            }
             //}
         }
+
+
 
 
 
