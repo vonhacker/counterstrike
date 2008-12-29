@@ -24,7 +24,7 @@ namespace Server
         }
 		public Program()
 		{
-            PolicyServer.PolicyServer ps = new PolicyServer.PolicyServer { policyFile = "PolicyFile.xml" };
+            PolicyServer.PolicyServer ps = new PolicyServer.PolicyServer { policyFile = "Server/PolicyFile.xml" };
 
             ps.StartAsync();
 
