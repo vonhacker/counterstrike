@@ -11,7 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using LevelEditor4.Properties;
+using CSL.LevelEditor.Properties;
 using System.IO;
 using System.Diagnostics;
 using System.Xml.Serialization;
@@ -19,7 +19,8 @@ using System.Windows.Ink;
 using System.Text.RegularExpressions;
 using System.Windows.Threading;
 using System.Windows.Markup;
-namespace LevelEditor4
+using CSL.Common;
+namespace CSL.LevelEditor
 {
     /// <summary>
     /// Interaction logic for WindowEditor         
@@ -33,9 +34,38 @@ namespace LevelEditor4
             InitializeComponent();
             Loaded += new RoutedEventHandler(WindowLoaded);
         }
-        XmlSerializer _xmlSerializer;
-        double _Scale = 1;
+        private XmlSerializer _xmlSerializer;
+        private double _Scale = 1;
         private InkCanvas _currentInkCanvas;
+        //TODO: make dynamical
+        private String _filePath4MapDescriptor = @"C:\Source\cs\trunk\CounterStrikeLive\CounterStrikeLive\Content\map.xml";
+        private MapDatabase _mapDatabase = new MapDatabase();
+        private CustomStroke _Stroke;
+
+
+        private void WindowLoaded(object sender, RoutedEventArgs e)
+        {
+            SelectCanvas(0);
+
+            //initializations
+            _xmlSerializer = new XmlSerializer(typeof(MapDatabase));
+            this.CommandBindings.Add(new CommandBinding(ApplicationCommands.Save, this.SaveFile));
+            this.CommandBindings.Add(new CommandBinding(ApplicationCommands.Open, this.OpenFile));
+            _currentInkCanvas.StrokeCollected += new InkCanvasStrokeCollectedEventHandler(InkCanvas_StrokeCollected);
+            KeyDown += new KeyEventHandler(InkCanvasKeyDown);
+            KeyUp += new KeyEventHandler(WindowEditor_KeyUp);
+            _CanvasList.MouseDown += new MouseButtonEventHandler(InkCanvas_MouseDown);
+            _CanvasList.MouseMove += new MouseEventHandler(_InkCanvas_MouseMove);
+            foreach (InkCanvas inkCanvas in _CanvasList.Children)
+            {
+                inkCanvas.SelectionChanged += new EventHandler(InkCanvas1SelectionChanged);
+            }
+
+            OpenFile(_filePath4MapDescriptor);
+            SetMode(InkCanvasEditingMode.Select, CustomMode.select);
+        }
+
+
 
         public void SelectCanvas(int canvasIndex)
         {
@@ -74,6 +104,69 @@ namespace LevelEditor4
             _currentInkCanvas.Select(new StrokeCollection());
             if (null != oldInkCanvas)
                 oldInkCanvas.Select(new StrokeCollection());
+        }
+
+        //Loaddata
+        private void OpenFile(string filePath4MapDescriptor)
+        {
+            try
+            {
+                if (!File.Exists(filePath4MapDescriptor))
+                {
+                    InfoMessageBox.Show("File not exists " + filePath4MapDescriptor);
+                    return;
+                }
+                byte[] buffer = File.ReadAllBytes(filePath4MapDescriptor);
+                MemoryStream memoryStream = new MemoryStream(buffer);
+                _mapDatabase = (MapDatabase)_xmlSerializer.Deserialize(memoryStream);
+
+                _currentInkCanvas.Strokes.Clear();
+
+                InkCanvas.SetLeft(_CStartPos, _mapDatabase._CStartPos.X);
+                InkCanvas.SetTop(_CStartPos, _mapDatabase._CStartPos.Y);
+                InkCanvas.SetLeft(_TStartPos, _mapDatabase._TStartPos.X);
+                InkCanvas.SetTop(_TStartPos, _mapDatabase._TStartPos.Y);
+
+                for (int i = 0; i < _mapDatabase._Layers.Count; i++)
+                {
+                    MapDatabase.Layer layer = _mapDatabase._Layers[i];
+                    InkCanvas inkCanvas = (InkCanvas)_CanvasList.Children[i];
+                    foreach (MapDatabase.Image image in layer._Images)
+                    {
+                        Image img = new Image();
+                        if (!File.Exists(image.Path))
+                            throw new FileNotFoundException(image.Path);
+
+                        BitmapImage _BitmapImage = new BitmapImage(new Uri(image.Path, UriKind.Relative));
+                        double a = _BitmapImage.Width;
+                        img.Source = _BitmapImage;
+
+                        img.Width = image.Width;
+                        img.Height = image.Height;
+                        InkCanvas.SetLeft(img, image.X);
+                        InkCanvas.SetTop(img, image.Y);
+                        inkCanvas.Children.Add(img);
+                    }
+
+                    foreach (MapDatabase.Polygon polygon in layer._Polygons)
+                    {
+                        StylusPointCollection stylusPointCollection = new StylusPointCollection();
+                        foreach (Point point in polygon._Points)
+                        {
+                            StylusPoint _StylusPoint = new StylusPoint(point.X, point.Y);
+                            stylusPointCollection.Add(_StylusPoint);
+                        }
+
+                        CustomStroke _Stroke = new CustomStroke(stylusPointCollection);
+                        _Stroke.DrawingAttributes.Color = polygon._Color;
+                        inkCanvas.Strokes.Add(_Stroke);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorMessageBox.Show(ex);
+            }
         }
 
         Key oldkey;
@@ -193,7 +286,6 @@ namespace LevelEditor4
                             }
                         }
             }
-
         }
         public enum CustomMode
         {
@@ -201,13 +293,13 @@ namespace LevelEditor4
         }
         public CustomMode _CurCustomMode;
 
-        private void SetMode(InkCanvasEditingMode _mode, CustomMode _CustomMode)
+        private void SetMode(InkCanvasEditingMode mode, CustomMode customMode)
         {
             SetStroke();
-            _currentInkCanvas.EditingMode = _mode;
-            _CurCustomMode = _CustomMode;
+            _currentInkCanvas.EditingMode = mode;
+            _CurCustomMode = customMode;
         }
-        CustomStroke _Stroke;
+
 
         private void SetStroke()
         {
@@ -217,6 +309,7 @@ namespace LevelEditor4
                 _Stroke = null;
             }
         }
+
         public double Distance(StylusPoint a, StylusPoint b)
         {
             return Distance(Convert(a), Convert(b));
@@ -280,21 +373,21 @@ namespace LevelEditor4
             return _Layers;
         }
 
-        public string _FilePath = @"C:\Source\cs\trunk\CounterStrikeLive\CounterStrikeLive\Content\map.xml";
+
         public void SaveFile(object sender, RoutedEventArgs e)
         {
-            _MapDatabase._Layers = SaveLayers();
+            _mapDatabase._Layers = SaveLayers();
 
-            _MapDatabase._CStartPos.X = InkCanvas.GetLeft(_CStartPos);
-            _MapDatabase._CStartPos.Y = InkCanvas.GetTop(_CStartPos);
-            _MapDatabase._TStartPos.X = InkCanvas.GetLeft(_TStartPos);
-            _MapDatabase._TStartPos.Y = InkCanvas.GetTop(_TStartPos);
+            _mapDatabase._CStartPos.X = InkCanvas.GetLeft(_CStartPos);
+            _mapDatabase._CStartPos.Y = InkCanvas.GetTop(_CStartPos);
+            _mapDatabase._TStartPos.X = InkCanvas.GetLeft(_TStartPos);
+            _mapDatabase._TStartPos.Y = InkCanvas.GetTop(_TStartPos);
 
             MemoryStream _MemoryStream = new MemoryStream();
-            _xmlSerializer.Serialize(_MemoryStream, _MapDatabase);
+            _xmlSerializer.Serialize(_MemoryStream, _mapDatabase);
 
             byte[] _Buffer = _MemoryStream.ToArray();
-            File.WriteAllBytes(_FilePath, _Buffer);
+            File.WriteAllBytes(_filePath4MapDescriptor, _Buffer);
         }
         public const string _Filter = "map (*.xml)|*.xml";
 
@@ -315,27 +408,7 @@ namespace LevelEditor4
         }
 
 
-        void WindowLoaded(object sender, RoutedEventArgs e)
-        {
-            SelectCanvas(0);
 
-            //initializations
-            _xmlSerializer = new XmlSerializer(typeof(MapDatabase));
-            this.CommandBindings.Add(new CommandBinding(ApplicationCommands.Save, this.SaveFile));
-            this.CommandBindings.Add(new CommandBinding(ApplicationCommands.Open, this.OpenFile));
-            _currentInkCanvas.StrokeCollected += new InkCanvasStrokeCollectedEventHandler(InkCanvas_StrokeCollected);
-            KeyDown += new KeyEventHandler(InkCanvasKeyDown);
-            KeyUp += new KeyEventHandler(Window1_KeyUp);
-            _CanvasList.MouseDown += new MouseButtonEventHandler(InkCanvas_MouseDown);
-            _CanvasList.MouseMove += new MouseEventHandler(_InkCanvas_MouseMove);
-            foreach (InkCanvas inkCanvas in _CanvasList.Children)
-            {
-                inkCanvas.SelectionChanged += new EventHandler(InkCanvas1SelectionChanged);
-            }
-
-            OpenFile(_FilePath);
-            SetMode(InkCanvasEditingMode.Select, CustomMode.select);
-        }
 
         StrokeCollection _oldStrokeCollection;
         void InkCanvas1SelectionChanged(object sender, EventArgs e)
@@ -355,7 +428,7 @@ namespace LevelEditor4
 
         }
 
-        void Window1_KeyUp(object sender, KeyEventArgs e)
+        void WindowEditor_KeyUp(object sender, KeyEventArgs e)
         {
         }
 
@@ -547,79 +620,8 @@ namespace LevelEditor4
 
         }
 
-        public class MapDatabase
-        {
-            public class Image
-            {
-                public double Width;
-                public double Height;
-                public double X;
-                public double Y;
-                public string Path;
-            }
-            public Point _TStartPos;
-            public Point _CStartPos;
-            public List<Layer> _Layers = new List<Layer>();
-            public class Layer
-            {
-                public List<Image> _Images = new List<Image>();
-                public List<Polygon> _Polygons = new List<Polygon>();
-            }
-            public class Polygon
-            {
-                public Color _Color;
-                public List<Point> _Points = new List<Point>();
-            }
-        }
-        MapDatabase _MapDatabase = new MapDatabase();
 
-        private void OpenFile(string _FilePath) //Loaddata
-        {
-            if (!File.Exists(_FilePath)) { Trace.WriteLine("file not exists " + _FilePath); return; }
-            byte[] _Buffer = File.ReadAllBytes(_FilePath);
-            MemoryStream _MemoryStream = new MemoryStream(_Buffer);
-            _MapDatabase = (MapDatabase)_xmlSerializer.Deserialize(_MemoryStream);
 
-            _currentInkCanvas.Strokes.Clear();
-
-            InkCanvas.SetLeft(_CStartPos, _MapDatabase._CStartPos.X);
-            InkCanvas.SetTop(_CStartPos, _MapDatabase._CStartPos.Y);
-            InkCanvas.SetLeft(_TStartPos, _MapDatabase._TStartPos.X);
-            InkCanvas.SetTop(_TStartPos, _MapDatabase._TStartPos.Y);
-            for (int i = 0; i < _MapDatabase._Layers.Count; i++)
-            {
-                MapDatabase.Layer _Layer = _MapDatabase._Layers[i];
-                InkCanvas _InkCanvas1 = (InkCanvas)_CanvasList.Children[i];
-                foreach (MapDatabase.Image _DImage in _Layer._Images)
-                {
-                    Image _Image = new Image();
-                    if (!File.Exists(_DImage.Path)) Debugger.Break();
-
-                    BitmapImage _BitmapImage = new BitmapImage(new Uri(_DImage.Path, UriKind.Relative));
-                    double a = _BitmapImage.Width;
-                    _Image.Source = _BitmapImage;
-                    
-                    _Image.Width = _DImage.Width;
-                    _Image.Height = _DImage.Height;
-                    InkCanvas.SetLeft(_Image, _DImage.X);
-                    InkCanvas.SetTop(_Image, _DImage.Y);
-                    _InkCanvas1.Children.Add(_Image);
-                }
-                foreach (MapDatabase.Polygon _Polygon in _Layer._Polygons)
-                {
-                    StylusPointCollection _StylusPointCollection = new StylusPointCollection();
-                    foreach (Point _Point in _Polygon._Points)
-                    {
-                        StylusPoint _StylusPoint = new StylusPoint(_Point.X, _Point.Y);
-                        _StylusPointCollection.Add(_StylusPoint);
-                    }
-
-                    CustomStroke _Stroke = new CustomStroke(_StylusPointCollection);
-                    _Stroke.DrawingAttributes.Color = _Polygon._Color;
-                    _InkCanvas1.Strokes.Add(_Stroke);
-                }
-            }
-        }
         public class CustomInkCanvas : InkCanvas
         {
 
