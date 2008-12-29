@@ -450,6 +450,7 @@
     <Resource Include="Content\cs_estate.png" />
     <Content Include="Content\map.xml" />
     <Content Include="db.xml" />
+    <None Include="SubsetFontTask.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v2.0\Microsoft.Silverlight.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
