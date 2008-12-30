@@ -1016,7 +1016,7 @@ namespace CounterStrikeLive
                         case PacketType.keyDown:
                             {
                                 Key k =(Key)_BinaryReader.ReadByte();
-                                if (_SharedClient._Player!=null)
+                                //if (_SharedClient._Player!=null)
                                 {
                                     _SharedClient._Player.OnKeyDown(k);
                                 }
@@ -1037,7 +1037,7 @@ namespace CounterStrikeLive
                                 int x = _BinaryReader.ReadInt16();
                                 int y = _BinaryReader.ReadInt16();                                
                                 Player _Player = _SharedClient._Player;
-                                if (_Player != null)
+                                //if (_Player != null)
                                 {
                                     _Player.OnKeyUp(k);
                                     _Player._x = x;
