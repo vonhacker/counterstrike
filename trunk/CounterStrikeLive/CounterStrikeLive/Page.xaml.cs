@@ -771,10 +771,12 @@ namespace CounterStrikeLive
             KeyDown += new KeyEventHandler(Page_KeyDown);
             KeyUp += new KeyEventHandler(PageKeyUp);
             MouseMove += new MouseEventHandler(Menu_MouseMove);
-            //DispatcherTimer _DispatcherTimer = new DispatcherTimer();
-            //_DispatcherTimer.Interval = TimeSpan.FromMilliseconds(50);
-            //_DispatcherTimer.Tick += new EventHandler(_DispatcherTimer_Tick); //send keys test
-            //_DispatcherTimer.Start();
+
+            DispatcherTimer _DispatcherTimer = new DispatcherTimer();
+            _DispatcherTimer.Interval = TimeSpan.FromMilliseconds(1000);
+            _DispatcherTimer.Tick += new EventHandler(_DispatcherTimer_Tick); //send keys test
+            _DispatcherTimer.Start();
+
             MouseLeftButtonDown += new MouseButtonEventHandler(Menu_MouseLeftButtonDown);
             MouseLeftButtonUp += new MouseButtonEventHandler(Menu_MouseLeftButtonUp);
 
@@ -782,8 +784,11 @@ namespace CounterStrikeLive
 
         void _DispatcherTimer_Tick(object sender, EventArgs e)
         {
-            _Game.OnKeyDown(Key.Left);
-            _Game.OnKeyUp(Key.Left);
+            if (_Game != null)
+            {
+                _Game.OnKeyDown(Key.Left);
+                _Game.OnKeyUp(Key.Left);
+            }
         }
 
         void Menu_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
