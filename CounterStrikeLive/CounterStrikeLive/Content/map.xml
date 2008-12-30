@@ -1389,7 +1389,7 @@
           <Height>5442.77017401829</Height>
           <X>636.43365764588373</X>
           <Y>691.0630801066211</Y>
-          <Path>CounterStrikeLive/Content/cs_estate.png</Path>
+          <Path>Content/cs_estate.png</Path>
         </Image>
       </_Images>
       <_Polygons />
