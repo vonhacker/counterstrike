@@ -102,7 +102,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CustomStroke.cs" />
     <Compile Include="Dal.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="LevelEditorManager.cs" />

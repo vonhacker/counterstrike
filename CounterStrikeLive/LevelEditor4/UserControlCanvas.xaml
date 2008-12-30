@@ -3,33 +3,38 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Height="Auto" Width="Auto">
     <Grid Height="Auto" Width="Auto">
-        <ScrollViewer Name="_ScrollViewer" HorizontalScrollBarVisibility="Visible">
+        <ScrollViewer Name="_scrollViewer" HorizontalScrollBarVisibility="Visible">
             <ScrollViewer.Resources>
                 <Style TargetType="{x:Type Canvas}">
                     <Setter Property="Width" Value="Auto"></Setter>
                     <Setter Property="Height" Value="Auto"></Setter>
                 </Style>
             </ScrollViewer.Resources>
-            <Canvas Name="_Canvas">
-                <Canvas Name="_CanvasList" Background="WhiteSmoke" AllowDrop="True" Drop="MediaPanel_Drop" DragOver="MediaPanel_DragOver">
-                    <Canvas.Resources>
+          <!--  <StackPanel Name="_rootCanvas" VerticalAlignment="Top" HorizontalAlignment="Left"> -->
+                <StackPanel Name="_canvasList" Background="WhiteSmoke" AllowDrop="True" Drop="MediaPanel_Drop" 
+                        DragOver="MediaPanel_DragOver"
+                        ScrollViewer.CanContentScroll="True" 
+                        ScrollViewer.HorizontalScrollBarVisibility="Visible" 
+                        ScrollViewer.VerticalScrollBarVisibility="Visible"
+                        >
+                    <StackPanel.Resources>
                         <Style TargetType="{x:Type InkCanvas}">
-                            <Setter Property="Background" Value="Transparent"></Setter>
+                            <Setter Property="Background" Value="Transparent"></Setter> 
                             <Setter Property="Width" Value="Auto"></Setter>
                             <Setter Property="Height" Value="Auto"></Setter>
                         </Style>
-                    </Canvas.Resources>
-                    <InkCanvas >
-                        <Ellipse Width="Auto" Height="Auto" Fill="Red" Name="_TStartPos"></Ellipse>
-                        <Ellipse Width="Auto" Height="Auto" Fill="Blue" Name="_CStartPos"></Ellipse>
+                    </StackPanel.Resources>
+                    <InkCanvas>
+                        <Ellipse Width="100" Height="100" Fill="Red" Name="_terroristStartPos"></Ellipse>
+                        <Ellipse Width="100" Height="100" Fill="Blue" Name="_counterTerroristStartPos"></Ellipse>
                     </InkCanvas>
                     <InkCanvas ></InkCanvas>
                     <InkCanvas ></InkCanvas>
                     <InkCanvas ></InkCanvas>
                     <InkCanvas ></InkCanvas>
-                </Canvas>
-                <Canvas Name="_PolygonsCanvas"></Canvas>
-            </Canvas>
-        </ScrollViewer>
+                </StackPanel>
+              <!--   -->
+           <!-- </StackPanel> -->
+        </ScrollViewer><Canvas Name="_polygonsCanvas"></Canvas>
     </Grid>
 </UserControl>
