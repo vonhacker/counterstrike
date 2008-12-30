@@ -13,7 +13,7 @@ namespace CSL.LevelEditor
 
         }
 
-        private String _filePath4MapDescriptor = @"C:\Source\cs\trunk\CounterStrikeLive\CounterStrikeLive\Content\map.xml";
+        private String _filePath4MapDescriptor = @"C:\Source\cs\trunk\CounterStrikeLive\CounterStrikeLive\Content\map_dev.xml";
         
 
         private static LevelEditorManager _levelEditorManager;
@@ -52,17 +52,17 @@ namespace CSL.LevelEditor
 
         internal void SetSelectMode()
         {
-            _windowEditor.UserControlCanvas.SetMode(InkCanvasEditingMode.Select, CustomMode.select);
+            _windowEditor.UserControlCanvas.SetMode(InkCanvasEditingMode.Select, EditorMode.Select);
         }
 
         internal void SetPolygon()
         {
-            _windowEditor.UserControlCanvas.SetMode(InkCanvasEditingMode.None, CustomMode.polygon);
+            _windowEditor.UserControlCanvas.SetMode(InkCanvasEditingMode.None, EditorMode.Polygon);
         }
 
         internal void Erase()
         {
-            _windowEditor.UserControlCanvas.SetMode(InkCanvasEditingMode.EraseByPoint, CustomMode.erase);
+            _windowEditor.UserControlCanvas.SetMode(InkCanvasEditingMode.EraseByPoint, EditorMode.Erase);
         }
 
         internal void Scale(bool shouldAdd)

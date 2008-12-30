@@ -31,10 +31,11 @@ namespace CSL.LevelEditor
 
         private MapDatabase _mapDatabase = new MapDatabase();
         private InkCanvas _currentInkCanvas;
-        private CustomStroke _Stroke;
-        public int _curentPoint;
-        public CustomMode _CurCustomMode;
+        private Stroke _Stroke;
+        public int _curPointIndex;
+        public EditorMode _curEditorMode;
         private double _Scale = 1;
+        private const int _maxEndPointDistance = 5;
 
 
         void UserControlCanvas_Loaded(object sender, RoutedEventArgs e)
@@ -45,9 +46,9 @@ namespace CSL.LevelEditor
 
                 _currentInkCanvas.StrokeCollected += new InkCanvasStrokeCollectedEventHandler(InkCanvas_StrokeCollected);
 
-                _CanvasList.MouseDown += new MouseButtonEventHandler(InkCanvas_MouseDown);
-                _CanvasList.MouseMove += new MouseEventHandler(_InkCanvas_MouseMove);
-                foreach (InkCanvas inkCanvas in _CanvasList.Children)
+                _canvasList.MouseDown += new MouseButtonEventHandler(InkCanvas_MouseDown);
+                _canvasList.MouseMove += new MouseEventHandler(_InkCanvas_MouseMove);
+                foreach (InkCanvas inkCanvas in _canvasList.Children)
                 {
                     inkCanvas.SelectionChanged += new EventHandler(InkCanvas1SelectionChanged);
                 }
@@ -74,9 +75,9 @@ namespace CSL.LevelEditor
             e.Handled = true;
         }
 
-        public double Distance(StylusPoint a, StylusPoint b)
+        public double GetDistanceOf2Points(StylusPoint a, StylusPoint b)
         {
-            return Distance(Convert(a), Convert(b));
+            return Distance(FromStylusPointToPoint(a), FromStylusPointToPoint(b));
         }
 
         public double Distance(Point a, Point b)
@@ -85,17 +86,26 @@ namespace CSL.LevelEditor
             return c.Length;
         }
 
-        public static Point Convert(StylusPoint v)
+        public static Point FromStylusPointToPoint(StylusPoint stylusPoint)
         {
-            return new Point(v.X, v.Y);
+            return new Point(stylusPoint.X, stylusPoint.Y);
         }
 
         void InkCanvas_StrokeCollected(object sender, InkCanvasStrokeCollectedEventArgs e)
         {
-            double dist = Distance(e.Stroke.StylusPoints.First(), e.Stroke.StylusPoints.Last());
-            if (dist < 5)
+            ConnectEndStylusPoints(e.Stroke);
+        }
+
+        /// <summary>
+        /// Connects two ends of a stroke in one point, if this ends are near enough(!)
+        /// </summary>
+        /// <param name="stroke">Some stroke to correct the ends</param>
+        private void ConnectEndStylusPoints(Stroke stroke)
+        {
+            double endPointDistance = GetDistanceOf2Points(stroke.StylusPoints.First(), stroke.StylusPoints.Last());
+            if (endPointDistance < _maxEndPointDistance)
             {
-                e.Stroke.StylusPoints[e.Stroke.StylusPoints.Count - 1] = e.Stroke.StylusPoints.First();
+                stroke.StylusPoints[stroke.StylusPoints.Count - 1] = stroke.StylusPoints.First();
             }
         }
 
@@ -210,27 +220,28 @@ namespace CSL.LevelEditor
 
         void _InkCanvas_MouseMove(object sender, MouseEventArgs e)
         {
-            Point _pos = e.GetPosition(_currentInkCanvas);
-            if (e.RightButton == MouseButtonState.Pressed && _Stroke != null)
+            try
             {
-                _Stroke.StylusPoints[_curentPoint] = new StylusPoint(_pos.X, _pos.Y);
+
+                //TODO: implement
+                //String text = ((int)_pos.X) + ":" + ((int)_pos.Y);
+                //_textBlockCoordinates.Text = text;
             }
-
-            String text = ((int)_pos.X) + ":" + ((int)_pos.Y);
-
-            //TODO: implement
-            //_textBlockCoordinates.Text = text;
+            catch (Exception ex)
+            {
+                ErrorMessageBox.Show(ex);
+            }
         }
 
 
         public void SaveFile(String filePath4MapDescriptor)
         {
-            _mapDatabase._Layers = SaveLayers();
+            _mapDatabase.Layers = SaveLayers();
 
-            _mapDatabase._CStartPos.X = InkCanvas.GetLeft(_CStartPos);
-            _mapDatabase._CStartPos.Y = InkCanvas.GetTop(_CStartPos);
-            _mapDatabase._TStartPos.X = InkCanvas.GetLeft(_TStartPos);
-            _mapDatabase._TStartPos.Y = InkCanvas.GetTop(_TStartPos);
+            _mapDatabase.CounterTerroristStartPos.X = InkCanvas.GetLeft(_counterTerroristStartPos);
+            _mapDatabase.CounterTerroristStartPos.Y = InkCanvas.GetTop(_counterTerroristStartPos);
+            _mapDatabase.TerroristStartPos.X = InkCanvas.GetLeft(_terroristStartPos);
+            _mapDatabase.TerroristStartPos.Y = InkCanvas.GetTop(_terroristStartPos);
 
             Dal.SaveMapDatabase(filePath4MapDescriptor, _mapDatabase);
         }
@@ -238,7 +249,7 @@ namespace CSL.LevelEditor
         public void SelectCanvas(int canvasIndex)
         {
             InkCanvas oldInkCanvas = _currentInkCanvas;
-            _currentInkCanvas = (InkCanvas)_CanvasList.Children[canvasIndex];
+            _currentInkCanvas = (InkCanvas)_canvasList.Children[canvasIndex];
 
             //copy images & strokes
             if (oldInkCanvas != null)
@@ -260,7 +271,7 @@ namespace CSL.LevelEditor
             }
 
             //hide all canvases
-            foreach (InkCanvas inkCanvas in _CanvasList.Children)
+            foreach (InkCanvas inkCanvas in _canvasList.Children)
             {
                 inkCanvas.Opacity = .2;
                 inkCanvas.IsHitTestVisible = false;
@@ -277,8 +288,9 @@ namespace CSL.LevelEditor
         public void SetControl(String filePath4MapDescriptor)
         {
             _mapDatabase = Dal.GetMapDatabase(filePath4MapDescriptor);
+            SelectCanvas(0);
             SetDataInControl4CurCanvas();
-            SetMode(InkCanvasEditingMode.Select, CustomMode.select);
+            SetMode(InkCanvasEditingMode.Select, EditorMode.Select);
         }
 
         public void SetDataInControl4CurCanvas()
@@ -287,24 +299,27 @@ namespace CSL.LevelEditor
             {
                 _currentInkCanvas.Strokes.Clear();
 
-                InkCanvas.SetLeft(_CStartPos, _mapDatabase._CStartPos.X);
-                InkCanvas.SetTop(_CStartPos, _mapDatabase._CStartPos.Y);
-                InkCanvas.SetLeft(_TStartPos, _mapDatabase._TStartPos.X);
-                InkCanvas.SetTop(_TStartPos, _mapDatabase._TStartPos.Y);
+                //Set start locations of terrorists and counterterrorist
+                InkCanvas.SetLeft(_counterTerroristStartPos, _mapDatabase.CounterTerroristStartPos.X);
+                InkCanvas.SetTop(_counterTerroristStartPos, _mapDatabase.CounterTerroristStartPos.Y);
+                InkCanvas.SetLeft(_terroristStartPos, _mapDatabase.TerroristStartPos.X);
+                InkCanvas.SetTop(_terroristStartPos, _mapDatabase.TerroristStartPos.Y);
 
-                for (int i = 0; i < _mapDatabase._Layers.Count; i++)
+                for (int i = 0; i < _mapDatabase.Layers.Count; i++)
                 {
-                    MapDatabase.Layer layer = _mapDatabase._Layers[i];
-                    InkCanvas inkCanvas = (InkCanvas)_CanvasList.Children[i];
-                    foreach (MapDatabase.Image image in layer._Images)
+                    MapDatabase.Layer layer = _mapDatabase.Layers[i];
+                    InkCanvas inkCanvas = (InkCanvas)_canvasList.Children[i];
+                    _currentInkCanvas = inkCanvas;
+                    foreach (MapDatabase.Image image in layer.Images)
                     {
                         Image img = new Image();
                         if (!File.Exists(image.Path))
                             throw new FileNotFoundException(image.Path);
 
+                        
                         BitmapImage bitmapImage = new BitmapImage(new Uri(image.Path, UriKind.Relative));
                         img.Source = bitmapImage;
-
+                        img.Stretch = Stretch.Fill;
                         img.Width = image.Width;
                         img.Height = image.Height;
                         InkCanvas.SetLeft(img, image.X);
@@ -312,17 +327,19 @@ namespace CSL.LevelEditor
                         inkCanvas.Children.Add(img);
                     }
 
-                    foreach (MapDatabase.Polygon polygon in layer._Polygons)
+                    foreach (MapDatabase.Polygon polygon in layer.Polygons)
                     {
+                        //Create a collection of points of the current polygon
                         StylusPointCollection stylusPointCollection = new StylusPointCollection();
-                        foreach (Point point in polygon._Points)
+                        foreach (Point point in polygon.Points)
                         {
-                            StylusPoint _StylusPoint = new StylusPoint(point.X, point.Y);
-                            stylusPointCollection.Add(_StylusPoint);
+                            StylusPoint stylusPoint = new StylusPoint(point.X, point.Y);
+                            stylusPointCollection.Add(stylusPoint);
                         }
 
-                        CustomStroke stroke = new CustomStroke(stylusPointCollection);
-                        stroke.DrawingAttributes.Color = polygon._Color;
+                        //Add polygon as a new stroke
+                        Stroke stroke = new Stroke(stylusPointCollection);
+                        stroke.DrawingAttributes.Color = polygon.Color;
                         inkCanvas.Strokes.Add(stroke);
                     }
                 }
@@ -333,26 +350,27 @@ namespace CSL.LevelEditor
             }
         }
 
-        public void SetMode(InkCanvasEditingMode mode, CustomMode customMode)
+        public void SetMode(InkCanvasEditingMode mode, EditorMode customMode)
         {
-            SetStroke();
+            UpdateStrokeAndSetToNull();
             _currentInkCanvas.EditingMode = mode;
-            _CurCustomMode = customMode;
+            _curEditorMode = customMode;
         }
 
 
-        private void SetStroke()
+        private void UpdateStrokeAndSetToNull()
         {
             if (_Stroke != null)
             {
-                InkCanvas_StrokeCollected(_currentInkCanvas, new InkCanvasStrokeCollectedEventArgs(_Stroke));
+                ConnectEndStylusPoints(_Stroke);
+                //TODO: why this?
                 _Stroke = null;
             }
         }
 
         private void NewPoint(Point _pos)
         {
-            //foreach (InkCanvas _InkCanvas1 in _CanvasList.Children)
+            //foreach (InkCanvas _InkCanvas1 in _canvasList.Children)
             //    foreach (CustomStroke _Stroke1 in _InkCanvas1.Strokes)
             //        for (int i = 0; i < _Stroke1.StylusPoints.Count; i++)
             //        {                        
@@ -369,76 +387,116 @@ namespace CSL.LevelEditor
 
         void InkCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            Point _pos = e.GetPosition(_currentInkCanvas);
-            if (e.RightButton == MouseButtonState.Pressed)
+            try
             {
-                SetStroke();
-                if (_CurCustomMode == CustomMode.polygon)
-                {
-                    foreach (InkCanvas _InkCanvas1 in _CanvasList.Children)
-                        foreach (CustomStroke _Stroke1 in _InkCanvas1.Strokes)
-                            for (int i = 0; i < _Stroke1.StylusPoints.Count; i++)
-                            {
-                                StylusPoint _StylusPoint = _Stroke1.StylusPoints[i];
-                                double l = ((Vector)(Convert(_StylusPoint) - _pos)).Length;
-                                if (l < 10)
-                                {
-                                    _curentPoint = i;
-                                    _Stroke = _Stroke1;
-                                }
-                            }
-                }
-            }
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                if (_CurCustomMode == CustomMode.polygon)
-                {
+                Point curCursorPosition = e.GetPosition(_currentInkCanvas);
 
-                    //if (Keyboard.IsKeyDown(Key.LeftCtrl))
+                if (e.RightButton == MouseButtonState.Pressed)
+                {
+                    //"Select" some near point on the canvas
+
+                    UpdateStrokeAndSetToNull();
+                    if (_curEditorMode == EditorMode.Polygon)
                     {
-                        foreach (InkCanvas _InkCanvas1 in _CanvasList.Children)
-                            foreach (CustomStroke _Stroke1 in _InkCanvas1.Strokes)
-                                for (int i = 0; i < _Stroke1.StylusPoints.Count; i++)
+                        foreach (InkCanvas inkCanvas in _canvasList.Children)
+                        {
+                            foreach (Stroke stroke in inkCanvas.Strokes)
+                            {
+                                for (int pointIndex = 0; pointIndex < stroke.StylusPoints.Count; pointIndex++)
                                 {
-                                    StylusPoint _StylusPoint = _Stroke1.StylusPoints[i];
-                                    double l = ((Vector)(Convert(_StylusPoint) - _pos)).Length;
-                                    if (l < 5)
+                                    StylusPoint stylusPoint = stroke.StylusPoints[pointIndex];
+                                    double distanceOf2Points = ((Vector)(FromStylusPointToPoint(stylusPoint) - curCursorPosition)).Length;
+                                    if (distanceOf2Points < _maxEndPointDistance * 2)
                                     {
-                                        _pos = Convert(_StylusPoint);
+                                        SelectPoint(pointIndex);
+                                        _Stroke = stroke;
+                                        _curEditorMode = EditorMode.MovingPoint;
                                     }
                                 }
+                            }
+                        }
                     }
-
-                    if (_Stroke == null)
+                }
+                if (e.LeftButton == MouseButtonState.Pressed)
+                {
+                    if (_curEditorMode == EditorMode.Polygon)
                     {
-                        StylusPointCollection _StylusPointCollection = new StylusPointCollection();
-                        Point _Point = _pos;
-                        _StylusPointCollection.Add(new StylusPoint(_Point.X, _Point.Y));
-                        _Stroke = new CustomStroke(_StylusPointCollection);
-                        _currentInkCanvas.Strokes.Add(_Stroke);
-
-                        _curentPoint = 0;
-
+                        curCursorPosition = GetCorrectCursorPosition(curCursorPosition);
+                        AddNewPointToStroke(curCursorPosition);
                     }
-                    else
+                    else if (_curEditorMode == EditorMode.MovingPoint)
                     {
-                        StylusPoint _StylusPoint = new StylusPoint(_pos.X, _pos.Y);
-                        _curentPoint++;
-                        _Stroke.StylusPoints.Insert(_curentPoint, _StylusPoint);
+                        _curEditorMode = EditorMode.Polygon;
+                        curCursorPosition = e.GetPosition(_currentInkCanvas);
+                        if (_Stroke != null)
+                        {
+                            //move selected point to the new location
+                            _Stroke.StylusPoints[_curPointIndex] = new StylusPoint(curCursorPosition.X, curCursorPosition.Y);
+                        }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                ErrorMessageBox.Show(ex);
+            }
+        }
+
+        private void SelectPoint(int pointIndex)
+        {
+            _curPointIndex = pointIndex;
+        }
+
+        private void AddNewPointToStroke(Point curCursorPosition)
+        {
+            if (_Stroke == null)  //setfirst point
+            {
+                StylusPointCollection stylusPointCollection = new StylusPointCollection();
+                stylusPointCollection.Add(new StylusPoint(curCursorPosition.X, curCursorPosition.Y));
+                _Stroke = new Stroke(stylusPointCollection);
+                _currentInkCanvas.Strokes.Add(_Stroke);
+
+                _curPointIndex = 0;
+
+            }
+            else //add next point to current stroke
+            {
+                StylusPoint stylusPoint = new StylusPoint(curCursorPosition.X, curCursorPosition.Y);
+                _curPointIndex++;
+                _Stroke.StylusPoints.Insert(_curPointIndex, stylusPoint);
+            }
+        }
+
+        private Point GetCorrectCursorPosition(Point curCursorPosition)
+        {
+            //update current cursor(mouse) position to some existring stylusPoint(only if near enough).
+            foreach (InkCanvas inkCanvas in _canvasList.Children)
+            {
+                foreach (Stroke stroke in inkCanvas.Strokes)
+                {
+                    for (int i = 0; i < stroke.StylusPoints.Count; i++)
+                    {
+                        StylusPoint stylusPoint = stroke.StylusPoints[i];
+                        double distanceOf2Points = ((Vector)(FromStylusPointToPoint(stylusPoint) - curCursorPosition)).Length;
+                        if (distanceOf2Points < _maxEndPointDistance)
+                        {
+                            curCursorPosition = FromStylusPointToPoint(stylusPoint);
+                        }
+                    }
+                }
+            }
+            return curCursorPosition;
         }
 
         private List<MapDatabase.Layer> SaveLayers()
         {
             List<MapDatabase.Layer> _Layers = new List<MapDatabase.Layer>();
-            foreach (InkCanvas _InkCanvas in _CanvasList.Children)
+            foreach (InkCanvas _InkCanvas in _canvasList.Children)
             {
                 MapDatabase.Layer _Layer = new MapDatabase.Layer();
                 foreach (Image _Image in _InkCanvas.Children.OfType<Image>())
                 {
-                    _Layer._Images.Add(new MapDatabase.Image
+                    _Layer.Images.Add(new MapDatabase.Image
                     {
                         Path = ((BitmapImage)_Image.Source).UriSource.OriginalString,
                         X = InkCanvas.GetLeft(_Image),
@@ -448,8 +506,8 @@ namespace CSL.LevelEditor
                     });
                 }
 
-                List<MapDatabase.Polygon> _Polygons = _Layer._Polygons;
-                foreach (CustomStroke _Stroke in _InkCanvas.Strokes)
+                List<MapDatabase.Polygon> _Polygons = _Layer.Polygons;
+                foreach (Stroke _Stroke in _InkCanvas.Strokes)
                 {
                     List<Point> _Points = new List<Point>();
                     foreach (StylusPoint _StylusPoint in _Stroke.StylusPoints)
@@ -460,8 +518,8 @@ namespace CSL.LevelEditor
                         _Points.Add(_Point);
                     }
                     MapDatabase.Polygon _Polygon = new MapDatabase.Polygon();
-                    _Polygon._Color = _Stroke.DrawingAttributes.Color;
-                    _Polygon._Points = _Points;
+                    _Polygon.Color = _Stroke.DrawingAttributes.Color;
+                    _Polygon.Points = _Points;
                     _Polygons.Add(_Polygon);
                 }
                 _Layers.Add(_Layer);
@@ -473,10 +531,10 @@ namespace CSL.LevelEditor
         {
             if (_Stroke != null)
             {
-                if (_curentPoint > 0)
+                if (_curPointIndex > 0)
                 {
-                    _Stroke.StylusPoints.RemoveAt(_curentPoint);
-                    _curentPoint--;
+                    _Stroke.StylusPoints.RemoveAt(_curPointIndex);
+                    _curPointIndex--;
                 }
                 else
                 {
@@ -492,7 +550,7 @@ namespace CSL.LevelEditor
             _Scale *= _ScaleFactor;
             //TODO: implement
             //     _ScaleText.Text = _Scale.ToString();
-            foreach (InkCanvas _InkCanvas in _CanvasList.Children)
+            foreach (InkCanvas _InkCanvas in _canvasList.Children)
             {
                 foreach (Stroke _Stroke in _InkCanvas.Strokes)
                     for (int i = 0; i < _Stroke.StylusPoints.Count; i++)
@@ -549,10 +607,10 @@ namespace CSL.LevelEditor
 
         internal void KeyB()
         {
-            if (_PolygonsCanvas.Children.Count > 0)
-                _PolygonsCanvas.Children.Clear();
+            if (_polygonsCanvas.Children.Count > 0)
+                _polygonsCanvas.Children.Clear();
             else
-                foreach (InkCanvas _InkCanvas1 in _CanvasList.Children)
+                foreach (InkCanvas _InkCanvas1 in _canvasList.Children)
                     foreach (Stroke _Stroke in _InkCanvas1.Strokes)
                     {
                         if (_Stroke.StylusPoints.Last() == _Stroke.StylusPoints.First())
@@ -563,7 +621,7 @@ namespace CSL.LevelEditor
                                 _Polygon.Points.Add(new Point(_Point.X, _Point.Y));
                             }
                             _Polygon.Fill = new SolidColorBrush(_Stroke.DrawingAttributes.Color);
-                            _PolygonsCanvas.Children.Add(_Polygon);
+                            _polygonsCanvas.Children.Add(_Polygon);
                         }
                     }
         }
