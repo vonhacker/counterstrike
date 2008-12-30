@@ -34,6 +34,7 @@ namespace CSL.LevelEditor
         private CustomStroke _Stroke;
         public int _curentPoint;
         public CustomMode _CurCustomMode;
+        private double _Scale = 1;
 
 
         void UserControlCanvas_Loaded(object sender, RoutedEventArgs e)
@@ -98,7 +99,7 @@ namespace CSL.LevelEditor
             }
         }
 
-        void SelectColor()
+        public void SelectColor()
         {
             StrokeCollection _StrokeCollection = _currentInkCanvas.GetSelectedStrokes();
             if (_StrokeCollection.Count > 0)
@@ -483,6 +484,88 @@ namespace CSL.LevelEditor
                     _Stroke = null;
                 }
             }
+        }
+
+        internal void Scale(bool shouldAdd)
+        {
+            double _ScaleFactor = shouldAdd ? 1.2 : .8;
+            _Scale *= _ScaleFactor;
+            //TODO: implement
+            //     _ScaleText.Text = _Scale.ToString();
+            foreach (InkCanvas _InkCanvas in _CanvasList.Children)
+            {
+                foreach (Stroke _Stroke in _InkCanvas.Strokes)
+                    for (int i = 0; i < _Stroke.StylusPoints.Count; i++)
+                    {
+                        StylusPoint _StylusPoint = _Stroke.StylusPoints[i];
+                        _Stroke.StylusPoints[i] = new StylusPoint(_StylusPoint.X * _ScaleFactor, _StylusPoint.Y * _ScaleFactor);
+                    }
+                foreach (FrameworkElement _Image in _InkCanvas.Children)
+                {
+                    InkCanvas.SetLeft(_Image, InkCanvas.GetLeft(_Image) * _ScaleFactor);
+                    InkCanvas.SetTop(_Image, InkCanvas.GetTop(_Image) * _ScaleFactor);
+                    _Image.Width = _Image.ActualWidth * _ScaleFactor;
+                    _Image.Height = _Image.ActualHeight * _ScaleFactor;
+                }
+            }
+        }
+
+        internal void SetPage(bool isPageUp)
+        {
+            if (isPageUp)
+            {
+                StrokeCollection _StrokeCollection = _currentInkCanvas.GetSelectedStrokes();
+                foreach (Stroke _Stroke in _StrokeCollection)
+                {
+                    _currentInkCanvas.Strokes.Remove(_Stroke);
+                    _currentInkCanvas.Strokes.Add(_Stroke);
+                }
+            }
+            else
+            {
+                StrokeCollection _StrokeCollection = _currentInkCanvas.GetSelectedStrokes();
+                foreach (Stroke _Stroke in _StrokeCollection)
+                {
+                    _currentInkCanvas.Strokes.Remove(_Stroke);
+                    _currentInkCanvas.Strokes.Insert(0, _Stroke);
+                }
+            }
+        }
+
+        internal void Copy()
+        {
+            _currentInkCanvas.CopySelection();
+        }
+
+        internal void Cut()
+        {
+            _currentInkCanvas.CutSelection();
+        }
+
+        internal void Paste()
+        {
+            _currentInkCanvas.Paste();
+        }
+
+        internal void KeyB()
+        {
+            if (_PolygonsCanvas.Children.Count > 0)
+                _PolygonsCanvas.Children.Clear();
+            else
+                foreach (InkCanvas _InkCanvas1 in _CanvasList.Children)
+                    foreach (Stroke _Stroke in _InkCanvas1.Strokes)
+                    {
+                        if (_Stroke.StylusPoints.Last() == _Stroke.StylusPoints.First())
+                        {
+                            Polygon _Polygon = new Polygon();
+                            foreach (StylusPoint _Point in _Stroke.StylusPoints)
+                            {
+                                _Polygon.Points.Add(new Point(_Point.X, _Point.Y));
+                            }
+                            _Polygon.Fill = new SolidColorBrush(_Stroke.DrawingAttributes.Color);
+                            _PolygonsCanvas.Children.Add(_Polygon);
+                        }
+                    }
         }
     }
 }
