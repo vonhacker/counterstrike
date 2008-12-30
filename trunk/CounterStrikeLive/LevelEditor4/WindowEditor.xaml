@@ -7,13 +7,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="43*" />
             <ColumnDefinition Width="40*" />
-            <ColumnDefinition Width="28*" />
-            <ColumnDefinition Width="48*" />
-            <ColumnDefinition Width="38*" />
-            <ColumnDefinition Width="26*" />
-            <ColumnDefinition Width="36*" />
-            <ColumnDefinition Width="22*" />
-            <ColumnDefinition Width="20*" />
+            <ColumnDefinition Width="100" MaxWidth="100" MinWidth="100" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="26" MaxHeight="26" MinHeight="26" />
@@ -26,15 +20,8 @@
                 <TextBlock Name="_textBlockCoordinates">test</TextBlock>
                 <TextBlock Name="_ScaleText">test2</TextBlock>
             </StackPanel>
-        <my:UserControlCanvas  x:Name="_userControlCanvas" Margin="3" Grid.Row="1" Grid.RowSpan="3" Grid.ColumnSpan="9" />
-        <Button Margin="3" Name="buttonOpen" Click="buttonOpen_Click">Open</Button>
-        <Button Grid.Column="6" Grid.Row="3" Margin="0,3,3,0" Name="buttonClose" Grid.ColumnSpan="3">Close</Button>
-        <Button Grid.Column="1" Margin="3,0,8,3" Name="buttonLayer1" Click="buttonLayer1_Click">1</Button>
-        <Button Margin="0,0,0,3" Name="buttonLayer2" Grid.Column="2" Grid.ColumnSpan="1" HorizontalAlignment="Left" Width="29" Click="buttonLayer2_Click">2</Button>
-        <Button Margin="7,0,12,3" Name="buttonLayer3" Grid.Column="3" Click="buttonLayer3_Click">3</Button>
-        <Button Margin="0,0,9,3" Name="buttonRemoveLast" Grid.Column="4" Click="buttonRemoveLast_Click">Ctrl-Z</Button>
-        <Button Margin="0,0,10,3" Name="buttonSelectMode" Grid.Column="5" Click="buttonSelectMode_Click">SelectMode</Button>
-        <Button Margin="0,0,30.797,3" Name="buttonPolygon" Grid.Column="6" Click="buttonPolygon_Click">Polygon</Button>
-        <Button Margin="1.68,0,0,3" Name="buttonErase" Grid.Column="7" Click="buttonErase_Click">Erase</Button>
+        <my:UserControlButtons x:Name="_userControlButtons" Margin="3" Grid.Row="0" Grid.ColumnSpan="3" Grid.Column="0"/>
+        <my:UserControlCanvas  x:Name="_userControlCanvas" Margin="3" Grid.Row="2" Grid.RowSpan="1" Grid.Column="0" Grid.ColumnSpan="3" />
+        <Button Grid.Column="3" Grid.Row="3" Margin="3" Name="buttonClose" Grid.ColumnSpan="1" Click="buttonClose_Click">Close</Button>
     </Grid>
 </Window>

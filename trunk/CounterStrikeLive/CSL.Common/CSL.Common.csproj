@@ -37,6 +37,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -74,6 +75,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="SharedDictionaryManager.cs" />
     <Compile Include="WindowException.xaml.cs">
       <DependentUpon>WindowException.xaml</DependentUpon>
     </Compile>
@@ -88,10 +90,74 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="DictionaryIcon.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="WindowException.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\back.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\color.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\copy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\cut.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\erase1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\erase2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\open.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\page_down.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\page_up.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\paste.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\polygon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\remove.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\scale_down.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\scale_up.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\select.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\stop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\3.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
