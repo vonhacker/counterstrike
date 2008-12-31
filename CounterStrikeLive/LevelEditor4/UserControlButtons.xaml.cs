@@ -237,5 +237,17 @@ namespace CSL.LevelEditor
             }
         }
 
+        private void buttonSaveFile_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                LevelEditorManager.Instance.SaveMap();
+            }
+            catch (Exception ex)
+            {
+                ErrorMessageBox.Show(ex);
+            }
+        }
+
     }
 }
