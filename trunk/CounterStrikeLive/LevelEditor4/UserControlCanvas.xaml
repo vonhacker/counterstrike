@@ -15,14 +15,20 @@
                     <Setter Property="Height" Value="Auto"></Setter>
                 </Style>
             </ScrollViewer.Resources>
-            <Canvas Name="_rootCanvas" 
-                    Width="{Binding ElementName=_scrollViewer, Path=ActualWidth}"
-                    Height="{Binding ElementName=_scrollViewer,Path=ActualHeight}"> 
+            <Canvas Name="_rootCanvas" Width="7000" Height="7000"> 
+                 <!--   Width="{Binding ElementName=_scrollViewer, Path=ActualWidth}"
+                    Height="{Binding ElementName=_scrollViewer,Path=ActualHeight}"-->
+              
+                
                 <Canvas Name="_canvasList" Background="WhiteSmoke" AllowDrop="True" Drop="MediaPanel_Drop" 
                         DragOver="MediaPanel_DragOver"
-                    Width="{Binding ElementName=_scrollViewer, Path=ActualWidth}"
-                    Height="{Binding ElementName=_scrollViewer,Path=ActualHeight}"
+                        Width="7000"
+                        Height="7000"
                         >
+                        <!--
+                    Width="{Binding ElementName=_scrollViewer, Path=ActualWidth}"
+                    Height="{Binding ElementName=_scrollViewer,Path=ActualHeight}" -->
+                        
                     <Canvas.Resources>
                         <Style TargetType="{x:Type InkCanvas}">
                             <Setter Property="Background" Value="Transparent"></Setter> 
@@ -31,14 +37,14 @@
                         </Style>
                     </Canvas.Resources>
                     <InkCanvas                     
-                        Width="{Binding ElementName=_scrollViewer, Path=ActualWidth}"
-                        Height="{Binding ElementName=_scrollViewer,Path=ActualHeight}">
+                        Width="7000"
+                        Height="7000">
                         <Ellipse Width="100" Height="100" Fill="Red" Name="_terroristStartPos"></Ellipse>
                         <Ellipse Width="100" Height="100" Fill="Blue" Name="_counterTerroristStartPos"></Ellipse>
                     </InkCanvas>
                     <InkCanvas                         
-                        Width="{Binding ElementName=_scrollViewer, Path=ActualWidth}"
-                        Height="{Binding ElementName=_scrollViewer,Path=ActualHeight}">                        
+                        Width="7000"
+                        Height="7000">                        
                     </InkCanvas>
                     <InkCanvas ></InkCanvas>
                     <InkCanvas ></InkCanvas>

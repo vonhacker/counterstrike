@@ -313,18 +313,19 @@ namespace CSL.LevelEditor
                     foreach (MapDatabase.Image image in layer.Images)
                     {
                         Image img = new Image();
+                        img.Stretch = Stretch.Fill;
                         if (!File.Exists(image.Path))
                             throw new FileNotFoundException(image.Path);
 
-                        
+                      //  BitmapImage _BitmapImage = new BitmapImage(new Uri(RelativePath(Environment.CurrentDirectory, fileName), UriKind.Relative));
                         BitmapImage bitmapImage = new BitmapImage(new Uri(image.Path, UriKind.Relative));
                         img.Source = bitmapImage;
-                        img.Stretch = Stretch.Fill;
+                        
                         img.Width = image.Width;
                         img.Height = image.Height;
                         InkCanvas.SetLeft(img, image.X);
                         InkCanvas.SetTop(img, image.Y);
-                        inkCanvas.Children.Add(img);
+                        inkCanvas.Children.Add(img);                        
                     }
 
                     foreach (MapDatabase.Polygon polygon in layer.Polygons)

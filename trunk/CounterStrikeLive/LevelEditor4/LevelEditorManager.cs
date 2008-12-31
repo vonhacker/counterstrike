@@ -14,6 +14,7 @@ namespace CSL.LevelEditor
         }
 
         private String _filePath4MapDescriptor = @"C:\Source\cs\trunk\CounterStrikeLive\CounterStrikeLive\Content\map_dev.xml";
+        private String _filePathOut = @"C:\Source\cs\trunk\CounterStrikeLive\CounterStrikeLive\Content\map_out.xml";
         
 
         private static LevelEditorManager _levelEditorManager;
@@ -98,6 +99,12 @@ namespace CSL.LevelEditor
         internal void KeyB()
         {
             _windowEditor.UserControlCanvas.KeyB();
+        }
+
+        public void SaveMap()
+        {
+
+            _windowEditor.UserControlCanvas.SaveFile(_filePathOut);
         }
     }
 }

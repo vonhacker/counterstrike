@@ -21,6 +21,7 @@
             <ColumnDefinition Width="20" MaxWidth="20" MinWidth="20" />
             <ColumnDefinition Width="20" MaxWidth="20" MinWidth="20" />
             <ColumnDefinition Width="20" MaxWidth="20" MinWidth="20" />
+            <ColumnDefinition Width="20" MaxWidth="20" MinWidth="20" />
         </Grid.ColumnDefinitions>
         <Button Margin="2" Click="buttonOpen_Click" Name="buttonOpen" ToolTip="Open" Grid.Column="0" Content="{StaticResource add_png}" />
         <Button Margin="2" Click="buttonLayer1_Click" Name="buttonLayer1" ToolTip="Layer 1" Grid.Column="1" Content="{StaticResource x1_png}" />
@@ -39,5 +40,7 @@
         <Button Margin="2" Click="buttonCut_Click" Name="buttonCut" ToolTip="Cut" Grid.Column="14" Content="{StaticResource cut_png}" />
         <Button Margin="2" Click="buttonPaste_Click" Name="buttonPaste" ToolTip="Paste" Grid.Column="15" Content="{StaticResource paste_png}" />
         <Button Margin="2" Click="buttonKeyB_Click" Name="buttonKeyB" ToolTip="keyB" Grid.Column="16" Content="{StaticResource stop_png}" />
+        <Button Margin="2" Click="buttonSaveFile_Click" Name="buttonSaveFile" ToolTip="SaveFile" Grid.Column="17" Content="SaveFile" />
+
     </Grid>
 </UserControl>
