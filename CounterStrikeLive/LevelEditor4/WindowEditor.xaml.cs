@@ -34,7 +34,7 @@ namespace CSL.LevelEditor
             //TODO: remove?
             String gamePath = System.IO.Path.GetFullPath("../../../");
             Directory.SetCurrentDirectory(gamePath);
-
+            string s= Environment.CurrentDirectory;
             InitializeComponent();
         }
 
