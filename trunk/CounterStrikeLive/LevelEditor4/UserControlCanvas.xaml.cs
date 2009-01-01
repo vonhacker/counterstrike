@@ -309,7 +309,7 @@ namespace CSL.LevelEditor
                 {
                     MapDatabase.Layer layer = _mapDatabase.Layers[i];
                     InkCanvas inkCanvas = (InkCanvas)_canvasList.Children[i];
-                    _currentInkCanvas = inkCanvas;
+                   // _currentInkCanvas = inkCanvas;
                     foreach (MapDatabase.Image image in layer.Images)
                     {
                         Image img = new Image();
@@ -317,15 +317,17 @@ namespace CSL.LevelEditor
                         if (!File.Exists(image.Path))
                             throw new FileNotFoundException(image.Path);
 
-                      //  BitmapImage _BitmapImage = new BitmapImage(new Uri(RelativePath(Environment.CurrentDirectory, fileName), UriKind.Relative));
-                        BitmapImage bitmapImage = new BitmapImage(new Uri(image.Path, UriKind.Relative));
+                        BitmapImage bitmapImage = new BitmapImage();
+                        bitmapImage.BeginInit();
+                        bitmapImage.UriSource = new Uri(image.Path, UriKind.Relative);
+                        bitmapImage.EndInit();
                         img.Source = bitmapImage;
-                        
+
                         img.Width = image.Width;
                         img.Height = image.Height;
                         InkCanvas.SetLeft(img, image.X);
                         InkCanvas.SetTop(img, image.Y);
-                        inkCanvas.Children.Add(img);                        
+                        inkCanvas.Children.Add(img);
                     }
 
                     foreach (MapDatabase.Polygon polygon in layer.Polygons)
