@@ -1,6 +1,10 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     
+    <!-- PNGs here-->
+    <Image x:Key="open_48_png" Source="icons/open_48.png"/>
+    <Image x:Key="save_48_png"  Source="icons/save_48.png"/>
+
     <Image x:Key="add_png" Source="icons/add.png"/>    
     <Image x:Key="x1_png"  Source="icons/1.png"/>
     <Image x:Key="x2_png"  Source="icons/2.png"/>
@@ -21,4 +25,8 @@
     <Image x:Key="remove_png"  Source="icons/remove.png"/>
     <Image x:Key="select_png"  Source="icons/select.png"/>
     <Image x:Key="stop_png"  Source="icons/stop.png"/>
+    
+    <!-- Icons here -->
+    <Image x:Key="editor_ico"  Source="icons/editor.ico"/>
+    
 </ResourceDictionary>

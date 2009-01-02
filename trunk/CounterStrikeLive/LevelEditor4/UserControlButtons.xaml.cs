@@ -22,10 +22,30 @@ namespace CSL.LevelEditor
     {
         public UserControlButtons()
         {
+            
+            InitializeComponent();
+            
             //ressources
             this.Resources.MergedDictionaries.Add(SharedDictionaryManager.SharedDictionary);
+            this.buttonOpen.Content = this.Resources["open_48_png"];
+            this.buttonSaveFile.Content = this.Resources["save_48_png"];
+            this.buttonLayer1.Content = this.Resources["x1_png"];
+            this.buttonLayer2.Content = this.Resources["x2_png"];
+            this.buttonLayer3.Content = this.Resources["x3_png"];
+            this.buttonRemoveLast.Content = this.Resources["remove_png"];
+            this.buttonSelectMode.Content = this.Resources["select_png"];
+            this.buttonPolygon.Content = this.Resources["polygon_png"];
+            this.buttonErase.Content = this.Resources["erase1_png"];
+            this.buttonScaleAdd.Content = this.Resources["scale_up_png"];
+            this.buttonScaleSubtract.Content = this.Resources["scale_down_png"];
+            this.buttonSelectColor.Content = this.Resources["color_png"];
+            this.buttonPageUp.Content = this.Resources["page_up_png"];
+            this.buttonPageDown.Content = this.Resources["page_down_png"];
+            this.buttonCopy.Content = this.Resources["copy_png"];
+            this.buttonCut.Content = this.Resources["cut_png"];
+            this.buttonPaste.Content = this.Resources["paste_png"];
+            this.buttonKeyB.Content = this.Resources["stop_png"];
 
-            InitializeComponent();
         }
 
         private void buttonOpen_Click(object sender, RoutedEventArgs e)

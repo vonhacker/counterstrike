@@ -34,8 +34,30 @@ namespace CSL.LevelEditor
             //TODO: remove?
             String gamePath = System.IO.Path.GetFullPath("../../../");
             Directory.SetCurrentDirectory(gamePath);
-            string s= Environment.CurrentDirectory;
+            string s = Environment.CurrentDirectory;
             InitializeComponent();
+
+            //ressources
+            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.SharedDictionary);
+            this.Icon = (this.Resources["editor_ico"] as Image).Source;
+
+            LoadSettings();
+        }
+
+        private void LoadSettings()
+        {
+            this.Left = Properties.Settings.Default.WindowLocation.X;
+            this.Top = Properties.Settings.Default.WindowLocation.Y;
+            this.Width = Properties.Settings.Default.WindowSize.Width;
+            this.Height = Properties.Settings.Default.WindowSize.Height;
+        }
+
+
+        private void SaveSettings()
+        {
+            Properties.Settings.Default.WindowLocation = new Point(this.Left, this.Top);
+            Properties.Settings.Default.WindowSize = new Size(this.Width, this.Height);
+            Properties.Settings.Default.Save();
         }
 
         //TODO: remove???
@@ -51,5 +73,19 @@ namespace CSL.LevelEditor
             //TODO: check if we are save?
             this.Close();
         }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            try
+            {
+                SaveSettings();
+            }
+            catch (Exception ex)
+            {
+                ErrorMessageBox.Show(ex);
+                throw;
+            }
+        }
+
     }
 }
