@@ -159,6 +159,13 @@
   <ItemGroup>
     <Resource Include="icons\3.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\editor.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\open_48.png" />
+    <Resource Include="icons\save_48.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
