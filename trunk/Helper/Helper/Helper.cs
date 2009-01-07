@@ -21,7 +21,7 @@ namespace doru
     public class ExceptionB : Exception
     {
         public ExceptionB(string s) : base(s) { }
-    }
+    } 
     
 
     
