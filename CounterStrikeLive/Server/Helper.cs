@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 #if(!SILVERLIGHT)
 using System.IO.Compression;
 #endif
+using System.Linq;
 using System.IO;
 using System.Net.Sockets;
 using System.Diagnostics;
@@ -13,17 +13,43 @@ using System.Net;
 using System.Threading;
 using System.Runtime.InteropServices;
 using System.Xml.Serialization;
+using System.Reflection;
+using System.Collections;
 
 namespace doru
 {
+    public class ExceptionB : Exception
+    {
+        public ExceptionB(string s) : base(s) { }
+    }
+    
+
+    
     public class ExceptionA : Exception { public ExceptionA(string s) : base(s) { } public ExceptionA() { } };
     public partial class Helper
     {
+
+        public static List<string> RemoveDuplicates(List<string> inputList)
+        {
+            Dictionary<string, int> uniqueStore = new Dictionary<string, int>();
+            List<string> finalList = new List<string>();
+
+            foreach (string currValue in inputList)
+            {
+                if (!uniqueStore.ContainsKey(currValue))
+                {
+                    uniqueStore.Add(currValue, 0);
+                    finalList.Add(currValue);
+                }
+            }
+            return finalList;
+        }
+
         public static void Replace<T>(ref T[] _source, T[] _oldarray, T[] _newarray)
         {
             Replace(ref _source, _oldarray, _newarray, 0, -1);
         }
-        public static void Replace<T>(ref string _source, string _oldarray, string _newarray, int count)
+        public static void Replace(ref string _source, string _oldarray, string _newarray, int count)
         {
             byte[] _bytes = _source.ToBytes();
             Replace(ref _bytes, _oldarray.ToBytes(), _newarray.ToBytes(), 0, count);
@@ -233,9 +259,48 @@ namespace doru
     }
     public static class Extensions
     {
+        public static byte[] Hex2(this string s)
+        {
+            StringBuilder sb = new StringBuilder();
+            MatchCollection ms = Regex.Matches(s, @"0x\d{4,4}   (.+?)   ");
+            foreach (Match m in ms)
+                sb.AppendLine(m.Groups[1].Value);
+            return sb.ToString().Hex();
+
+        }
+        public static byte[] Hex(this string s)
+        {
+            MatchCollection ms = Regex.Matches(s, "[0-9a-fA-F]{2,2}");
+            byte[] _bytes = new byte[ms.Count];
+            for (int i = 0; i < ms.Count; i++)
+            {
+                _bytes[i] = byte.Parse(ms[i].Value, System.Globalization.NumberStyles.HexNumber);
+            }
+            return _bytes;
+        }
+        public static T Trace<T>(this T t)
+        {
+            object o = (object)t;
+            if (o is byte[])
+            {
+                Encoding.Default.GetString((byte[])o);
+                return t;
+            }
+            else
+                if (o is bool)
+                {
+                    Debug.Write(((bool)o) ? "1" : "0");
+                    return t;
+                }
+                else
+                {
+                    Debug.WriteLine(t);
+                    return t;
+                }
+        }
         public static byte[] Read(this Stream _Stream)
         {
-            return _Stream.Read((int)_Stream.Length);
+            return _Stream.Read((int)(_Stream.Length - _Stream.Position));
         }
         public static string Random(this string[] _Tags)
         {
@@ -243,6 +308,7 @@ namespace doru
         }
         public static void Write(this Stream _Stream, byte[] _bytes)
         {
+            if (_bytes.Length == 0) throw new Exception();
             _Stream.Write(_bytes, 0, _bytes.Length);
         }
         public static void Write(this Stream _Stream, string s)
@@ -264,9 +330,10 @@ namespace doru
             }
             return mString;
         }
-        public static void WriteLine(this Stream _Stream, string s)
+        public static string WriteLine(this Stream _Stream, string s)
         {
             _Stream.Write(s + "\r\n");
+            return s;
         }
         public static string ReadLine(this Stream _Stream)
         {
@@ -287,7 +354,7 @@ namespace doru
             }
             return _StringBuilder.ToString(0, _StringBuilder.Length - 1);
         }
-        
+
         public static byte[] NextBytes(this Random _Random, int l)
         {
             byte[] _bytes = new byte[l];
@@ -307,11 +374,14 @@ namespace doru
             text = text.Remove(i, a.Length);
             text2 = text.Insert(i, b);
         }
-
         public static T[] ReverseA<T>(this T[] a)
         {
-            T[] b = new T[a.Length];
-            for (int i = 0; i < a.Length; i++)
+            return a.ReverseA(a.Length);
+        }
+        public static T[] ReverseA<T>(this T[] a, int len)
+        {
+            T[] b = new T[len];
+            for (int i = 0; i < len; i++)
             {
                 b[a.Length - i - 1] = a[i];
             }
@@ -323,6 +393,26 @@ namespace doru
             return String.Format("0x{0:x}", b);
         }
 
+        public static string ToHex(this byte[] _bytes)
+        {
+            StringBuilder sb = new StringBuilder();
+            int x = 0;
+            while (true)
+            {
+                for (int j = 0; j < 2; j++)
+                {
+                    for (int i = 0; ; i++)
+                    {
+                        sb.Append(_bytes[x] > 15 ? String.Format("{0:X}", _bytes[x]) : String.Format("0{0:X}", _bytes[x]));
+                        if (++x == _bytes.Length) return sb.ToString().Trim();
+                        if (i == 8) break;
+                        sb.Append(" ");
+                    }
+                    sb.Append("-");
+                }
+                sb.Append("\r\n");
+            }
+        }
         public static string ToStr(this byte[] _Bytes)
         {
             return Encoding.Default.GetString(_Bytes);
@@ -331,8 +421,33 @@ namespace doru
         {
             return Encoding.Default.GetBytes(_String);
         }
+        public static UInt32 ReadUInt32(this Stream _Stream)
+        {
+            return BitConverter.ToUInt32(_Stream.Read(4).ReverseA(), 0);
+        }
+        public static UInt16 ReadUInt16(this Stream _Stream)
+        {
+            return BitConverter.ToUInt16(_Stream.Read(2).ReverseA(), 0);
+        }
+        public static void WriteUint32(this Stream _Stream, UInt32 i)
+        {
+            _Stream.Write(BitConverter.GetBytes(i).ReverseA());
+        }
+        public static void WriteUint16(this Stream _Stream, UInt16 i)
+        {
+            _Stream.Write(BitConverter.GetBytes(i).ReverseA(2), 0, 2);
+        }
+        public static byte ReadB(this Stream _Stream)
+        {
+            int i = _Stream.ReadByte();
+            if (i == -1) throw new Exception();
+            return (byte)i;
+        }
+
+
         public static byte[] Read(this Stream _Stream, int length)
         {
+            if (length == 0) throw new Exception("length == 0");
             byte[] _buffer = new byte[length];
             using (MemoryStream _MemoryStream = new MemoryStream())
             {
@@ -467,6 +582,101 @@ namespace doru
         }
     }
 #if (!SILVERLIGHT)
+    public class intA
+    {
+        public override string ToString()
+        {
+            return i.ToString();
+        }
+        string file;
+        public intA(string s)
+        {
+            file = s;
+        }
+        int? _i;
+
+        public static intA operator +(intA a, int b)
+        {
+            a.i += b;
+            return a;
+        }
+
+        public static implicit operator int(intA _intA)
+        {
+            return _intA.i;
+        }
+        public int i
+        {
+            get
+            {
+                if (_i != null) return _i.Value;
+                else
+                {
+                    if (File.Exists(file)) _i = int.Parse(File.ReadAllText(file));
+                    else _i = 0;
+                }
+                return _i.Value;
+            }
+            set { _i = value; File.WriteAllText(file, _i.ToString()); }
+        }
+    }
+    public class ListA : List<string>
+    {
+        string file;
+        public ListA(string file)
+        {
+            this.file = file;
+            if (File.Exists(file))
+                foreach (string s2 in File.ReadAllLines(file))
+                {
+                    base.Add(s2);
+                }
+        }
+        public new bool Add(string s)
+        {
+            if (!Contains(s))
+            {
+                base.Add(s);
+                return true;
+            }
+            else return false;
+        }
+        public void Flush()
+        {
+            File.WriteAllLines(file, this.ToArray());
+        }
+    }
+    public class ListB<T> : List<T>
+    {
+        public ListB()
+        {
+        }
+        string file;
+        public ListB(string file)
+        {
+            this.file = file;
+            _XmlSerializer = new XmlSerializer(this.GetType(), new Type[] { typeof(T) });
+            if (File.Exists(file))
+                using (FileStream _FileStream = File.Open(file, FileMode.Open))
+                {
+                    List<T> list = (List<T>)_XmlSerializer.Deserialize(_FileStream);
+                    foreach (T t in list)
+                    {
+                        Add(t);
+                    }
+                }
+        }
+        XmlSerializer _XmlSerializer;
+
+        public void Flush()
+        {
+            lock ("flush")
+            {
+                using (FileStream _FileStream = new FileStream("users.xml", FileMode.Create, FileAccess.Write))
+                    _XmlSerializer.Serialize(_FileStream, this);
+            }
+        }
+    }
     public partial class Helper
     {
         public static void GenerateXsd(Type _type, Type[] _types, string filename)
@@ -621,7 +831,7 @@ namespace doru
                     _LocalListen.StartAsync();
                     Client _RemoteListen = new Client() { _ListenSocket = _RemoteSocket, _SendToSocket = _LocalSocket, _name = i + "Received" };
                     _RemoteListen.StartAsync();
-                    Thread.Sleep(10);
+                    Thread.Sleep(2);
                 }
             }
             catch (Exception e)
@@ -759,6 +969,10 @@ namespace doru
     }
     public static class Http
     {
+        public static void Length(ref string _bytes)
+        {
+            Helper.Replace(ref _bytes, "_length_", (_bytes.Length - 4 - _bytes.IndexOf("\r\n\r\n")).ToString(), 1);
+        }
         public static void Length(ref byte[] _bytes)
         {
             Helper.Replace(ref _bytes, "_length_".ToBytes(), (_bytes.Length - 4 - _bytes.IndexOf2("\r\n\r\n")).ToString().ToBytes(), 1);
@@ -766,7 +980,7 @@ namespace doru
         public static byte[] ReadHttp(Socket _Socket)
         {
             NetworkStream _NetworkStream = new NetworkStream(_Socket);
-            _NetworkStream.ReadTimeout = 5000;
+            _NetworkStream.ReadTimeout = 10000;
             return ReadHttp(_NetworkStream);
         }
         public static byte[] ReadHttp(Stream _Stream)
@@ -840,6 +1054,7 @@ namespace doru
     }
     public static class Spammer3
     {
+        
         public static Random _Random = new Random();
         public static string ReplaceRandoms(string text, string[] _RandomTags)
         {
@@ -860,9 +1075,12 @@ namespace doru
             return text;
         }
 
-        public static bool done;        
+        public static bool done;
+        public static void Setup() { Setup("../../"); }
+        public static bool _supsend;
+        public static bool LogToConsole=true;
         public static void Setup(string s)
-        {
+        {                            
             if (done == true) return;
             done = true;
             Process _Process = Process.GetCurrentProcess();
@@ -873,11 +1091,46 @@ namespace doru
             }
             Directory.SetCurrentDirectory(s);
             Trace.Listeners.Add(new TextWriterTraceListener("log.txt"));
+            if (Console.LargestWindowHeight != 0)
+            {
+                Console.Title = Assembly.GetExecutingAssembly().GetName().Name;
+                if(LogToConsole)
+                    Trace.Listeners.Add(new TextWriterTraceListener(Console.OpenStandardOutput()));                                
+            }
             Trace.AutoFlush = true;
             Trace.WriteLine("Programm Started " + DateTime.Now);
         }
+        public static void EnableSupsend()
+        {
+            Thread _main = Thread.CurrentThread;
+            Thread _Thread = new Thread(delegate()
+            {
+                while (true)
+                {
+                    Console.ReadLine();
+                    if (_main.ThreadState == System.Threading.ThreadState.Suspended)
+                        _main.Resume();
+                    else
+                        _main.Suspend();
+                    _main.ThreadState.Trace();
+                }
+            });
+            _Thread.IsBackground = true;
+            _Thread.Start();            
+        }
     }
 #else
+    public static class Debug
+    {
+        public static void WriteLine<T>(T o)
+        {
+            Console.WriteLine(o);
+        }
+        public static void Write<T>(T o)
+        {
+            Console.Write(o);
+        }
+    }
     public static class Encoding
     {
         public static System.Text.Encoding Default { get { return System.Text.Encoding.UTF8; } }
@@ -981,14 +1234,7 @@ namespace doru
         }
     }
 
-    public static class Trace2
-    {
-        public static T Trace<T>(this T t)
-        {
-            Debug.WriteLine(t);
-            return t;
-        }
-    }
+
 
 
 }
