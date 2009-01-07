@@ -217,7 +217,7 @@ namespace doru
         }
 
 
-        internal struct LASTINPUTINFO
+        public struct LASTINPUTINFO
         {
             public uint cbSize;
             public uint dwTime;
@@ -1176,7 +1176,7 @@ namespace doru
             return _Timer.TimeElapsed(_Milisecconds);
         }
 
-        internal static double? GetFps()
+        public static double? GetFps()
         {
             return _Timer.GetFps();
         }
