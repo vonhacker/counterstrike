@@ -302,6 +302,16 @@ namespace doru
         {
             return _Stream.Read((int)(_Stream.Length - _Stream.Position));
         }
+        public static T Random<T>(this IList<T> list,T t2)
+        {
+            T t;
+            while ((t = list[_Random.Next(list.Count - 1)]).Equals(t2)) ;
+            return t;
+        }
+        public static T Random<T>(this IList<T> list)
+        {
+            return list[_Random.Next(list.Count - 1)];
+        }
         public static string Random(this string[] _Tags)
         {
             return _Tags[_Random.Next(_Tags.Length)];
@@ -1076,13 +1086,16 @@ namespace doru
         }
 
         public static bool done;
+        public static bool Beep = true;
         public static void Setup() { Setup("../../"); }
         public static bool _supsend;
         public static bool LogToConsole=true;
         public static void Setup(string s)
-        {                            
+        {                              
             if (done == true) return;
             done = true;
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+            
             Process _Process = Process.GetCurrentProcess();
             if ((from p in Process.GetProcesses() where p.ProcessName == _Process.ProcessName select p).Count() > 1)
             {
@@ -1099,6 +1112,12 @@ namespace doru
             }
             Trace.AutoFlush = true;
             Trace.WriteLine("Programm Started " + DateTime.Now);
+        }
+
+        static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            if (Console.LargestWindowHeight != 0 && Beep)
+                Console.Beep();                        
         }
         public static void EnableSupsend()
         {
