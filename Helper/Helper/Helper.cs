@@ -1106,7 +1106,7 @@ namespace doru
             Trace.Listeners.Add(new TextWriterTraceListener("log.txt"));
             if (Console.LargestWindowHeight != 0)
             {
-                Console.Title = Assembly.GetExecutingAssembly().GetName().Name;
+                Console.Title = Assembly.GetEntryAssembly().GetName().Name;
                 if(LogToConsole)
                     Trace.Listeners.Add(new TextWriterTraceListener(Console.OpenStandardOutput()));                                
             }
@@ -1116,6 +1116,7 @@ namespace doru
 
         static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
+            Trace.WriteLine(e.ExceptionObject);
             if (Console.LargestWindowHeight != 0 && Beep)
                 Console.Beep();                        
         }
