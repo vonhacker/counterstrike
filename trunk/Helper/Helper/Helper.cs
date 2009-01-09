@@ -259,6 +259,13 @@ namespace doru
     }
     public static class Extensions
     {
+        public static T Pop<T>(this List<T> list)
+        {
+            T t = list[0];
+            list.Remove(t);
+            list.Add(t);
+            return t;
+        }
         public static byte[] Hex2(this string s)
         {
             StringBuilder sb = new StringBuilder();
@@ -450,7 +457,7 @@ namespace doru
         public static byte ReadB(this Stream _Stream)
         {
             int i = _Stream.ReadByte();
-            if (i == -1) throw new Exception();
+            if (i == -1) throw new IOException();
             return (byte)i;
         }
 
@@ -464,7 +471,7 @@ namespace doru
                 while (true)
                 {
                     int count = _Stream.Read(_buffer, 0, length);
-                    if (count == 0) throw new ExceptionA("Read Stream failed");
+                    if (count == 0) throw new IOException("Read Stream failed");
                     _MemoryStream.Write(_buffer, 0, count);
                     length -= count;
                     if (length == 0) return _MemoryStream.ToArray();
@@ -1099,7 +1106,7 @@ namespace doru
             Process _Process = Process.GetCurrentProcess();
             if ((from p in Process.GetProcesses() where p.ProcessName == _Process.ProcessName select p).Count() > 1)
             {
-                Console.Beep();
+                Console.Beep(100,100);
                 _Process.Kill();
             }
             Directory.SetCurrentDirectory(s);
@@ -1118,7 +1125,7 @@ namespace doru
         {
             Trace.WriteLine(e.ExceptionObject);
             if (Console.LargestWindowHeight != 0 && Beep)
-                Console.Beep();                        
+                Console.Beep(100, 100);
         }
         public static void EnableSupsend()
         {
