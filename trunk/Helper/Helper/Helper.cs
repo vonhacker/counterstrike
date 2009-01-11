@@ -142,123 +142,14 @@ namespace doru
         }
 
     }
-    public static class Win32
-    {
-        [DllImport("user32.dll")]
-        public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
-
-        [DllImport("user32.dll")]
-        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-        public static void SetConsoleWindowVisibility(bool visible, string title)
-        {
-            IntPtr hWnd = FindWindow(null, title);
-            if (hWnd != IntPtr.Zero)
-            {
-                if (!visible)
-                    ShowWindow(hWnd, 0);
-                else
-                    ShowWindow(hWnd, 1);
-            }
-        }
-        public static void HideConsoleBar(IntPtr hWnd)
-        {
-            if (hWnd != IntPtr.Zero)
-            {
-                int style = GetWindowLong(hWnd, GWL_EXSTYLE);
-                style &= ~WS_EX_APPWINDOW;
-                SetWindowLong(hWnd, GWL_EXSTYLE, style);
-            }
-            else Debugger.Break();
-        }
-
-        public static void HideConsoleBar(string title)
-        {
-            IntPtr hWnd = FindWindow(null, title);
-            HideConsoleBar(hWnd);
-        }
-        public static int WS_EX_APPWINDOW = 0x40000;
-        public static int GWL_EXSTYLE = -20;
-
-        [DllImport("user32.dll")]
-        public static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
-        [DllImport("user32.dll")]
-        public static extern int GetWindowLong(IntPtr hWnd, int nIndex);
-
-        [DllImport("kernel32.dll")]
-        private static extern IntPtr CreateWaitableTimer(IntPtr
-        lpTimerAttributes,
-        bool bManualReset, string lpTimerName);
-
-        [DllImport("kernel32.dll")]
-        private static extern bool SetWaitableTimer(IntPtr hTimer, [In] ref long
-        pDueTime, int lPeriod, IntPtr pfnCompletionRoutine, IntPtr
-        lpArgToCompletionRoutine, bool fResume);
-
-        [DllImport("kernel32", SetLastError = true, ExactSpelling = true)]
-        private static extern Int32 WaitForSingleObject(IntPtr handle, uint
-        milliseconds);
-
-        static IntPtr handle;
-        public static void SetWaitForWakeUpTime(int secconds)
-        {
-            long duetime = -10000000 * secconds;
-            handle = CreateWaitableTimer(IntPtr.Zero, true, "MyWaitabletimer");
-            SetWaitableTimer(handle, ref duetime, 0, IntPtr.Zero,
-            IntPtr.Zero, true);
-            //duetime = -t;
-            Console.WriteLine("{0:x}", duetime);
-            handle = CreateWaitableTimer(IntPtr.Zero, true,
-            "MyWaitabletimer");
-            SetWaitableTimer(handle, ref duetime, 0, IntPtr.Zero,
-            IntPtr.Zero, true);
-            uint INFINITE = 0xFFFFFFFF;
-            int ret = WaitForSingleObject(handle, INFINITE);
-            //MessageBox.Show("Wake up call");
-        }
-
-
-        public struct LASTINPUTINFO
-        {
-            public uint cbSize;
-            public uint dwTime;
-        }
-        [DllImport("User32.dll")]
-        public static extern bool LockWorkStation();
-
-        [DllImport("User32.dll")]
-        private static extern bool GetLastInputInfo(ref LASTINPUTINFO plii);
-
-        [DllImport("Kernel32.dll")]
-        private static extern uint GetLastError();
-
-        public static uint GetIdleTime()
-        {
-            LASTINPUTINFO lastInPut = new LASTINPUTINFO();
-            lastInPut.cbSize = (uint)System.Runtime.InteropServices.Marshal.SizeOf(lastInPut);
-            GetLastInputInfo(ref lastInPut);
-
-            return ((uint)Environment.TickCount - lastInPut.dwTime);
-        }
-
-        public static long GetTickCount()
-        {
-            return Environment.TickCount;
-        }
-
-        public static long GetLastInputTime()
-        {
-            LASTINPUTINFO lastInPut = new LASTINPUTINFO();
-            lastInPut.cbSize = (uint)System.Runtime.InteropServices.Marshal.SizeOf(lastInPut);
-            if (!GetLastInputInfo(ref lastInPut))
-            {
-                throw new Exception(GetLastError().ToString());
-            }
-
-            return lastInPut.dwTime;
-        }
-    }
+    
     public static class Extensions
     {
+        public static string TrimStart(this string s,string a)
+        {
+            if (s.StartsWith(a)) return s.Substring(a.Length, s.Length-a.Length);
+            return s;
+        }
         public static T Pop<T>(this List<T> list)
         {
             T t = list[0];
@@ -598,6 +489,121 @@ namespace doru
             return -1;
         }
     }
+    public static class Win32
+    {
+        [DllImport("user32.dll")]
+        public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+
+        [DllImport("user32.dll")]
+        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+        public static void SetConsoleWindowVisibility(bool visible, string title)
+        {
+            IntPtr hWnd = FindWindow(null, title);
+            if (hWnd != IntPtr.Zero)
+            {
+                if (!visible)
+                    ShowWindow(hWnd, 0);
+                else
+                    ShowWindow(hWnd, 1);
+            }
+        }
+        public static void HideConsoleBar(IntPtr hWnd)
+        {
+            if (hWnd != IntPtr.Zero)
+            {
+                int style = GetWindowLong(hWnd, GWL_EXSTYLE);
+                style &= ~WS_EX_APPWINDOW;
+                SetWindowLong(hWnd, GWL_EXSTYLE, style);
+            }
+            else Debugger.Break();
+        }
+
+        public static void HideConsoleBar(string title)
+        {
+            IntPtr hWnd = FindWindow(null, title);
+            HideConsoleBar(hWnd);
+        }
+        public static int WS_EX_APPWINDOW = 0x40000;
+        public static int GWL_EXSTYLE = -20;
+
+        [DllImport("user32.dll")]
+        public static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+        [DllImport("user32.dll")]
+        public static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+
+        [DllImport("kernel32.dll")]
+        private static extern IntPtr CreateWaitableTimer(IntPtr
+        lpTimerAttributes,
+        bool bManualReset, string lpTimerName);
+
+        [DllImport("kernel32.dll")]
+        private static extern bool SetWaitableTimer(IntPtr hTimer, [In] ref long
+        pDueTime, int lPeriod, IntPtr pfnCompletionRoutine, IntPtr
+        lpArgToCompletionRoutine, bool fResume);
+
+        [DllImport("kernel32", SetLastError = true, ExactSpelling = true)]
+        private static extern Int32 WaitForSingleObject(IntPtr handle, uint
+        milliseconds);
+
+        static IntPtr handle;
+        public static void SetWaitForWakeUpTime(int secconds)
+        {
+            long duetime = -10000000 * secconds;
+            handle = CreateWaitableTimer(IntPtr.Zero, true, "MyWaitabletimer");
+            SetWaitableTimer(handle, ref duetime, 0, IntPtr.Zero,
+            IntPtr.Zero, true);
+            //duetime = -t;
+            Console.WriteLine("{0:x}", duetime);
+            handle = CreateWaitableTimer(IntPtr.Zero, true,
+            "MyWaitabletimer");
+            SetWaitableTimer(handle, ref duetime, 0, IntPtr.Zero,
+            IntPtr.Zero, true);
+            uint INFINITE = 0xFFFFFFFF;
+            int ret = WaitForSingleObject(handle, INFINITE);
+            //MessageBox.Show("Wake up call");
+        }
+
+
+        public struct LASTINPUTINFO
+        {
+            public uint cbSize;
+            public uint dwTime;
+        }
+        [DllImport("User32.dll")]
+        public static extern bool LockWorkStation();
+
+        [DllImport("User32.dll")]
+        private static extern bool GetLastInputInfo(ref LASTINPUTINFO plii);
+
+        [DllImport("Kernel32.dll")]
+        private static extern uint GetLastError();
+
+        public static uint GetIdleTime()
+        {
+            LASTINPUTINFO lastInPut = new LASTINPUTINFO();
+            lastInPut.cbSize = (uint)System.Runtime.InteropServices.Marshal.SizeOf(lastInPut);
+            GetLastInputInfo(ref lastInPut);
+
+            return ((uint)Environment.TickCount - lastInPut.dwTime);
+        }
+
+        public static long GetTickCount()
+        {
+            return Environment.TickCount;
+        }
+
+        public static long GetLastInputTime()
+        {
+            LASTINPUTINFO lastInPut = new LASTINPUTINFO();
+            lastInPut.cbSize = (uint)System.Runtime.InteropServices.Marshal.SizeOf(lastInPut);
+            if (!GetLastInputInfo(ref lastInPut))
+            {
+                throw new Exception(GetLastError().ToString());
+            }
+
+            return lastInPut.dwTime;
+        }
+    }
 #if (!SILVERLIGHT)
     public class intA
     {
@@ -611,17 +617,7 @@ namespace doru
             file = s;
         }
         int? _i;
-
-        public static intA operator +(intA a, int b)
-        {
-            a.i += b;
-            return a;
-        }
-
-        public static implicit operator int(intA _intA)
-        {
-            return _intA.i;
-        }
+        
         public int i
         {
             get
@@ -1071,7 +1067,13 @@ namespace doru
     }
     public static class Spammer3
     {
-        
+
+        public static string title;
+        public static string _Title
+        {
+            set { if (title != value) title = Console.Title = value; }
+        }
+
         public static Random _Random = new Random();
         public static string ReplaceRandoms(string text, string[] _RandomTags)
         {
@@ -1127,24 +1129,7 @@ namespace doru
             if (Console.LargestWindowHeight != 0 && Beep)
                 Console.Beep(100, 100);
         }
-        public static void EnableSupsend()
-        {
-            Thread _main = Thread.CurrentThread;
-            Thread _Thread = new Thread(delegate()
-            {
-                while (true)
-                {
-                    Console.ReadLine();
-                    if (_main.ThreadState == System.Threading.ThreadState.Suspended)
-                        _main.Resume();
-                    else
-                        _main.Suspend();
-                    _main.ThreadState.Trace();
-                }
-            });
-            _Thread.IsBackground = true;
-            _Thread.Start();            
-        }
+        
     }
 #else
     public static class Debug
