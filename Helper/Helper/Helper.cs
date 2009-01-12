@@ -21,8 +21,26 @@ namespace doru
     public class ExceptionB : Exception
     {
         public ExceptionB(string s) : base(s) { }
-    } 
-    
+    }
+    public class MemoryStreamA : MemoryStream
+    {
+        public override int Read(byte[] buffer, int offset, int count)
+        {
+            while (true)
+            {
+                int a = base.Read(buffer, offset, count);
+                if (a > 0) return a;
+                Thread.Sleep(20);
+            }
+        }
+        public override void Write(byte[] buffer, int offset, int count)
+        {
+            long oldpos = Position;
+            Seek(0, SeekOrigin.End);
+            base.Write(buffer, offset, count);
+            Seek(oldpos, SeekOrigin.Begin);
+        }
+    }
 
     
     public class ExceptionA : Exception { public ExceptionA(string s) : base(s) { } public ExceptionA() { } };
