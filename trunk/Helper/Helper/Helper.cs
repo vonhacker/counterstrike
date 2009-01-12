@@ -24,6 +24,8 @@ namespace doru
     }
     public class MemoryStreamA : MemoryStream
     {
+        public SortedList<int, byte[]> _List = new SortedList<int, byte[]>();
+        public int _i;
         public override int Read(byte[] buffer, int offset, int count)
         {
             while (true)
@@ -32,6 +34,33 @@ namespace doru
                 if (a > 0) return a;
                 Thread.Sleep(20);
             }
+        }
+        public override int ReadByte()
+        {
+            int b;
+            while (true)
+            {
+                b = base.ReadByte();
+                if (b != -1) break;
+                Thread.Sleep(20);
+            }
+            return b;
+        }
+        public void Write(byte[] buffer, int index)
+        {
+            _List.Add(index, buffer);
+            if (_i == 0) _i = index - 1;
+            while (true)
+            {                
+                if (_List.ContainsKey(_i + 1))
+                {
+                    _i++;
+                    Write(_List[_i],0,_List[_i].Length);
+                }
+                else
+                    break;
+            }
+
         }
         public override void Write(byte[] buffer, int offset, int count)
         {
