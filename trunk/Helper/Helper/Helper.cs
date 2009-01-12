@@ -50,6 +50,7 @@ namespace doru
         {
             _List.Add(index, buffer);
             if (_i == 0) _i = index - 1;
+            if (index <= _i) throw new Exception("Cannot Write Index Error");
             while (true)
             {                
                 if (_List.ContainsKey(_i + 1))
@@ -192,6 +193,15 @@ namespace doru
     
     public static class Extensions
     {
+        public static bool Equals2(this byte[] a,byte[] b )
+        {
+            if (a.Length != b.Length) return false;
+            for (int i = 0; i < a.Length; i++)
+            {
+                if (a[i] != b[i]) return false;
+            }
+            return true;
+        }
         public static string TrimStart(this string s,string a)
         {
             if (s.StartsWith(a)) return s.Substring(a.Length, s.Length-a.Length);
@@ -234,12 +244,12 @@ namespace doru
             else
                 if (o is bool)
                 {
-                    Debug.Write(((bool)o) ? "1" : "0");
+                    System.Diagnostics.Trace.Write(((bool)o) ? "1" : "0");
                     return t;
                 }
                 else
                 {
-                    Debug.WriteLine(t);
+                    System.Diagnostics.Trace.WriteLine(t);
                     return t;
                 }
         }
