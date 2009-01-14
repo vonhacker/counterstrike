@@ -193,6 +193,10 @@ namespace doru
     
     public static class Extensions
     {
+        public static void AddUnique<T>(this List<T> list, T item)
+        {
+            if (!list.Contains(item)) list.Add(item);
+        }
         public static bool Equals2(this byte[] a,byte[] b )
         {
             if (a.Length != b.Length) return false;
