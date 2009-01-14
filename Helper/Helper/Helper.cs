@@ -193,6 +193,10 @@ namespace doru
     
     public static class Extensions
     {
+        public static string[] Split(this string a, string b)
+        {
+            return a.Split(new string[] { b }, StringSplitOptions.RemoveEmptyEntries);
+        }
         public static void AddUnique<T>(this List<T> list, T item)
         {
             if (!list.Contains(item)) list.Add(item);
