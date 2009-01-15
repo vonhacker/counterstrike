@@ -22,6 +22,126 @@ namespace doru
     {
         public ExceptionB(string s) : base(s) { }
     }
+    [XmlRoot("dictionary")]
+
+    public class SerializableDictionary<TKey, TValue> : Dictionary<TKey, TValue>, IXmlSerializable
+    {
+
+        #region IXmlSerializable Members
+
+        public System.Xml.Schema.XmlSchema GetSchema()
+        {
+
+            return null;
+
+        }
+
+
+
+        public void ReadXml(System.Xml.XmlReader reader)
+        {
+
+            XmlSerializer keySerializer = new XmlSerializer(typeof(TKey));
+
+            XmlSerializer valueSerializer = new XmlSerializer(typeof(TValue));
+
+
+
+            bool wasEmpty = reader.IsEmptyElement;
+
+            reader.Read();
+
+
+
+            if (wasEmpty)
+
+                return;
+
+
+
+            while (reader.NodeType != System.Xml.XmlNodeType.EndElement)
+            {
+
+                reader.ReadStartElement("item");
+
+
+
+                reader.ReadStartElement("key");
+
+                TKey key = (TKey)keySerializer.Deserialize(reader);
+
+                reader.ReadEndElement();
+
+
+
+                reader.ReadStartElement("value");
+
+                TValue value = (TValue)valueSerializer.Deserialize(reader);
+
+                reader.ReadEndElement();
+
+
+
+                this.Add(key, value);
+
+
+
+                reader.ReadEndElement();
+
+                reader.MoveToContent();
+
+            }
+
+            reader.ReadEndElement();
+
+        }
+
+
+
+        public void WriteXml(System.Xml.XmlWriter writer)
+        {
+
+            XmlSerializer keySerializer = new XmlSerializer(typeof(TKey));
+
+            XmlSerializer valueSerializer = new XmlSerializer(typeof(TValue));
+
+
+
+            foreach (TKey key in this.Keys)
+            {
+
+                writer.WriteStartElement("item");
+
+
+
+                writer.WriteStartElement("key");
+
+                keySerializer.Serialize(writer, key);
+
+                writer.WriteEndElement();
+
+
+
+                writer.WriteStartElement("value");
+
+                TValue value = this[key];
+
+                valueSerializer.Serialize(writer, value);
+
+                writer.WriteEndElement();
+
+
+
+                writer.WriteEndElement();
+
+            }
+
+        }
+
+        #endregion
+
+    }
+
     public class MemoryStreamA : MemoryStream
     {
         public SortedList<int, byte[]> _List = new SortedList<int, byte[]>();
@@ -193,6 +313,12 @@ namespace doru
     
     public static class Extensions
     {
+        public static T2 TryGetValue<T,T2>(this Dictionary<T,T2> dict,T t)
+        {
+            T2 t2;
+            dict.TryGetValue(t, out t2);
+            return t2;
+        }
         public static string[] Split(this string a, string b)
         {
             return a.Split(new string[] { b }, StringSplitOptions.RemoveEmptyEntries);
