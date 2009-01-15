@@ -142,55 +142,7 @@ namespace doru
 
     }
 
-    public class MemoryStreamA : MemoryStream
-    {
-        public SortedList<int, byte[]> _List = new SortedList<int, byte[]>();
-        public int _i;
-        public override int Read(byte[] buffer, int offset, int count)
-        {
-            while (true)
-            {
-                int a = base.Read(buffer, offset, count);
-                if (a > 0) return a;
-                Thread.Sleep(20);
-            }
-        }
-        public override int ReadByte()
-        {
-            int b;
-            while (true)
-            {
-                b = base.ReadByte();
-                if (b != -1) break;
-                Thread.Sleep(20);
-            }
-            return b;
-        }
-        public void Write(byte[] buffer, int index)
-        {
-            _List.Add(index, buffer);
-            if (_i == 0) _i = index - 1;
-            if (index <= _i) throw new Exception("Cannot Write Index Error");
-            while (true)
-            {                
-                if (_List.ContainsKey(_i + 1))
-                {
-                    _i++;
-                    Write(_List[_i],0,_List[_i].Length);
-                }
-                else
-                    break;
-            }
-
-        }
-        public override void Write(byte[] buffer, int offset, int count)
-        {
-            long oldpos = Position;
-            Seek(0, SeekOrigin.End);
-            base.Write(buffer, offset, count);
-            Seek(oldpos, SeekOrigin.Begin);
-        }
-    }
+    
 
     
     public class ExceptionA : Exception { public ExceptionA(string s) : base(s) { } public ExceptionA() { } };
@@ -367,26 +319,7 @@ namespace doru
             }
             return _bytes;
         }
-        public static T Trace<T>(this T t)
-        {
-            object o = (object)t;
-            if (o is byte[])
-            {
-                Encoding.Default.GetString((byte[])o);
-                return t;
-            }
-            else
-                if (o is bool)
-                {
-                    System.Diagnostics.Trace.Write(((bool)o) ? "1" : "0");
-                    return t;
-                }
-                else
-                {
-                    System.Diagnostics.Trace.WriteLine(t);
-                    return t;
-                }
-        }
+        
         public static byte[] Read(this Stream _Stream)
         {
             return _Stream.Read((int)(_Stream.Length - _Stream.Position));
@@ -796,8 +729,59 @@ namespace doru
         }
     }
 #if (!SILVERLIGHT)
+public class MemoryStreamA : MemoryStream
+    {
+        public SortedList<int, byte[]> _List = new SortedList<int, byte[]>();
+        public int _i;
+        public override int Read(byte[] buffer, int offset, int count)
+        {
+            while (true)
+            {
+                int a = base.Read(buffer, offset, count);
+                if (a > 0) return a;
+                Thread.Sleep(20);
+            }
+        }
+        public override int ReadByte()
+        {
+            int b;
+            while (true)
+            {
+                b = base.ReadByte();
+                if (b != -1) break;
+                Thread.Sleep(20);
+            }
+            return b;
+        }
+        public void Write(byte[] buffer, int index)
+        {
+            _List.Add(index, buffer);
+            if (_i == 0) _i = index - 1;
+            if (index <= _i) throw new Exception("Cannot Write Index Error");
+            while (true)
+            {                
+                if (_List.ContainsKey(_i + 1))
+                {
+                    _i++;
+                    Write(_List[_i],0,_List[_i].Length);
+                }
+                else
+                    break;
+            }
+
+        }
+        public override void Write(byte[] buffer, int offset, int count)
+        {
+            long oldpos = Position;
+            Seek(0, SeekOrigin.End);
+            base.Write(buffer, offset, count);
+            Seek(oldpos, SeekOrigin.Begin);
+        }
+    }
+
     public class intA
     {
+
         public override string ToString()
         {
             return i.ToString();
@@ -1173,6 +1157,26 @@ namespace doru
     }
     public static class Http
     {
+    public static T Trace<T>(this T t)
+        {
+            object o = (object)t;
+            if (o is byte[])
+            {
+                Encoding.Default.GetString((byte[])o);
+                return t;
+            }
+            else
+                if (o is bool)
+                {
+                    System.Diagnostics.Trace.Write(((bool)o) ? "1" : "0");
+                    return t;
+                }
+                else
+                {
+                    System.Diagnostics.Trace.WriteLine(t);
+                    return t;
+                }
+        }
         public static void Length(ref string _bytes)
         {
             Helper.Replace(ref _bytes, "_length_", (_bytes.Length - 4 - _bytes.IndexOf("\r\n\r\n")).ToString(), 1);
