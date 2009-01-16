@@ -82,29 +82,5 @@ namespace Server.Properties {
                 this["_ServerName"] = value;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool _EnableCache {
-            get {
-                return ((bool)(this["_EnableCache"]));
-            }
-            set {
-                this["_EnableCache"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool _EnableWebServer {
-            get {
-                return ((bool)(this["_EnableWebServer"]));
-            }
-            set {
-                this["_EnableWebServer"] = value;
-            }
-        }
     }
 }
