@@ -449,6 +449,7 @@
     <Resource Include="Content\cs_estate.png" />
     <Content Include="Content\map.xml" />
     <Content Include="db.xml" />
+    <Resource Include="icon_in-game.png" />
     <None Include="SubsetFontTask.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v2.0\Microsoft.Silverlight.CSharp.targets" />

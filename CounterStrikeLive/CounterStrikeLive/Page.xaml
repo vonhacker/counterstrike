@@ -20,16 +20,16 @@
     		<ColumnDefinition Width="0.5*"/>
     		<ColumnDefinition Width="0.5*"/>
     	</Grid.ColumnDefinitions>        
-        <Canvas x:Name="_GameCanvas" Background="#FF240808" Grid.ColumnSpan="2" Grid.RowSpan="2" d:IsHidden="True"/>            
-        <TextBlock Height="25.324" x:Name="_TextBlockLife" VerticalAlignment="Bottom" d:LayoutOverrides="Height" Margin="37,0,0,7.338" Text="0" FontSize="24" FontFamily="./Fonts/Fonts.zip#7 Segment" d:IsStaticText="False" FontWeight="Bold" FontStyle="Normal" Foreground="#FFDBD257" Grid.Row="1" Width="77" HorizontalAlignment="Left" d:IsHidden="True"/>
-        <TextBox x:Name="_Console" VerticalScrollBarVisibility="Visible"  Text="Console" Foreground="Green" Grid.ColumnSpan="2" Grid.RowSpan="2" d:IsHidden="True"/>
-        <Image Height="25.338" HorizontalAlignment="Left" Margin="8,0,0,7.662" VerticalAlignment="Bottom" Width="25.338" Source="icon_in-game.png" Stretch="Fill" Grid.Row="1" d:IsHidden="True"/>
-        <local:TeamSelect x:Name="_TeamSelect" Margin="-319,-245,0,0" VerticalAlignment="Top" Height="480" Width="640" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="1" d:IsHidden="True" />
-        <local:ScoreBoard x:Name="_ScoreBoard" d:LayoutOverrides="Width, Height" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-399,-300,0,0" Grid.Row="1" Grid.Column="1" d:IsHidden="True"/>
-        <TextBlock x:Name="_CenterText" Foreground="#FFFEF000" FontSize="16" HorizontalAlignment="Right" VerticalAlignment="Bottom" d:LayoutOverrides="Width, Height" Margin="0,0,30,0.5" d:IsHidden="True"/>
-        <Canvas x:Name="_CursorCanvas" Grid.ColumnSpan="2" Grid.RowSpan="2" d:IsHidden="True"/>
-        <TextBlock Text="" TextWrapping="Wrap" Foreground="#FFD6C708" TextAlignment="Right" x:Name="_KillText" Margin="235,0,0,0" Grid.Column="1" VerticalAlignment="Top" Height="65" d:IsHidden="True"/>
-        <Rectangle Margin="0,175,-59,133" RenderTransformOrigin="0.525,2.609" Width="118" HorizontalAlignment="Right" d:LayoutOverrides="HorizontalAlignment" x:Name="_damageRectangle" d:IsHidden="True">
+        <Canvas x:Name="_GameCanvas" Background="#FF240808" Grid.ColumnSpan="2" Grid.RowSpan="2"/>            
+        <TextBlock Height="25.324" x:Name="_TextBlockLife" VerticalAlignment="Bottom" d:LayoutOverrides="Height" Margin="37,0,0,7.338" Text="0" FontSize="24" FontFamily="./Fonts/Fonts.zip#7 Segment" d:IsStaticText="False" FontWeight="Bold" FontStyle="Normal" Foreground="#FFDBD257" Grid.Row="1" Width="77" HorizontalAlignment="Left"/>
+        <TextBox x:Name="_Console" VerticalScrollBarVisibility="Visible"  Text="Console" Foreground="Green" Grid.ColumnSpan="2" Grid.RowSpan="2"/>
+        <Image Height="25.338" HorizontalAlignment="Left" Margin="8,0,0,7.662" VerticalAlignment="Bottom" Width="25.338" Source="icon_in-game.png" Stretch="Fill" Grid.Row="1"/>
+        <local:TeamSelect x:Name="_TeamSelect" Margin="-319,-245,0,0" VerticalAlignment="Top" Height="480" Width="640" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="1" />
+        <local:ScoreBoard x:Name="_ScoreBoard" d:LayoutOverrides="Width, Height" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-399,-300,0,0" Grid.Row="1" Grid.Column="1"/>
+        <TextBlock x:Name="_CenterText" Foreground="#FFFEF000" FontSize="16" HorizontalAlignment="Right" VerticalAlignment="Bottom" d:LayoutOverrides="Width, Height" Margin="0,0,30,0.5"/>
+        <Canvas x:Name="_CursorCanvas" Grid.ColumnSpan="2" Grid.RowSpan="2"/>
+        <TextBlock Text="" TextWrapping="Wrap" Foreground="#FFD6C708" TextAlignment="Right" x:Name="_KillText" Margin="235,0,0,0" Grid.Column="1" VerticalAlignment="Top" Height="65"/>
+        <Rectangle Margin="0,175,-59,133" RenderTransformOrigin="0.525,2.609" Width="118" HorizontalAlignment="Right" d:LayoutOverrides="HorizontalAlignment" x:Name="_damageRectangle">
         	<Rectangle.RenderTransform>
         		<TransformGroup>
         			<ScaleTransform/>
@@ -46,14 +46,14 @@
         		</LinearGradientBrush>
         	</Rectangle.Fill>
         </Rectangle>
-        <TextBlock Height="32.338" HorizontalAlignment="Right" Margin="0,0,68,1" VerticalAlignment="Bottom" Width="46" FontFamily="./Fonts/Fonts.zip#7 Segment" FontSize="24" Text="0" TextWrapping="Wrap" Grid.Column="1" Grid.Row="1" d:LayoutOverrides="Height" Foreground="#FFFFE500" FontWeight="Bold" x:Name="_patrons" d:IsStaticText="False" d:IsHidden="True"/>
-        <TextBlock Height="32.338" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="46" FontFamily="./Fonts/Fonts.zip#7 Segment" FontSize="24" FontWeight="Bold" Foreground="#FFFFE500" Text="0" TextWrapping="Wrap" Grid.Column="1" Grid.Row="1" x:Name="_totalpatrons" d:IsHidden="True"/>
-        <Path Height="33" HorizontalAlignment="Right" Margin="0,0,63,-2" VerticalAlignment="Bottom" Width="1" Grid.Column="1" Grid.Row="1" Stretch="Fill" Stroke="#FFFFEA00" Data="M960,737 L960,769" d:IsHidden="True"/>
-        <TextBlock HorizontalAlignment="Right" Width="180" TextWrapping="Wrap" Foreground="#FFE3D600" FontSize="18" x:Name="_FPS" d:IsStaticText="False" VerticalAlignment="Top" Height="84" d:IsHidden="True"/>
-        <TextBlock Height="185" Margin="37,0,-228,-2" VerticalAlignment="Bottom" Text="" TextWrapping="Wrap" Grid.Row="1" x:Name="_ChatTextBlock" Foreground="#FFFFE500" d:IsHidden="True"/>
-        <local:ChatTextBox Height="42" Margin="0,0,81,0" VerticalAlignment="Top" x:Name="_ChatTextBox" d:IsHidden="True"/>
-        <local:EnterNick HorizontalAlignment="Left" VerticalAlignment="Bottom" d:LayoutOverrides="HorizontalAlignment, Height" Grid.Column="1" Margin="-192,0,0,-84" x:Name="_EnterNick" d:IsHidden="True"/>
-        <local:WelcomeScreen Name="_WelcomeScreen" Margin="-342,-210,100,105" Grid.Row="1" Grid.Column="1" d:IsHidden="True"/>
-        <TextBox Height="28" VerticalAlignment="Top" Text="version" TextWrapping="Wrap" Background="{x:Null}" Foreground="#FFFCFF00" BorderBrush="{x:Null}" SelectionForeground="{x:Null}" x:Name="version" Grid.ColumnSpan="2" SelectionBackground="{x:Null}" IsReadOnly="True"/>
+        <TextBlock Height="32.338" HorizontalAlignment="Right" Margin="0,0,68,1" VerticalAlignment="Bottom" Width="46" FontFamily="./Fonts/Fonts.zip#7 Segment" FontSize="24" Text="0" TextWrapping="Wrap" Grid.Column="1" Grid.Row="1" d:LayoutOverrides="Height" Foreground="#FFFFE500" FontWeight="Bold" x:Name="_patrons" d:IsStaticText="False"/>
+        <TextBlock Height="32.338" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="46" FontFamily="./Fonts/Fonts.zip#7 Segment" FontSize="24" FontWeight="Bold" Foreground="#FFFFE500" Text="0" TextWrapping="Wrap" Grid.Column="1" Grid.Row="1" x:Name="_totalpatrons"/>
+        <Path Height="33" HorizontalAlignment="Right" Margin="0,0,63,-2" VerticalAlignment="Bottom" Width="1" Grid.Column="1" Grid.Row="1" Stretch="Fill" Stroke="#FFFFEA00" Data="M960,737 L960,769"/>
+        <TextBlock HorizontalAlignment="Right" Width="180" TextWrapping="Wrap" Foreground="#FFE3D600" FontSize="18" x:Name="_FPS" d:IsStaticText="False" VerticalAlignment="Top" Height="84"/>
+        <TextBlock Height="185" Margin="37,0,-228,-2" VerticalAlignment="Bottom" Text="" TextWrapping="Wrap" Grid.Row="1" x:Name="_ChatTextBlock" Foreground="#FFFFE500"/>
+        <local:ChatTextBox Height="42" Margin="0,0,81,0" VerticalAlignment="Top" x:Name="_ChatTextBox"/>
+        <local:EnterNick HorizontalAlignment="Left" VerticalAlignment="Bottom" d:LayoutOverrides="HorizontalAlignment, Height" Grid.Column="1" Margin="-192,0,0,-84" x:Name="_EnterNick"/>
+        <local:WelcomeScreen Name="_WelcomeScreen" Margin="-342,-210,100,105" Grid.Row="1" Grid.Column="1"/>
+        <TextBlock Height="23" Margin="0,0,-26,0" VerticalAlignment="Top" Text="" TextWrapping="Wrap" x:Name="version"/>
     </Grid>
 </UserControl>

@@ -17,11 +17,5 @@
     <Setting Name="_ServerName" Type="System.String" Scope="User">
       <Value Profile="(Default)">Counter Strike Live Server</Value>
     </Setting>
-    <Setting Name="_EnableCache" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
-    <Setting Name="_EnableWebServer" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
   </Settings>
 </SettingsFile>

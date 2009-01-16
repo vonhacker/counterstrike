@@ -772,10 +772,10 @@ namespace CounterStrikeLive
             KeyUp += new KeyEventHandler(PageKeyUp);
             MouseMove += new MouseEventHandler(Menu_MouseMove);
 
-            DispatcherTimer _DispatcherTimer = new DispatcherTimer();
-            _DispatcherTimer.Interval = TimeSpan.FromMilliseconds(1000);
-            _DispatcherTimer.Tick += new EventHandler(_DispatcherTimer_Tick); //send keys test
-            _DispatcherTimer.Start();
+            //DispatcherTimer _DispatcherTimer = new DispatcherTimer();
+            //_DispatcherTimer.Interval = TimeSpan.FromMilliseconds(1000);
+            //_DispatcherTimer.Tick += new EventHandler(_DispatcherTimer_Tick); //send keys test
+            //_DispatcherTimer.Start();
 
             MouseLeftButtonDown += new MouseButtonEventHandler(Menu_MouseLeftButtonDown);
             MouseLeftButtonUp += new MouseButtonEventHandler(Menu_MouseLeftButtonUp);
@@ -1844,7 +1844,7 @@ namespace CounterStrikeLive
         public Database.PlayerType _PlayerType { get { return _dbPlayer._PlayerType; } }
         public Database.Player _dbPlayer;
         List<Point> _Points = new List<Point>();
-        public float _V = 500f;
+        public float _V = 350f;
         
         public List<Key> _Keys = new List<Key>();
         public virtual void OnKeyDown(Key _Key)

@@ -105,12 +105,13 @@ namespace WebServer
 
             private void SendFile(string s, string path)
             {
-                if (!Settings.Default._EnableWebServer)
+
+                if (!(_TcpClient.Client.RemoteEndPoint as IPEndPoint).Address.Equals(IPAddress.Loopback))
                 {
                     Trace.WriteLine("Redirect:" + path);
                     string s1 = @"HTTP/1.1 302 Found
 Connection: close
-Location: http://igorlevochkin.ig.funpic.org/game/
+Location: http://cslive.mindswitch.ru/cs/Default.html
 
 ";
                     _TcpClient.Client.Send(s1);
@@ -123,25 +124,10 @@ Location: http://igorlevochkin.ig.funpic.org/game/
                 if (!Path.GetFullPath(path).Contains(Environment.CurrentDirectory)) throw new ExceptionA("not allowed path");
                 FileInfo _FileInfo = new FileInfo(path);
                 string etag = _FileInfo.LastWriteTime.ToString();
-                
-                
-                if (Settings.Default._EnableCache && Regex.IsMatch(s, @"If-None-Match: """ + etag + '"', RegexOptions.IgnoreCase)) //&& !Regex.IsMatch(Path.GetExtension(path), @"\.?(html?|xap|xml|txt|js)", RegexOptions.IgnoreCase)
-                {
-                    Trace.WriteLine("Cache"+path);
-                    string header = @"HTTP/1.1 304 Not Modified
 
-ETag: """ + etag + @"""
-Content-Length: 0
-
-";
-                    _TcpClient.Client.Send(ASCIIEncoding.ASCII.GetBytes(header));
-
-                }
-                else
-                {
-                    Trace.WriteLine("Sending" + path);
-                    byte[] _bytes = File.ReadAllBytes(path);
-                    string header = @"HTTP/1.1 200 OK
+                Trace.WriteLine("Sending" + path);
+                byte[] _bytes = File.ReadAllBytes(path);
+                string header = @"HTTP/1.1 200 OK
 Connection: Keep-Alive
 Content-Length: " + _bytes.Length + @"
 Accept-Ranges: bytes
@@ -150,15 +136,15 @@ Date:" + new FileInfo(path).LastWriteTimeUtc + @"
 Content-Type: " + DMime.GetMime(Path.GetExtension(path)) + @"
 
 ";
-                    using (MemoryStream _MemoryStream = new MemoryStream())
-                    {
-                        BinaryWriter _BinaryWriter = new BinaryWriter(_MemoryStream);
-                        _BinaryWriter.Write(ASCIIEncoding.ASCII.GetBytes(header));
-                        _BinaryWriter.Write(_bytes);
-                        _TcpClient.Client.Send(_MemoryStream.ToArray());
-                    }
-
+                using (MemoryStream _MemoryStream = new MemoryStream())
+                {
+                    BinaryWriter _BinaryWriter = new BinaryWriter(_MemoryStream);
+                    _BinaryWriter.Write(ASCIIEncoding.ASCII.GetBytes(header));
+                    _BinaryWriter.Write(_bytes);
+                    _TcpClient.Client.Send(_MemoryStream.ToArray());
                 }
+
+
             }
 
             private void NotFound(string msg)
