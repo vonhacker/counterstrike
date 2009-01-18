@@ -831,7 +831,7 @@ public class MemoryStreamA : MemoryStream
         }
         public void Flush()
         {
-            File.WriteAllLines(file, this.ToArray());
+            File.WriteAllLines(file, this.ToArray(),Encoding.Default);
         }
     }
     public class ListB<T> : List<T>
