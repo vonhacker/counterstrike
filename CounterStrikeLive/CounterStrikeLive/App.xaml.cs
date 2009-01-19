@@ -14,10 +14,10 @@ using System.Threading;
 
 namespace CounterStrikeLive
 {
-    public partial class App : Application
+    public partial class Application : System.Windows.Application
     {
 
-        public App()
+        public Application()
         {            
             this.Startup += this.Application_Startup;
             this.Exit += this.Application_Exit;
