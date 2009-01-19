@@ -622,7 +622,7 @@ namespace CounterStrikeLive
             _EnterNick._Menu = this;
             _Console.Hide();            
 
-            Match _Match = Regex.Match(App.Current.Host.Source.Query, @"&ip=([\d\.]+)");
+            Match _Match = Regex.Match(Application.Current.Host.Source.Query, @"&ip=([\d\.]+)");
             if (_Match.Success)
             {
                 host = _Match.Groups[1].Value;

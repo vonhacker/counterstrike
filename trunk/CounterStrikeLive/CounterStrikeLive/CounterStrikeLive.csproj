@@ -18,7 +18,7 @@
     <GenerateSilverlightManifest>true</GenerateSilverlightManifest>
     <XapFilename>CounterStrikeLive.xap</XapFilename>
     <SilverlightManifestTemplate>Properties\AppManifest.xml</SilverlightManifestTemplate>
-    <SilverlightAppEntry>CounterStrikeLive.App</SilverlightAppEntry>
+    <SilverlightAppEntry>CounterStrikeLive.Application</SilverlightAppEntry>
     <TestPageFileName>TestPage.html</TestPageFileName>
     <CreateTestPage>true</CreateTestPage>
     <ValidateXaml>true</ValidateXaml>
@@ -79,7 +79,10 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Common\Application.cs" />
     <Compile Include="Database.cs" />
+    <Compile Include="ServiceClient\Providers\SocketsProvider.cs" />
+    <Compile Include="ServiceClient\ServiceClientProvider.cs" />
     <Compile Include="SVHelper.cs" />
     <Compile Include="Mathematics\BilinearInterpolator.cs" />
     <Compile Include="Mathematics\Calculator.cs" />
@@ -451,6 +454,11 @@
     <Content Include="db.xml" />
     <Resource Include="icon_in-game.png" />
     <None Include="SubsetFontTask.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Common\ApplicationParts\" />
+    <Folder Include="ServiceClient\Entities\" />
+    <Folder Include="ServiceClient\Events\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v2.0\Microsoft.Silverlight.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
