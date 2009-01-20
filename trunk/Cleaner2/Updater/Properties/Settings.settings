@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Updater.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="_webpath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://counterstrike.googlecode.com/svn/trunk/Cleaner2/Cleaner2/cslive.zip</Value>
+    </Setting>
+    <Setting Name="_processPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Server/bin/Debug/Server.exe</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
