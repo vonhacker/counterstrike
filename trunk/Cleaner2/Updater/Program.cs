@@ -43,36 +43,43 @@ namespace Updater
             Uri _Uri = new Uri(Settings._webpath);
             DateTime _OldDateTime = DateTime.MinValue;
             public void Start()
-            {                
-                if (File.Exists(Settings._processPath)) _Process = Helper.StartProcess(Settings._processPath);
+            {
+
+
                 while (true)
-                {                    
-                    TcpClient _TcpClient = new TcpClient(_Uri.Host, 80);
-                    Socket _Socket = _TcpClient.Client;
-                    _Socket.Send(Res.downloadupdate);
-                    NetworkStream _NetworkStream = new NetworkStream(_Socket);
-                    string s = _NetworkStream.Cut("\r\n\r\n").ToStr();
-                    _Socket.Close();
-                    Match m = Regex.Match(s, @"Last-Modified\:(.+)");
-                    int len = int.Parse(Regex.Match(s, @"Content-Length\: (\d+)").Groups[1].Value);
-                    DateTime _DateTime = DateTime.Parse(m.Groups[1].Value);
-                    
-                    if (_DateTime != _OldDateTime)
+                {
+                    try
                     {
-                        Trace.WriteLine("updating");
-                        if(File.Exists("cslive.zip")) File.Delete("cslive.zip");
-                        new WebClient().DownloadFile(_Uri.ToString(), "cslive.zip"); ;                        
-                        _Zip.OpenZip("cslive.zip");
-                        Kill();
-                        Thread.Sleep(1000);
-                        _Zip.ExtractNewer("./");                        
-                        _Process = Helper.StartProcess(Settings._processPath);                        
-                        _OldDateTime = _DateTime;
-                        Trace.WriteLine("updated");
+                        TcpClient _TcpClient = new TcpClient(_Uri.Host, 80);
+                        Socket _Socket = _TcpClient.Client;
+                        _Socket.Send(Res.downloadupdate);
+                        NetworkStream _NetworkStream = new NetworkStream(_Socket);
+                        string s = _NetworkStream.Cut("\r\n\r\n").ToStr();
+                        _Socket.Close();
+                        Match m = Regex.Match(s, @"Last-Modified\:(.+)");
+                        int len = int.Parse(Regex.Match(s, @"Content-Length\: (\d+)").Groups[1].Value);
+                        DateTime _DateTime = DateTime.Parse(m.Groups[1].Value);
+                        if (_DateTime != _OldDateTime)
+                        {
+                            Trace.WriteLine("downloading "+ len /1000 +" KBytes");
+                            if (File.Exists("cslive.zip")) File.Delete("cslive.zip");
+                            new WebClient().DownloadFile(_Uri.ToString(), "cslive.zip"); ;
+                            _Zip.OpenZip("cslive.zip");
+                            Kill();
+                            Thread.Sleep(1000);
+                            _Zip.ExtractNewer("./");
+                            _Process = Helper.StartProcess(Settings._processPath);
+                            _OldDateTime = _DateTime;
+                            Trace.WriteLine("updated");
+                        }
+
+                        Thread.Sleep(TimeSpan.FromDays(.5));
                     }
-                    
-                    Thread.Sleep(TimeSpan.FromDays(1));
+                    catch (IOException e) { e.Trace(); }
+                    catch (SocketException e) { e.Trace(); }
+                    Thread.Sleep(10000);
                 }
+                
             }
             Process _Process;
         }        
