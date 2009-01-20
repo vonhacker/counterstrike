@@ -15,12 +15,12 @@ using System.Runtime.InteropServices;
 using System.Xml.Serialization;
 using System.Reflection;
 using System.Collections;
-using System.Xml.Schema;
 
 namespace doru
 {
     public class ExceptionB : Exception
     {
+
         public ExceptionB(string s) : base(s) { }
     }
     [XmlRoot("dictionary")]
@@ -141,39 +141,19 @@ namespace doru
 
         #endregion
 
-    }    
+    }
+
+    
+
     
     public class ExceptionA : Exception { public ExceptionA(string s) : base(s) { } public ExceptionA() { } };
     public partial class Helper
     {
-        public static XmlSerializer CreateSchema(string name, params Type[] types)
+        public static Process StartProcess(string s)
         {
-            name = name + ".xsd";
-            string SchemasPath = Path.GetFullPath(Environment.GetEnvironmentVariable("VS90COMNTOOLS") + "../../Xml/Schemas");
-            XmlReflectionImporter _XmlReflectionImporter = new XmlReflectionImporter(name);
-            XmlSchemas _XmlSchemas = new XmlSchemas();
-            
-            XmlSchemaExporter _XmlSchemaExporter = new XmlSchemaExporter(_XmlSchemas);
-            List<Type> xtratypes = new List<Type>();
-            for (int i = 1; i < types.Length; i++)
-            {
-                _XmlReflectionImporter.IncludeType(types[i]);
-                xtratypes.Add(types[i]);
-            }
-            XmlTypeMapping map = _XmlReflectionImporter.ImportTypeMapping(types[0]);
-            _XmlSchemaExporter.ExportTypeMapping(map);
-            
-            
-            using (StringWriter fs = new StringWriter())
-            {
-                _XmlSchemas[0].Write(fs);
-                string s = fs.ToString();
-                s = Regex.Replace(s.Replace("xs:sequence", "xs:all"), @"minOccurs=""\w+?"" maxOccurs=""\w+?""", "minOccurs=\"0\"");
-                s = s.Replace("\"utf-16\"", "\"utf-8\"");                                
-                File.WriteAllText(SchemasPath + "/" + name, s,Encoding.UTF8);
-            }
-            XmlSerializer _XmlSerializer = new XmlSerializer(types[0], new XmlAttributeOverrides(), xtratypes.ToArray(), new XmlRootAttribute(), name);
-            return _XmlSerializer;
+            ProcessStartInfo _ProcessStartInfo = new ProcessStartInfo(Path.GetFullPath(s));
+            _ProcessStartInfo.WorkingDirectory = Path.GetDirectoryName(s);
+            return Process.Start(_ProcessStartInfo);
         }
 
         public static List<string> RemoveDuplicates(List<string> inputList)
@@ -894,7 +874,20 @@ public class MemoryStreamA : MemoryStream
     }
     public partial class Helper
     {
-        
+        public static void GenerateXsd(Type _type, Type[] _types, string filename)
+        {
+            XmlReflectionImporter _XmlReflectionImporter = new XmlReflectionImporter();
+            XmlSchemas _XmlSchemas = new XmlSchemas();
+
+            XmlSchemaExporter _XmlSchemaExporter = new XmlSchemaExporter(_XmlSchemas);
+            foreach (Type _Type in _types)
+                _XmlReflectionImporter.IncludeType(_Type);
+
+            _XmlSchemaExporter.ExportTypeMapping(_XmlReflectionImporter.ImportTypeMapping(_type));
+
+            using (FileStream _FileStream = new FileStream(filename, FileMode.Create, FileAccess.Write))
+                _XmlSchemas[0].Write(_FileStream);
+        }
     }
     public class ClientWait
     {
@@ -1308,6 +1301,11 @@ public class MemoryStreamA : MemoryStream
         public static void Setup() { Setup("../../"); }
         public static bool _supsend;
         public static bool LogToConsole=true;
+        public static IEnumerable<Process> FindProcess(string s)
+        {
+            IEnumerable<Process> ps = (from p in Process.GetProcesses() where p.ProcessName == s select p);
+            return ps;
+        }
         public static void Setup(string s)
         {                              
             if (done == true) return;
@@ -1315,7 +1313,7 @@ public class MemoryStreamA : MemoryStream
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
             
             Process _Process = Process.GetCurrentProcess();
-            if ((from p in Process.GetProcesses() where p.ProcessName == _Process.ProcessName select p).Count() > 1)
+            if (FindProcess(_Process.ProcessName).Count() > 1)
             {
                 Console.Beep(100,100);
                 _Process.Kill();
@@ -1459,27 +1457,3 @@ public class MemoryStreamA : MemoryStream
 
 
 }
-//foreach (XmlSchema _XmlSchema in _XmlSchemas)
-//    foreach (XmlSchemaObject _XmlSchemaObject in _XmlSchema.Items)
-//    {                    
-//        if (_XmlSchemaObject is XmlSchemaElement)
-//        {
-//            XmlSchemaElement _XmlSchemaElement = (XmlSchemaElement)_XmlSchemaObject;
-
-//        }
-
-//        if (_XmlSchemaObject is XmlSchemaComplexType)
-//        {
-//            XmlSchemaComplexType _XmlSchemaComplexType = (XmlSchemaComplexType)_XmlSchemaObject;
-//            if (_XmlSchemaComplexType.Particle is XmlSchemaSequence)
-//            {
-//                XmlSchemaSequence _XmlSchemaSequence = (XmlSchemaSequence)_XmlSchemaComplexType.Particle;
-//                Debugger.Break();
-//            }
-//        }
-//        if (_XmlSchemaObject is XmlSchemaAll)
-//        {
-
-//        }
-
-//    }
