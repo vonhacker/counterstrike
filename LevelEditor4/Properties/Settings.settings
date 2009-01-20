@@ -1,0 +1,9 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="LevelEditor4.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="FilePath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">D:\Documents and Settings\doru\Desktop\CounterStrikeLive\CounterStrikeLive\Content\map.xml</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
