@@ -21,8 +21,7 @@ namespace CounterStrikeLive.ServiceClient
 
         private Socket socket;
         private DnsEndPoint endPoint;
-        private Dispatcher _owner;
-        private TextBlock UIElement;
+        private Dispatcher _owner;        
         private bool Initialized = false;
         private object initData = null;
 
@@ -36,8 +35,8 @@ namespace CounterStrikeLive.ServiceClient
 
         public SocketsProvider(string host, int port)
         {
-            UIElement = new TextBlock();
-            _owner = UIElement.Dispatcher;
+            
+            //_owner = UIElement.Dispatcher;
             endPoint = new DnsEndPoint(host, port, AddressFamily.InterNetwork);
             MessagesToProcess = new List<string>();
             stream = new MemoryStream();
