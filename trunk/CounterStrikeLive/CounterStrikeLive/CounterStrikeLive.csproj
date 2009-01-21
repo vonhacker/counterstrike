@@ -79,7 +79,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Common\Application.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="ServiceClient\Providers\SocketsProvider.cs" />
     <Compile Include="ServiceClient\ServiceClientProvider.cs" />
@@ -456,7 +455,6 @@
     <None Include="SubsetFontTask.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Common\ApplicationParts\" />
     <Folder Include="ServiceClient\Entities\" />
     <Folder Include="ServiceClient\Events\" />
   </ItemGroup>
