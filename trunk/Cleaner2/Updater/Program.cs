@@ -52,13 +52,13 @@ namespace Updater
                     {
                         TcpClient _TcpClient = new TcpClient(_Uri.Host, 80);
                         Socket _Socket = _TcpClient.Client;
-                        _Socket.Send(Res.downloadupdate);
+                        
+                        _Socket.Send(String.Format(Res.downloadupdate,_Uri.AbsolutePath,_Uri.Host));
                         NetworkStream _NetworkStream = new NetworkStream(_Socket);
                         string s = _NetworkStream.Cut("\r\n\r\n").ToStr();
                         _Socket.Close();
-                        Match m = Regex.Match(s, @"Last-Modified\:(.+)");
+                        Match m = Regex.Match(s, @"(?:Last-Modified)|(?:Date)\:(.+)");
                         int len = int.Parse(Regex.Match(s, @"Content-Length\: (\d+)").Groups[1].Value);
-                        if (len == 0) throw new Exception("File Length is zero");
                         DateTime _DateTime = DateTime.Parse(m.Groups[1].Value);
                         if (_DateTime != _OldDateTime)
                         {
@@ -74,7 +74,7 @@ namespace Updater
                             Trace.WriteLine("updated");
                         }
 
-                        Thread.Sleep(TimeSpan.FromHours(5));
+                        Thread.Sleep(Settings._interval);
                     }
                     catch (IOException e) { e.Trace(); }
                     catch (SocketException e) { e.Trace(); }

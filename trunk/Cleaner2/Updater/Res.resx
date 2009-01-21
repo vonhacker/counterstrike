@@ -118,9 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="downloadupdate" xml:space="preserve">
-    <value>GET /svn/trunk/Cleaner2/Cleaner2/cslive.zip HTTP/1.1
+    <value>GET {0} HTTP/1.1
 User-Agent: Opera/9.63 (Windows NT 5.1; U; en) Presto/2.1.1
-Host: counterstrike.googlecode.com
+Host: {1}
 Accept: text/html, application/xml;q=0.9, application/xhtml+xml, image/png, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1
 Accept-Language: ru,en;q=0.9,fi-FI;q=0.8,fi;q=0.7
 Accept-Charset: iso-8859-1, utf-8, utf-16, *;q=0.1

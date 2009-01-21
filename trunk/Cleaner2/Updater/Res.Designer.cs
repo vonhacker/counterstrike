@@ -61,14 +61,16 @@ namespace Updater {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to GET /svn/trunk/Cleaner2/Cleaner2/cslive.zip HTTP/1.1
+        ///   Looks up a localized string similar to GET {0} HTTP/1.1
         ///User-Agent: Opera/9.63 (Windows NT 5.1; U; en) Presto/2.1.1
-        ///Host: counterstrike.googlecode.com
+        ///Host: {1}
         ///Accept: text/html, application/xml;q=0.9, application/xhtml+xml, image/png, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1
         ///Accept-Language: ru,en;q=0.9,fi-FI;q=0.8,fi;q=0.7
         ///Accept-Charset: iso-8859-1, utf-8, utf-16, *;q=0.1
         ///Accept-Encoding: deflate, gzip, x-gzip, identity, *;q=0
-        ///Referer: http://counterstrike.googlecode.com/svn/trunk/Cleaner2/Cleaner2/        /// [rest of string was truncated]&quot;;.
+        ///Referer: http://counterstrike.googlecode.com/svn/trunk/Cleaner2/Cleaner2/
+        ///Connection: Keep-Alive, TE
+        ///TE: deflate, gzip, chunked, iden [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string downloadupdate {
             get {

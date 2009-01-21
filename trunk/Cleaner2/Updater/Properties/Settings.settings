@@ -3,10 +3,13 @@
   <Profiles />
   <Settings>
     <Setting Name="_webpath" Type="System.String" Scope="User">
-      <Value Profile="(Default)">http://counterstrike.googlecode.com/svn/trunk/Cleaner2/Cleaner2/cslive.zip</Value>
+      <Value Profile="(Default)">http://counterstrike.googlecode.com/files/cslive.zip</Value>
     </Setting>
     <Setting Name="_processPath" Type="System.String" Scope="User">
       <Value Profile="(Default)">Server/bin/Debug/Server.exe</Value>
+    </Setting>
+    <Setting Name="_interval" Type="System.TimeSpan" Scope="User">
+      <Value Profile="(Default)">01:00:00</Value>
     </Setting>
   </Settings>
 </SettingsFile>
