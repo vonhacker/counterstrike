@@ -25,10 +25,8 @@ namespace doru
         public ExceptionB(string s) : base(s) { }
     }
     [XmlRoot("dictionary")]
-
     public class SerializableDictionary<TKey, TValue> : Dictionary<TKey, TValue>, IXmlSerializable
     {
-
         #region IXmlSerializable Members
 
         public System.Xml.Schema.XmlSchema GetSchema()
@@ -141,11 +139,7 @@ namespace doru
         }
 
         #endregion
-
-    }
-
-    
-
+    }    
     
     public class ExceptionA : Exception { public ExceptionA(string s) : base(s) { } public ExceptionA() { } };
     public partial class Helper
