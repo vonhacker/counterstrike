@@ -41,7 +41,7 @@ namespace WebServer
                 Update();
             }
         }
-        Uri _Uri = new Uri("http://igorlevochkin.ig.funpic.org/cs/serv.php");
+        Uri _Uri = new Uri("http://cslive.mindswitch.ru/cs/serv.php");
         private void Update()
         {
 
