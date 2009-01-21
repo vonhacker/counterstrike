@@ -1,2 +1,3 @@
-bin/Debug/Updater.exe
+cd bin/Debug/
+Updater.exe
 pause

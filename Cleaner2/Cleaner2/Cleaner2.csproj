@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="cslive.zip" />
+    <None Include="updater.zip" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Helper\Helper\Helper.csproj">
