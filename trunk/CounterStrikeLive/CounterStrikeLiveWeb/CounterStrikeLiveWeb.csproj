@@ -58,7 +58,6 @@
   <ItemGroup>
     <Content Include="CounterStrikeLiveTestPage.aspx" />
     <Content Include="CounterStrikeLiveTestPage.html" />
-    <Content Include="Default.html" />
     <Content Include="Helper.sln" />
     <Content Include="Silverlight.js" />
     <Content Include="Web.config" />
