@@ -35,8 +35,7 @@ namespace CounterStrikeLive
     {
         public static int id = 99;
         public static void WriteLine(object obj)
-        {
-
+        {            
             WriteLine(obj.ToString());
         }
         public static void WriteLine(string obj)
@@ -2266,7 +2265,7 @@ namespace CounterStrikeLive
         {
             Trace.WriteLine("download Started");
             WebClient _WebClient = new WebClient();
-            _WebClient.DownloadStringAsync(new Uri("http://igorlevochkin.ig.funpic.org/cs/serv.php?r="+Random.Next(99999), UriKind.Absolute));
+            _WebClient.DownloadStringAsync(new Uri("http://cslive.mindswitch.ru/cs/serv.php?r=" + Random.Next(99999), UriKind.Absolute));
             _WebClient.DownloadStringCompleted += new DownloadStringCompletedEventHandler(WebClientDownloadStringCompleted);
         }
     }
