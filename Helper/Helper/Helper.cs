@@ -1380,7 +1380,7 @@ public class MemoryStreamA : MemoryStream
             Process _Process = Process.GetCurrentProcess();
             if (FindProcess(_Process.ProcessName).Count() > 1)
             {
-                Console.Beep(100,100);
+                Console.Beep(100,10);
                 _Process.Kill();
             }
             Directory.SetCurrentDirectory(s);
@@ -1399,7 +1399,7 @@ public class MemoryStreamA : MemoryStream
         {
             Trace.WriteLine(e.ExceptionObject);
             if (Console.LargestWindowHeight != 0 && Beep)
-                Console.Beep(100, 100);
+                Console.Beep(100, 10);
         }
         
     }
