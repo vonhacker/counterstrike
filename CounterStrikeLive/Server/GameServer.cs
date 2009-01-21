@@ -132,18 +132,18 @@ name={0}&map={1}&version={2}&port={3}&players={4}";
                     post = String.Format(post, _ServerName, _Map, Assembly.GetExecutingAssembly().GetName().Version,
                         _WebPort.ToString(), clientcount.ToString());
                     int len = post.IndexOf("\r\n\r\n") + 4;
-                    if (len == 0) Debugger.Break();
-                    post = post.Replace("_length_", len.ToString());
-
-
+                    if (len == 0) Debugger.Break();                    
+                    Http.Length(ref post);
                     TcpClient _TcpClient = new TcpClient("cslive.mindswitch.ru", 80);
+                    Socket _Socket = _TcpClient.Client;
                     _TcpClient.Client.Send(post);
-                    Http.ReadHttp(_TcpClient.Client).Save();
+                    string s=_Socket.Receive().ToStr();;
+                    //Http.ReadHttp(_TcpClient.Client).Save();
                     Thread.Sleep(200);
                     _TcpClient.Close();
                     
                 }
-                catch (SocketException e) { Trace.WriteLine("phpSender:" + e.Message); }
+                catch (EndOfStreamException e) { Trace.WriteLine("phpSender:" + e.Message); }
                 Thread.Sleep(10000);
             }
         }
