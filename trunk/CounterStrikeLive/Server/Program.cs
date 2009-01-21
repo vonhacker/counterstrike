@@ -14,16 +14,16 @@ using Server.Properties;
 using doru;
 
 namespace Server
-{		
+{
     internal class Program
-    {	
+    {
         private static void Main()
-		{
-            Spammer3.Setup("../../../");                                                
-			new Program();
+        {
+            Spammer3.Setup("../../../");
+            new Program();
         }
-		public Program()
-		{
+        public Program()
+        {
             PolicyServer.PolicyServer ps = new PolicyServer.PolicyServer { policyFile = "Server/PolicyFile.xml" };
 
             ps.StartAsync();
@@ -31,15 +31,15 @@ namespace Server
             GameServer.Server _Server = new GameServer.Server();
             _Server.StartAsync();
 
-			WebServer.WebServer _WebServer = new WebServer.WebServer();			
-			_WebServer.StartAsync();
+            WebServer.WebServer _WebServer = new WebServer.WebServer();
+            _WebServer.StartAsync();
 
             while (true)
             {
                 string s = Console.ReadLine();
                 _Server._Console.Add(s);
             }
-		}
+        }
     }
-    
+
 }
