@@ -45,6 +45,7 @@ namespace Cleaner2
 
         private void Move(string _directorya, string _directoryb,string _pattern,string _pattern2)
         {
+            
             if (Path.GetExtension(_directoryb) == ".zip")
             {
                 gz = true;
