@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cleaner2", "Cleaner2\Cleaner2.csproj", "{D2B571A0-218D-4798-874B-AD8204125C27}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helper", "..\Helper.sln\Helper\Helper.csproj", "{4DE8D8C1-6F75-42AD-AA46-BD35BB71352A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helper", "..\Helper\Helper\Helper.csproj", "{4DE8D8C1-6F75-42AD-AA46-BD35BB71352A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Updater", "Updater\Updater.csproj", "{6311D364-0403-4DE9-914B-0A53391DD1EB}"
 EndProject
