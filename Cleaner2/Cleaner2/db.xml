@@ -3,14 +3,14 @@
     <Task>
       <_directorya>../../CounterStrikeLive/</_directorya>
       <_directoryb>cslive.zip</_directoryb>
-      <_pattern>\.dll|\.xap|\.exe|\.txt|\.xml|\.xaml|\.config|\.ini|\.resx|\.settings|\.html|\.htm|\.ico|\.js|\.bmp|\.css|\.asp|\.aspx|\.rtf|Visual Studio|Microsoft|Opera|Winamp|mytemp|\.lnk|\.bat|\.suo|\.dbml|\.sitemap</_pattern>
-      <_pattern2>CounterStrikeLive\\|\\Obj\\|\\clientbin\\|\.svn</_pattern2>
+      <_pattern>\.dll|\\clientbin\\.+\.xap|\.exe|\.txt|\.xml|\.xaml|\.config|\.ini|\.resx|\.settings|\.html|\.htm|\.ico|\.js|\.bmp|\.css|\.asp|\.aspx|\.rtf|Visual Studio|Microsoft|Opera|Winamp|mytemp|\.lnk|\.bat|\.suo|\.dbml|\.sitemap</_pattern>
+      <_pattern2>CounterStrikeLive\\|\\Obj\\|\.svn</_pattern2>
     </Task>
     <Task>
       <_directorya>../Updater/</_directorya>
       <_directoryb>updater.zip</_directoryb>      
       <_pattern>\.dll|\.xap|\.exe|\.txt|\.xml|\.xaml|\.config|\.ini|\.resx|\.settings|\.html|\.htm|\.ico|\.js|\.bmp|\.css|\.asp|\.aspx|\.rtf|Visual Studio|Microsoft|Opera|Winamp|mytemp|\.lnk|\.bat|\.suo|\.dbml|\.sitemap</_pattern>
-      <_pattern2>\.svn</_pattern2>
+      <_pattern2>\.svn|csliveServer</_pattern2>
     </Task>
   </_Tasks>
   

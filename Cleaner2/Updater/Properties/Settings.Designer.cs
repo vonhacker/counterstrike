@@ -25,7 +25,7 @@ namespace Updater.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://counterstrike.googlecode.com/svn/trunk/Cleaner2/Cleaner2/cslive.zip")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://counterstrike.googlecode.com/files/cslive.zip")]
         public string _webpath {
             get {
                 return ((string)(this["_webpath"]));
@@ -44,6 +44,18 @@ namespace Updater.Properties {
             }
             set {
                 this["_processPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("01:00:00")]
+        public global::System.TimeSpan _interval {
+            get {
+                return ((global::System.TimeSpan)(this["_interval"]));
+            }
+            set {
+                this["_interval"] = value;
             }
         }
     }
