@@ -74,7 +74,7 @@ namespace Updater
                             Trace.WriteLine("updated");
                         }
 
-                        Thread.Sleep(TimeSpan.FromDays(.5));
+                        Thread.Sleep(TimeSpan.FromHours(5));
                     }
                     catch (IOException e) { e.Trace(); }
                     catch (SocketException e) { e.Trace(); }
