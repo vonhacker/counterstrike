@@ -9,19 +9,20 @@ using System.Threading;
 using System.Net;
 using System.Diagnostics;
 using System.IO;
+using ICSharpCode.SharpZipLib.Zip;
 
 namespace Updater
 {
     class Program
     {
-        static Chilkat.Zip _Zip;
+        static FastZip _Zip;
         static void Main(string[] args)
         {
             
-            Spammer3.Setup("../../csliveServer");            
+            Spammer3.Setup("../../csliveServer");
 
-            _Zip = new Chilkat.Zip();
-            if (!_Zip.UnlockComponent("30-day trial")) throw new Exception("chilcat");
+            _Zip = new FastZip();
+            //if (!_Zip.UnlockComponent("30-day trial")) throw new Exception("chilcat");
             new Program();
         }
 
@@ -44,8 +45,8 @@ namespace Updater
             DateTime _OldDateTime = DateTime.MinValue;
             public void Start()
             {
-
-
+                
+                
                 while (true)
                 {
                     try
@@ -55,20 +56,20 @@ namespace Updater
                         
                         _Socket.Send(String.Format(Res.downloadupdate,_Uri.AbsolutePath,_Uri.Host));
                         NetworkStream _NetworkStream = new NetworkStream(_Socket);
-                        string s = _NetworkStream.Cut("\r\n\r\n").ToStr();
+                        string s = _NetworkStream.Cut("\r\n\r\n").ToStr().Trace();
                         _Socket.Close();
-                        Match m = Regex.Match(s, @"(?:Last-Modified)|(?:Date)\:(.+)");
+                        Match m = Regex.Match(s, @"(?:Last-Modified)|(?:Date)\:(.+)").Trace();
+                        
                         int len = int.Parse(Regex.Match(s, @"Content-Length\: (\d+)").Groups[1].Value);
                         DateTime _DateTime = DateTime.Parse(m.Groups[1].Value);
                         if (_DateTime != _OldDateTime)
                         {
                             Trace.WriteLine("downloading "+ len /1000 +" KBytes");
                             if (File.Exists("cslive.zip")) File.Delete("cslive.zip");
-                            new WebClient().DownloadFile(_Uri.ToString(), "cslive.zip"); ;
-                            _Zip.OpenZip("cslive.zip");
+                            new WebClient().DownloadFile(_Uri.ToString(), "cslive.zip"); ;                            
                             Kill();
-                            Thread.Sleep(1000);
-                            _Zip.ExtractNewer("./");
+                            _Zip.ExtractZip("cslive.zip", "./", "");
+                            Thread.Sleep(1000);                            
                             _Process = Helper.StartProcess(Settings._processPath);
                             _OldDateTime = _DateTime;
                             Trace.WriteLine("updated");
@@ -78,6 +79,9 @@ namespace Updater
                     }
                     catch (IOException e) { e.Trace(); }
                     catch (SocketException e) { e.Trace(); }
+                    
+
+                    Debugger.Break();
                     Thread.Sleep(10000);
                 }
                 
