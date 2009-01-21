@@ -150,12 +150,7 @@ namespace doru
     public class ExceptionA : Exception { public ExceptionA(string s) : base(s) { } public ExceptionA() { } };
     public partial class Helper
     {
-        public static Process StartProcess(string s)
-        {
-            ProcessStartInfo _ProcessStartInfo = new ProcessStartInfo(Path.GetFullPath(s));
-            _ProcessStartInfo.WorkingDirectory = Path.GetDirectoryName(s);
-            return Process.Start(_ProcessStartInfo);
-        }
+        
         public static XmlSerializer CreateSchema(string name, params Type[] types)
         {
             name = name + ".xsd";
@@ -939,6 +934,12 @@ public class MemoryStreamA : MemoryStream
     }
     public partial class Helper
     {
+        public static Process StartProcess(string s)
+        {
+            ProcessStartInfo _ProcessStartInfo = new ProcessStartInfo(Path.GetFullPath(s));
+            _ProcessStartInfo.WorkingDirectory = Path.GetDirectoryName(s);
+            return Process.Start(_ProcessStartInfo);
+        }
         public static void GenerateXsd(Type _type, Type[] _types, string filename)
         {
             XmlReflectionImporter _XmlReflectionImporter = new XmlReflectionImporter();
