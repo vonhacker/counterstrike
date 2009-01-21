@@ -56,7 +56,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ClientBin\CounterStrikeLive.xap" />
-    <Content Include="CounterStrikeLive.xap" />
     <Content Include="CounterStrikeLiveTestPage.aspx" />
     <Content Include="CounterStrikeLiveTestPage.html" />
     <Content Include="Default.html" />
