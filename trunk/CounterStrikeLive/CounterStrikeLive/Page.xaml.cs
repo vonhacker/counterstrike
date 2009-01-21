@@ -607,9 +607,9 @@ namespace CounterStrikeLive
             KeyDown += new KeyEventHandler(Menu_KeyDown);
 
             ((Storyboard)Resources["DamageStoryboard"]).Begin();
-            Application.Current.Host.Content.Resized += new EventHandler(Content_Resized);
-            Application.Current.Host.Content.FullScreenChanged += new EventHandler(Content_FullScreenChanged);
-            if (Application.Current.Host.Source.DnsSafeHost.Length == 0) throw new Exception("Break");
+            App.Current.Host.Content.Resized += new EventHandler(Content_Resized);
+            App.Current.Host.Content.FullScreenChanged += new EventHandler(Content_FullScreenChanged);
+            if (App.Current.Host.Source.DnsSafeHost.Length == 0) throw new Exception("Break");
             _ChatTextBox._Menu = this;
             _ChatTextBox.Load();
             _ScoreBoard.Hide();
@@ -621,7 +621,7 @@ namespace CounterStrikeLive
             _EnterNick._Menu = this;
             _Console.Hide();            
 
-            Match _Match = Regex.Match(Application.Current.Host.Source.Query, @"&ip=([\d\.]+)");
+            Match _Match = Regex.Match(App.Current.Host.Source.Query, @"&ip=([\d\.]+)");
             if (_Match.Success)
             {
                 host = _Match.Groups[1].Value;
@@ -660,7 +660,7 @@ namespace CounterStrikeLive
         public void LoadDb()
         {			
             WriteCenterText("Loading");            
-            Application.Current.Exit += new EventHandler(Current_Exit);
+            App.Current.Exit += new EventHandler(Current_Exit);
             _Console.Show();
             _TeamSelect._SpectatorButton.Click += new RoutedEventHandler(SpectatorButton_Click);
             _TeamSelect._CTerroritsButton.Click += new RoutedEventHandler(CTerroritsButton_Click);
@@ -668,7 +668,7 @@ namespace CounterStrikeLive
             _TeamSelect._AutoSelectButton.Click += new RoutedEventHandler(AutoSelectButton_Click);
             Content_Resized(null, null);
 
-            Stream _Stream = Application.GetResourceStream(new Uri("db.xml", UriKind.Relative)).Stream;
+            Stream _Stream = App.GetResourceStream(new Uri("db.xml", UriKind.Relative)).Stream;
             XmlSerializer _XmlSerializer = new XmlSerializer(typeof(Database));
             _Database = (Database)_XmlSerializer.Deserialize(_Stream);
 
@@ -699,8 +699,8 @@ namespace CounterStrikeLive
 
         void Content_Resized(object sender, EventArgs e)
         {
-            _RootLayout.Width = Application.Current.Host.Content.ActualWidth;
-            _RootLayout.Height = Application.Current.Host.Content.ActualHeight;
+            _RootLayout.Width = App.Current.Host.Content.ActualWidth;
+            _RootLayout.Height = App.Current.Host.Content.ActualHeight;
         }
         void AutoSelectButton_Click(object sender, RoutedEventArgs e)
         {
@@ -942,7 +942,7 @@ namespace CounterStrikeLive
                                 _GameState = GameState.mapdownload;
                                 string _Map = _BinaryReader.ReadString();
                                 Trace.WriteLine("Map name Received:" + _Map);
-                                LoadGame(Application.GetResourceStream(new Uri(_Map, UriKind.Relative)).Stream);
+                                LoadGame(App.GetResourceStream(new Uri(_Map, UriKind.Relative)).Stream);
                             }
                             break;
                         case PacketType.ping:
