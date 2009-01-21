@@ -45,7 +45,7 @@ namespace Updater
             DateTime _OldDateTime = DateTime.MinValue;
             public void Start()
             {
-                
+
                 
                 while (true)
                 {
