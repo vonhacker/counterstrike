@@ -111,7 +111,7 @@ namespace WebServer
                     Trace.WriteLine("Redirect:" + path);
                     string s1 = @"HTTP/1.1 302 Found
 Connection: close
-Location: http://cslive.mindswitch.ru/cs/Default.html
+Location: http://cslive.mindswitch.ru/cs/CounterStrikeLiveTestPage.html
 
 ";
                     _TcpClient.Client.Send(s1);
