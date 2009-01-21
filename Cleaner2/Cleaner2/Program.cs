@@ -13,18 +13,19 @@ namespace Cleaner2
 {
 	public class Database
 	{
-		public string _directorya;
-		public string _directoryb;
-		public string _pattern;
-        public string _pattern2;
+        public List<Task> _Tasks = new List<Task>();
 	}
+    public class Task
+    {
+        public string _directorya;
+        public string _directoryb;
+        public string _pattern;
+        public string _pattern2;
+    }
     public class Program 
     {
 		public Database _Database;
-        public string _directorya { get { return _Database._directorya; } }
-        public string _directoryb { get { return _Database._directoryb; } }
-        public string _pattern { get { return _Database._pattern; } }
-        public string _pattern2 { get { return _Database._pattern2; } }
+        
         public static Chilkat.Zip _Zip;
         static void Main(string[] args)
         {
@@ -38,24 +39,30 @@ namespace Cleaner2
         public Program()
         {
             LoadDb();
+            foreach(Task task in _Database._Tasks)
+                Move(task._directorya,task._directoryb,task._pattern, task._pattern2);
+        }
+
+        private void Move(string _directorya, string _directoryb,string _pattern,string _pattern2)
+        {
             if (Path.GetExtension(_directoryb) == ".zip")
             {
                 gz = true;
                 if (File.Exists(_directoryb)) File.Delete(_directoryb);
                 _Zip.NewZip(_directoryb);
             }
-                        
-			List<string> _directories = new List<string>();
+
+            List<string> _directories = new List<string>();
             GetDirectories(_directories, new string[] { _directorya });
             if (!gz)
-                CreateDirectories(_directories);
-            else            
-                foreach (string dir in _directories)                
-                    _Zip.AppendNewDir(dir.TrimStart(_directorya));                            
+                CreateDirectories(_directories,_directoryb);
+            else
+                foreach (string dir in _directories)
+                    _Zip.AppendNewDir(dir.TrimStart(_directorya));
 
-			List<string> _files = GetFiles(_directories);
+            List<string> _files = GetFiles(_directories);
 
-            int i=0;
+            int i = 0;
             foreach (string _File in _files)
             {
                 if (Regex.IsMatch(_File.TrimStart(_directorya), _pattern, RegexOptions.IgnoreCase) && (_pattern2 == null || _pattern2.Length == 0 || !Regex.IsMatch(_File.TrimStart(_directorya), _pattern2, RegexOptions.IgnoreCase)))
@@ -64,12 +71,12 @@ namespace Cleaner2
                         if (!gz)
                             File.Copy(_File, _directoryb + "/" + _File.TrimStart(_directorya));
                         else
-                            _Zip.AppendData(_File.TrimStart(_directorya),File.ReadAllBytes(_File));
+                            _Zip.AppendData(_File.TrimStart(_directorya), File.ReadAllBytes(_File));
                         Trace.WriteLine(_File);
                         i++;
                     }
-                    catch (IOException e) { Trace.WriteLine("error:"+_File+" "+e.Message); }
-                    catch (UnauthorizedAccessException e) { Trace.WriteLine("error:" + _File+" "+e.Message); }
+                    catch (IOException e) { Trace.WriteLine("error:" + _File + " " + e.Message); }
+                    catch (UnauthorizedAccessException e) { Trace.WriteLine("error:" + _File + " " + e.Message); }
             }
             if (gz)
                 _Zip.WriteZipAndClose();
@@ -78,12 +85,12 @@ namespace Cleaner2
 
         private void LoadDb()
         {
-            XmlSerializer _XmlSerializer = new XmlSerializer(typeof(Database));
+            XmlSerializer _XmlSerializer = Helper.CreateSchema("Cleaner2",typeof(Database));
             using (FileStream _FileStream = new FileStream("db.xml", FileMode.Open, FileAccess.Read))
                 _Database = (Database)_XmlSerializer.Deserialize(_FileStream);
         }
 
-        private void CreateDirectories(List<string> _directories)
+        private void CreateDirectories(List<string> _directories, string _directoryb)
         {
             if (!Directory.Exists(_directoryb)) Directory.CreateDirectory(_directoryb);
             foreach (string _Direcotry in _directories)
