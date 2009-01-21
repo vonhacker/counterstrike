@@ -600,7 +600,8 @@ namespace CounterStrikeLive
         XmlSerializer _XmlSerializer2 = new XmlSerializer(typeof(LocalDatabase));
 
         public LocalDatabase _LocalDatabase = new LocalDatabase();
-        public string host;
+        public string _host;
+        public string _port;
         void PageLoaded(object sender, RoutedEventArgs e)
         {            
             version.Text = Assembly.GetExecutingAssembly().FullName;
@@ -624,7 +625,7 @@ namespace CounterStrikeLive
             Match _Match = Regex.Match(Application.Current.Host.Source.Query, @"&ip=([\d\.]+)");
             if (_Match.Success)
             {
-                host = _Match.Groups[1].Value;
+                _host = _Match.Groups[1].Value;
                 EnterNick();
             }
             else
@@ -679,7 +680,7 @@ namespace CounterStrikeLive
             }
             _Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             SocketAsyncEventArgs _SocketAsyncEventArgs = new SocketAsyncEventArgs();
-            _SocketAsyncEventArgs.RemoteEndPoint = new DnsEndPoint(host, 4530); //port
+            _SocketAsyncEventArgs.RemoteEndPoint = new DnsEndPoint(_host, int.Parse(_port)); //port
             _SocketAsyncEventArgs.UserToken = _Socket;
             _Socket.ConnectAsync(_SocketAsyncEventArgs);
             Trace.WriteLine("Connecting");
@@ -2218,7 +2219,8 @@ namespace CounterStrikeLive
             Item _Item = (Item)_DataGrid.SelectedItem;
             if (_Item == null) return;
             this.Hide();            
-            _Menu.host = _Item._Ip;
+            _Menu._host = _Item._Ip;
+            _Menu._port = _Item._Port;
             _Menu.EnterNick();    
         }
 

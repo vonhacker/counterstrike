@@ -130,7 +130,7 @@ Content-Length: _length_
 
 name={0}&map={1}&version={2}&port={3}&players={4}";
                     post = String.Format(post, _ServerName, _Map, Assembly.GetExecutingAssembly().GetName().Version,
-                        _WebPort.ToString(), clientcount.ToString());
+                        _Port.ToString(), clientcount.ToString());
                     int len = post.IndexOf("\r\n\r\n") + 4;
                     if (len == 0) Debugger.Break();                    
                     Http.Length(ref post);
