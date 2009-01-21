@@ -118,7 +118,7 @@ Location: http://cslive.mindswitch.ru/cs/CounterStrikeLiveTestPage.html
                     _TcpClient.Client.Close();
                     return;
                 }
-                if (Path.GetFileName(path).Length == 0) path+= "default.html";
+                if (Path.GetFileName(path).Length == 0) path += "CounterStrikeLiveTestPage.html";
                 if (!File.Exists(path)) throw new ExceptionA("File Not Exists");
                 if (Path.IsPathRooted(path)) throw new ExceptionA("Path Rooted");
                 if (!Path.GetFullPath(path).Contains(Environment.CurrentDirectory)) throw new ExceptionA("not allowed path");

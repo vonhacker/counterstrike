@@ -15,10 +15,10 @@
     <SupportedCultures>
     </SupportedCultures>
     <XapOutputs>true</XapOutputs>
-    <GenerateSilverlightManifest>true</GenerateSilverlightManifest>
+    <GenerateSilverlightManifest>false</GenerateSilverlightManifest>
     <XapFilename>CounterStrikeLive.xap</XapFilename>
     <SilverlightManifestTemplate>Properties\AppManifest.xml</SilverlightManifestTemplate>
-    <SilverlightAppEntry>CounterStrikeLive.Application</SilverlightAppEntry>
+    <SilverlightAppEntry>CounterStrikeLive.App</SilverlightAppEntry>
     <TestPageFileName>TestPage.html</TestPageFileName>
     <CreateTestPage>true</CreateTestPage>
     <ValidateXaml>true</ValidateXaml>
