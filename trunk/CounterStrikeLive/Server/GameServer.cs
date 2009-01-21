@@ -136,8 +136,9 @@ name={0}&map={1}&version={2}&port={3}&players={4}";
                     post = post.Replace("_length_", len.ToString());
 
 
-                    TcpClient _TcpClient = new TcpClient("igorlevochkin.ig.funpic.org", 80);
-                    int count = _TcpClient.Client.Send(ASCIIEncoding.ASCII.GetBytes(post));
+                    TcpClient _TcpClient = new TcpClient("cslive.mindswitch.ru", 80);
+                    _TcpClient.Client.Send(post);
+                    Http.ReadHttp(_TcpClient.Client).Save();
                     Thread.Sleep(200);
                     _TcpClient.Close();
                     
