@@ -14,6 +14,7 @@ using System.Collections.Specialized;
 using Server.Properties;
 using doru;
 using System.Text.RegularExpressions;
+using System.Reflection;
 
 namespace GameServer
 {
@@ -48,8 +49,7 @@ namespace GameServer
             _Thread.Name = "Server";
             _Thread.Start();
         }
-        ClientWait _ClientWait = new ClientWait();
-        FileInfo _FileInfo = new FileInfo("SilverlightApplication8.xap");
+        ClientWait _ClientWait = new ClientWait();        
         public void Start()
         {
             Console.WriteLine("Server Started " + _Port);
@@ -118,17 +118,18 @@ namespace GameServer
 
         void SendHttp(object _object)
         {
-            try
+
+            while (true)
             {
-                while (true)
+                try
                 {
                     string post = @"POST /cs/serv.php HTTP/1.1
-Host: igorlevochkin.ig.funpic.org
+Host: cslive.mindswitch.ru
 Content-Type: application/x-www-form-urlencoded
 Content-Length: _length_
 
 name={0}&map={1}&version={2}&port={3}&players={4}";
-                    post = String.Format(post, _ServerName, _Map, _FileInfo.LastWriteTime.ToShortDateString(),
+                    post = String.Format(post, _ServerName, _Map, Assembly.GetExecutingAssembly().GetName().Version,
                         _WebPort.ToString(), clientcount.ToString());
                     int len = post.IndexOf("\r\n\r\n") + 4;
                     if (len == 0) Debugger.Break();
@@ -139,10 +140,11 @@ name={0}&map={1}&version={2}&port={3}&players={4}";
                     int count = _TcpClient.Client.Send(ASCIIEncoding.ASCII.GetBytes(post));
                     Thread.Sleep(200);
                     _TcpClient.Close();
-                    Thread.Sleep(10000);
+                    
                 }
+                catch (SocketException e) { Trace.WriteLine("phpSender:" + e.Message); }
+                Thread.Sleep(10000);
             }
-            catch (SocketException e) { Trace.WriteLine("phpSender:" + e.Message); }
         }
         public string _ServerName { get { return Settings.Default._ServerName; } }
 
