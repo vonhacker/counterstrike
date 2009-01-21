@@ -17,12 +17,10 @@ namespace Updater
     {
         static FastZip _Zip;
         static void Main(string[] args)
-        {
-            
+        {            
             Spammer3.Setup("../../csliveServer");
-
             _Zip = new FastZip();
-            //if (!_Zip.UnlockComponent("30-day trial")) throw new Exception("chilcat");
+            
             new Program();
         }
 
@@ -44,9 +42,7 @@ namespace Updater
             Uri _Uri = new Uri(Settings._webpath);
             DateTime _OldDateTime = DateTime.MinValue;
             public void Start()
-            {
-
-                
+            {                
                 while (true)
                 {
                     try
