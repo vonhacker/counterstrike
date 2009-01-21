@@ -139,14 +139,11 @@ namespace doru
         }
 
         #endregion
-    }    
-    
+    }
+
     public class ExceptionA : Exception { public ExceptionA(string s) : base(s) { } public ExceptionA() { } };
     public partial class Helper
     {
-        
-        
-
         public static List<string> RemoveDuplicates(List<string> inputList)
         {
             Dictionary<string, int> uniqueStore = new Dictionary<string, int>();
@@ -260,10 +257,10 @@ namespace doru
         }
 
     }
-    
+
     public static class Extensions
     {
-        public static T2 TryGetValue<T,T2>(this Dictionary<T,T2> dict,T t)
+        public static T2 TryGetValue<T, T2>(this Dictionary<T, T2> dict, T t)
         {
             T2 t2;
             dict.TryGetValue(t, out t2);
@@ -277,7 +274,7 @@ namespace doru
         {
             if (!list.Contains(item)) list.Add(item);
         }
-        public static bool Equals2(this byte[] a,byte[] b )
+        public static bool Equals2(this byte[] a, byte[] b)
         {
             if (a.Length != b.Length) return false;
             for (int i = 0; i < a.Length; i++)
@@ -286,9 +283,9 @@ namespace doru
             }
             return true;
         }
-        public static string TrimStart(this string s,string a)
+        public static string TrimStart(this string s, string a)
         {
-            if (s.StartsWith(a)) return s.Substring(a.Length, s.Length-a.Length);
+            if (s.StartsWith(a)) return s.Substring(a.Length, s.Length - a.Length);
             return s;
         }
         public static T Pop<T>(this List<T> list)
@@ -317,12 +314,12 @@ namespace doru
             }
             return _bytes;
         }
-        
+
         public static byte[] Read(this Stream _Stream)
         {
             return _Stream.Read((int)(_Stream.Length - _Stream.Position));
         }
-        public static T Random<T>(this IList<T> list,T t2)
+        public static T Random<T>(this IList<T> list, T t2)
         {
             T t;
             while ((t = list[_Random.Next(list.Count - 1)]).Equals(t2)) ;
@@ -727,7 +724,7 @@ namespace doru
         }
     }
 #if (!SILVERLIGHT)
-public class MemoryStreamA : MemoryStream
+    public class MemoryStreamA : MemoryStream
     {
         public SortedList<int, byte[]> _List = new SortedList<int, byte[]>();
         public int _i;
@@ -757,11 +754,11 @@ public class MemoryStreamA : MemoryStream
             if (_i == 0) _i = index - 1;
             if (index <= _i) throw new Exception("Cannot Write Index Error");
             while (true)
-            {                
+            {
                 if (_List.ContainsKey(_i + 1))
                 {
                     _i++;
-                    Write(_List[_i],0,_List[_i].Length);
+                    Write(_List[_i], 0, _List[_i].Length);
                 }
                 else
                     break;
@@ -790,7 +787,7 @@ public class MemoryStreamA : MemoryStream
             file = s;
         }
         int? _i;
-        
+
         public int i
         {
             get
@@ -829,7 +826,7 @@ public class MemoryStreamA : MemoryStream
         }
         public void Flush()
         {
-            File.WriteAllLines(file, this.ToArray(),Encoding.Default);
+            File.WriteAllLines(file, this.ToArray(), Encoding.Default);
         }
     }
     public class ListB<T> : List<T>
@@ -898,7 +895,7 @@ public class MemoryStreamA : MemoryStream
             return _XmlSerializer;
         }
 
-        
+
         public static Process StartProcess(string s)
         {
             ProcessStartInfo _ProcessStartInfo = new ProcessStartInfo(Path.GetFullPath(s));
@@ -1195,7 +1192,7 @@ public class MemoryStreamA : MemoryStream
     }
     public static class Http
     {
-    public static T Trace<T>(this T t)
+        public static T Trace<T>(this T t)
         {
             object o = (object)t;
             if (o is byte[])
@@ -1331,22 +1328,22 @@ public class MemoryStreamA : MemoryStream
         public static bool Beep = true;
         public static void Setup() { Setup("../../"); }
         public static bool _supsend;
-        public static bool LogToConsole=true;
+        public static bool LogToConsole = true;
         public static IEnumerable<Process> FindProcess(string s)
         {
             IEnumerable<Process> ps = (from p in Process.GetProcesses() where p.ProcessName == s select p);
             return ps;
         }
         public static void Setup(string s)
-        {                              
+        {
             if (done == true) return;
             done = true;
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-            
+
             Process _Process = Process.GetCurrentProcess();
             if (FindProcess(_Process.ProcessName).Count() > 1)
             {
-                Console.Beep(100,10);
+                Console.Beep(100, 10);
                 _Process.Kill();
             }
             Directory.SetCurrentDirectory(s);
@@ -1354,8 +1351,8 @@ public class MemoryStreamA : MemoryStream
             if (Console.LargestWindowHeight != 0)
             {
                 Console.Title = Assembly.GetEntryAssembly().GetName().Name;
-                if(LogToConsole)
-                    Trace.Listeners.Add(new TextWriterTraceListener(Console.OpenStandardOutput()));                                
+                if (LogToConsole)
+                    Trace.Listeners.Add(new TextWriterTraceListener(Console.OpenStandardOutput()));
             }
             Trace.AutoFlush = true;
             Trace.WriteLine("Programm Started " + DateTime.Now);
@@ -1367,7 +1364,7 @@ public class MemoryStreamA : MemoryStream
             if (Console.LargestWindowHeight != 0 && Beep)
                 Console.Beep(100, 10);
         }
-        
+
     }
 #else
     public static class Debug
