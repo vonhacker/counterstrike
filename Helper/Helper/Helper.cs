@@ -15,6 +15,7 @@ using System.Runtime.InteropServices;
 using System.Xml.Serialization;
 using System.Reflection;
 using System.Collections;
+using System.Xml.Schema;
 
 namespace doru
 {
@@ -154,6 +155,70 @@ namespace doru
             ProcessStartInfo _ProcessStartInfo = new ProcessStartInfo(Path.GetFullPath(s));
             _ProcessStartInfo.WorkingDirectory = Path.GetDirectoryName(s);
             return Process.Start(_ProcessStartInfo);
+        }
+        public static XmlSerializer CreateSchema(string name, params Type[] types)
+        {
+            name = name + ".xsd";
+            string SchemasPath = Path.GetFullPath(Environment.GetEnvironmentVariable("VS90COMNTOOLS") + "../../Xml/Schemas");
+            XmlReflectionImporter _XmlReflectionImporter = new XmlReflectionImporter(name);
+            XmlSchemas _XmlSchemas = new XmlSchemas();
+
+            XmlSchemaExporter _XmlSchemaExporter = new XmlSchemaExporter(_XmlSchemas);
+            List<Type> xtratypes = new List<Type>();
+            for (int i = 1; i < types.Length; i++)
+            {
+                _XmlReflectionImporter.IncludeType(types[i]);
+                xtratypes.Add(types[i]);
+            }
+            XmlTypeMapping map = _XmlReflectionImporter.ImportTypeMapping(types[0]);
+            _XmlSchemaExporter.ExportTypeMapping(map);
+
+
+            using (StringWriter fs = new StringWriter())
+            {
+                _XmlSchemas[0].Write(fs);
+                //FixSchema(_XmlSchemas[0]);
+                string s = fs.ToString();
+                s = Regex.Replace(s.Replace("xs:sequence", "xs:all"), @"minOccurs=""?"" maxOccurs=""?""", "minOccurs=\"0\"");
+                s = s.Replace("\"utf-16\"", "\"utf-8\"");
+                s = Regex.Replace(s, @"(ArrayOf.*\n.*xs\:)all(.*\n.*\n.*</xs:)all", "${1}sequence${2}sequence");
+
+                File.WriteAllText(SchemasPath + "/" + name, s, Encoding.UTF8);
+            }
+            XmlSerializer _XmlSerializer = new XmlSerializer(types[0], new XmlAttributeOverrides(), xtratypes.ToArray(), new XmlRootAttribute(), name);
+            return _XmlSerializer;
+        }
+
+        public static void FixSchema(XmlSchema _XmlSchema)
+        {
+
+            foreach (XmlSchemaObject _XmlSchemaObject in _XmlSchema.Items)
+            {
+                if (_XmlSchemaObject is XmlSchemaElement)
+                {
+                    XmlSchemaElement _XmlSchemaElement = (XmlSchemaElement)_XmlSchemaObject;
+
+                }
+
+                if (_XmlSchemaObject is XmlSchemaComplexType)
+                {
+                    XmlSchemaComplexType _XmlSchemaComplexType = (XmlSchemaComplexType)_XmlSchemaObject;
+                    if (_XmlSchemaComplexType.Particle is XmlSchemaSequence)
+                    {
+                        XmlSchemaSequence _XmlSchemaSequence = (XmlSchemaSequence)_XmlSchemaComplexType.Particle;
+                        Debugger.Break();
+                        foreach (XmlSchemaObject _XmlSchemaObject1 in _XmlSchemaSequence.Items)
+                        {
+
+                        }
+                    }
+                }
+                if (_XmlSchemaObject is XmlSchemaAll)
+                {
+
+                }
+
+            }
         }
 
         public static List<string> RemoveDuplicates(List<string> inputList)
