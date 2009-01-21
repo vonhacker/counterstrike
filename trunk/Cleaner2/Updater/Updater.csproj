@@ -31,10 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ChilkatDotNet2, Version=8.7.0.0, Culture=neutral, PublicKeyToken=eb5fc1fc52ef09bd, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Cleaner2\ChilkatDotNet2.dll</HintPath>
-    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.5.452, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\ICSharpCode.SharpZipLib.dll</HintPath>
