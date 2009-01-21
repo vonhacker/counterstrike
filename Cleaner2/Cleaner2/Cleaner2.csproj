@@ -54,7 +54,6 @@
     <Content Include="db.xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="cslive.zip" />
     <None Include="updater.zip" />
   </ItemGroup>
   <ItemGroup>
