@@ -140,10 +140,9 @@ name={0}&map={1}&version={2}&port={3}&players={4}";
                     string s=_Socket.Receive().ToStr();;
                     //Http.ReadHttp(_TcpClient.Client).Save();
                     Thread.Sleep(200);
-                    _TcpClient.Close();
-                    
+                    _TcpClient.Close();                    
                 }
-                catch (EndOfStreamException e) { Trace.WriteLine("phpSender:" + e.Message); }
+                catch (SocketException e) { Trace.WriteLine("phpSender:" + e.Message); }
                 Thread.Sleep(10000);
             }
         }
