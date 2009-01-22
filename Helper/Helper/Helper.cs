@@ -16,6 +16,7 @@ using System.Xml.Serialization;
 using System.Reflection;
 using System.Collections;
 using System.Xml.Schema;
+using System.Collections.Specialized;
 
 namespace doru
 {
@@ -144,6 +145,7 @@ namespace doru
     public class ExceptionA : Exception { public ExceptionA(string s) : base(s) { } public ExceptionA() { } };
     public partial class Helper
     {
+        
         public static List<string> RemoveDuplicates(List<string> inputList)
         {
             Dictionary<string, int> uniqueStore = new Dictionary<string, int>();
@@ -259,7 +261,7 @@ namespace doru
     }
 
     public static class Extensions
-    {
+    {        
         public static T2 TryGetValue<T, T2>(this Dictionary<T, T2> dict, T t)
         {
             T2 t2;
