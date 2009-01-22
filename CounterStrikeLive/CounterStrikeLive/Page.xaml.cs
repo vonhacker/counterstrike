@@ -742,7 +742,7 @@ namespace CounterStrikeLive
         Listener _Listener = new Listener();
 
         double _SendSecondsElapsed;
-        const int _RotationSendInterval = 100;
+        const int _RotationSendInterval = 500;
         protected void SendRotation()
         {
             if (STimer.TimeElapsed(_RotationSendInterval))
