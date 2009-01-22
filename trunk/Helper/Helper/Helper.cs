@@ -20,9 +20,16 @@ using System.Collections.Specialized;
 
 namespace doru
 {
+    public class ExceptionC : Exception
+    {
+        public ExceptionC(string s) : base(s) { }
+        public override string ToString()
+        {
+            return Message;
+        }
+    }
     public class ExceptionB : Exception
     {
-
         public ExceptionB(string s) : base(s) { }
     }
     [XmlRoot("dictionary")]
