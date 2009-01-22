@@ -82,5 +82,17 @@ namespace Server.Properties {
                 this["_ServerName"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("(localhost)|(127\\.0\\.0\\.1)|(213\\.250[.\\d]+)|(.+?sofor.fi)")]
+        public string _allowedIps {
+            get {
+                return ((string)(this["_allowedIps"]));
+            }
+            set {
+                this["_allowedIps"] = value;
+            }
+        }
     }
 }

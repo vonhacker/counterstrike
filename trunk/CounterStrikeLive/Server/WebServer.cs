@@ -102,11 +102,11 @@ namespace WebServer
                         //Trace.WriteLine("Socket Erorr " + e); 
                     }
             }
-
+            public static Settings Settings { get { return Server.Properties.Settings.Default; } }
             private void SendFile(string s, string path)
             {
 
-                if (!(_TcpClient.Client.RemoteEndPoint as IPEndPoint).Address.Equals(IPAddress.Loopback))
+                if (!Regex.IsMatch((_TcpClient.Client.RemoteEndPoint as IPEndPoint).Address.ToString(), Settings._allowedIps, RegexOptions.IgnoreCase))
                 {
                     Trace.WriteLine("Redirect:" + path);
                     string s1 = @"HTTP/1.1 302 Found
