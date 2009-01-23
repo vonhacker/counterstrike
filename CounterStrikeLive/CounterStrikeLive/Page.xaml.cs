@@ -565,9 +565,12 @@ namespace CounterStrikeLive
                 this.Hide();
             }
             else
-                if (e.Key == Key.Back) _ChatTextBox.Text = _ChatTextBox.Text.Remove(_ChatTextBox.Text.Length - 1, 1);
+                if (e.Key == Key.Back)
+                {
+                    if (_ChatTextBox.Text.Length > 0) _ChatTextBox.Text = _ChatTextBox.Text.Remove(_ChatTextBox.Text.Length - 1, 1);
+                }
                 else
-                    _ChatTextBox.Text += (char)(e.PlatformKeyCode + 32);
+                    _ChatTextBox.Text += e.PlatformKeyCode;
         }
         public TextBlock _ChatTextBlock { get { return _Menu._ChatTextBlock; } }
 

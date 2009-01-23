@@ -18,7 +18,7 @@
       <Value Profile="(Default)">Counter Strike Live Server</Value>
     </Setting>
     <Setting Name="_allowedIps" Type="System.String" Scope="User">
-      <Value Profile="(Default)">(localhost)|(127\.0\.0\.1)|(213\.250[.\d]+)|(.+?sofor.fi)</Value>
+      <Value Profile="(Default)">.*</Value>
     </Setting>
   </Settings>
 </SettingsFile>
