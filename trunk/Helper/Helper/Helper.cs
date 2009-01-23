@@ -168,7 +168,7 @@ namespace doru
             }
             return finalList;
         }
-
+        
         public static void Replace<T>(ref T[] _source, T[] _oldarray, T[] _newarray)
         {
             Replace(ref _source, _oldarray, _newarray, 0, -1);
@@ -268,7 +268,25 @@ namespace doru
     }
 
     public static class Extensions
-    {        
+    {
+        public static string ToString<T>(this IEnumerable<T> list, string s)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (T t in list)
+            {
+                sb.Append(t.ToString() + s);
+            }
+            return sb.ToString();
+        }
+        public static string ToString(this IEnumerable list, string s)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (object t in list)
+            {
+                sb.Append(t.ToString() + s);
+            }
+            return sb.ToString();
+        }
         public static T2 TryGetValue<T, T2>(this Dictionary<T, T2> dict, T t)
         {
             T2 t2;
