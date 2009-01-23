@@ -85,7 +85,7 @@ namespace Server.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("(localhost)|(127\\.0\\.0\\.1)|(213\\.250[.\\d]+)|(.+?sofor.fi)")]
+        [global::System.Configuration.DefaultSettingValueAttribute(".*")]
         public string _allowedIps {
             get {
                 return ((string)(this["_allowedIps"]));

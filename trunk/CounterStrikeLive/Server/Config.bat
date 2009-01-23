@@ -1,1 +1,1 @@
-start notepad app.config
+start notepad bin\Debug\Server.exe.config
