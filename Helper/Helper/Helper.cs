@@ -152,6 +152,24 @@ namespace doru
     public class ExceptionA : Exception { public ExceptionA(string s) : base(s) { } public ExceptionA() { } };
     public partial class Helper
     {
+        public static string ReplaceRandoms(string text, string[] _RandomTags)
+        {
+            text = Regex.Replace(text, @"_randomtext(\d+)_", delegate(Match m)
+            {
+                StringBuilder _StringBuilder = new StringBuilder();
+                for (int i2 = 0; i2 < int.Parse(m.Groups[1].Value); i2++)
+                {
+                    _StringBuilder.Append(_RandomTags[_Random.Next(_RandomTags.Length)] + " ");
+                }
+                return _StringBuilder.ToString(0, _StringBuilder.Length - 1);
+            });
+
+            foreach (Match m in Regex.Matches(text, @"_randomcode(\d+)_"))
+            {
+                text = text.Replace(m.Value, _Random.RandomString(int.Parse(m.Groups[1].Value)));
+            }
+            return text;
+        }
         
         public static List<string> RemoveDuplicates(List<string> inputList)
         {
@@ -889,6 +907,20 @@ namespace doru
     }
     public partial class Helper
     {
+        public static void Trace2(string t, string prefix)
+        {
+            string[] ss = t.Split(new []{"\r","\n"},StringSplitOptions.RemoveEmptyEntries);
+            if (ss.Length > 3)
+            {
+                System.Diagnostics.Trace.Write(prefix + ":");
+                t.ToString().Save();
+            }
+            else
+            {
+                foreach (string s in ss)
+                    System.Diagnostics.Trace.WriteLine(prefix + ":" + s);
+            }            
+        }
         public static XmlSerializer CreateSchema(string name, params Type[] types)
         {
             name = name + ".xsd";
@@ -1225,21 +1257,21 @@ namespace doru
             object o = (object)t;
             if (o is byte[])
             {
-                Encoding.Default.GetString((byte[])o);
+                System.Diagnostics.Trace.WriteLine(Encoding.Default.GetString((byte[])o));
+                return t;
+            }
+            else if (o is bool)
+            {
+                System.Diagnostics.Trace.Write(((bool)o) ? "1" : "0");
                 return t;
             }
             else
-                if (o is bool)
-                {
-                    System.Diagnostics.Trace.Write(((bool)o) ? "1" : "0");
-                    return t;
-                }
-                else
-                {
-                    System.Diagnostics.Trace.WriteLine(t);
-                    return t;
-                }
-        }
+            {
+                System.Diagnostics.Trace.WriteLine(t);
+                return t;
+            }
+        }        
+        
         public static void Length(ref string _bytes)
         {
             Helper.Replace(ref _bytes, "_length_", (_bytes.Length - 4 - _bytes.IndexOf("\r\n\r\n")).ToString(), 1);
@@ -1331,36 +1363,50 @@ namespace doru
         {
             set { if (title != value) title = Console.Title = value; }
         }
-
-        public static Random _Random = new Random();
-        public static string ReplaceRandoms(string text, string[] _RandomTags)
-        {
-            text = Regex.Replace(text, @"_randomtext(\d+)_", delegate(Match m)
-            {
-                StringBuilder _StringBuilder = new StringBuilder();
-                for (int i2 = 0; i2 < int.Parse(m.Groups[1].Value); i2++)
-                {
-                    _StringBuilder.Append(_RandomTags[_Random.Next(_RandomTags.Length)] + " ");
-                }
-                return _StringBuilder.ToString(0, _StringBuilder.Length - 1);
-            });
-
-            foreach (Match m in Regex.Matches(text, @"_randomcode(\d+)_"))
-            {
-                text = text.Replace(m.Value, _Random.RandomString(int.Parse(m.Groups[1].Value)));
-            }
-            return text;
-        }
+        public static Random _Random = new Random();        
 
         public static bool done;
         public static bool Beep = true;
+
         public static void Setup() { Setup("../../"); }
-        public static bool _supsend;
-        public static bool LogToConsole = true;
+        public static bool _supsend;        
         public static IEnumerable<Process> FindProcess(string s)
         {
             IEnumerable<Process> ps = (from p in Process.GetProcesses() where p.ProcessName == s select p);
             return ps;
+        }
+
+        public static List<string> _console = new List<string>();
+        public static Socket _Socket;
+        public static void StartRemoteConsoleAsync(int port)
+        {
+            new Thread(StartRemoteConsole).Start(port);
+        }
+        private static void StartRemoteConsole(object o)
+        {
+            int port = (int)o;
+            while (true)
+            {
+                TcpListener _TcpListener = new TcpListener(IPAddress.Any, port);
+                _TcpListener.Start();
+                _Socket = _TcpListener.AcceptSocket();
+                NetworkStream _NetworkStream = new NetworkStream(_Socket);
+                Trace.Listeners.Add(new TextWriterTraceListener(_NetworkStream));
+                try
+                {
+                    while (true)
+                    {
+                        string s = _NetworkStream.ReadLine();
+                        _console.Add(s);
+                    }
+                }
+                catch (IOException){ }
+            }
+        }
+        private static void StartReadConsole()
+        {
+            while (true)            
+                _console.Add(Console.ReadLine());            
         }
         public static void Setup(string s)
         {
@@ -1376,11 +1422,11 @@ namespace doru
             }
             Directory.SetCurrentDirectory(s);
             Trace.Listeners.Add(new TextWriterTraceListener("log.txt"));
+            new Thread(StartReadConsole).Start();
             if (Console.LargestWindowHeight != 0)
             {
                 Console.Title = Assembly.GetEntryAssembly().GetName().Name;
-                if (LogToConsole)
-                    Trace.Listeners.Add(new TextWriterTraceListener(Console.OpenStandardOutput()));
+                Trace.Listeners.Add(new TextWriterTraceListener(Console.OpenStandardOutput()));
             }
             Trace.AutoFlush = true;
             Trace.WriteLine("Programm Started " + DateTime.Now);
