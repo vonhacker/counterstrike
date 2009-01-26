@@ -80,8 +80,12 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Common\Application.cs" />
+    <Compile Include="Common\Extensions.cs" />
     <Compile Include="Database.cs" />
+    <Compile Include="ServiceClient\Events\ServerOperationEventArgs.cs" />
+    <Compile Include="ServiceClient\Listener.cs" />
     <Compile Include="ServiceClient\Providers\SocketsProvider.cs" />
+    <Compile Include="ServiceClient\Sender.cs" />
     <Compile Include="ServiceClient\ServiceClientProvider.cs" />
     <Compile Include="SVHelper.cs" />
     <Compile Include="Mathematics\BilinearInterpolator.cs" />
@@ -458,7 +462,6 @@
   <ItemGroup>
     <Folder Include="Common\ApplicationParts\" />
     <Folder Include="ServiceClient\Entities\" />
-    <Folder Include="ServiceClient\Events\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v2.0\Microsoft.Silverlight.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

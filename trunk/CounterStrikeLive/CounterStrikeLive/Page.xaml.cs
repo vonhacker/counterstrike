@@ -25,6 +25,8 @@ using System.Collections;
 using System.IO.IsolatedStorage;
 using System.Text.RegularExpressions;
 using System.Threading;
+using CounterStrikeLive.ServiceClient;
+
 [assembly: AssemblyVersionAttribute("3.0.*")]
 namespace CounterStrikeLive
 {
@@ -580,8 +582,11 @@ namespace CounterStrikeLive
         public MyObs<SharedClient> _Clients { get; set; }
 
         public static Menu _Menu;
+
+        private ServiceClientProvider provider;
+
         public Menu()
-        {            
+        {
             _Menu = this;
             InitializeComponent();
             _Clients = new MyObs<SharedClient>(50);
@@ -692,6 +697,27 @@ namespace CounterStrikeLive
                 Dispatcher.BeginInvoke(new Action(OnConnected));
             };
 
+            // Create provider
+            provider = new SocketsProvider(_host, _port);
+            (provider as SocketsProvider).Start(); // TODO: сделать старт при отправке первого сообщения
+            provider.ServerConnected += new EventHandler<EventArgs>(provider_ServerConnected);
+            provider.ServerFailed += new EventHandler<EventArgs>(provider_ServerFailed);
+            provider.ServerOperationCompleted += new EventHandler<ServerOperationEventArgs>(provider_ServerOperationCompleted);
+        }
+
+        void provider_ServerOperationCompleted(object sender, ServerOperationEventArgs e)
+        {
+            // здесь будут обрабатываться все типы пакетов как сейчас в onReceive (см. ниже)
+        }
+
+        void provider_ServerFailed(object sender, EventArgs e)
+        {
+            
+        }
+
+        void provider_ServerConnected(object sender, EventArgs e)
+        {
+            
         }
 
         void Content_FullScreenChanged(object sender, EventArgs e)
