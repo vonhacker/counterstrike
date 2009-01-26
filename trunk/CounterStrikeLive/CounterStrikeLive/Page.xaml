@@ -47,7 +47,7 @@
         	</Rectangle.Fill>
         </Rectangle>
         <TextBlock Height="32.338" HorizontalAlignment="Right" Margin="0,0,68,1" VerticalAlignment="Bottom" Width="46" FontFamily="./Fonts/Fonts.zip#7 Segment" FontSize="24" Text="0" TextWrapping="Wrap" Grid.Column="1" Grid.Row="1" d:LayoutOverrides="Height" Foreground="#FFFFE500" FontWeight="Bold" x:Name="_patrons" d:IsStaticText="False"/>
-        <TextBlock Height="32.338" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="46" FontFamily="./Fonts/Fonts.zip#7 Segment" FontSize="24" FontWeight="Bold" Foreground="#FFFFE500" Text="0" TextWrapping="Wrap" Grid.Column="1" Grid.Row="1" x:Name="_totalpatrons"/>
+            <TextBlock Height="32.338" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="46" FontFamily="./Fonts/Fonts.zip#7 Segment" FontSize="24" FontWeight="Bold" Foreground="#FFFFE500" Text="0" TextWrapping="Wrap" Grid.Column="1" Grid.Row="1" x:Name="_totalpatrons"/>
         <Path Height="33" HorizontalAlignment="Right" Margin="0,0,63,-2" VerticalAlignment="Bottom" Width="1" Grid.Column="1" Grid.Row="1" Stretch="Fill" Stroke="#FFFFEA00" Data="M960,737 L960,769"/>
         <TextBlock HorizontalAlignment="Right" Width="180" TextWrapping="Wrap" Foreground="#FFE3D600" FontSize="18" x:Name="_FPS" d:IsStaticText="False" VerticalAlignment="Top" Height="84"/>
         <TextBlock Height="185" Margin="37,0,-228,-2" VerticalAlignment="Bottom" Text="" TextWrapping="Wrap" Grid.Row="1" x:Name="_ChatTextBlock" Foreground="#FFFFE500"/>

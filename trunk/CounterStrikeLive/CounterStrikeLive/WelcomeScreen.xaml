@@ -8,10 +8,11 @@
 	d:DesignWidth="640" d:DesignHeight="480" xmlns:data="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Data">
 
 	<Grid x:Name="LayoutRoot">
-		<Rectangle RadiusX="20" RadiusY="20" Fill="#16000000" Stroke="#FF000000"/>
-        <data:DataGrid Name="_DataGrid" Margin="65,153,72,68" Foreground="#FF000000" Background="Transparent" IsReadOnly="True">            
+		<Rectangle RadiusX="20" RadiusY="20" Fill="#16000000" Stroke="#FF000000" Margin="8,0,-8,0"/>
+        <data:DataGrid Name="_DataGrid" Margin="65,153,72,68" Foreground="#FF000000" Background="#FF6B0606" IsReadOnly="True">            
         </data:DataGrid>
         <TextBlock Height="34" Margin="108,119,114,0" VerticalAlignment="Top" Text="Server List" TextWrapping="Wrap" Foreground="#FFFFE300" TextAlignment="Center" FontSize="24"/>
         <Button  Name="_Button" Height="39" Margin="0,0,72,8" Style="{StaticResource ButtonStyle2}" VerticalAlignment="Bottom" Content="Connect" HorizontalAlignment="Right" Width="82"/>
+        <TextBox Height="26" Margin="145,0,173,38" VerticalAlignment="Bottom" Text="" TextWrapping="Wrap" x:Name="_serverip" Foreground="#FFFFFFFF" Background="#91000000"/>
 	</Grid>
 </UserControl>

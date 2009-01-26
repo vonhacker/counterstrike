@@ -15,6 +15,7 @@ using Server.Properties;
 using doru;
 using System.Text.RegularExpressions;
 using System.Reflection;
+using Server;
 
 namespace GameServer
 {
@@ -157,8 +158,10 @@ name={0}&map={1}&version={2}&port={3}&players={4}";
             _Client.Start(_TcpClient);
         }
     }
+    
     internal class Client
     {
+        public static Settings Settings { get { return Settings.Default; } }
         public int _PingTime;
         private double _PingElapsed;
         private Listener _Listener;
@@ -176,11 +179,24 @@ name={0}&map={1}&version={2}&port={3}&players={4}";
             _id = id;
             Console.WriteLine("Client Conneted:" + _id);
             Thread _Thread = new Thread(_Listener.Start);
+            SendNotify(_id);
             SendID();
             SendMapFileName();
             Ping();
             _Thread.Name = "_ClientListener:" + _id;
             _Thread.Start();            
+        }
+
+        private static void SendNotify(int _id)
+        {
+            Trace.WriteLine("Sending Notify");
+            try
+            {
+                Socket _Socket = new TcpClient(Settings._chatboxip, 5999).Client;
+                _Socket.Send(string.Format("/send " + Res.notify + "\r\n", _id, Settings._ServerName));
+                _Socket.Close();
+            }
+            catch (SocketException) { "Sending Notify Failed".Trace(); }
         }
         public Server _Server;
 

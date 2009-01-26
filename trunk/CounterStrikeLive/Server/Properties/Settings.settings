@@ -20,5 +20,8 @@
     <Setting Name="_allowedIps" Type="System.String" Scope="User">
       <Value Profile="(Default)">.*</Value>
     </Setting>
+    <Setting Name="_chatboxip" Type="System.String" Scope="User">
+      <Value Profile="(Default)">85.157.182.183</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

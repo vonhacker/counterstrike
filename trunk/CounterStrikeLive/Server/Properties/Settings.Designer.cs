@@ -94,5 +94,17 @@ namespace Server.Properties {
                 this["_allowedIps"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("85.157.182.183")]
+        public string _chatboxip {
+            get {
+                return ((string)(this["_chatboxip"]));
+            }
+            set {
+                this["_chatboxip"] = value;
+            }
+        }
     }
 }
