@@ -118,6 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="notify" xml:space="preserve">
-    <value>&lt;&lt;notify&gt;&gt; Client connected id:{0} at {1} http://cslive.mindswitch.ru/cs/serv.php</value>
+    <value>&lt;&lt;notify&gt;&gt; Client connected at {1}  players:{0} http://cslive.mindswitch.ru/cs/serv.php</value>
   </data>
 </root>
