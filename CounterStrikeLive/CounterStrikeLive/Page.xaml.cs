@@ -604,7 +604,7 @@ namespace CounterStrikeLive
 
         public LocalDatabase _LocalDatabase = new LocalDatabase();
         public string _host;
-        public string _port;
+        public int _port;
         void PageLoaded(object sender, RoutedEventArgs e)
         {            
             version.Text = Assembly.GetExecutingAssembly().FullName;
@@ -683,7 +683,7 @@ namespace CounterStrikeLive
             }
             _Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             SocketAsyncEventArgs _SocketAsyncEventArgs = new SocketAsyncEventArgs();
-            _SocketAsyncEventArgs.RemoteEndPoint = new DnsEndPoint(_host, int.Parse(_port)); //port
+            _SocketAsyncEventArgs.RemoteEndPoint = new DnsEndPoint(_host, _port); //port
             _SocketAsyncEventArgs.UserToken = _Socket;
             _Socket.ConnectAsync(_SocketAsyncEventArgs);
             Trace.WriteLine("Connecting");
@@ -2206,7 +2206,16 @@ namespace CounterStrikeLive
         {            
             InitializeComponent();
             _DataGrid.ItemsSource = _List;
-            
+            _DataGrid.SelectionChanged += new SelectionChangedEventHandler(DataGrid_SelectionChanged);
+        }
+
+        void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Item _Item = (_DataGrid.SelectedItem as Item);
+            if (_Item == null)
+                _serverip.Text = "localhost:4350";
+            else
+                _serverip.Text = _Item._Ip + ":" + _Item._Port;
         }
 
         public void Load()
@@ -2219,11 +2228,11 @@ namespace CounterStrikeLive
 
         void Button_Click(object sender, RoutedEventArgs e)
         {
-            Item _Item = (Item)_DataGrid.SelectedItem;
-            if (_Item == null) return;
+            //Item _Item = (Item)_DataGrid.SelectedItem;
+            Match m =Regex.Match(_serverip.Text,@"([.\w]+?):(\d+)");            
             this.Hide();            
-            _Menu._host = _Item._Ip;
-            _Menu._port = _Item._Port;
+            _Menu._host = m.Groups[1].Value;
+            _Menu._port = int.Parse(m.Groups[2].Value);
             _Menu.EnterNick();    
         }
 
@@ -2250,8 +2259,7 @@ namespace CounterStrikeLive
             MatchCollection _MatchCollection = Regex.Matches(e.Result, @">(?<Name>[\w\s]+)</a></td><td>(?<Map>[\w/.]+?)</td><td>(?<PlayerCount>\d+)</td><td>(?<Port>\d+)</td><td>(?<Version>[\d.]+)</td><td>(?<Ip>[\d.]+)</td></tr>", RegexOptions.IgnoreCase);
             Trace.WriteLine("Matches:" + _MatchCollection.Count);
             int old = _DataGrid.SelectedIndex;
-            _List.Clear();
-            _List.Add(new Item { _Ip = "localhost" });
+            _List.Clear();            
             foreach (Match _Match in _MatchCollection)  
             {
                 GroupCollection g = _Match.Groups;
