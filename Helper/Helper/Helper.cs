@@ -1377,7 +1377,7 @@ namespace doru
         }
 
         public static List<string> _console = new List<string>();
-        public static Socket _Socket;
+        
         public static void StartRemoteConsoleAsync(int port)
         {
             new Thread(StartRemoteConsole).Start(port);
@@ -1385,23 +1385,33 @@ namespace doru
         private static void StartRemoteConsole(object o)
         {
             int port = (int)o;
+            TcpListener _TcpListener = new TcpListener(IPAddress.Any, port);
+            _TcpListener.Start();
             while (true)
-            {
-                TcpListener _TcpListener = new TcpListener(IPAddress.Any, port);
-                _TcpListener.Start();
-                _Socket = _TcpListener.AcceptSocket();
-                NetworkStream _NetworkStream = new NetworkStream(_Socket);
-                Trace.Listeners.Add(new TextWriterTraceListener(_NetworkStream));
-                try
-                {
-                    while (true)
-                    {
-                        string s = _NetworkStream.ReadLine();
-                        _console.Add(s);
-                    }
-                }
-                catch (IOException){ }
+            {                
+                Socket _Socket = _TcpListener.AcceptSocket();
+                StartListenClient(_Socket);
             }
+        }
+
+        private static void StartListenClient(object o)
+        {
+            Socket _Socket = (Socket)o;
+            "Console Connected".Trace();
+            NetworkStream _NetworkStream = new NetworkStream(_Socket);
+            TextWriterTraceListener _TextWriterTraceListener = new TextWriterTraceListener(_NetworkStream);
+            Trace.Listeners.Add(_TextWriterTraceListener);
+            try
+            {
+                while (true)
+                {
+                    string s = _NetworkStream.ReadLine();
+                    _console.Add(s);
+                }
+            }
+            catch (IOException) { }
+            Trace.Listeners.Remove(_TextWriterTraceListener);
+            "Console Disconnected".Trace();
         }
         private static void StartReadConsole()
         {
@@ -1410,6 +1420,7 @@ namespace doru
         }
         public static void Setup(string s)
         {
+            if (Directory.Exists("./logs/")) Directory.Delete("logs", true);
             if (done == true) return;
             done = true;
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
