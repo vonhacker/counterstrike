@@ -61,7 +61,7 @@ namespace Server {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;&lt;notify&gt;&gt; Client connected id:{0} at {1} http://cslive.mindswitch.ru/cs/serv.php.
+        ///   Looks up a localized string similar to &lt;&lt;notify&gt;&gt; Client connected at {1}  players:{0} http://cslive.mindswitch.ru/cs/serv.php.
         /// </summary>
         internal static string notify {
             get {

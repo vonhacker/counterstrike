@@ -115,7 +115,7 @@ namespace GameServer
             Thread.Sleep(10);
             STimer.Update();
         }
-        int clientcount;
+        public int clientcount;
 
         void SendHttp(object _object)
         {
@@ -186,19 +186,19 @@ name={0}&map={1}&version={2}&port={3}&players={4}";
             _Thread.Name = "_ClientListener:" + _id;
             _Thread.Start();            
         }
-
-        private static void SendNotify(int _id)
+        public Server _Server;
+        private void SendNotify(int _id)
         {
             Trace.WriteLine("Sending Notify");
             try
             {
                 Socket _Socket = new TcpClient(Settings._chatboxip, 5999).Client;
-                _Socket.Send(string.Format("/send " + Res.notify + "\r\n", _id, Settings._ServerName));
+                _Socket.Send(string.Format("/send " + Res.notify + "\r\n", _Server.clientcount + 1, Settings._ServerName));
                 _Socket.Close();
             }
             catch (SocketException) { "Sending Notify Failed".Trace(); }
         }
-        public Server _Server;
+        
 
         private void SendMapFileName()
         {
