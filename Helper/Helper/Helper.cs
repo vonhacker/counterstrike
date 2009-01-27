@@ -1340,7 +1340,7 @@ namespace doru
         }
 
         static readonly byte[] _rn = new byte[] { 13, 10 };
-        private static byte[] ReadChunk(Stream _Stream)
+        public static byte[] ReadChunk(Stream _Stream)
         {
 
             MemoryStream _MemoryStream = new MemoryStream();
@@ -1380,7 +1380,9 @@ namespace doru
         
         public static void StartRemoteConsoleAsync(int port)
         {
-            new Thread(StartRemoteConsole).Start(port);
+            Thread _Thread = new Thread(StartRemoteConsole);
+            _Thread.IsBackground = true;
+            _Thread.Start(port);
         }
         private static void StartRemoteConsole(object o)
         {
@@ -1390,7 +1392,9 @@ namespace doru
             while (true)
             {                
                 Socket _Socket = _TcpListener.AcceptSocket();
-                StartListenClient(_Socket);
+                Thread _Thread = new Thread(StartListenClient);
+                _Thread.IsBackground = true;
+                _Thread.Start(_Socket);
             }
         }
 
@@ -1433,7 +1437,7 @@ namespace doru
             }
             Directory.SetCurrentDirectory(s);
             Trace.Listeners.Add(new TextWriterTraceListener("log.txt"));
-            new Thread(StartReadConsole).Start();
+            new Thread(StartReadConsole).StartBackground();
             if (Console.LargestWindowHeight != 0)
             {
                 Console.Title = Assembly.GetEntryAssembly().GetName().Name;
