@@ -237,14 +237,13 @@ namespace doru
 
         public static string Randomstr(int size)
         {
-            byte[] _bytes = new byte[size];
+            char[] chars = new char[size];
+            string s = "1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM";
             for (int i = 0; i < size; i++)
             {
-                _bytes[i] = (byte)_Random.Next(64, 90);
-            }
-
-            string s = Encoding.Default.GetString(_bytes);
-            return s;
+                chars[i] = s[_Random.Next(s.Length-1)];
+            }            
+            return new string(chars);
         }
 
         public static string convertToString<T>(IEnumerable<T> array)
@@ -432,6 +431,11 @@ namespace doru
             byte[] _bytes = new byte[l];
             _Random.NextBytes(_bytes);
             return _bytes;
+        }
+        public static void StartBackground(this Thread t, string name)
+        {
+            t.Name = name;
+            StartBackground(t);
         }
         public static void StartBackground(this Thread t)
         {
@@ -837,15 +841,23 @@ namespace doru
         {
             get
             {
-                if (_i != null) return _i.Value;
-                else
+                lock ("intA")
                 {
-                    if (File.Exists(file)) _i = int.Parse(File.ReadAllText(file));
-                    else _i = 0;
+                    if (_i != null) return _i.Value;
+                    else
+                    {
+                        if (File.Exists(file)) _i = int.Parse(File.ReadAllText(file));
+                        else _i = 0;
+                    }
+                    return _i.Value;
                 }
-                return _i.Value;
             }
-            set { _i = value; File.WriteAllText(file, _i.ToString()); }
+            set {
+                lock ("intA")
+                {
+                    _i = value; File.WriteAllText(file, _i.ToString());
+                }
+            }
         }
     }
     public class ListA : List<string>
@@ -1206,6 +1218,11 @@ namespace doru
                 }
             }
         }
+        public static string Save(this string s,string comment)
+        {
+            Encoding.Default.GetBytes(s).Save(comment);
+            return s;
+        }
         public static string Save(this string s)
         {
             Encoding.Default.GetBytes(s).Save();
@@ -1214,9 +1231,13 @@ namespace doru
         public static Random _Random = new Random();
         public static byte[] Save(this byte[] s)
         {
+            return Save(s, "");
+        }
+        public static byte[] Save(this byte[] s, string comment)
+        {
             string path = "./logs/" + DateTime.Now.ToString().Replace(":", "-") + _Random.RandomString(4) + ".html";
             File.WriteAllBytes(path, s);
-            Trace.WriteLine(Path.GetFullPath(path));
+            Trace.WriteLine(Path.GetFullPath(path)+":"+comment);
             return s;
         }
     }
@@ -1436,10 +1457,10 @@ namespace doru
                 _Process.Kill();
             }
             Directory.SetCurrentDirectory(s);
-            Trace.Listeners.Add(new TextWriterTraceListener("log.txt"));
-            new Thread(StartReadConsole).StartBackground();
+            Trace.Listeners.Add(new TextWriterTraceListener("log.txt"));            
             if (Console.LargestWindowHeight != 0)
             {
+                new Thread(StartReadConsole).StartBackground();
                 Console.Title = Assembly.GetEntryAssembly().GetName().Name;
                 Trace.Listeners.Add(new TextWriterTraceListener(Console.OpenStandardOutput()));
             }
