@@ -20,6 +20,12 @@ using System.Collections.Specialized;
 
 namespace doru
 {
+    public abstract class Encoding : System.Text.Encoding
+    {
+        static System.Text.Encoding _DefaultEncoding = System.Text.Encoding.Default;
+        public static new System.Text.Encoding Default { get { return _DefaultEncoding; } set { _DefaultEncoding = value; } }
+        public static System.Text.Encoding Default2 { get { return System.Text.Encoding.Default; } }
+    }
     public class ExceptionC : Exception
     {
         public ExceptionC(string s) : base(s) { }
@@ -960,8 +966,7 @@ namespace doru
                 s = s.Replace("\"utf-16\"", "\"utf-8\"");
                 s = Regex.Replace(s, @"(ArrayOf.*\n.*xs\:)all(.*\n.*\n.*</xs:)all", "${1}sequence${2}sequence");
                 s = Regex.Replace(s, @"xs:all(>\r?\n?.*<xs:element ref=""xs:schema"" />\r?\n?.*\r?\n?.*)xs:all", "xs:sequence${1}xs:sequence", RegexOptions.Multiline);
-
-                File.WriteAllText(SchemasPath + "/" + name, s, Encoding.UTF8);
+                File.WriteAllText(SchemasPath + "/" + name, s, Encoding.Default);
             }
             XmlSerializer _XmlSerializer = new XmlSerializer(types[0], new XmlAttributeOverrides(), xtratypes.ToArray(), new XmlRootAttribute(), name);
             return _XmlSerializer;
@@ -1487,11 +1492,7 @@ namespace doru
         {
             Console.Write(o);
         }
-    }
-    public static class Encoding
-    {
-        public static System.Text.Encoding Default { get { return System.Text.Encoding.UTF8; } }
-    }
+    }    
 #endif
 
     public static class STimer
