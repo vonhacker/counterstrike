@@ -25,7 +25,7 @@ namespace CounterStrikeLive.ServiceClient
             uiThread = SynchronizationContext.Current;
         }
 
-        protected abstract void SendMessage(object data);
+        public abstract void SendMessage(object data);
         public abstract void Disconnect();
 
         # region Event callers
