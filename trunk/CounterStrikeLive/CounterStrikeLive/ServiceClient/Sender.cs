@@ -34,16 +34,16 @@ namespace CounterStrikeLive
             return (UInt16)Math.Max(Math.Min((UInt16)_fullV, UInt16.MaxValue), UInt16.MinValue);
         }
 
-        public Socket _Socket;// TODO: remove
-        public void Send(byte[] _Buffer2) // TODO: remove
-        {
-            byte[] _Buffer = new byte[_Buffer2.Length + 1];
-            _Buffer[0] = (byte)_Buffer2.Length;
-            Buffer.BlockCopy(_Buffer2, 0, _Buffer, 1, _Buffer2.Length);
-            if (_Buffer2.Length == 0) throw new Exception("Break");
-            SocketAsyncEventArgs _SocketAsyncEventArgs = new SocketAsyncEventArgs();
-            _SocketAsyncEventArgs.SetBuffer(_Buffer, 0, _Buffer.Length);
-            _Socket.SendAsync(_SocketAsyncEventArgs);
-        }
+        //public Socket _Socket;// TODO: remove
+        //public void Send(byte[] _Buffer2) // TODO: remove
+        //{
+        //    byte[] _Buffer = new byte[_Buffer2.Length + 1];
+        //    _Buffer[0] = (byte)_Buffer2.Length;
+        //    Buffer.BlockCopy(_Buffer2, 0, _Buffer, 1, _Buffer2.Length);
+        //    if (_Buffer2.Length == 0) throw new Exception("Break");
+        //    SocketAsyncEventArgs _SocketAsyncEventArgs = new SocketAsyncEventArgs();
+        //    _SocketAsyncEventArgs.SetBuffer(_Buffer, 0, _Buffer.Length);
+        //    _Socket.SendAsync(_SocketAsyncEventArgs);
+        //}
     }
 }

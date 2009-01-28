@@ -445,7 +445,8 @@ namespace CounterStrikeLive
                         //else if (value is float?) _BinaryWriter.Write(((float?)value).Value);
                         else if (value is bool) _BinaryWriter.Write((bool)value);
                         else throw new Exception("Shared Send Unkown value");
-                        _Menu._Sender.Send(((MemoryStream)_BinaryWriter.BaseStream).ToArray());
+                        //_Menu._Sender.Send(((MemoryStream)_BinaryWriter.BaseStream).ToArray());
+                        _Menu.Provider.SendMessage(((MemoryStream)_BinaryWriter.BaseStream).ToArray());
                     }
                 }
             }
@@ -560,7 +561,8 @@ namespace CounterStrikeLive
                     BinaryWriter _BinaryWriter = new BinaryWriter(_MemoryStream);
                     _BinaryWriter.Write((byte)PacketType.chat);
                     _BinaryWriter.Write(this._ChatTextBox.Text);
-                    _Sender.Send(_MemoryStream.ToArray());
+                    //_Sender.Send(_MemoryStream.ToArray());
+                    _Menu.Provider.SendMessage(_MemoryStream.ToArray());
                 }
                 _ChatTextBlock.Text += "\n" + _Menu._LocalClient._Nick + ": " + _ChatTextBox.Text;
                 _ChatTextBox.Text = "";
@@ -592,6 +594,14 @@ namespace CounterStrikeLive
             _Clients = new MyObs<SharedClient>(50);
             _ScoreBoard.LayoutRoot.DataContext = this;            
             Loaded += new RoutedEventHandler(PageLoaded);
+        }
+
+        public ServiceClientProvider Provider
+        {
+            get
+            {
+                return provider;
+            }
         }
 
         public void WriteLine(object str)
@@ -686,16 +696,16 @@ namespace CounterStrikeLive
             {
                 _ILoad.Load();
             }
-            _Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            SocketAsyncEventArgs _SocketAsyncEventArgs = new SocketAsyncEventArgs();
-            _SocketAsyncEventArgs.RemoteEndPoint = new DnsEndPoint(_host, _port); //port
-            _SocketAsyncEventArgs.UserToken = _Socket;
-            _Socket.ConnectAsync(_SocketAsyncEventArgs);
-            Trace.WriteLine("Connecting");
-            _SocketAsyncEventArgs.Completed += delegate(object o, SocketAsyncEventArgs e)
-            {                                                
-                Dispatcher.BeginInvoke(new Action(OnConnected));
-            };
+            //_Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            //SocketAsyncEventArgs _SocketAsyncEventArgs = new SocketAsyncEventArgs();
+            //_SocketAsyncEventArgs.RemoteEndPoint = new DnsEndPoint(_host, _port); //port
+            //_SocketAsyncEventArgs.UserToken = _Socket;
+            //_Socket.ConnectAsync(_SocketAsyncEventArgs);
+            //Trace.WriteLine("Connecting");
+            //_SocketAsyncEventArgs.Completed += delegate(object o, SocketAsyncEventArgs e)
+            //{                                                
+            //    Dispatcher.BeginInvoke(new Action(OnConnected));
+            //};
 
             // Create provider
             provider = new SocketsProvider(_host, _port);
@@ -707,17 +717,165 @@ namespace CounterStrikeLive
 
         void provider_ServerOperationCompleted(object sender, ServerOperationEventArgs e)
         {
-            // здесь будут обрабатываться все типы пакетов как сейчас в onReceive (см. ниже)
-        }
+            using (var _MemoryStream = new MemoryStream(e.Data))
+            {
+                var _BinaryReader = new BinaryReader(_MemoryStream);
+                if (e.SenderID == (int)PacketType.serverid)
+                {
+                    switch (e.PacketType)
+                    {
+                        case PacketType.playerid:
+                            {
+                                int id = _BinaryReader.ReadByte();
+                                Trace.id = id;
+                                _LocalClient = new SharedClient();
+                                _LocalClient._LocalDatabase = _LocalDatabase;
+                                _LocalClient._id = id;
+                                _LocalClient._Menu = this;
+                                _LocalClient._Local = true;
+                                _LocalClient.Add();
+                                _LocalClient.SendAll(null);
+                                Trace.WriteLine("ID Received:" + id);
+                                break;
+                            }
+                        case PacketType.map:
+                            {
+                                _GameState = GameState.mapdownload;
+                                string _Map = _BinaryReader.ReadString();
+                                Trace.WriteLine("Map name Received:" + _Map);
+                                LoadGame(Application.GetResourceStream(new Uri(_Map, UriKind.Relative)).Stream);
+                            }
+                            break;
+                        case PacketType.ping:
+                            {
+//                                _Sender.Send(new byte[] { (byte)PacketType.pong });
+                                _Menu.Provider.SendMessage(new byte[] { (byte)PacketType.pong });
+                            }
+                            break;
+                        default: throw new Exception("Break");
+                    }
+                }
+                else
+                {
+                    if (_LocalClient._id == null) throw new Exception();
+                    if (e.SenderID == _LocalClient._id && e.PacketType != PacketType.pinginfo) throw new Exception();
+                    SharedClient _SharedClient = _Clients[e.SenderID];
+                    if (e.PacketType != PacketType.PlayerJoined && _Clients[e.SenderID] == null) throw new Exception("Break");
+                    switch (e.PacketType)
+                    {
+                        case PacketType.rotation:
+                            {
+                                byte angle = _BinaryReader.ReadByte();
+                                if (_Clients[e.SenderID] != null)
+                                {
+                                    SharedClient _RemoteClient = _Clients[e.SenderID];
+                                    if (_RemoteClient._PlayerState == SharedClient.PlayerState.alive)
+                                    {
+                                        Player _RemotePlayer = _RemoteClient._Player;
+                                        _RemotePlayer._Angle = Listener.Decode(angle, 0, 360);
+                                    }
+                                }
+                            }
+                            break;
+                        case PacketType.addPoint:
+                            {
+                                SharedClient _KillerClient = _Clients[_BinaryReader.Read()];
+                                _KillerClient._Points++;
+                                ShowKilledMessage(_KillerClient, _SharedClient);
+                            }
+                            break;
+                        case PacketType.shoot: goto case PacketType.firstshoot;
+                        case PacketType.firstshoot:
+                            {
 
-        void provider_ServerFailed(object sender, EventArgs e)
-        {
-            
+                                Player _RemotePlayer = _SharedClient._Player;
+                                float _Angle = Listener.DecodeInt(_BinaryReader.ReadUInt16(), 0, 360);
+                                _Game.Shoot(_RemotePlayer._x, _RemotePlayer._y, _Angle, _RemotePlayer, e.PacketType == PacketType.firstshoot);
+                            }
+                            break;
+                        case PacketType.PlayerJoined:
+                            {
+                                Trace.WriteLine("Player Joiend " + e.SenderID);
+                                SharedClient _RemoteClient = new SharedClient();
+                                _RemoteClient._Menu = this;
+                                _RemoteClient._id = e.SenderID;
+                                _RemoteClient.Add();
+                                _LocalClient.SendAll(e.SenderID);
+                            }
+                            break;
+                        case PacketType.pinginfo:
+                            {
+                                _SharedClient._ping = _BinaryReader.ReadInt16();
+                            }
+                            break;
+                        case PacketType.PlayerLeaved:
+                            WriteKillText(_SharedClient._Nick + " Player Leaved");
+                            _SharedClient.Remove();
+                            Trace.WriteLine("Player Leaved " + e.SenderID);
+                            if (_Game != null) _Game.CheckWins();
+                            break;
+                        case PacketType.keyDown:
+                            {
+                                Key k = (Key)_BinaryReader.ReadByte();
+                                if (_SharedClient._Player != null)
+                                {
+                                    _SharedClient._Player.OnKeyDown(k);
+                                }
+                            }
+                            break;
+                        case PacketType.checkWins:
+                            Debug.WriteLine("Check Wins Received");
+                            if (_Game != null) _Game.CheckWins();
+                            break;
+                        case PacketType.chat:
+                            {
+                                _ChatTextBlock.Text += "\n" + _SharedClient._Nick + ": " + _BinaryReader.ReadString();
+                            }
+                            break;
+                        case PacketType.keyUp:
+                            {
+                                Key k = (Key)_BinaryReader.ReadByte();
+                                int x = _BinaryReader.ReadInt16();
+                                int y = _BinaryReader.ReadInt16();
+                                Player _Player = _SharedClient._Player;
+                                if (_Player != null)
+                                {
+                                    _Player.OnKeyUp(k);
+                                    _Player._x = x;
+                                    _Player._y = y;
+                                }
+                            }
+                            break;
+                        case PacketType.sharedObject:
+                            {
+                                _Clients[e.SenderID].onReceive(_BinaryReader);
+                            }
+                            break;
+                        default: throw new Exception();
+                    }
+                    if (_BinaryReader.BaseStream.Position != _BinaryReader.BaseStream.Length)
+                        throw new Exception("Break");
+                }
+            }
         }
 
         void provider_ServerConnected(object sender, EventArgs e)
         {
-            
+            Trace.WriteLine("Connected");
+            this.Cursor = Cursors.None;
+
+            KeyDown += new KeyEventHandler(Page_KeyDown);
+            KeyUp += new KeyEventHandler(PageKeyUp);
+            MouseMove += new MouseEventHandler(Menu_MouseMove);
+
+            MouseLeftButtonDown += new MouseButtonEventHandler(Menu_MouseLeftButtonDown);
+            MouseLeftButtonUp += new MouseButtonEventHandler(Menu_MouseLeftButtonUp);
+
+        }
+
+        void provider_ServerFailed(object sender, EventArgs e)
+        {
+
         }
 
         void Content_FullScreenChanged(object sender, EventArgs e)
@@ -782,7 +940,8 @@ namespace CounterStrikeLive
                     BinaryWriter _BinaryWriter = new BinaryWriter(_MemoryStream);
                     _BinaryWriter.Write((byte)PacketType.rotation);
                     _BinaryWriter.Write(Sender.Encode(_Game._LocalPlayer._Angle, 0, 360));
-                    _Sender.Send(_MemoryStream.ToArray());
+                    //_Sender.Send(_MemoryStream.ToArray());
+                    _Menu.Provider.SendMessage(_MemoryStream.ToArray());
                 }
             }
         }
@@ -792,8 +951,8 @@ namespace CounterStrikeLive
             Trace.WriteLine("Connected");
             if (_Socket.Connected == false) throw new Exception("Cannot Connect!");
             this.Cursor = Cursors.None;
-            _Sender._Socket = _Listener._Socket = _Socket;            
-            _Listener.Start();
+            //_Sender._Socket = _Listener._Socket = _Socket;            
+            //_Listener.Start();
             _Storyboard.Begin();
             _Storyboard.Completed += new EventHandler(Update);
 
@@ -904,16 +1063,16 @@ namespace CounterStrikeLive
 
             _Storyboard.Begin();            
 
-            List<Byte[]> _Messages = _Listener.GetMessages();
-            foreach (byte[] _buffer in _Messages)
-            {
-                onReceive(_buffer);
-            }
+            //List<Byte[]> _Messages = _Listener.GetMessages();
+            //foreach (byte[] _buffer in _Messages)
+            //{
+            //    onReceive(_buffer);
+            //}
 
-            if (_Listener._Connected == false)
-            {
-                throw new Exception("You Have Been Disconnected!");
-            }
+            //if (_Listener._Connected == false)
+            //{
+            //    throw new Exception("You Have Been Disconnected!");
+            //}
             if (_GameState != GameState.mapdownload)
             {
                 if (_GameState == GameState.alive)
@@ -977,7 +1136,8 @@ namespace CounterStrikeLive
                             break;
                         case PacketType.ping:
                             {                                
-                                _Sender.Send(new byte[]{ (byte)PacketType.pong});
+                                //_Sender.Send(new byte[]{ (byte)PacketType.pong});
+                                _Menu.Provider.SendMessage(new byte[] { (byte)PacketType.pong });
                             }
 							break;
                         default: throw new Exception("Break"); 
@@ -1429,7 +1589,8 @@ namespace CounterStrikeLive
             }
             if (Menu.GameState.alive == _Menu._GameState)
             {
-                _Sender.Send(new byte[] { (byte)PacketType.keyDown, (byte)_Key });
+                //_Sender.Send(new byte[] { (byte)PacketType.keyDown, (byte)_Key });
+                _Menu.Provider.SendMessage(new byte[] { (byte)PacketType.keyDown, (byte)_Key });
                 _LocalPlayer.OnKeyDown(_Key);
             }
         }
@@ -1444,7 +1605,8 @@ namespace CounterStrikeLive
                     _BinaryWriter.Write((byte)_Key);
                     _BinaryWriter.Write((Int16)_LocalPlayer._x);
                     _BinaryWriter.Write((Int16)_LocalPlayer._y);
-                    _Sender.Send(_MemoryStream.ToArray());
+                    //_Sender.Send(_MemoryStream.ToArray());
+                    _Menu.Provider.SendMessage(_MemoryStream.ToArray());
                 }
                 _LocalPlayer.OnKeyUp(_Key);
             }
@@ -1513,7 +1675,8 @@ namespace CounterStrikeLive
         private void SendCheckWins()
         {
             Debug.WriteLine("check Wins Sended");
-            _Sender.Send(new byte[] { (byte)PacketType.checkWins });
+            //_Sender.Send(new byte[] { (byte)PacketType.checkWins });
+            _Menu.Provider.SendMessage(new byte[] { (byte)PacketType.checkWins });
             CheckWins();
         }
         public LocalPlayer _LocalPlayer { get { return (LocalPlayer)_LocalClient._Player; } }
@@ -1562,7 +1725,8 @@ namespace CounterStrikeLive
             }
             else
             {
-                _Sender.Send(new byte[] { (byte)PacketType.addPoint, (byte)_Killer._ID });
+                //_Sender.Send(new byte[] { (byte)PacketType.addPoint, (byte)_Killer._ID });
+                _Menu.Provider.SendMessage(new byte[] { (byte)PacketType.addPoint, (byte)_Killer._ID });
             }
             //if (_Menu._GameState == Menu.GameState.spectator) throw new Exception("Break");
             _LocalClient._Deaths++;
@@ -1700,7 +1864,8 @@ namespace CounterStrikeLive
                                 Shoot(_LocalPlayer._x, _LocalPlayer._y, _Angle, _LocalPlayer, false);
                             }
                             _BinaryWriter.Write(Sender.EncodeInt(_Angle, 0, 360));
-                            _Sender.Send(_MemoryStream.ToArray());
+                            //_Sender.Send(_MemoryStream.ToArray());
+                            _Menu.Provider.SendMessage(_MemoryStream.ToArray());
                         }
                         _Cursor._Scale += .5f;
                         if (_Cursor._Scale > 4) _Cursor._Scale = 4;

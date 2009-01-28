@@ -36,58 +36,58 @@ namespace CounterStrikeLive
         }
 
 
-        public bool _Connected // TODO: remove
-        {
-            get { return _Socket.Connected; }
-        }
+        //public bool _Connected // TODO: remove
+        //{
+        //    get { return _Socket.Connected; }
+        //}
 
-        private List<byte[]> _Messages = new List<byte[]>(); // TODO: remove
+        //private List<byte[]> _Messages = new List<byte[]>(); // TODO: remove
 
-        public List<byte[]> GetMessages() // TODO: remove
-        {
-            lock ("Get")
-            {
-                List<byte[]> _Return = _Messages;
-                _Messages = new List<byte[]>();
-                return _Return;
-            }
-        }
-        void SocketAsyncEventArgs_Completed(object sender, SocketAsyncEventArgs _SocketAsyncEventArgs) // TODO: remove
-        {
-            lock ("Receive")
-            {
-                _MemoryStream.Write(_SocketAsyncEventArgs.Buffer, 0, _SocketAsyncEventArgs.BytesTransferred);
-                _MemoryStream.Seek(_position, SeekOrigin.Begin);
-                while (true)
-                {
-                    int _length = _MemoryStream.ReadByte();
-                    if (_length == -1 || _MemoryStream.Length <= _position + _length) break;
-                    Byte[] _Buffer = new byte[_length];
+        //public List<byte[]> GetMessages() // TODO: remove
+        //{
+        //    lock ("Get")
+        //    {
+        //        List<byte[]> _Return = _Messages;
+        //        _Messages = new List<byte[]>();
+        //        return _Return;
+        //    }
+        //}
+        //void SocketAsyncEventArgs_Completed(object sender, SocketAsyncEventArgs _SocketAsyncEventArgs) // TODO: remove
+        //{
+        //    lock ("Receive")
+        //    {
+        //        _MemoryStream.Write(_SocketAsyncEventArgs.Buffer, 0, _SocketAsyncEventArgs.BytesTransferred);
+        //        _MemoryStream.Seek(_position, SeekOrigin.Begin);
+        //        while (true)
+        //        {
+        //            int _length = _MemoryStream.ReadByte();
+        //            if (_length == -1 || _MemoryStream.Length <= _position + _length) break;
+        //            Byte[] _Buffer = new byte[_length];
 
-                    _MemoryStream.Read(_Buffer, 0, _length);
-                    _position = _MemoryStream.Position;
-                    lock ("Get")
-                        _Messages.Add(_Buffer);
-                }
-                _MemoryStream.Seek(0, SeekOrigin.End);
-                StartReceive();
-            }
-        }
-        MemoryStream _MemoryStream = new MemoryStream(); // TODO: remove
-        public void Start()
-        {
-            StartReceive();
-        }
+        //            _MemoryStream.Read(_Buffer, 0, _length);
+        //            _position = _MemoryStream.Position;
+        //            lock ("Get")
+        //                _Messages.Add(_Buffer);
+        //        }
+        //        _MemoryStream.Seek(0, SeekOrigin.End);
+        //        StartReceive();
+        //    }
+        //}
+        //MemoryStream _MemoryStream = new MemoryStream(); // TODO: remove
+        //public void Start()
+        //{
+        //    StartReceive();
+        //}
 
-        private void StartReceive()
-        {
-            SocketAsyncEventArgs _SocketAsyncEventArgs = new SocketAsyncEventArgs();
-            _SocketAsyncEventArgs.Completed += new EventHandler<SocketAsyncEventArgs>(SocketAsyncEventArgs_Completed);
-            //_Socket.ReceiveBufferSize = 100;
-            //_Socket.SendBufferSize = 100;
-            _SocketAsyncEventArgs.SetBuffer(new byte[100], 0, 100);
-            _Socket.ReceiveAsync(_SocketAsyncEventArgs);
-        }
+        //private void StartReceive()
+        //{
+        //    SocketAsyncEventArgs _SocketAsyncEventArgs = new SocketAsyncEventArgs();
+        //    _SocketAsyncEventArgs.Completed += new EventHandler<SocketAsyncEventArgs>(SocketAsyncEventArgs_Completed);
+        //    //_Socket.ReceiveBufferSize = 100;
+        //    //_Socket.SendBufferSize = 100;
+        //    _SocketAsyncEventArgs.SetBuffer(new byte[100], 0, 100);
+        //    _Socket.ReceiveAsync(_SocketAsyncEventArgs);
+        //}
         long _position;
     }
 }

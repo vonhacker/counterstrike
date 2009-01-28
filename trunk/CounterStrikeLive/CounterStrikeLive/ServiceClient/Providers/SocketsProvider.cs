@@ -72,7 +72,7 @@ namespace CounterStrikeLive.ServiceClient
             }
         }
 
-        protected override void SendMessage(object data)
+        public override void SendMessage(object data)
         {
             byte[] byteData = data as byte[];
             byte[] buffer = new byte[byteData.Length + 1];
