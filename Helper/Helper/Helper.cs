@@ -22,9 +22,13 @@ namespace doru
 {
     public abstract class Encoding : System.Text.Encoding
     {
+#if (!SILVERLIGHT)
         static System.Text.Encoding _DefaultEncoding = System.Text.Encoding.Default;
         public static new System.Text.Encoding Default { get { return _DefaultEncoding; } set { _DefaultEncoding = value; } }
         public static System.Text.Encoding Default2 { get { return System.Text.Encoding.Default; } }
+#else
+        public static System.Text.Encoding Default { get { return Encoding.UTF8; } }
+#endif
     }
     public class ExceptionC : Exception
     {
@@ -292,6 +296,10 @@ namespace doru
 
     public static class Extensions
     {
+        public static IEnumerable<T> Last<T>(this IEnumerable<T> list,int c)
+        {
+            return list.Skip(list.Count() - c);
+        }
         public static string ToString<T>(this IEnumerable<T> list, string s)
         {
             StringBuilder sb = new StringBuilder();
