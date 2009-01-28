@@ -862,15 +862,24 @@ namespace CounterStrikeLive
         void provider_ServerConnected(object sender, EventArgs e)
         {
             Trace.WriteLine("Connected");
+            //if (_Socket.Connected == false) throw new Exception("Cannot Connect!");
             this.Cursor = Cursors.None;
+            //_Sender._Socket = _Listener._Socket = _Socket;            
+            //_Listener.Start();
+            _Storyboard.Begin();
+            _Storyboard.Completed += new EventHandler(Update);
 
             KeyDown += new KeyEventHandler(Page_KeyDown);
             KeyUp += new KeyEventHandler(PageKeyUp);
             MouseMove += new MouseEventHandler(Menu_MouseMove);
 
+            //DispatcherTimer _DispatcherTimer = new DispatcherTimer();
+            //_DispatcherTimer.Interval = TimeSpan.FromMilliseconds(1000);
+            //_DispatcherTimer.Tick += new EventHandler(_DispatcherTimer_Tick); //send keys test
+            //_DispatcherTimer.Start();
+
             MouseLeftButtonDown += new MouseButtonEventHandler(Menu_MouseLeftButtonDown);
             MouseLeftButtonUp += new MouseButtonEventHandler(Menu_MouseLeftButtonUp);
-
         }
 
         void provider_ServerFailed(object sender, EventArgs e)
