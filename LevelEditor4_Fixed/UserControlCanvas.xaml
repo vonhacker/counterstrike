@@ -1,0 +1,57 @@
+﻿<UserControl x:Class="CSL.LevelEditor.UserControlCanvas"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Height="Auto" Width="Auto">
+    <Grid Height="Auto" Width="Auto">
+        <ScrollViewer Name="_scrollViewer" 
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto"
+                      Grid.Column="0" Grid.Row="0" 
+                      Grid.ColumnSpan="1" Grid.RowSpan="1"                      
+                      >
+            <ScrollViewer.Resources>
+                <Style TargetType="{x:Type Canvas}">
+                    <Setter Property="Width" Value="Auto"></Setter>
+                    <Setter Property="Height" Value="Auto"></Setter>
+                </Style>
+            </ScrollViewer.Resources>
+            <Canvas Name="_rootCanvas" Width="7000" Height="7000"> 
+                 <!--   Width="{Binding ElementName=_scrollViewer, Path=ActualWidth}"
+                    Height="{Binding ElementName=_scrollViewer,Path=ActualHeight}"-->
+              
+                
+                <Canvas Name="_canvasList" Background="WhiteSmoke" AllowDrop="True" Drop="MediaPanel_Drop" 
+                        DragOver="MediaPanel_DragOver"
+                        Width="7000"
+                        Height="7000"
+                        >
+                        <!--
+                    Width="{Binding ElementName=_scrollViewer, Path=ActualWidth}"
+                    Height="{Binding ElementName=_scrollViewer,Path=ActualHeight}" -->
+                        
+                    <Canvas.Resources>
+                        <Style TargetType="{x:Type InkCanvas}">
+                            <Setter Property="Background" Value="Transparent"></Setter> 
+                            <Setter Property="Width" Value="Auto"></Setter>
+                            <Setter Property="Height" Value="Auto"></Setter>
+                        </Style>
+                    </Canvas.Resources>
+                    <InkCanvas                     
+                        Width="7000"
+                        Height="7000">
+                        <Ellipse Width="100" Height="100" Fill="Red" Name="_terroristStartPos"></Ellipse>
+                        <Ellipse Width="100" Height="100" Fill="Blue" Name="_counterTerroristStartPos"></Ellipse>
+                    </InkCanvas>
+                    <InkCanvas                         
+                        Width="7000"
+                        Height="7000">                        
+                    </InkCanvas>
+                    <InkCanvas ></InkCanvas>
+                    <InkCanvas ></InkCanvas>
+                    <InkCanvas ></InkCanvas>
+                </Canvas>
+                <Canvas Name="_polygonsCanvas"></Canvas>
+          </Canvas> 
+        </ScrollViewer>
+    </Grid>
+</UserControl>
