@@ -1,0 +1,75 @@
+﻿<UserControl x:Class="CSL.LevelEditor.UserControlButtons"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Height="32" Width="Auto">    
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <!-- open and save file -->
+            <ColumnDefinition Width="32" MaxWidth="32" MinWidth="32" />
+            <ColumnDefinition Width="32" MaxWidth="32" MinWidth="32" />
+            <ColumnDefinition Width="5" MaxWidth="5" MinWidth="5" />
+            <!-- layers -->
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="32" MaxWidth="32" MinWidth="32" />
+            <ColumnDefinition Width="32" MaxWidth="32" MinWidth="32" />
+            <ColumnDefinition Width="32" MaxWidth="32" MinWidth="32" />
+            <!-- mode -->
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="32" MaxWidth="32" MinWidth="32" />
+            <ColumnDefinition Width="32" MaxWidth="32" MinWidth="32" />
+            <ColumnDefinition Width="32" MaxWidth="32" MinWidth="32" />
+            <!-- color -->
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="32" MaxWidth="32" MinWidth="32" />
+            <!-- navigation -->
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="32" MaxWidth="32" MinWidth="32" />
+            <ColumnDefinition Width="32" MaxWidth="32" MinWidth="32" />
+            <ColumnDefinition Width="32" MaxWidth="32" MinWidth="32" />
+            <ColumnDefinition Width="32" MaxWidth="32" MinWidth="32" />
+            <!-- editing -->
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="32" MaxWidth="32" MinWidth="32" />
+            <ColumnDefinition Width="32" MaxWidth="32" MinWidth="32" />
+            <ColumnDefinition Width="32" MaxWidth="32" MinWidth="32" />
+            <ColumnDefinition Width="32" MaxWidth="32" MinWidth="32" />
+            <!-- fillout -->
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="32" MaxWidth="32" MinWidth="32" />            
+        </Grid.ColumnDefinitions>
+        <!-- open and save file -->
+        <Button Margin="2" Click="buttonOpen_Click" Name="buttonOpen" ToolTip="Open" Grid.Column="0" Content="Open" />
+        <Button Margin="2" Click="buttonSaveFile_Click" Name="buttonSaveFile" ToolTip="SaveFile" Grid.Column="1" Content="SaveFile" />
+        <!-- layers -->
+        <TextBlock  Margin="3" VerticalAlignment="Center" Grid.Column="3">Layers:</TextBlock>
+        <Button Margin="2" Click="buttonLayer1_Click" Name="buttonLayer1" ToolTip="Layer 1" Grid.Column="4" Content="layer1" />
+        <Button Margin="2" Click="buttonLayer2_Click" Name="buttonLayer2" ToolTip="Layer 2" Grid.Column="5" Content="layer2" />
+        <Button Margin="2" Click="buttonLayer3_Click" Name="buttonLayer3" ToolTip="Layer 3" Grid.Column="6" Content="layer3" />
+        <!-- modes -->
+        <TextBlock  Margin="3" VerticalAlignment="Center" Grid.Column="7">Modes:</TextBlock>
+        <Button Margin="2" Click="buttonSelectMode_Click" Name="buttonSelectMode" ToolTip="Select mode" Grid.Column="8" Content="select" />
+        <Button Margin="2" Click="buttonPolygon_Click" Name="buttonPolygon" ToolTip="Polygon mode" Grid.Column="9" Content="polygon" />
+        <Button Margin="2" Click="buttonErase_Click" Name="buttonErase" ToolTip="Erase mode" Grid.Column="10" Content="erase1" />
+        <!-- color -->
+        <TextBlock  Margin="3" VerticalAlignment="Center" Grid.Column="11">Color:</TextBlock>
+        <Button Margin="2" Click="buttonSelectColor_Click" Name="buttonSelectColor" ToolTip="Select color" Grid.Column="12" Content="color_png" />
+        <!-- navigation -->
+        <TextBlock  Margin="3" VerticalAlignment="Center" Grid.Column="13">Navigation:</TextBlock>
+        <Button Margin="2" Click="buttonScaleAdd_Click" Name="buttonScaleAdd" ToolTip="Scale up" Grid.Column="14" Content="scale_up_png" />
+        <Button Margin="2" Click="buttonScaleSubtract_Click" Name="buttonScaleSubtract" ToolTip="Scale down" Grid.Column="15" Content="scale_down_png" />
+        <Button Margin="2" Click="buttonPageUp_Click" Name="buttonPageUp" ToolTip="Page up" Grid.Column="16" Content="page_up_png" />
+        <Button Margin="2" Click="buttonPageDown_Click" Name="buttonPageDown" ToolTip="Page down" Grid.Column="17" Content="page_down_png" />
+        <!-- editing -->
+        <TextBlock  Margin="3" VerticalAlignment="Center" Grid.Column="18">Editing:</TextBlock>
+        <Button Margin="2" Click="buttonCopy_Click" Name="buttonCopy" ToolTip="Copy" Grid.Column="19" Content="copy_png" />
+        <Button Margin="2" Click="buttonCut_Click" Name="buttonCut" ToolTip="Cut" Grid.Column="20" Content="cut_png" />
+        <Button Margin="2" Click="buttonPaste_Click" Name="buttonPaste" ToolTip="Paste" Grid.Column="21" Content="paste_png" />
+        <Button Margin="2" Click="buttonRemoveLast_Click" Name="buttonRemoveLast" ToolTip="Undo" Grid.Column="22" Content="undo" />
+        <!-- fillout -->
+        <TextBlock  Margin="3" VerticalAlignment="Center" Grid.Column="23">Fill out:</TextBlock>
+        <Button Margin="2" Click="buttonKeyB_Click" Name="buttonKeyB" ToolTip="keyB" Grid.Column="24" Content="stop_png" />
+
+
+
+    </Grid>
+</UserControl>
