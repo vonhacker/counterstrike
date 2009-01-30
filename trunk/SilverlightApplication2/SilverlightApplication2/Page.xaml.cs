@@ -17,6 +17,7 @@ namespace SilverlightApplication2
         public static Page _Page;
         public Page()
         {
+            System.Diagnostics.Debug.WriteLine("sda");
             _Page = this;
             InitializeComponent();
             Loaded += new RoutedEventHandler(Page_Loaded);
@@ -40,12 +41,13 @@ namespace SilverlightApplication2
 
         void Page_KeyUp(object sender, KeyEventArgs e)
         {
-            _Keys.Add(e.Key);
+            _Keys.Remove(e.Key);
         }
         public static List<Key> _Keys = new List<Key>();
         void Page_KeyDown(object sender, KeyEventArgs e)
         {
-            _Keys.Remove(e.Key);
+            if(!_Keys.Contains(e.Key))
+                _Keys.Add(e.Key);
         }
         Cursor _Cursor;
         Storyboard _Storyboard = new Storyboard();
