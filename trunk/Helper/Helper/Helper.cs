@@ -162,6 +162,13 @@ namespace doru
     public class ExceptionA : Exception { public ExceptionA(string s) : base(s) { } public ExceptionA() { } };
     public partial class Helper
     {
+#if(SILVERLIGHT)
+        public static string Trace2(string s)
+        {
+            Trace.WriteLine(s);
+            return s;
+        }
+#endif
         public static string ReplaceRandoms(string text, string[] _RandomTags)
         {
             text = Regex.Replace(text, @"_randomtext(\d+)_", delegate(Match m)
@@ -296,6 +303,49 @@ namespace doru
 
     public static class Extensions
     {
+#if(!SILVERLIGHT)
+        
+        public static T Trace<T>(this T t)
+        {
+            object o = (object)t;
+            if (o is byte[])
+            {                        
+                System.Diagnostics.Trace.WriteLine(Encoding.Default.GetString((byte[])o));
+                return t;
+            }
+            else if (o is bool)
+            {
+                System.Diagnostics.Trace.Write(((bool)o) ? "1" : "0");
+                return t;
+            }
+            else
+            {
+                System.Diagnostics.Trace.WriteLine(t);
+                return t;
+            }
+        }
+#else
+        public static T Trace<T>(this T t)
+        {
+            object o = (object)t;
+            if (o is byte[])
+            {
+                
+                doru.Trace.WriteLine(Encoding.Default.GetString((byte[])o));
+                return t;
+            }
+            else if (o is bool)
+            {
+                doru.Trace.Write(((bool)o) ? "1" : "0");
+                return t;
+            }
+            else
+            {
+                doru.Trace.WriteLine(t);
+                return t;
+            }
+        }
+#endif
         public static IEnumerable<T> Last<T>(this IEnumerable<T> list,int c)
         {
             return list.Skip(list.Count() - c);
@@ -1286,25 +1336,7 @@ namespace doru
     }
     public static class Http
     {
-        public static T Trace<T>(this T t)
-        {
-            object o = (object)t;
-            if (o is byte[])
-            {
-                System.Diagnostics.Trace.WriteLine(Encoding.Default.GetString((byte[])o));
-                return t;
-            }
-            else if (o is bool)
-            {
-                System.Diagnostics.Trace.Write(((bool)o) ? "1" : "0");
-                return t;
-            }
-            else
-            {
-                System.Diagnostics.Trace.WriteLine(t);
-                return t;
-            }
-        }        
+        
         
         public static void Length(ref string _bytes)
         {
@@ -1490,10 +1522,14 @@ namespace doru
 
     }
 #else
-    public static class Debug
+
+    public class Trace : Debug
+    {
+    }
+    public class Debug
     {
         public static void WriteLine<T>(T o)
-        {
+        {            
             Console.WriteLine(o);
         }
         public static void Write<T>(T o)
