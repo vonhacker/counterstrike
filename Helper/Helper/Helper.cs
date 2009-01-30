@@ -1530,7 +1530,7 @@ namespace doru
     {
         public static void WriteLine<T>(T o)
         {            
-            Console.WriteLine(o);
+            System.Diagnostics.Debug.WriteLine(o);
         }
         public static void Write<T>(T o)
         {
