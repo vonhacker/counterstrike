@@ -539,12 +539,18 @@ namespace CounterStrikeLive
             return _List.GetEnumerator();
         }
     }
-    public class ChatTextBox : UserControl
+    public class ChatTextBox : TextBox
     {
-        public TextBlock _ChatTextBox = new TextBlock { Foreground = new SolidColorBrush(Colors.Yellow) };
+        
         public ChatTextBox()
         {
-            this.Content = _ChatTextBox;
+            Foreground = new SolidColorBrush(Colors.Yellow);
+            Background = null;                        
+        }
+        protected override void OnGotFocus(RoutedEventArgs e)
+        {
+            Trace.WriteLine("focus");
+            base.OnGotFocus(e);
         }
         public void Load()
         {
@@ -553,28 +559,28 @@ namespace CounterStrikeLive
         public Menu _Menu;
         Sender _Sender { get { return _Menu._Sender; } }
         new public void KeyDown(KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter && _ChatTextBox.Text.Length > 0)
+        {            
+            if (e.Key == Key.Enter && Text.Length > 0)
             {
                 using (MemoryStream _MemoryStream = new MemoryStream())
                 {
                     BinaryWriter _BinaryWriter = new BinaryWriter(_MemoryStream);
                     _BinaryWriter.Write((byte)PacketType.chat);
-                    _BinaryWriter.Write(this._ChatTextBox.Text);
+                    _BinaryWriter.Write(Text);
                     //_Sender.Send(_MemoryStream.ToArray());
                     _Menu.Provider.SendMessage(_MemoryStream.ToArray());
                 }
-                _ChatTextBlock.Text += "\n" + _Menu._LocalClient._Nick + ": " + _ChatTextBox.Text;
-                _ChatTextBox.Text = "";
+                _ChatTextBlock.Text += "\n" + _Menu._LocalClient._Nick + ": " + Text;
+                Text = "";
                 this.Hide();
             }
-            else
-                if (e.Key == Key.Back)
-                {
-                    if (_ChatTextBox.Text.Length > 0) _ChatTextBox.Text = _ChatTextBox.Text.Remove(_ChatTextBox.Text.Length - 1, 1);
-                }
-                else
-                    _ChatTextBox.Text += e.PlatformKeyCode;
+            //else
+            //    if (e.Key == Key.Back)
+            //    {
+            //        if (.Text.Length > 0) .Text = .Text.Remove(.Text.Length - 1, 1);
+            //    }
+            //    else
+            //        .Text += e.PlatformKeyCode;
         }
         public TextBlock _ChatTextBlock { get { return _Menu._ChatTextBlock; } }
 
@@ -1034,7 +1040,10 @@ namespace CounterStrikeLive
                     _ScoreBoard.Toggle();
 
                 if (Key.T == e.Key || Key.Y == e.Key)
-                    _ChatTextBox.Toggle();                
+                {
+                    e.Handled = true;
+                    _ChatTextBox.Toggle();
+                }
 
                 if (e.Key == Key.Escape)
                     System.Windows.Application.Current.Host.Content.IsFullScreen = true;
@@ -2413,7 +2422,7 @@ namespace CounterStrikeLive
         {
             Item _Item = (_DataGrid.SelectedItem as Item);
             if (_Item == null)
-                _serverip.Text = "localhost:4350";
+                _serverip.Text = "localhost:4530";
             else
                 _serverip.Text = _Item._Ip + ":" + _Item._Port;
         }
