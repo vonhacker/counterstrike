@@ -559,28 +559,25 @@ namespace CounterStrikeLive
         public Menu _Menu;
         Sender _Sender { get { return _Menu._Sender; } }
         new public void KeyDown(KeyEventArgs e)
-        {            
-            if (e.Key == Key.Enter && Text.Length > 0)
+        {
+            //this.Focus(); this.IsEnabled = true;
+            if (e.Key == Key.Enter)
             {
-                using (MemoryStream _MemoryStream = new MemoryStream())
+                if (Text.Length > 0)
                 {
-                    BinaryWriter _BinaryWriter = new BinaryWriter(_MemoryStream);
-                    _BinaryWriter.Write((byte)PacketType.chat);
-                    _BinaryWriter.Write(Text);
-                    //_Sender.Send(_MemoryStream.ToArray());
-                    _Menu.Provider.SendMessage(_MemoryStream.ToArray());
+                    using (MemoryStream _MemoryStream = new MemoryStream())
+                    {
+                        BinaryWriter _BinaryWriter = new BinaryWriter(_MemoryStream);
+                        _BinaryWriter.Write((byte)PacketType.chat);
+                        _BinaryWriter.Write(Text);
+                        //_Sender.Send(_MemoryStream.ToArray());
+                        _Menu.Provider.SendMessage(_MemoryStream.ToArray());
+                    }
+                    _ChatTextBlock.Text += "\n" + _Menu._LocalClient._Nick + ": " + Text;
+                    Text = "";
                 }
-                _ChatTextBlock.Text += "\n" + _Menu._LocalClient._Nick + ": " + Text;
-                Text = "";
                 this.Hide();
-            }
-            //else
-            //    if (e.Key == Key.Back)
-            //    {
-            //        if (.Text.Length > 0) .Text = .Text.Remove(.Text.Length - 1, 1);
-            //    }
-            //    else
-            //        .Text += e.PlatformKeyCode;
+            }            
         }
         public TextBlock _ChatTextBlock { get { return _Menu._ChatTextBlock; } }
 
@@ -1039,7 +1036,7 @@ namespace CounterStrikeLive
                 if (Key.Tab == e.Key || Key.Back == e.Key)
                     _ScoreBoard.Toggle();
 
-                if (Key.T == e.Key || Key.Y == e.Key)
+                if (Key.Y == e.Key)
                 {
                     e.Handled = true;
                     _ChatTextBox.Toggle();
