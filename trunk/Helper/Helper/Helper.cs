@@ -348,7 +348,7 @@ namespace doru
 #endif
         public static IEnumerable<T> Last<T>(this IEnumerable<T> list,int c)
         {
-            return list.Skip(list.Count() - c);
+            return list.Skip(Math.Max(0, list.Count() - c));
         }
         public static string ToString<T>(this IEnumerable<T> list, string s)
         {
