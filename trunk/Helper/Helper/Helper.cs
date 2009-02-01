@@ -18,6 +18,29 @@ using System.Collections;
 using System.Xml.Schema;
 using System.Collections.Specialized;
 
+namespace CounterStrikeLive
+{
+    /// <summary>
+    /// static random class
+    /// </summary>
+    public static class Random
+    {
+        static System.Random _Random = new System.Random();
+        public static int Next(int min, int max)
+        {
+            return _Random.Next(min, max);
+        }
+        public static float Next(float min, float max)
+        {
+            return min + ((float)_Random.NextDouble()) * (max - min);
+        }
+        public static int Next(int max)
+        {
+            return _Random.Next(max);
+        }
+    }
+}
+
 namespace doru
 {
     public abstract class Encoding : System.Text.Encoding

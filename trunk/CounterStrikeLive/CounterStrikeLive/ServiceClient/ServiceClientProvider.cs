@@ -10,6 +10,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Threading;
 using System.IO;
+using CounterStrikeLive.Service;
 
 namespace CounterStrikeLive.ServiceClient
 {
