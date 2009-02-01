@@ -59,22 +59,13 @@
       <IsSystemFont>True</IsSystemFont>
       <All>True</All>
     </BlendEmbeddedFont>
-    <Page Include="EnterNick.xaml">
-      <Generator>MSBuild:MarkupCompilePass1</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="ScoreBoard.xaml">
-      <Generator>MSBuild:MarkupCompilePass1</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="WelcomeScreen.xaml">
-      <Generator>MSBuild:MarkupCompilePass1</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\Helper\Helper\Helper.cs">
-      <Link>Helper.cs</Link>
+      <Link>Helpers\Helper.cs</Link>
+    </Compile>
+    <Compile Include="..\Server\Service\ServiceEnums.cs">
+      <Link>ServiceClient\Entities\ServiceEnums.cs</Link>
     </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -82,24 +73,42 @@
     <Compile Include="Common\Application.cs" />
     <Compile Include="Common\Extensions.cs" />
     <Compile Include="Database.cs" />
+    <Compile Include="Engine\Explosion.cs" />
+    <Compile Include="Engine\ExplosionA.cs" />
+    <Compile Include="Engine\GameObj.cs" />
+    <Compile Include="Engine\LocalPlayer.cs" />
+    <Compile Include="Engine\Maps\Maps.cs" />
+    <Compile Include="Engine\Player.cs" />
     <Compile Include="ServiceClient\Events\ServerOperationEventArgs.cs" />
     <Compile Include="ServiceClient\Listener.cs" />
     <Compile Include="ServiceClient\Providers\SocketsProvider.cs" />
     <Compile Include="ServiceClient\Sender.cs" />
     <Compile Include="ServiceClient\ServiceClientProvider.cs" />
     <Compile Include="SVHelper.cs" />
-    <Compile Include="Mathematics\BilinearInterpolator.cs" />
-    <Compile Include="Mathematics\Calculator.cs" />
-    <Compile Include="Mathematics\CircularInterpolator.cs" />
-    <Compile Include="Mathematics\ConvertUnits.cs" />
-    <Compile Include="Mathematics\MathHelper.cs" />
-    <Compile Include="Mathematics\Matrix.cs" />
-    <Compile Include="Mathematics\Vector2.cs" />
-    <Compile Include="Mathematics\Vector3.cs" />
+    <Compile Include="Engine\Mathematics\BilinearInterpolator.cs" />
+    <Compile Include="Engine\Mathematics\Calculator.cs" />
+    <Compile Include="Engine\Mathematics\CircularInterpolator.cs" />
+    <Compile Include="Engine\Mathematics\ConvertUnits.cs" />
+    <Compile Include="Engine\Mathematics\MathHelper.cs" />
+    <Compile Include="Engine\Mathematics\Matrix.cs" />
+    <Compile Include="Engine\Mathematics\Vector2.cs" />
+    <Compile Include="Engine\Mathematics\Vector3.cs" />
     <Compile Include="Page.xaml.cs">
       <DependentUpon>Page.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\EnterNick.xaml.cs">
+      <DependentUpon>EnterNick.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ScoreBoard.xaml.cs">
+      <DependentUpon>ScoreBoard.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\TeamSelect.xaml.cs">
+      <DependentUpon>TeamSelect.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\WelcomeScreen.xaml.cs">
+      <DependentUpon>WelcomeScreen.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -110,7 +119,19 @@
       <Generator>MSBuild:MarkupCompilePass1</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="TeamSelect.xaml">
+    <Page Include="UI\EnterNick.xaml">
+      <SubType>Page</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+    </Page>
+    <Page Include="UI\ScoreBoard.xaml">
+      <SubType>Page</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+    </Page>
+    <Page Include="UI\TeamSelect.xaml">
+      <SubType>Page</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+    </Page>
+    <Page Include="UI\WelcomeScreen.xaml">
       <SubType>Page</SubType>
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </Page>
@@ -461,7 +482,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Common\ApplicationParts\" />
-    <Folder Include="ServiceClient\Entities\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v2.0\Microsoft.Silverlight.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
