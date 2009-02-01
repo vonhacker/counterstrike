@@ -61,7 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GameServer.cs" />
+    <Compile Include="Service\GameServer.cs" />
     <Compile Include="PolicyServer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -75,6 +75,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Res.resx</DependentUpon>
     </Compile>
+    <Compile Include="Service\ServiceEnums.cs" />
     <Compile Include="WebServer.cs" />
   </ItemGroup>
   <ItemGroup>
