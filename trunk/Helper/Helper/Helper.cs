@@ -335,7 +335,11 @@ namespace doru
         }
         public static T Trace<T>(this T t, string s)
         {
+#if(SILVERLIGHT)
             doru.Trace.WriteLine(s + t);
+#else
+            System.Diagnostics.Trace.WriteLine(s+t);
+#endif
             return t;
         }
         
@@ -1053,105 +1057,7 @@ namespace doru
                 _XmlSchemas[0].Write(_FileStream);
         }
     }
-    public class ClientWait
-    {
-        public int _Port;
-        private List<TcpClient> _TcpClients = new List<TcpClient>();
-
-        public void Start()
-        {
-            TcpListener _TcpListener = new TcpListener(IPAddress.Any, _Port);
-            _TcpListener.Start();
-            while (true)
-            {
-                TcpClient _TcpClient = _TcpListener.AcceptTcpClient();
-                lock ("clientwait")
-                    _TcpClients.Add(_TcpClient);
-                Thread.Sleep(10);
-            }
-        }
-
-        public List<TcpClient> GetClients()
-        {
-            lock ("clientwait")
-            {
-                List<TcpClient> _Return = _TcpClients;
-                _TcpClients = new List<TcpClient>();
-                return _Return;
-            }
-        }
-    }
-    public class Sender
-    {
-        public TcpClient _TcpClient;
-        public Socket _Socket { get { return _TcpClient.Client; } }
-        public void Send(byte[] _Buffer2)
-        {
-            if (_TcpClient.Connected)
-                try
-                {
-                    byte[] _Buffer3 = new byte[_Buffer2.Length + 1];
-                    _Buffer3[0] = (byte)_Buffer2.Length;
-                    Buffer.BlockCopy(_Buffer2, 0, _Buffer3, 1, _Buffer2.Length);
-                    if (_Buffer2.Length == 0) Debugger.Break();
-                    _Socket.Send(_Buffer3);
-                }
-                catch (SocketException e) { Trace.WriteLine(e.Message); }
-        }
-    }
-    public class Listener
-    {
-        public TcpClient _TcpClient;
-        private List<byte[]> _Messages = new List<byte[]>();
-
-        public List<byte[]> GetMessages()
-        {
-            lock ("Get")
-            {
-                List<byte[]> _Return = _Messages;
-                _Messages = new List<byte[]>();
-                return _Return;
-            }
-        }
-
-        public bool _Connected
-        {
-            get { return _TcpClient.Connected; }
-        }
-        public void Start()
-        {
-            //_TcpClient.ReceiveBufferSize = 100;
-            //_TcpClient.SendBufferSize = 100;            
-            MemoryStream _MemoryStream = new MemoryStream();
-            byte[] _Buffer = new byte[9999];
-            long _position = 0;
-            while (_TcpClient.Connected)
-            {
-                try
-                {
-                    int count = _TcpClient.Client.Receive(_Buffer);
-
-                    _MemoryStream.Write(_Buffer, 0, count);
-                    _MemoryStream.Seek(_position, SeekOrigin.Begin);
-                    while (true)
-                    {
-                        int _length = _MemoryStream.ReadByte();
-                        if (_length == -1 || _MemoryStream.Length <= _position + _length) break;
-                        Byte[] _Buffer1 = new byte[_length];
-
-                        _MemoryStream.Read(_Buffer1, 0, _length);
-                        _position = _MemoryStream.Position;
-                        lock ("Get")
-                            _Messages.Add(_Buffer1);
-                    }
-                    _MemoryStream.Seek(0, SeekOrigin.End);
-                }
-                catch (SocketException) { }
-                catch (IOException) { }
-                Thread.Sleep(1);
-            }
-        }
-    }
+    
     public class TcpRedirect
     {
         public string _LocalhostReplace;
@@ -1643,7 +1549,218 @@ namespace doru
         }
     }
 
+    namespace OldTcp
+    {
+#if (SILVERLIGHT)    
+    public class Sender
+    {
+        public static byte Encode(float _V, float _min, float _max)
+        {
+            _V = Math.Min(Math.Max(_V, _min), _max);
+            float _range = _max - _min;
+            float _dopolnenie = _V - _min;
+            float _Procent = _dopolnenie / _range;
+            float _fullV = _Procent * byte.MaxValue;
+            return (byte)Math.Max(Math.Min((byte)_fullV, byte.MaxValue), byte.MinValue);
+        }
+        public static UInt16 EncodeInt(float _V, float _min, float _max)
+        {
+            _V = Math.Min(Math.Max(_V, _min), _max);
+            float _range = _max - _min;
+            float _dopolnenie = _V - _min;
+            float _Procent = _dopolnenie / _range;
+            float _fullV = _Procent * UInt16.MaxValue;
+            return (UInt16)Math.Max(Math.Min((UInt16)_fullV, UInt16.MaxValue), UInt16.MinValue);
+        }
+
+        public Socket _Socket;
+        public void Send(byte[] _Buffer2) 
+        {
+            byte[] _Buffer = new byte[_Buffer2.Length + 1];
+            _Buffer[0] = (byte)_Buffer2.Length;
+            Buffer.BlockCopy(_Buffer2, 0, _Buffer, 1, _Buffer2.Length);
+            if (_Buffer2.Length == 0) throw new Exception("Break");
+            SocketAsyncEventArgs _SocketAsyncEventArgs = new SocketAsyncEventArgs();
+            _SocketAsyncEventArgs.SetBuffer(_Buffer, 0, _Buffer.Length);
+            _Socket.SendAsync(_SocketAsyncEventArgs);
+        }
+    }
+    public class Listener
+    {
+        public Socket _Socket;
+
+        public static float Decode(byte _fullV, float _min, float _max)
+        {
+            float _range = _max - _min;
+            float _V1 = ((float)_fullV) / byte.MaxValue;
+            float _ranged = _V1 * _range;
+            float _V = _ranged + _min;
+            return _V;
+        }
+        public static float DecodeInt(UInt16 _fullV, float _min, float _max)
+        {
+            float _range = _max - _min;
+            float _V1 = ((float)_fullV) / UInt16.MaxValue;
+            float _ranged = _V1 * _range;
+            float _V = _ranged + _min;
+            return _V;
+        }
 
 
+        public bool _Connected 
+        {
+            get { return _Socket.Connected; }
+        }
 
+        private List<byte[]> _Messages = new List<byte[]>(); 
+
+        public List<byte[]> GetMessages() 
+        {
+            lock ("Get")
+            {
+                List<byte[]> _Return = _Messages;
+                _Messages = new List<byte[]>();
+                return _Return;
+            }
+        }
+        void SocketAsyncEventArgs_Completed(object sender, SocketAsyncEventArgs _SocketAsyncEventArgs) 
+        {
+            lock ("Receive")
+            {
+                _MemoryStream.Write(_SocketAsyncEventArgs.Buffer, 0, _SocketAsyncEventArgs.BytesTransferred);
+                _MemoryStream.Seek(_position, SeekOrigin.Begin);
+                while (true)
+                {
+                    int _length = _MemoryStream.ReadByte();
+                    if (_length == -1 || _MemoryStream.Length <= _position + _length) break;
+                    Byte[] _Buffer = new byte[_length];
+
+                    _MemoryStream.Read(_Buffer, 0, _length);
+                    _position = _MemoryStream.Position;
+                    lock ("Get")
+                        _Messages.Add(_Buffer);
+                }
+                _MemoryStream.Seek(0, SeekOrigin.End);
+                StartReceive();
+            }
+        }
+        MemoryStream _MemoryStream = new MemoryStream(); 
+        public void Start()
+        {
+            StartReceive();
+        }
+
+        private void StartReceive()
+        {
+            SocketAsyncEventArgs _SocketAsyncEventArgs = new SocketAsyncEventArgs();
+            _SocketAsyncEventArgs.Completed += new EventHandler<SocketAsyncEventArgs>(SocketAsyncEventArgs_Completed);
+            //_Socket.ReceiveBufferSize = 100;
+            //_Socket.SendBufferSize = 100;
+            _SocketAsyncEventArgs.SetBuffer(new byte[100], 0, 100);
+            _Socket.ReceiveAsync(_SocketAsyncEventArgs);
+        }
+        long _position;
+    }
+#else
+        public class ClientWait
+        {
+            public int _Port;
+            private List<TcpClient> _TcpClients = new List<TcpClient>();
+
+            public void Start()
+            {
+                TcpListener _TcpListener = new TcpListener(IPAddress.Any, _Port);
+                _TcpListener.Start();
+                while (true)
+                {
+                    TcpClient _TcpClient = _TcpListener.AcceptTcpClient();
+                    lock ("clientwait")
+                        _TcpClients.Add(_TcpClient);
+                    Thread.Sleep(10);
+                }
+            }
+
+            public List<TcpClient> GetClients()
+            {
+                lock ("clientwait")
+                {
+                    List<TcpClient> _Return = _TcpClients;
+                    _TcpClients = new List<TcpClient>();
+                    return _Return;
+                }
+            }
+        }
+        public class Sender
+        {
+            public TcpClient _TcpClient;
+            public Socket _Socket { get { return _TcpClient.Client; } }
+            public void Send(byte[] _Buffer2)
+            {
+                if (_TcpClient.Connected)
+                    try
+                    {
+                        byte[] _Buffer3 = new byte[_Buffer2.Length + 1];
+                        _Buffer3[0] = (byte)_Buffer2.Length;
+                        Buffer.BlockCopy(_Buffer2, 0, _Buffer3, 1, _Buffer2.Length);
+                        if (_Buffer2.Length == 0) Debugger.Break();
+                        _Socket.Send(_Buffer3);
+                    }
+                    catch (SocketException e) { Trace.WriteLine(e.Message); }
+            }
+        }
+        public class Listener
+        {
+            public TcpClient _TcpClient;
+            private List<byte[]> _Messages = new List<byte[]>();
+
+            public List<byte[]> GetMessages()
+            {
+                lock ("Get")
+                {
+                    List<byte[]> _Return = _Messages;
+                    _Messages = new List<byte[]>();
+                    return _Return;
+                }
+            }
+
+            public bool _Connected
+            {
+                get { return _TcpClient.Connected; }
+            }
+            public void Start()
+            {
+                //_TcpClient.ReceiveBufferSize = 100;
+                //_TcpClient.SendBufferSize = 100;            
+                MemoryStream _MemoryStream = new MemoryStream();
+                byte[] _Buffer = new byte[9999];
+                long _position = 0;
+                while (_TcpClient.Connected)
+                {
+                    try
+                    {
+                        int count = _TcpClient.Client.Receive(_Buffer);
+
+                        _MemoryStream.Write(_Buffer, 0, count);
+                        _MemoryStream.Seek(_position, SeekOrigin.Begin);
+                        while (true)
+                        {
+                            int _length = _MemoryStream.ReadByte();
+                            if (_length == -1 || _MemoryStream.Length <= _position + _length) break;
+                            Byte[] _Buffer1 = new byte[_length];
+
+                            _MemoryStream.Read(_Buffer1, 0, _length);
+                            _position = _MemoryStream.Position;
+                            lock ("Get")
+                                _Messages.Add(_Buffer1);
+                        }
+                        _MemoryStream.Seek(0, SeekOrigin.End);
+                    }
+                    catch (SocketException) { }
+                    catch (IOException) { }
+                    Thread.Sleep(1);
+                }
+            }
+        }
+#endif
+    }
 }
