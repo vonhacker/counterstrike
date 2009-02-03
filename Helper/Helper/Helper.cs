@@ -17,6 +17,7 @@ using System.Reflection;
 using System.Collections;
 using System.Xml.Schema;
 using System.Collections.Specialized;
+using System.Web;
 
 namespace CounterStrikeLive
 {
@@ -326,26 +327,16 @@ namespace doru
 
     public static class Extensions
     {
+
 #if(!SILVERLIGHT)
-        
         public static T Trace<T>(this T t)
         {
-            object o = (object)t;
-            if (o is byte[])
-            {                        
-                System.Diagnostics.Trace.WriteLine(Encoding.Default.GetString((byte[])o));
-                return t;
-            }
-            else if (o is bool)
-            {
-                System.Diagnostics.Trace.Write(((bool)o) ? "1" : "0");
-                return t;
-            }
-            else
-            {
-                System.Diagnostics.Trace.WriteLine(t);
-                return t;
-            }
+            return Trace(t, "");
+        }
+        public static T Trace<T>(this T t, string s)
+        {
+            System.Diagnostics.Trace.WriteLine(s + t);
+            return t;
         }
 #else
         public static T Trace<T>(this T t)
@@ -369,6 +360,15 @@ namespace doru
             }
         }
 #endif
+        
+        public static string Join<T>(this IEnumerable<T> list, string text)
+        {
+            string s = "";
+            foreach (object o in list)
+                s += o.ToString() + text;
+            return s.Substring(0, s.Length - text.Length);
+        }
+        //public static string 
         public static IEnumerable<T> Last<T>(this IEnumerable<T> list,int c)
         {
             return list.Skip(Math.Max(0, list.Count() - c));
@@ -1359,8 +1359,12 @@ namespace doru
     }
     public static class Http
     {
-        
-        
+
+        public static string Length(string _bytes)
+        {
+            Helper.Replace(ref _bytes, "_length_", (_bytes.Length - 4 - _bytes.IndexOf("\r\n\r\n")).ToString(), 1);
+            return _bytes;
+        }
         public static void Length(ref string _bytes)
         {
             Helper.Replace(ref _bytes, "_length_", (_bytes.Length - 4 - _bytes.IndexOf("\r\n\r\n")).ToString(), 1);
@@ -1443,6 +1447,8 @@ namespace doru
             }
             return _MemoryStream.ToArray();
         }
+
+        
     }
     public static class Spammer3
     {
