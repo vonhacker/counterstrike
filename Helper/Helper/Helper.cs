@@ -17,7 +17,7 @@ using System.Reflection;
 using System.Collections;
 using System.Xml.Schema;
 using System.Collections.Specialized;
-using System.Web;
+
 
 namespace CounterStrikeLive
 {
@@ -328,38 +328,16 @@ namespace doru
     public static class Extensions
     {
 
-#if(!SILVERLIGHT)
+
         public static T Trace<T>(this T t)
         {
             return Trace(t, "");
         }
         public static T Trace<T>(this T t, string s)
         {
-            System.Diagnostics.Trace.WriteLine(s + t);
+            doru.Trace.WriteLine(s + t);
             return t;
         }
-#else
-        public static T Trace<T>(this T t)
-        {
-            object o = (object)t;
-            if (o is byte[])
-            {
-                
-                doru.Trace.WriteLine(Encoding.Default.GetString((byte[])o));
-                return t;
-            }
-            else if (o is bool)
-            {
-                doru.Trace.Write(((bool)o) ? "1" : "0");
-                return t;
-            }
-            else
-            {
-                doru.Trace.WriteLine(t);
-                return t;
-            }
-        }
-#endif
         
         public static string Join<T>(this IEnumerable<T> list, string text)
         {
