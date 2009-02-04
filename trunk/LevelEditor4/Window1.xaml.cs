@@ -28,9 +28,15 @@ namespace LevelEditor4
     public partial class Window1 : Window
     {
         public Window1()
-        {            
+        {
+
+            if(!File.Exists(Settings.Default.FilePath))
+            {
+                MessageBox.Show("Error Cannot Find File " + Settings.Default.FilePath+" please configure app.config");
+                return;
+            }
             Spammer3.Setup(System.IO.Path.GetDirectoryName(Settings.Default.FilePath)+"../../"); 
-            InitializeComponent();
+            InitializeComponent();            
             Loaded += new RoutedEventHandler(WindowLoaded);
         }
         XmlSerializer _XmlSerializer;
@@ -317,7 +323,7 @@ namespace LevelEditor4
         InkCanvas _InkCanvas;
         void WindowLoaded(object sender, RoutedEventArgs e)
         {
-
+            
             SelectCanvas(0);
 
             _XmlSerializer = new XmlSerializer(typeof(MapDatabase));
