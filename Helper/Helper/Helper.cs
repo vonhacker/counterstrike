@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Text;
 #if(!SILVERLIGHT)
@@ -44,6 +45,76 @@ namespace CounterStrikeLive
 
 namespace doru
 {
+
+#if(WPF)
+    using System.Collections.ObjectModel;
+    public class BindableList<T> : ObservableCollection<T>
+    {
+        
+        public List<ICVS> _ArrayList = new List<ICVS>();
+        public interface ICVS
+        {
+            void Add(object o);
+            void Remove(object o);
+        }
+        public class CVS<T2> : ICVS
+        {
+            public delegate T2 Converter(T t);
+            public IList<T2> _list;
+            public void Add(object o)
+            {
+                T2 t2 = _Converter((T)o);
+                if (!_list.Contains(t2))
+                    _list.Add(t2);
+            }
+            public void Remove(object o)
+            {
+                T2 t2 = _Converter((T)o);
+                if (_list.Contains(t2))
+                    _list.Remove(t2);
+            }
+            public CVS()
+            {
+                if (_Converter == null) _Converter = DefaultConverter;
+            }
+            public Converter _Converter;
+            public T2 DefaultConverter(T t)
+            {
+                object o = (object)t;
+                return (T2)o;
+            }
+        }
+        public void BindTo<T2>(IList<T2> list)
+        {
+            CVS<T2> _CVS = new CVS<T2> { _list = list };
+            _ArrayList.Add(_CVS);
+        }
+
+        public void BindTo<T2>(IList<T2> list, CVS<T2>.Converter cv)
+        {
+            CVS<T2> _CVS = new CVS<T2> { _Converter = cv, _list = list };
+            _ArrayList.Add(_CVS);
+        }
+        protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+        {
+
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (T t in e.NewItems)
+                        foreach (ICVS o in _ArrayList)
+                            o.Add(t);
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (T t in e.OldItems)
+                        foreach (ICVS o in _ArrayList)
+                            o.Remove(t);
+                    break;
+            }
+            base.OnCollectionChanged(e);
+        }
+    }
+#endif
     public abstract class Encoding : System.Text.Encoding
     {
 #if (!SILVERLIGHT)
