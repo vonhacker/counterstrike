@@ -46,6 +46,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="SharpZipLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="System.Windows" />
     <Reference Include="mscorlib" />
     <Reference Include="system" />
@@ -477,6 +478,7 @@
     <Resource Include="Content\cs_estate.png" />
     <Content Include="Content\map.xml" />
     <Content Include="db.xml" />
+    <Content Include="SharpZipLib.dll" />
     <Resource Include="icon_in-game.png" />
     <None Include="SubsetFontTask.dll" />
   </ItemGroup>
