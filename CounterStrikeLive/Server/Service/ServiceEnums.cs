@@ -7,6 +7,7 @@ namespace CounterStrikeLive.Service
     /// </summary>
     public enum PacketType : byte
     {
+        MapLoaded = 214,
         connect = 188,
         possitions = 56,
         nick = 86,
