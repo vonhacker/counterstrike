@@ -139,6 +139,7 @@ namespace doru
     {
         public ExceptionB(string s) : base(s) { }
     }
+#if(!SILVERLIGHT)
     [XmlRoot("dictionary")]
     public class SerializableDictionary<TKey, TValue> : Dictionary<TKey, TValue>, IXmlSerializable
     {
@@ -255,7 +256,7 @@ namespace doru
 
         #endregion
     }
-
+#endif
     public class ExceptionA : Exception { public ExceptionA(string s) : base(s) { } public ExceptionA() { } };
     public partial class Helper
     {
@@ -264,8 +265,33 @@ namespace doru
         {
             Trace.WriteLine(s);
             return s;
+
+        }
+#else
+        public static string getMd5Hash(string input)
+        {
+            // Create a new instance of the MD5CryptoServiceProvider object.
+            MD5 md5Hasher = MD5.Create();
+
+            // Convert the input string to a byte array and compute the hash.
+            byte[] data = md5Hasher.ComputeHash(Encoding.Default.GetBytes(input));
+
+            // Create a new Stringbuilder to collect the bytes
+            // and create a string.
+            StringBuilder sBuilder = new StringBuilder();
+
+            // Loop through each byte of the hashed data 
+            // and format each one as a hexadecimal string.
+            for (int i = 0; i < data.Length; i++)
+            {
+                sBuilder.Append(data[i].ToString("x2"));
+            }
+
+            // Return the hexadecimal string.
+            return sBuilder.ToString();
         }
 #endif
+
         public static string ReplaceRandoms(string text, string[] _RandomTags)
         {
             text = Regex.Replace(text, @"_randomtext(\d+)_", delegate(Match m)
@@ -397,28 +423,7 @@ namespace doru
         }
 
 
-        public static string getMd5Hash(string input)
-        {
-            // Create a new instance of the MD5CryptoServiceProvider object.
-            MD5 md5Hasher = MD5.Create();
-
-            // Convert the input string to a byte array and compute the hash.
-            byte[] data = md5Hasher.ComputeHash(Encoding.Default.GetBytes(input));
-
-            // Create a new Stringbuilder to collect the bytes
-            // and create a string.
-            StringBuilder sBuilder = new StringBuilder();
-
-            // Loop through each byte of the hashed data 
-            // and format each one as a hexadecimal string.
-            for (int i = 0; i < data.Length; i++)
-            {
-                sBuilder.Append(data[i].ToString("x2"));
-            }
-
-            // Return the hexadecimal string.
-            return sBuilder.ToString();
-        }
+        
 
     }
 
@@ -527,7 +532,16 @@ namespace doru
 
         public static byte[] Read(this Stream _Stream)
         {
-            return _Stream.Read((int)(_Stream.Length - _Stream.Position));
+            byte[] buffer = new byte[2048];
+            int bytesRead;
+            using (MemoryStream outputStream = new MemoryStream())
+            {
+                while ((bytesRead = _Stream.Read(buffer, 0, buffer.Length)) != 0)
+                {
+                    outputStream.Write(buffer, 0, bytesRead);
+                }
+                return outputStream.ToArray();
+            }
         }
         public static T Random<T>(this IList<T> list, T t2)
         {
@@ -685,7 +699,13 @@ namespace doru
             if (i == -1) throw new IOException();
             return (byte)i;
         }
-
+        public static byte[] ReadBlock(this Stream _Stream)
+        {
+            byte[] _bytes = new byte[9999999];
+            _Stream.Read(_bytes, 0, _bytes.Length);
+            return _bytes.Cut(_bytes.Length);
+            //_Stream.Read(_b
+        }
 
         public static byte[] Read(this Stream _Stream, int length)
         {
@@ -1544,7 +1564,7 @@ namespace doru
         }
         public static void Write<T>(T o)
         {
-            Console.Write(o);
+            System.Diagnostics.Debug.WriteLine(o);
         }
     }    
 #endif
