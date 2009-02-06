@@ -27,6 +27,8 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using CounterStrikeLive.ServiceClient;
 using CounterStrikeLive.Service;
+using ICSharpCode.SharpZipLib.Zip;
+using doru;
 
 [assembly: AssemblyVersionAttribute("3.0.*")]
 namespace CounterStrikeLive
@@ -623,6 +625,7 @@ namespace CounterStrikeLive
                                 _GameState = GameState.mapdownload;
                                 string _Map = _BinaryReader.ReadString();
                                 Trace.WriteLine("Map name Received:" + _Map);
+                                LoadResources(_Map);
                                 LoadGame(Application.GetResourceStream(new Uri(_Map, UriKind.Relative)).Stream);
                             }
                             break;
@@ -737,6 +740,31 @@ namespace CounterStrikeLive
                         throw new Exception("Break");
                 }
             }
+        }
+
+        public static List<Stream> _Resources = new List<Stream>();
+        private void LoadResources(string _Map)
+        {
+            WebClient _WebClient = new WebClient();
+            _WebClient.OpenReadAsync(new Uri("../data.zip", UriKind.Relative));
+            _WebClient.OpenReadCompleted += new OpenReadCompletedEventHandler(WebClient_OpenReadCompleted);            
+        }
+        void WebClient_OpenReadCompleted(object sender, OpenReadCompletedEventArgs e)
+        {
+            ZipInputStream _ZipInputStream = new ZipInputStream(e.Result);
+            while (true)
+            {
+                ZipEntry _ZipEntry = _ZipInputStream.GetNextEntry();
+                if (_ZipEntry == null) break;
+                _ZipEntry.Name.Trace();
+                
+                MemoryStream ms = new MemoryStream(_ZipInputStream.Read());
+                if (_ZipEntry.IsFile)
+                {
+                    Resources.Add(_ZipEntry.Name.Trace(), ms);
+                }
+            }
+
         }
 
         void provider_ServerConnected(object sender, EventArgs e)
