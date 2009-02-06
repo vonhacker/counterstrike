@@ -6,7 +6,10 @@
         <domain uri="*" />
       </allow-from>
       <grant-to>
-        <socket-resource port="_port_" protocol="tcp" />
+        <socket-resource port="4530" protocol="tcp" />
+        <socket-resource port="4531" protocol="tcp" />
+        <socket-resource port="4532" protocol="tcp" />
+        <socket-resource port="4533" protocol="tcp" />
       </grant-to>
     </policy>
   </cross-domain-access>
