@@ -1120,8 +1120,7 @@ namespace doru
             }            
         }
         public static XmlSerializer CreateSchema(string name, params Type[] types)
-        {
-            name = name + ".xsd";
+        {            
             string SchemasPath = Path.GetFullPath(Environment.GetEnvironmentVariable("VS90COMNTOOLS") + "../../Xml/Schemas");
             XmlReflectionImporter _XmlReflectionImporter = new XmlReflectionImporter(name);
             XmlSchemas _XmlSchemas = new XmlSchemas();
@@ -1146,7 +1145,7 @@ namespace doru
                 s = s.Replace("\"utf-16\"", "\"utf-8\"");
                 s = Regex.Replace(s, @"(ArrayOf.*\n.*xs\:)all(.*\n.*\n.*</xs:)all", "${1}sequence${2}sequence");
                 s = Regex.Replace(s, @"xs:all(>\r?\n?.*<xs:element ref=""xs:schema"" />\r?\n?.*\r?\n?.*)xs:all", "xs:sequence${1}xs:sequence", RegexOptions.Multiline);
-                File.WriteAllText(SchemasPath + "/" + name, s, Encoding.Default);
+                File.WriteAllText(SchemasPath + "/" + name + ".xsd", s, Encoding.Default);
             }
             XmlSerializer _XmlSerializer = new XmlSerializer(types[0], new XmlAttributeOverrides(), xtratypes.ToArray(), new XmlRootAttribute(), name);
             return _XmlSerializer;
