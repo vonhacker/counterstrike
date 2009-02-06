@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Database xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="cslive" xmlns:xsd="http://www.w3.org/2001/XMLSchema" >
+  <_tasks>
+    <Task>
+      <_Map>estate.zip</_Map>
+      <_Port>4530</_Port>
+      <_ServerName>estate test</_ServerName>
+    </Task>
+    <Task>
+      <_Map>nuke.zip</_Map>
+      <_Port>4531</_Port>
+      <_ServerName>nuke test</_ServerName>
+    </Task>
+    <Task>
+      <_Map>italy.zip</_Map>
+      <_Port>4532</_Port>
+      <_ServerName>italy test</_ServerName>
+    </Task>
+  </_tasks>
+</Database>

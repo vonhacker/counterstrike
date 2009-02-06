@@ -68,7 +68,7 @@ namespace PolicyServer
     
     public class PolicyServer
     {
-        public int _port { get { return Settings.Default._GameServerPort; } }	
+        
         private Socket m_listener;
         private byte[] m_policy;
         public string policyFile;
@@ -80,7 +80,7 @@ namespace PolicyServer
             m_policy = new byte[policyStream.Length];
             policyStream.Read(m_policy, 0, m_policy.Length);            
             policyStream.Close();
-            Helper.Replace(ref m_policy, "_port_", _port.ToString(), 1);
+            //Helper.Replace(ref m_policy, "_port_", _port.ToString(), 1);
             m_listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             m_listener.Bind(new IPEndPoint(IPAddress.Any, _PolicyPort));
             m_listener.Listen(10);

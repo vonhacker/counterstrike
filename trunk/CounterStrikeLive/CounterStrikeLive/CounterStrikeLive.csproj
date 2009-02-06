@@ -142,7 +142,7 @@
     <None Include="SubsetFontSilverlight.targets" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="CS_logo.png" />
+    <Resource Include="UI\CS_logo.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Content\arctic\arunhlmv 2008-10-20 23-16-15-50.png" />
@@ -475,8 +475,6 @@
     <Resource Include="Content\sparks\shoot0090.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Content\cs_estate.png" />
-    <Content Include="Content\map.xml" />
     <Content Include="db.xml" />
     <Content Include="SharpZipLib.dll" />
     <Resource Include="icon_in-game.png" />

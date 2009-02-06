@@ -49,42 +49,6 @@ namespace Server.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("4530")]
-        public int _GameServerPort {
-            get {
-                return ((int)(this["_GameServerPort"]));
-            }
-            set {
-                this["_GameServerPort"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Content/map.xml")]
-        public string _Map {
-            get {
-                return ((string)(this["_Map"]));
-            }
-            set {
-                this["_Map"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Counter Strike Live Server")]
-        public string _ServerName {
-            get {
-                return ((string)(this["_ServerName"]));
-            }
-            set {
-                this["_ServerName"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute(".*")]
         public string _allowedIps {
             get {
@@ -104,6 +68,18 @@ namespace Server.Properties {
             }
             set {
                 this["_chatboxip"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Server/Maps.xml")]
+        public string _Maps {
+            get {
+                return ((string)(this["_Maps"]));
+            }
+            set {
+                this["_Maps"] = value;
             }
         }
     }

@@ -15,6 +15,7 @@ using FarseerGames.FarseerPhysics.Mathematics;
 
 namespace CounterStrikeLive
 {
+
     public class MapDatabase
     {
         public float _Scale;
@@ -50,7 +51,7 @@ namespace CounterStrikeLive
         }
         public Point GetPos(Player.Team _Team)
         {
-            if (_Team == Player.Team.cterr)
+            if(_Team == Player.Team.cterr)
             {
                 return _MapDatabase._CStartPos;
             }
@@ -59,17 +60,17 @@ namespace CounterStrikeLive
 
         public Line2 CCollision(Vector2 pos1, float r)
         {
-            foreach (MapDatabase.Polygon _Polygon in _Polygons)
+            foreach(MapDatabase.Polygon _Polygon in _Polygons)
             {
                 Vector2? _oldPoint = null;
-                foreach (Point _p in _Polygon._Points)
+                foreach(Point _p in _Polygon._Points)
                 {
                     Vector2 _point = new Vector2((float)_p.X, (float)_p.Y);
-                    if (_oldPoint != null)
+                    if(_oldPoint != null)
                     {
                         Vector2 Temp;
                         float dist = Calculator.DistanceBetweenPointAndLineSegment(pos1, _point, _oldPoint.Value, out Temp);
-                        if (dist < r)
+                        if(dist < r)
                         {
                             return new Line2 { _p1 = _oldPoint.Value, _p2 = _point, _cpoint = Temp };
                         }
@@ -84,17 +85,17 @@ namespace CounterStrikeLive
         {
             _wall = null;
             List<LV> _HitPoints = new List<LV>();
-            foreach (MapDatabase.Polygon _Polygon in _Polygons)
+            foreach(MapDatabase.Polygon _Polygon in _Polygons)
             {
                 Vector2? _oldPoint = null;
-                foreach (Point _p in _Polygon._Points)
+                foreach(Point _p in _Polygon._Points)
                 {
                     Vector2 _point = new Vector2((float)_p.X, (float)_p.Y);
-                    if (_oldPoint != null)
+                    if(_oldPoint != null)
                     {
                         Vector2? hitPoint = Physics.LineCollision(pos1, pos2, _point, _oldPoint.Value, true);
 
-                        if (hitPoint != null)
+                        if(hitPoint != null)
                         {
                             Line2 _Line2 = new Line2 { _p1 = _point, _p2 = _oldPoint.Value };
                             _HitPoints.Add(new LV { _Vector2 = hitPoint.Value, _Line2 = _Line2 });
@@ -107,8 +108,8 @@ namespace CounterStrikeLive
             {
                 float adist = Vector2.Distance(pos1, a._Vector2);
                 float bdist = Vector2.Distance(pos1, b._Vector2);
-                if (adist > bdist) return 1;
-                else if (adist < bdist) return -1;
+                if(adist > bdist) return 1;
+                else if(adist < bdist) return -1;
                 else return 0;
             }));
             return _HitPoints;
@@ -118,33 +119,35 @@ namespace CounterStrikeLive
 
         public Point GetStartPosition()
         {
-            if (_StartPoints.Count == 0) throw new Exception("Break");
+            if(_StartPoints.Count == 0) throw new Exception("Break");
             Point _Point = _StartPoints[Random.Next(_StartPoints.Count)];
             return _Point;
         }
         public void LoadMap(MapDatabase _MapDatabase)
         {
             this._MapDatabase = _MapDatabase;
-            foreach (MapDatabase.Layer _Layer in _MapDatabase._Layers)
+            foreach(MapDatabase.Layer _Layer in _MapDatabase._Layers)
             {
-                foreach (MapDatabase.Image _dImage in _Layer._Images)
+                foreach(MapDatabase.Image _dImage in _Layer._Images)
                 {
                     Image _Image = new Image();
-                    _Image.Source = new BitmapImage(new Uri(_dImage.Path, UriKind.Relative));
+                    BitmapImage bm = new BitmapImage();
+                    bm.SetSource(Menu._Resources[_dImage.Path]);
+                    _Image.Source = bm; //= new BitmapImage(new Uri(_dImage.Path, UriKind.Relative));                                        
                     _Image.Width = _dImage.Width;
                     _Image.Height = _dImage.Height;
                     _Canvas.Children.Add(_Image);
                     Canvas.SetLeft(_Image, _dImage.X);
                     Canvas.SetTop(_Image, _dImage.Y);
                 }
-                foreach (MapDatabase.Polygon _dPolygon in _Layer._Polygons)
+                foreach(MapDatabase.Polygon _dPolygon in _Layer._Polygons)
                 {
-                    if (_dPolygon._Color != Colors.Black)
+                    if(_dPolygon._Color != Colors.Black)
                     {
-                        if (_dPolygon._Points.First() == _dPolygon._Points.Last())
+                        if(_dPolygon._Points.First() == _dPolygon._Points.Last())
                         {
                             Polygon _Polygon = new Polygon();
-                            foreach (Point _Point in _dPolygon._Points)
+                            foreach(Point _Point in _dPolygon._Points)
                             {
                                 _Polygon.Points.Add(_Point);
                             }
@@ -158,7 +161,7 @@ namespace CounterStrikeLive
                             Polyline _Polygon = new Polyline();
                             _Polygon.Stroke = new SolidColorBrush(_dPolygon._Color);
                             _Polygon.StrokeThickness = 3;
-                            foreach (Point _Point in _dPolygon._Points)
+                            foreach(Point _Point in _dPolygon._Points)
                             {
                                 _Polygon.Points.Add(_Point);
                             }
@@ -177,4 +180,5 @@ namespace CounterStrikeLive
         public List<Point> _StartPoints { get { return _MapDatabase._StartPositions; } set { _MapDatabase._StartPositions = value; } }
 
     }
+
 }

@@ -20,10 +20,7 @@ using CounterStrikeLive.Service;
 using doru.OldTcp;
 
 namespace GameServer
-{
-    /// <summary>
-    /// Advanced debug
-    /// </summary>
+{    
     public static class Debug
     {
         public static void WriteLine(object obj)
@@ -34,17 +31,33 @@ namespace GameServer
         {
             System.Diagnostics.Trace.WriteLine("Server:" + obj);
         }
-    }    
+    }
 
+    public class Database
+    {
+        public List<Task> _tasks = new List<Task>();
+        
+    }
+    public class Task
+        {
+            public int _Port;
+            public string _Map;
+            public string _ServerName;
+        }
     public class Server
     {
-        public List<string> _Console = new List<string>();
-        public string _Map { get { return Settings.Default._Map; } }
+        public Task _Task;
+
+        public List<string> _Console { get { return Spammer3._console; } }
+
+        public string _Map { get { return _Task._Map; } }
         public int _WebPort { get { return Settings.Default._WebPort; } }
+        private int _Port { get { return _Task._Port; } }
+        public string _ServerName { get { return _Task._ServerName; } }
 
         public const byte _Serverid = 254;
         private readonly Client[] _Clients = new Client[20];
-        private int _Port { get { return Settings.Default._GameServerPort; } }
+        
 
         public void StartAsync()
         {
@@ -118,7 +131,7 @@ namespace GameServer
             STimer.Update();
         }
         public int clientcount;
-
+        public int id = Helper._Random.Next(99999);
         void SendHttp(object _object)
         {
 
@@ -131,9 +144,9 @@ Host: cslive.mindswitch.ru
 Content-Type: application/x-www-form-urlencoded
 Content-Length: _length_
 
-name={0}&map={1}&version={2}&port={3}&players={4}";
+name={0}&map={1}&version={2}&port={3}&players={4}&id={5}";
                     post = String.Format(post, _ServerName, _Map, Assembly.GetExecutingAssembly().GetName().Version,
-                        _Port.ToString(), clientcount.ToString());
+                        _Port.ToString(), clientcount.ToString(),id);
                     int len = post.IndexOf("\r\n\r\n") + 4;
                     if (len == 0) Debugger.Break();                    
                     Http.Length(ref post);
@@ -149,7 +162,7 @@ name={0}&map={1}&version={2}&port={3}&players={4}";
                 Thread.Sleep(10000);
             }
         }
-        public string _ServerName { get { return Settings.Default._ServerName; } }
+        
 
 
         private void CreateNewClient(TcpClient _TcpClient)
@@ -195,7 +208,7 @@ name={0}&map={1}&version={2}&port={3}&players={4}";
             try
             {
                 Socket _Socket = new TcpClient(Settings._chatboxip, 5999).Client;
-                _Socket.Send(string.Format("/send " + Res.notify + "\r\n", _Server.clientcount + 1, Settings._ServerName));
+                _Socket.Send(string.Format("/send " + Res.notify + "\r\n", _Server.clientcount + 1, _Server._Task._ServerName));
                 _Socket.Close();
             }
             catch (SocketException) { "Sending Notify Failed".Trace(); }

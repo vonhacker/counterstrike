@@ -14,7 +14,6 @@ using FarseerGames.FarseerPhysics.Mathematics;
 using System.Windows.Media;
 using System.Net.Sockets;
 using System.Windows.Browser;
-using System.Diagnostics;
 using System.Windows.Media.Imaging;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
@@ -41,6 +40,7 @@ namespace CounterStrikeLive
         public static int id = 99;
         public static void WriteLine(object obj)
         {            
+            
             WriteLine(obj.ToString());
         }
         public static void WriteLine(string obj)
@@ -471,6 +471,7 @@ namespace CounterStrikeLive
 
         public Menu()
         {
+
             _Menu = this;
             InitializeComponent();
             _Clients = new MyObs<SharedClient>(50);
@@ -626,7 +627,7 @@ namespace CounterStrikeLive
                                 string _Map = _BinaryReader.ReadString();
                                 Trace.WriteLine("Map name Received:" + _Map);
                                 LoadResources(_Map);
-                                LoadGame(Application.GetResourceStream(new Uri(_Map, UriKind.Relative)).Stream);
+                                //LoadGame(Application.GetResourceStream(new Uri(_Map, UriKind.Relative)).Stream);
                             }
                             break;
                         case PacketType.ping:
@@ -742,31 +743,29 @@ namespace CounterStrikeLive
             }
         }
 
-        public static List<Stream> _Resources = new List<Stream>();
+        public static Dictionary<string, Stream> _Resources = new Dictionary<string, Stream>();
         private void LoadResources(string _Map)
         {
+            
             WebClient _WebClient = new WebClient();
-            _WebClient.OpenReadAsync(new Uri("../data.zip", UriKind.Relative));
+            _WebClient.OpenReadAsync(new Uri(_Map, UriKind.Relative));
             _WebClient.OpenReadCompleted += new OpenReadCompletedEventHandler(WebClient_OpenReadCompleted);            
         }
         void WebClient_OpenReadCompleted(object sender, OpenReadCompletedEventArgs e)
         {
+            "loading map".Trace();
             ZipInputStream _ZipInputStream = new ZipInputStream(e.Result);
             while (true)
             {
                 ZipEntry _ZipEntry = _ZipInputStream.GetNextEntry();
-                if (_ZipEntry == null) break;
-                _ZipEntry.Name.Trace();
-                
+                if (_ZipEntry == null) break;                                
                 MemoryStream ms = new MemoryStream(_ZipInputStream.Read());
-                if (_ZipEntry.IsFile)
-                {
-                    Resources.Add(_ZipEntry.Name.Trace(), ms);
-                }
+                if (_ZipEntry.IsFile)                
+                    _Resources.Add(_ZipEntry.Name.Trace(), ms);                                    
             }
+            LoadGame(_Resources["map.xml"]);
 
-        }
-
+        }        
         void provider_ServerConnected(object sender, EventArgs e)
         {
             Trace.WriteLine("Connected");

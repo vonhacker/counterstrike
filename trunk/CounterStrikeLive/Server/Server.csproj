@@ -88,6 +88,7 @@
     <None Include="Server.bat" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Maps.xml" />
     <Content Include="PolicyFile.xml" />
   </ItemGroup>
   <ItemGroup>
