@@ -1121,8 +1121,8 @@ namespace doru
         }
         public static XmlSerializer CreateSchema(string name, params Type[] types)
         {
-            string SchemasPath;
-            if((SchemasPath = Environment.GetEnvironmentVariable("VS90COMNTOOLS")) == null) SchemasPath = "./";
+            string SchemasPath = Environment.GetEnvironmentVariable("VS90COMNTOOLS");
+            if(SchemasPath == null) SchemasPath = "./";
             else SchemasPath = Path.GetFullPath(SchemasPath + "../../Xml/Schemas");
             XmlReflectionImporter _XmlReflectionImporter = new XmlReflectionImporter(name);
             XmlSchemas _XmlSchemas = new XmlSchemas();
