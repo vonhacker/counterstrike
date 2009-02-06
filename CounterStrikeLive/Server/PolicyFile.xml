@@ -10,6 +10,7 @@
         <socket-resource port="4531" protocol="tcp" />
         <socket-resource port="4532" protocol="tcp" />
         <socket-resource port="4533" protocol="tcp" />
+        <socket-resource port="4534" protocol="tcp" />                
       </grant-to>
     </policy>
   </cross-domain-access>
