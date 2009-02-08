@@ -22,7 +22,8 @@ namespace Server
         public Settings Settings { get { return Properties.Settings.Default; } }
         private static void Main()
         {
-            Spammer3.Setup("../../../");
+            
+            Logging.Setup("../../../");
             //Spammer3.StartRemoteConsoleAsync
             new Program();
         }
@@ -40,7 +41,7 @@ namespace Server
                 svrs.Add(_Server);
             }
 
-            PolicyServer.PolicyServer ps = new PolicyServer.PolicyServer { policyFile = "Server/PolicyFile.xml" };
+            PolicyServer ps = new PolicyServer { policyFile = "Server/PolicyFile.xml" };
             ps.StartAsync();            
 
             WebServer.WebServer _WebServer = new WebServer.WebServer();
