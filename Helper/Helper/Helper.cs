@@ -1,9 +1,10 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 #if(!SILVERLIGHT)
 using System.IO.Compression;
+#else
+using System.Windows;
 #endif
 using System.Linq;
 using System.IO;
@@ -22,10 +23,7 @@ using System.Collections.Specialized;
 
 
 namespace CounterStrikeLive
-{
-    /// <summary>
-    /// static random class
-    /// </summary>
+{    
     public static class Random
     {
         static System.Random _Random = new System.Random();
@@ -139,124 +137,7 @@ namespace doru
     {
         public ExceptionB(string s) : base(s) { }
     }
-#if(!SILVERLIGHT)
-    [XmlRoot("dictionary")]
-    public class SerializableDictionary<TKey, TValue> : Dictionary<TKey, TValue>, IXmlSerializable
-    {
-        #region IXmlSerializable Members
 
-        public System.Xml.Schema.XmlSchema GetSchema()
-        {
-
-            return null;
-
-        }
-
-
-
-        public void ReadXml(System.Xml.XmlReader reader)
-        {
-
-            XmlSerializer keySerializer = new XmlSerializer(typeof(TKey));
-
-            XmlSerializer valueSerializer = new XmlSerializer(typeof(TValue));
-
-
-
-            bool wasEmpty = reader.IsEmptyElement;
-
-            reader.Read();
-
-
-
-            if (wasEmpty)
-
-                return;
-
-
-
-            while (reader.NodeType != System.Xml.XmlNodeType.EndElement)
-            {
-
-                reader.ReadStartElement("item");
-
-
-
-                reader.ReadStartElement("key");
-
-                TKey key = (TKey)keySerializer.Deserialize(reader);
-
-                reader.ReadEndElement();
-
-
-
-                reader.ReadStartElement("value");
-
-                TValue value = (TValue)valueSerializer.Deserialize(reader);
-
-                reader.ReadEndElement();
-
-
-
-                this.Add(key, value);
-
-
-
-                reader.ReadEndElement();
-
-                reader.MoveToContent();
-
-            }
-
-            reader.ReadEndElement();
-
-        }
-
-
-
-        public void WriteXml(System.Xml.XmlWriter writer)
-        {
-
-            XmlSerializer keySerializer = new XmlSerializer(typeof(TKey));
-
-            XmlSerializer valueSerializer = new XmlSerializer(typeof(TValue));
-
-
-
-            foreach (TKey key in this.Keys)
-            {
-
-                writer.WriteStartElement("item");
-
-
-
-                writer.WriteStartElement("key");
-
-                keySerializer.Serialize(writer, key);
-
-                writer.WriteEndElement();
-
-
-
-                writer.WriteStartElement("value");
-
-                TValue value = this[key];
-
-                valueSerializer.Serialize(writer, value);
-
-                writer.WriteEndElement();
-
-
-
-                writer.WriteEndElement();
-
-            }
-
-        }
-
-        #endregion
-    }
-#endif
     public class ExceptionA : Exception { public ExceptionA(string s) : base(s) { } public ExceptionA() { } };
     public partial class Helper
     {
@@ -266,6 +147,16 @@ namespace doru
             Trace.WriteLine(s);
             return s;
 
+        }
+        public static SocketAsyncEventArgs Connect(string ip,int port)
+        {
+            Socket _Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            SocketAsyncEventArgs _SocketAsyncEventArgs = new SocketAsyncEventArgs();
+            if (Application.Current.Host.Source.DnsSafeHost == "") "warning host not safe".Trace();
+            _SocketAsyncEventArgs.RemoteEndPoint = new DnsEndPoint(ip, port);
+            _SocketAsyncEventArgs.UserToken = _Socket;
+            _Socket.ConnectAsync(_SocketAsyncEventArgs);
+            return _SocketAsyncEventArgs;
         }
 #else
         public static string getMd5Hash(string input)
@@ -289,6 +180,10 @@ namespace doru
 
             // Return the hexadecimal string.
             return sBuilder.ToString();
+        }
+        public static Socket Connect(string ip, int port)
+        {
+            return new TcpClient(ip, port).Client;
         }
 #endif
 
@@ -429,7 +324,101 @@ namespace doru
 
     public static class Extensions
     {
+        
+#if(!SILVERLIGHT)
+        static Extensions()
+        {
+            if (!Directory.Exists("logs")) Directory.CreateDirectory("logs");
+        }
+        public static string Save(this string s, string comment)
+        {
+            Encoding.Default.GetBytes(s).Save(comment);
+            return s;
+        }
+        public static string Save(this string s)
+        {
+            Encoding.Default.GetBytes(s).Save();
+            return s;
+        }        
+        public static byte[] Save(this byte[] s)
+        {
+            return Save(s, "");
+        }
+        public static byte[] Save(this byte[] s, string comment)
+        {
+            string path = "./logs/" + DateTime.Now.ToString().Replace(":", "-") + _Random.RandomString(4) + ".html";
+            File.WriteAllBytes(path, s);
+            System.Diagnostics.Trace.WriteLine(Path.GetFullPath(path) + ":" + comment);
+            return s;
+        }
+        public static void Send(this Socket _Socket, string s)
+        {
+            _Socket.Send(Encoding.Default.GetBytes(s));
+        }
+        public static string ReceiveText(this Socket _Socket)
+        {
+            byte[] _buffer = new byte[99999];
+            int count = _Socket.Receive(_buffer);
+            if (count == 0) throw new ExceptionA();
+            return Encoding.Default.GetString(_buffer.Substr(count));
+        }
+        public static byte[] Receive(this Socket _Socket)
+        {
 
+            byte[] _buffer = new byte[99999];
+            int count = _Socket.Receive(_buffer);
+            if (count == 0) throw new SocketException();
+            return _buffer.Substr(count);
+
+        }
+        public static byte[] Receive(this Socket _Socket, int length)
+        {
+            byte[] _buffer = new byte[length];
+            using (MemoryStream _MemoryStream = new MemoryStream())
+            {
+                while (true)
+                {
+                    int count = _Socket.Receive(_buffer, length, 0);
+                    if (count == 0) throw new ExceptionA("Read Socket failed");
+                    _MemoryStream.Write(_buffer, 0, count);
+                    length -= count;
+                    if (length == 0) return _MemoryStream.ToArray();
+                }
+            }
+        }
+#else
+        public static void Send(this Socket _Socket, byte[] buffer) { Send(_Socket, buffer, 0, buffer.Length); }
+        public static void Send(this Socket _Socket, byte[] buffer,int offset , int count)
+        {
+            SocketAsyncEventArgs _SocketAsyncEventArgs = new SocketAsyncEventArgs();
+            _SocketAsyncEventArgs.SetBuffer(buffer,offset,count);
+            _Socket.SendAsync(_SocketAsyncEventArgs);
+        }                
+#endif
+        public static T DeserealizeOrCreate<T>(this XmlSerializer x, string path,T t)
+        {            
+            if (!File.Exists(path)) 
+            {
+                using(FileStream fs = File.Create(path)) x.Serialize(fs, t);
+                return t;
+            }
+            using (FileStream fs1 = File.Open(path, FileMode.Open))
+                return (T)x.Deserialize(fs1);
+        }
+        public static int PutToNextFreePlace<T>(this IList<T> items,T item)
+        {
+            int id = items.IndexOf(default(T));
+            if (id == -1)
+            {
+                items.Add(item);
+                return items.Count - 1;
+            }
+            else
+            {
+                items[id] = item;
+                return id;
+            }
+        }
 
         public static T Trace<T>(this T t)
         {
@@ -673,6 +662,14 @@ namespace doru
         {
             return Encoding.Default.GetString(_Bytes);
         }
+        public static byte[] Trace(this byte[] t)
+        {
+            string s = "";
+            foreach (byte b in t)
+                s += b + ",";
+            s.Trace();
+            return t;
+        }
         public static byte[] ToBytes(this string _String)
         {
             return Encoding.Default.GetBytes(_String);
@@ -759,19 +756,25 @@ namespace doru
             }
             return c;
         }
-        public static byte[] Cut(this byte[] source, int start, out byte[] _bytes2)
+        public static byte[][] Split(this byte[] source,int pos)
         {
-            byte[] _bytes = new byte[source.Length - start];
-            _bytes2 = new byte[start];
-            for (int i = 0; i < start; i++)
+            byte[] _bytes = new byte[source.Length - pos];
+            byte[] _bytes2 = new byte[pos];
+            for (int i = 0; i < pos; i++)
             {
                 _bytes2[i] = source[i];
             }
-            for (int i = start; i < source.Length; i++)
+            for (int i = pos; i < source.Length; i++)
             {
-                _bytes[i - start] = source[i];
+                _bytes[i - pos] = source[i];
             }
-            return _bytes;
+            return new byte[2][] { _bytes, _bytes2 };
+        }
+        public static byte[] Cut(this byte[] source, int start, out byte[] _bytes2)
+        {
+            byte[][] bss = source.Split(start);            
+            _bytes2 = bss[1];
+            return bss[0];
         }
         public static byte[] Substr(this byte[] source, int length)
         {
@@ -800,10 +803,6 @@ namespace doru
             return _bytes.ToStr().Contains(s);
         }
         private static Random _Random = new Random();
-
-
-
-
 
         public static int IndexOf2(this byte[] source, string pattern)
         {
@@ -843,6 +842,8 @@ namespace doru
             return -1;
         }
     }
+    
+#if (!SILVERLIGHT)
     public static class Win32
     {
         [DllImport("user32.dll")]
@@ -958,7 +959,122 @@ namespace doru
             return lastInPut.dwTime;
         }
     }
-#if (!SILVERLIGHT)
+    [XmlRoot("dictionary")]
+    public class SerializableDictionary<TKey, TValue> : Dictionary<TKey, TValue>, IXmlSerializable
+    {
+        #region IXmlSerializable Members
+
+        public System.Xml.Schema.XmlSchema GetSchema()
+        {
+
+            return null;
+
+        }
+
+
+
+        public void ReadXml(System.Xml.XmlReader reader)
+        {
+
+            XmlSerializer keySerializer = new XmlSerializer(typeof(TKey));
+
+            XmlSerializer valueSerializer = new XmlSerializer(typeof(TValue));
+
+
+
+            bool wasEmpty = reader.IsEmptyElement;
+
+            reader.Read();
+
+
+
+            if (wasEmpty)
+
+                return;
+
+
+
+            while (reader.NodeType != System.Xml.XmlNodeType.EndElement)
+            {
+
+                reader.ReadStartElement("item");
+
+
+
+                reader.ReadStartElement("key");
+
+                TKey key = (TKey)keySerializer.Deserialize(reader);
+
+                reader.ReadEndElement();
+
+
+
+                reader.ReadStartElement("value");
+
+                TValue value = (TValue)valueSerializer.Deserialize(reader);
+
+                reader.ReadEndElement();
+
+
+
+                this.Add(key, value);
+
+
+
+                reader.ReadEndElement();
+
+                reader.MoveToContent();
+
+            }
+
+            reader.ReadEndElement();
+
+        }
+
+
+
+        public void WriteXml(System.Xml.XmlWriter writer)
+        {
+
+            XmlSerializer keySerializer = new XmlSerializer(typeof(TKey));
+
+            XmlSerializer valueSerializer = new XmlSerializer(typeof(TValue));
+
+
+
+            foreach (TKey key in this.Keys)
+            {
+
+                writer.WriteStartElement("item");
+
+
+
+                writer.WriteStartElement("key");
+
+                keySerializer.Serialize(writer, key);
+
+                writer.WriteEndElement();
+
+
+
+                writer.WriteStartElement("value");
+
+                TValue value = this[key];
+
+                valueSerializer.Serialize(writer, value);
+
+                writer.WriteEndElement();
+
+
+
+                writer.WriteEndElement();
+
+            }
+
+        }
+
+        #endregion
+    }
     public class MemoryStreamA : MemoryStream
     {
         public SortedList<int, byte[]> _List = new SortedList<int, byte[]>();
@@ -1008,7 +1124,120 @@ namespace doru
             Seek(oldpos, SeekOrigin.Begin);
         }
     }
+    public class PolicyServer
+    {
+        class PolicyConnection
+        {
+            private Socket m_connection;
+            private byte[] m_buffer;
+            private int m_received;
+            private byte[] m_policy;
+            private static string s_policyRequestString = "<policy-file-request/>";
+            public PolicyConnection(Socket client, byte[] policy)
+            {
+                m_connection = client;
+                m_policy = policy;
+                m_buffer = new byte[s_policyRequestString.Length];
+                m_received = 0;
+                try
+                {
+                    m_connection.BeginReceive(m_buffer, 0, s_policyRequestString.Length, SocketFlags.None, new AsyncCallback(OnReceive), null);
+                }
+                catch (SocketException)
+                {
+                    m_connection.Close();
+                }
+            }
+            private void OnReceive(IAsyncResult res)
+            {
+                try
+                {
+                    m_received += m_connection.EndReceive(res);
+                    if (m_received < s_policyRequestString.Length)
+                    {
+                        m_connection.BeginReceive(m_buffer, m_received, s_policyRequestString.Length - m_received, SocketFlags.None, new AsyncCallback(OnReceive), null);
+                        return;
+                    }
+                    string request = System.Text.Encoding.UTF8.GetString(m_buffer, 0, m_received);
+                    if (StringComparer.InvariantCultureIgnoreCase.Compare(request, s_policyRequestString) != 0)
+                    {
+                        m_connection.Close();
+                        return;
+                    }
+                    m_connection.BeginSend(m_policy, 0, m_policy.Length, SocketFlags.None, new AsyncCallback(OnSend), null);
+                }
+                catch (SocketException)
+                {
+                    m_connection.Close();
+                }
+            }
+            public void OnSend(IAsyncResult res)
+            {
+                try
+                {
+                    m_connection.EndSend(res);
+                }
+                finally
+                {
+                    m_connection.Close();
+                }
+            }
+        }
+        private Socket m_listener;
+        private byte[] m_policy;
+        public string policyFile;
+        public int _PolicyPort { get { return 943; } }
+        public void StartAsync()
+        {
+            Console.WriteLine("PolicyServer Started");
+                        
+            if (policyFile == null)
+            {
+                m_policy = @"<?xml version=""1.0"" encoding =""utf-8""?>
+<access-policy>
+  <cross-domain-access>
+    <policy>
+      <allow-from>
+        <domain uri=""*"" />
+      </allow-from>
+      <grant-to>
+        <socket-resource port=""4530"" protocol=""tcp"" />
+        <socket-resource port=""4531"" protocol=""tcp"" />
+        <socket-resource port=""4532"" protocol=""tcp"" />
+        <socket-resource port=""4533"" protocol=""tcp"" />
+        <socket-resource port=""4534"" protocol=""tcp"" />                
+      </grant-to>
+    </policy>
+  </cross-domain-access>
+</access-policy>".ToBytes();
+            }
+            else m_policy = File.ReadAllBytes(policyFile);                        
+            m_listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            m_listener.Bind(new IPEndPoint(IPAddress.Any, _PolicyPort));
+            m_listener.Listen(10);
+            m_listener.BeginAccept(new AsyncCallback(OnConnection), null);
+        }
 
+        public void OnConnection(IAsyncResult res)
+        {
+            Socket client = null;
+            try
+            {
+                client = m_listener.EndAccept(res);
+            }
+            catch (SocketException)
+            {
+                return;
+            }
+            Trace.WriteLine("Client Connected " + ((IPEndPoint)client.RemoteEndPoint).Address);
+            PolicyConnection pc = new PolicyConnection(client, m_policy);
+            m_listener.BeginAccept(new AsyncCallback(OnConnection), null);
+        }
+        public void Close()
+        {
+            m_listener.Close();
+        }
+    }
     public class intA
     {
 
@@ -1265,70 +1494,7 @@ namespace doru
             }
         }
     }
-    public static class Extensions2
-    {
-        static Extensions2()
-        {
-            if (!Directory.Exists("logs")) Directory.CreateDirectory("logs");
-        }
-        public static void Send(this Socket _Socket, string s)
-        {
-            _Socket.Send(Encoding.Default.GetBytes(s));
-        }
-        public static string ReceiveText(this Socket _Socket)
-        {
-            byte[] _buffer = new byte[99999];
-            int count = _Socket.Receive(_buffer);
-            if (count == 0) throw new ExceptionA();
-            return Encoding.Default.GetString(_buffer.Substr(count));
-        }
-        public static byte[] Receive(this Socket _Socket)
-        {
-
-            byte[] _buffer = new byte[99999];
-            int count = _Socket.Receive(_buffer);
-            if (count == 0) throw new SocketException();
-            return _buffer.Substr(count);
-
-        }
-        public static byte[] Receive(this Socket _Socket, int length)
-        {
-            byte[] _buffer = new byte[length];
-            using (MemoryStream _MemoryStream = new MemoryStream())
-            {
-                while (true)
-                {
-                    int count = _Socket.Receive(_buffer, length, 0);
-                    if (count == 0) throw new ExceptionA("Read Socket failed");
-                    _MemoryStream.Write(_buffer, 0, count);
-                    length -= count;
-                    if (length == 0) return _MemoryStream.ToArray();
-                }
-            }
-        }
-        public static string Save(this string s,string comment)
-        {
-            Encoding.Default.GetBytes(s).Save(comment);
-            return s;
-        }
-        public static string Save(this string s)
-        {
-            Encoding.Default.GetBytes(s).Save();
-            return s;
-        }
-        public static Random _Random = new Random();
-        public static byte[] Save(this byte[] s)
-        {
-            return Save(s, "");
-        }
-        public static byte[] Save(this byte[] s, string comment)
-        {
-            string path = "./logs/" + DateTime.Now.ToString().Replace(":", "-") + _Random.RandomString(4) + ".html";
-            File.WriteAllBytes(path, s);
-            Trace.WriteLine(Path.GetFullPath(path)+":"+comment);
-            return s;
-        }
-    }
+    
     public static class Proxy
     {
         public static Socket Socks5Connect(string _proxyAddress, int _proxyPort, string _DestAddress, int _DestPort)
@@ -1452,9 +1618,231 @@ namespace doru
 
         
     }
-    public static class Spammer3
+    public class DMime
     {
+        static Dictionary<String, string> _Mimes = new Dictionary<string, string>();
+        static DMime()
+        {
+            foreach (Match _Match in Regex.Matches(mimetypes, @"([\w.*]+)\s+([\w/\-.]+)"))
+            {
+                string key = _Match.Groups[1].Value;
+                string value = _Match.Groups[2].Value;
+                _Mimes[key] = value;
+            }
+        }
+        public static string GetMime(string _type)
+        {
+            if (_Mimes.ContainsKey(_type)) return _Mimes[_type];
+            return _Mimes[".*"];
+        }
+        public const string mimetypes = @".* 	 application/octet-stream
+.323 	 text/h323
+.acx 	 application/internet-property-stream
+.ai 	 application/postscript
+.aif 	 audio/x-aiff
+.aifc 	 audio/aiff
+.aiff 	 audio/aiff
+.application 	 application/x-ms-application
+.asf 	 video/x-ms-asf
+.asr 	 video/x-ms-asf
+.asx 	 video/x-ms-asf
+.au 	 audio/basic
+.avi 	 video/x-msvideo
+.axs 	 application/olescript
+.bas 	 text/plain
+.bcpio 	 application/x-bcpio
+.bin 	 application/octet-stream
+.bmp 	 image/bmp
+.c 	 text/plain
+.cat 	 application/vndms-pkiseccat
+.cdf 	 application/x-cdf
+.cer 	 application/x-x509-ca-cert
+.clp 	 application/x-msclip
+.cmx 	 image/x-cmx
+.cod 	 image/cis-cod
+.cpio 	 application/x-cpio
+.crd 	 application/x-mscardfile
+.crl 	 application/pkix-crl
+.crt 	 application/x-x509-ca-cert
+.csh 	 application/x-csh
+.css 	 text/css
+.dcr 	 application/x-director
+.deploy 	 application/octet-stream
+.der 	 application/x-x509-ca-cert
+.dib 	 image/bmp
+.dir 	 application/x-director
+.disco 	 text/xml
+.dll 	 application/x-msdownload
+.doc 	 application/msword
+.dot 	 application/msword
+.dvi 	 application/x-dvi
+.dxr 	 application/x-director
+.eml 	 message/rfc822
+.eps 	 application/postscript
+.etx 	 text/x-setext
+.evy 	 application/envoy
+.exe 	 application/octet-stream
+.fif 	 application/fractals
+.flr 	 x-world/x-vrml
+.gif 	 image/gif
+.gtar 	 application/x-gtar
+.gz 	 application/x-gzip
+.h 	 text/plain
+.hdf 	 application/x-hdf
+.hlp 	 application/winhlp
+.hqx 	 application/mac-binhex40
+.hta 	 application/hta
+.htc 	 text/x-component
+.htm 	 text/html
+.html 	 text/html
+.htt 	 text/webviewhtml
+.ico 	 image/x-icon
+.ief 	 image/ief
+.iii 	 application/x-iphone
+.ins 	 application/x-internet-signup
+.isp 	 application/x-internet-signup
+.IVF 	 video/x-ivf
+.jfif 	 image/pjpeg
+.jpe 	 image/jpeg
+.jpeg 	 image/jpeg
+.jpg 	 image/jpeg
+.js 	 application/x-javascript
+.latex 	 application/x-latex
+.lsf 	 video/x-la-asf
+.lsx 	 video/x-la-asf
+.m13 	 application/x-msmediaview
+.m14 	 application/x-msmediaview
+.m1v 	 video/mpeg
+.m3u 	 audio/x-mpegurl
+.man 	 application/x-troff-man
+.manifest 	 application/x-ms-manifest
+.mdb 	 application/x-msaccess
+.me 	 application/x-troff-me
+.mht 	 message/rfc822
+.mhtml 	 message/rfc822
+.mid 	 audio/mid
+.mmf 	 application/x-smaf
+.mny 	 application/x-msmoney
+.mov 	 video/quicktime
+.movie 	 video/x-sgi-movie
+.mp2 	 video/mpeg
+.mp3 	 audio/mpeg
+.mpa 	 video/mpeg
+.mpe 	 video/mpeg
+.mpeg 	 video/mpeg
+.mpg 	 video/mpeg
+.mpp 	 application/vnd.ms-project
+.mpv2 	 video/mpeg
+.ms 	 application/x-troff-ms
+.mvb 	 application/x-msmediaview
+.nc 	 application/x-netcdf
+.nws 	 message/rfc822
+.oda 	 application/oda
+.ods 	 application/oleobject
+.p10 	 application/pkcs10
+.p12 	 application/x-pkcs12
+.p7b 	 application/x-pkcs7-certificates
+.p7c 	 application/pkcs7-mime
+.p7m 	 application/pkcs7-mime
+.p7r 	 application/x-pkcs7-certreqresp
+.p7s 	 application/pkcs7-signature
+.pbm 	 image/x-portable-bitmap
+.pdf 	 application/pdf
+.pfx 	 application/x-pkcs12
+.pgm 	 image/x-portable-graymap
+.pko 	 application/vndms-pkipko
+.pma 	 application/x-perfmon
+.pmc 	 application/x-perfmon
+.pml 	 application/x-perfmon
+.pmr 	 application/x-perfmon
+.pmw 	 application/x-perfmon
+.png 	 image/png
+.pnm 	 image/x-portable-anymap
+.pnz 	 image/png
+.pot 	 application/vnd.ms-powerpoint
+.ppm 	 image/x-portable-pixmap
+.pps 	 application/vnd.ms-powerpoint
+.ppt 	 application/vnd.ms-powerpoint
+.prf 	 application/pics-rules
+.ps 	 application/postscript
+.pub 	 application/x-mspublisher
+.qt 	 video/quicktime
+.ra 	 audio/x-pn-realaudio
+.ram 	 audio/x-pn-realaudio
+.ras 	 image/x-cmu-raster
+.rgb 	 image/x-rgb
+.rmi 	 audio/mid
+.roff 	 application/x-troff
+.rtf 	 application/rtf
+.rtx 	 text/richtext
+.scd 	 application/x-msschedule
+.sct 	 text/scriptlet
+.setpay 	 application/set-payment-initiation
+.setreg 	 application/set-registration-initiation
+.sh 	 application/x-sh
+.shar 	 application/x-shar
+.sit 	 application/x-stuffit
+.smd 	 audio/x-smd
+.smx 	 audio/x-smd
+.smz 	 audio/x-smd
+.snd 	 audio/basic
+.spc 	 application/x-pkcs7-certificates
+.spl 	 application/futuresplash
+.src 	 application/x-wais-source
+.sst 	 application/vndms-pkicertstore
+.stl 	 application/vndms-pkistl
+.stm 	 text/html
+.sv4cpio 	 application/x-sv4cpio
+.sv4crc 	 application/x-sv4crc
+.t 	 application/x-troff
+.tar 	 application/x-tar
+.tcl 	 application/x-tcl
+.tex 	 application/x-tex
+.texi 	 application/x-texinfo
+.texinfo 	 application/x-texinfo
+.tgz 	 application/x-compressed
+.tif 	 image/tiff
+.tiff 	 image/tiff
+.tr 	 application/x-troff
+.trm 	 application/x-msterminal
+.tsv 	 text/tab-separated-values
+.txt 	 text/plain
+.uls 	 text/iuls
+.ustar 	 application/x-ustar
+.vcf 	 text/x-vcard
+.wav 	 audio/wav
+.wbmp 	 image/vnd.wap.wbmp
+.wcm 	 application/vnd.ms-works
+.wdb 	 application/vnd.ms-works
+.wks 	 application/vnd.ms-works
+.wmf 	 application/x-msmetafile
+.wps 	 application/vnd.ms-works
+.wri 	 application/x-mswrite
+.wrl 	 x-world/x-vrml
+.wrz 	 x-world/x-vrml
+.wsdl 	 text/xml
+.xaf 	 x-world/x-vrml
+.xbm 	 image/x-xbitmap
+.xla 	 application/vnd.ms-excel
+.xlc 	 application/vnd.ms-excel
+.xlm 	 application/vnd.ms-excel
+.xls 	 application/vnd.ms-excel
+.xlt 	 application/vnd.ms-excel
+.xlw 	 application/vnd.ms-excel
+.xml 	 text/xml
+.xof 	 x-world/x-vrml
+.xpm 	 image/x-xpixmap
+.xsd 	 text/xml
+.xsl 	 text/xml
+.xwd 	 image/x-xwindowdump
+.z 	 application/x-compress
+.zip 	 application/x-zip-compressed";
 
+    }
+    [Obsolete]
+    public class Spammer3 : Logging { }
+    public class Logging
+    {        
         public static string title;
         public static string _Title
         {
@@ -1578,7 +1966,7 @@ namespace doru
             _Timer.AddMethod(_Time, _Action);
         }
 
-        static Timer2 _Timer = new Timer2();
+        static TimerA _Timer = new TimerA();
         public static double _TimeElapsed { get { return _Timer._TimeElapsed; } }
         public static void Update()
         {
@@ -1595,7 +1983,9 @@ namespace doru
             return _Timer.GetFps();
         }
     }
-    public class Timer2
+    [Obsolete]
+    public class Timer2 : TimerA { }
+    public class TimerA
     {
         DateTime _DateTime = DateTime.Now;
         double oldtime;
@@ -1666,7 +2056,7 @@ namespace doru
             public Action _Action;
         }
     }
-
+    
     namespace OldTcp
     {
 #if (SILVERLIGHT)    
@@ -1879,6 +2269,86 @@ namespace doru
                 }
             }
         }
+#endif
+    }
+
+    namespace Tcp
+    {
+#if(!SILVERLIGHT)
+        public class ClientWait
+        {
+            public int _Port;
+            private List<Socket> _Sockets = new List<Socket>();
+
+            public void Start()
+            {
+                TcpListener _TcpListener = new TcpListener(IPAddress.Any, _Port);
+                _TcpListener.Start();
+                while (true)
+                {
+                    TcpClient _TcpClient = _TcpListener.AcceptTcpClient();
+                    lock ("clientwait")
+                        _Sockets.Add(_TcpClient.Client);
+                    Thread.Sleep(10);
+                }
+            }
+
+            public List<Socket> GetClients()
+            {
+                lock ("clientwait")
+                {
+                    List<Socket> _Return = _Sockets;
+                    _Sockets = new List<Socket>();
+                    return _Return;
+                }
+            }
+        }
+        public class Listener
+        {
+            public Socket _Socket;
+            NetworkStream _NetworkStream;
+            List<byte[]> _Messages = new List<byte[]>();
+            public void Start()
+            {
+                NetworkStream _NetworkStream = new NetworkStream(_Socket);
+                while (true)
+                {
+                    _NetworkStream = new NetworkStream(_Socket);
+                    if (_NetworkStream.Read(2) != new byte[] { 42, 42 }) throw new Exception("dammaged packet");
+                    byte length = _NetworkStream.ReadB();
+                    byte[] bytes = _NetworkStream.Read(length);
+                    _Messages.Add(bytes);
+                }
+            }
+            public bool _Connected { get { return _Socket.Connected; } }
+            public List<byte[]> GetMessages()
+            {
+                lock ("Get")
+                {
+                    List<byte[]> _Return = _Messages;
+                    _Messages = new List<byte[]>();
+                    return _Return;
+                }
+            }
+
+            internal void StartAsync(string s)
+            {
+                new Thread(Start).StartBackground(s);
+            }
+        }
+        public class Sender
+        {
+            public Socket _Socket;
+            public void Send(byte[] _bytes)
+            {
+                if (_Socket.Connected)
+                {
+                    _bytes = _bytes.Join(new byte[] { 42, 42, (byte)_bytes.Length });
+                    _Socket.Send(_bytes);
+                }
+                else "socket not connected".Trace();
+            }
+        }        
 #endif
     }
 }
