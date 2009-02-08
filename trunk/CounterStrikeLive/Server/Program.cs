@@ -20,10 +20,10 @@ namespace Server
     internal class Program
     {
         public Settings Settings { get { return Properties.Settings.Default; } }
-        private static void Main()
+        private static void Main(String[] args)
         {
             
-            Logging.Setup("../../../");
+            Logging.Setup(args.Length > 0 ? args[0] : "../../../");
             //Spammer3.StartRemoteConsoleAsync
             new Program();
         }
