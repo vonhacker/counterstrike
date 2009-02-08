@@ -591,7 +591,7 @@ namespace CounterStrikeLive
             //};
 
             // Create provider
-            provider = new SocketsProvider(_host, _port);
+            provider = new SocketsProvider(_host, _port);            
             (provider as SocketsProvider).Start(); // TODO: сделать старт при отправке первого сообщения
             provider.ServerConnected += new EventHandler<EventArgs>(provider_ServerConnected);
             provider.ServerFailed += new EventHandler<EventArgs>(provider_ServerFailed);

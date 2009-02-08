@@ -42,7 +42,6 @@ namespace CounterStrikeLive.ServiceClient
 
         public void Start()
         {
-
             SocketAsyncEventArgs args = new SocketAsyncEventArgs();
 
             args.UserToken = socket;
