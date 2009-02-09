@@ -201,8 +201,8 @@ name={0}&map={1}&version={2}&port={3}&players={4}&id={5}";
                 Thread _Thread = new Thread(_Listener.Start);
                 SendNotify(_id);
                 SendMapFileName();
-                SendID();
-                Ping();
+                //SendID();
+                //Ping();
                 _Thread.Name = "_ClientListener:" + _id;
                 _Thread.Start();
             }
@@ -263,6 +263,10 @@ name={0}&map={1}&version={2}&port={3}&players={4}&id={5}";
                 _Received++;
                 switch((PacketType)_data[0])
                 {
+                    case PacketType.MapLoaded:
+                        SendID();
+                        Ping();
+                        break;
                     case PacketType.sendTo:
                         {
                             byte[] _Data1 = new byte[_data.Length - 1]; //-2 sendto,id +1 sendfrom-id

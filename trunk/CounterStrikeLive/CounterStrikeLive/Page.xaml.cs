@@ -627,6 +627,7 @@ namespace CounterStrikeLive
                                 string _Map = _BinaryReader.ReadString();
                                 Trace.WriteLine("Map name Received:" + _Map);
                                 LoadResources(_Map);
+                                provider.SendMessage(new byte[] { (byte)PacketType.MapLoaded });
                                 //LoadGame(Application.GetResourceStream(new Uri(_Map, UriKind.Relative)).Stream);
                             }
                             break;
@@ -644,7 +645,7 @@ namespace CounterStrikeLive
                     if (_LocalClient._id == null) throw new Exception();
                     if (e.SenderID == _LocalClient._id && e.PacketType != PacketType.pinginfo) throw new Exception();
                     SharedClient _SharedClient = _Clients[e.SenderID];
-                    if (e.PacketType != PacketType.PlayerJoined && _Clients[e.SenderID] == null) throw new Exception("Break");
+                    if (e.PacketType != PacketType.PlayerJoined && _Clients[e.SenderID] == null) return;
                     switch (e.PacketType)
                     {
                         case PacketType.rotation:
