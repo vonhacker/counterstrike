@@ -20,7 +20,7 @@ using CounterStrikeLive.Service;
 using doru.OldTcp;
 
 namespace GameServer
-{    
+{
     public static class Debug
     {
         public static void WriteLine(object obj)
@@ -35,14 +35,14 @@ namespace GameServer
     public class Database
     {
         public List<Task> _tasks = new List<Task>();
-        
+
     }
     public class Task
-        {
-            public int _Port;
-            public string _Map;
-            public string _ServerName;
-        }
+    {
+        public int _Port;
+        public string _Map;
+        public string _ServerName;
+    }
     public class Server
     {
         public Task _Task;
@@ -56,7 +56,7 @@ namespace GameServer
 
         public const byte _Serverid = 254;
         private readonly Client[] _Clients = new Client[20];
-        
+
 
         public void StartAsync()
         {
@@ -64,7 +64,7 @@ namespace GameServer
             _Thread.Name = "Server";
             _Thread.Start();
         }
-        ClientWait _ClientWait = new ClientWait();        
+        ClientWait _ClientWait = new ClientWait();
         public void Start()
         {
             Console.WriteLine("Server Started " + _Port);
@@ -150,25 +150,26 @@ Content-Length: _length_
 
 name={0}&map={1}&version={2}&port={3}&players={4}&id={5}";
                     post = String.Format(post, _ServerName, _Map, Assembly.GetExecutingAssembly().GetName().Version,
-                        _Port.ToString(), clientcount.ToString(),id);
+                        _Port.ToString(), clientcount.ToString(), id);
                     int len = post.IndexOf("\r\n\r\n") + 4;
-                    if (len == 0) Debugger.Break();                    
+                    if (len == 0) Debugger.Break();
                     Http.Length(ref post);
                     TcpClient _TcpClient = new TcpClient("cslive.mindswitch.ru", 80);
                     Socket _Socket = _TcpClient.Client;
                     _TcpClient.Client.Send(post);
-                    string s=_Socket.Receive().ToStr();;
+                    string s = _Socket.Receive().ToStr(); ;
                     //Http.ReadHttp(_TcpClient.Client).Save();
                     Thread.Sleep(200);
-                    _TcpClient.Close();                    
+                    _TcpClient.Close();
                 }
                 catch (SocketException e) { Trace.WriteLine("phpSender:" + e.Message); }
                 Thread.Sleep(10000);
             }
         }
 
-        class Asddd: Client {
-        
+        class Asddd : Client
+        {
+
         }
 
         private void CreateNewClient(TcpClient _TcpClient)
@@ -200,9 +201,8 @@ name={0}&map={1}&version={2}&port={3}&players={4}&id={5}";
                 Console.WriteLine("Client Conneted:" + _id);
                 Thread _Thread = new Thread(_Listener.Start);
                 SendNotify(_id);
+                SendPlayerID();
                 SendMapFileName();
-                //SendID();
-                //Ping();
                 _Thread.Name = "_ClientListener:" + _id;
                 _Thread.Start();
             }
@@ -216,13 +216,13 @@ name={0}&map={1}&version={2}&port={3}&players={4}&id={5}";
                     _Socket.Send(string.Format("/send " + Res.notify + "\r\n", _Server.clientcount + 1, _Server._Task._ServerName));
                     _Socket.Close();
                 }
-                catch(SocketException) { "Sending Notify Failed".Trace(); }
+                catch (SocketException) { "Sending Notify Failed".Trace(); }
             }
 
 
             private void SendMapFileName()
             {
-                using(var _MemoryStream = new MemoryStream())
+                using (var _MemoryStream = new MemoryStream())
                 {
                     var _BinaryWriter = new BinaryWriter(_MemoryStream);
                     _BinaryWriter.Write((byte)PacketType.serverid);
@@ -232,13 +232,18 @@ name={0}&map={1}&version={2}&port={3}&players={4}&id={5}";
                 }
             }
 
-            private void SendID()
+            private void SendPlayerID()
             {
                 Debug.WriteLine("Sended Player id:" + _id);
                 Send(new byte[] { (byte)Server._Serverid, (byte)PacketType.playerid, (byte)_id });
-                foreach(Client _Client in _Clients) // send all clients id to joined player
+            }
+
+            private void SendJoin()
+            {
+                Debug.WriteLine("Sended join");
+                foreach (Client _Client in _Clients) // send all clients id to joined player
                 {
-                    if(_Client != null && _Client != this)
+                    if (_Client != null && _Client != this)
                         Send(new byte[] { (byte)_Client._id, (byte)PacketType.PlayerJoined });
                 }
                 SendToAll(new byte[] { (byte)PacketType.PlayerJoined });
@@ -261,10 +266,10 @@ name={0}&map={1}&version={2}&port={3}&players={4}&id={5}";
             private void onReceive(byte[] _data)
             {
                 _Received++;
-                switch((PacketType)_data[0])
+                switch ((PacketType)_data[0])
                 {
                     case PacketType.MapLoaded:
-                        SendID();
+                        SendJoin();
                         Ping();
                         break;
                     case PacketType.sendTo:
@@ -272,7 +277,7 @@ name={0}&map={1}&version={2}&port={3}&players={4}&id={5}";
                             byte[] _Data1 = new byte[_data.Length - 1]; //-2 sendto,id +1 sendfrom-id
                             Buffer.BlockCopy(_data, 2, _Data1, 1, _data.Length - 2);
                             _Data1[0] = (byte)_id;
-                            if(_Clients[_data[1]] != null) _Clients[_data[1]].Send(_Data1);
+                            if (_Clients[_data[1]] != null) _Clients[_data[1]].Send(_Data1);
                         }
                         break;
                     case PacketType.ping:
@@ -284,7 +289,7 @@ name={0}&map={1}&version={2}&port={3}&players={4}&id={5}";
                     case PacketType.pong:
                         {
                             _PingTime = (int)_PingElapsed;
-                            using(MemoryStream _MemoryStream = new MemoryStream())
+                            using (MemoryStream _MemoryStream = new MemoryStream())
                             {
                                 BinaryWriter _BinaryWriter = new BinaryWriter(_MemoryStream);
                                 _BinaryWriter.Write((byte)PacketType.pinginfo);
@@ -310,9 +315,9 @@ name={0}&map={1}&version={2}&port={3}&players={4}&id={5}";
                 Buffer.BlockCopy(_data, 0, _Data1, 1, _data.Length);
 
                 foreach (Client _Client in _Clients)
-                    if (_Client != null && (_Client != this || includeself))                        
-                            _Client.Send(_Data1);
-                
+                    if (_Client != null && (_Client != this || includeself))
+                        _Client.Send(_Data1);
+
             }
             public void Ping()
             {
@@ -323,16 +328,16 @@ name={0}&map={1}&version={2}&port={3}&players={4}&id={5}";
             {
                 _PingElapsed += _Server._Timer4._TimeElapsed;
                 List<byte[]> _messages = _Listener.GetMessages();
-                foreach(byte[] _data in _messages)                
-                    onReceive(_data);                
-                if(_Listener._Connected == false)
+                foreach (byte[] _data in _messages)
+                    onReceive(_data);
+                if (_Listener._Connected == false)
                     Close();
             }
 
         }
     }
-    
-    
-    
+
+
+
 
 }
