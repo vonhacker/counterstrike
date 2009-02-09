@@ -330,6 +330,16 @@ namespace doru
         {
             if (!Directory.Exists("logs")) Directory.CreateDirectory("logs");
         }
+        public static T DeserealizeOrCreate<T>(this XmlSerializer x, string path, T t)
+        {
+            if (!File.Exists(path))
+            {
+                using (FileStream fs = File.Create(path)) x.Serialize(fs, t);
+                return t;
+            }
+            using (FileStream fs1 = File.Open(path, FileMode.Open))
+                return (T)x.Deserialize(fs1);
+        }
         public static string Save(this string s, string comment)
         {
             Encoding.Default.GetBytes(s).Save(comment);
@@ -395,16 +405,7 @@ namespace doru
             _Socket.SendAsync(_SocketAsyncEventArgs);
         }                
 #endif
-        public static T DeserealizeOrCreate<T>(this XmlSerializer x, string path,T t)
-        {            
-            if (!File.Exists(path)) 
-            {
-                using(FileStream fs = File.Create(path)) x.Serialize(fs, t);
-                return t;
-            }
-            using (FileStream fs1 = File.Open(path, FileMode.Open))
-                return (T)x.Deserialize(fs1);
-        }
+        
         public static int PutToNextFreePlace<T>(this IList<T> items,T item)
         {
             int id = items.IndexOf(default(T));
