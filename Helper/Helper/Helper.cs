@@ -4,6 +4,7 @@ using System.Text;
 #if(!SILVERLIGHT)
 using System.IO.Compression;
 #else
+using System.Windows.Controls;
 using System.Windows;
 #endif
 using System.Linq;
@@ -20,6 +21,7 @@ using System.Reflection;
 using System.Collections;
 using System.Xml.Schema;
 using System.Collections.Specialized;
+
 
 
 namespace CounterStrikeLive
@@ -403,7 +405,25 @@ namespace doru
             SocketAsyncEventArgs _SocketAsyncEventArgs = new SocketAsyncEventArgs();
             _SocketAsyncEventArgs.SetBuffer(buffer,offset,count);
             _Socket.SendAsync(_SocketAsyncEventArgs);
-        }                
+        }
+        public static void Show(this Control _Control)
+        {
+            _Control.Visibility = Visibility.Visible;
+            _Control.IsEnabled = true;
+            _Control.Focus();
+        }
+        public static void Hide(this Control _Control)
+        {
+            _Control.Visibility = Visibility.Collapsed;
+            _Control.IsEnabled = false;
+        }
+        public static void Toggle(this Control _Control)
+        {
+            if(_Control.Visibility == Visibility.Visible)
+                _Control.Hide();
+            else
+                _Control.Show();
+        }
 #endif
         
         public static int PutToNextFreePlace<T>(this IList<T> items,T item)
@@ -1942,7 +1962,47 @@ namespace doru
 
     }
 #else
+    public class NetworkStream : MemoryStream
+    {
+        Socket _Socket;
+        public NetworkStream(Socket s)
+        {
+            _Socket = s;
+            StartReceive();
+        }
 
+        private void StartReceive()
+        {
+            SocketAsyncEventArgs _SocketAsyncEventArgs = new SocketAsyncEventArgs();
+            _SocketAsyncEventArgs.Completed += new EventHandler<SocketAsyncEventArgs>(SocketAsyncEventArgs_Completed);
+            _SocketAsyncEventArgs.SetBuffer(new byte[1024], 0, 1024);
+            _Socket.ReceiveAsync(_SocketAsyncEventArgs);
+        }
+
+        void SocketAsyncEventArgs_Completed(object sender, SocketAsyncEventArgs e)
+        {
+            long pos = Position;
+            base.Write(e.Buffer, 0, e.BytesTransferred);
+            Position = pos;
+            StartReceive();
+        }
+        public override int Read(byte[] buffer, int offset, int count)
+        {
+            while(Position == Length) Thread.Sleep(2);
+            if(Position == Length) return 0;
+            else
+                return base.Read(buffer, offset, count);
+        }
+        public override int ReadByte()
+        {
+            while(Position == Length) Thread.Sleep(2);
+            return base.ReadByte();
+        }
+        public override void Write(byte[] buffer, int offset, int count)
+        {
+            _Socket.Send(buffer);
+        }
+    }
     public class Trace : Debug
     {
     }
