@@ -627,7 +627,6 @@ namespace CounterStrikeLive
                                 string _Map = _BinaryReader.ReadString();
                                 Trace.WriteLine("Map name Received:" + _Map);
                                 LoadResources(_Map);
-                                provider.SendMessage(new byte[] { (byte)PacketType.MapLoaded });
                                 //LoadGame(Application.GetResourceStream(new Uri(_Map, UriKind.Relative)).Stream);
                             }
                             break;
@@ -766,6 +765,7 @@ namespace CounterStrikeLive
             }
             LoadGame(_Resources["map.xml"]);
 
+            provider.SendMessage(new byte[] { (byte)PacketType.MapLoaded });
         }        
         void provider_ServerConnected(object sender, EventArgs e)
         {
