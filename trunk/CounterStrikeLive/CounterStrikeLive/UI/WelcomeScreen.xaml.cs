@@ -17,6 +17,8 @@ namespace CounterStrikeLive
 {
     public partial class WelcomeScreen : UserControl
     {
+        private string ForcedServer = "";
+
         public WelcomeScreen()
         {
             InitializeComponent();
@@ -78,9 +80,31 @@ namespace CounterStrikeLive
             foreach (Match _Match in _MatchCollection)
             {
                 GroupCollection g = _Match.Groups;
-                _List.Add(new Item { _Ip = g["Ip"].Value, _Name = g["Name"].Value, _Players = g["PlayerCount"].Value, _Port = g["Port"].Value, _Map = g["Map"].Value, _Version = g["Version"].Value });
+                if (string.IsNullOrEmpty(ForcedServer))
+                {
+                    _List.Add(new Item { _Ip = g["Ip"].Value, _Name = g["Name"].Value, _Players = g["PlayerCount"].Value, _Port = g["Port"].Value, _Map = g["Map"].Value, _Version = g["Version"].Value });
+                }
+                else
+                {
+                    if (ForcedServer == g["Ip"].Value)
+                    {
+                        _List.Add(new Item { _Ip = g["Ip"].Value, _Name = g["Name"].Value, _Players = g["PlayerCount"].Value, _Port = g["Port"].Value, _Map = g["Map"].Value, _Version = g["Version"].Value });
+                    }
+                }
             }
-            _DataGrid.SelectedIndex = old;
+            Item _Item = (_DataGrid.SelectedItem as Item);
+            if (_Item == null && _List.Count > 0)
+            {
+                _serverip.Text = _List[0]._Ip + ":" + _List[0]._Port;
+            }
+            else
+            {
+                _serverip.Text = _Item._Ip + ":" + _Item._Port;
+            }
+            if (old >= 0)
+            {
+                _DataGrid.SelectedIndex = old;
+            }
             new Thread(delegate()
             {
                 Thread.Sleep(3000);
