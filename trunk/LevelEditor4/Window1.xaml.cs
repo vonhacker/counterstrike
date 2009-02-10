@@ -49,7 +49,7 @@ namespace LevelEditor4
             if (_oldInkCanvas != null)
             {
 
-                foreach (Image _UIElement in _oldInkCanvas.GetSelectedElements().OfType<Image>())
+                foreach (Image _UIElement in _oldInkCanvas.GetSelectedElements().OfType<Image>().ToList())
                 {
                     _oldInkCanvas.Children.Remove(_UIElement);
                     _InkCanvas.Children.Add(_UIElement);
@@ -323,7 +323,8 @@ namespace LevelEditor4
         void WindowLoaded(object sender, RoutedEventArgs e)
         {
             if(!File.Exists(Settings.Default.FilePath)) Settings.Default.FilePath = "../../map.xml";
-            Spammer3.Setup(System.IO.Path.GetDirectoryName(Settings.Default.FilePath) + "../../");            
+            string path = System.IO.Path.GetDirectoryName(Settings.Default.FilePath);
+            Logging.Setup(path);            
             SelectCanvas(0);
 
             _XmlSerializer = new XmlSerializer(typeof(MapDatabase));

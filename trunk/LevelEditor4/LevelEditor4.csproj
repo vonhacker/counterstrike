@@ -70,7 +70,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helper\Helper\Helper.cs" />
+    <Compile Include="..\Helper\Helper\Helper.cs">
+      <Link>Helper.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
