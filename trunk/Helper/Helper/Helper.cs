@@ -21,6 +21,8 @@ using System.Reflection;
 using System.Collections;
 using System.Xml.Schema;
 using System.Collections.Specialized;
+using System.IO.IsolatedStorage;
+
 
 
 
@@ -120,12 +122,13 @@ namespace doru
     public abstract class Encoding : System.Text.Encoding
     {
 #if (!SILVERLIGHT)
-        static System.Text.Encoding _DefaultEncoding = System.Text.Encoding.Default;
-        public static new System.Text.Encoding Default { get { return _DefaultEncoding; } set { _DefaultEncoding = value; } }
+        public new static System.Text.Encoding Default = System.Text.Encoding.Default;                       
         public static System.Text.Encoding Default2 { get { return System.Text.Encoding.Default; } }
 #else
-        public static System.Text.Encoding Default { get { return Encoding.UTF8; } }
+        public static System.Text.Encoding Default = Encoding.UTF8;        
+        static System.Text.Encoding _DefaultEncoding = Encoding.UTF8;        
 #endif
+        
     }
     public class ExceptionC : Exception
     {
@@ -323,7 +326,7 @@ namespace doru
         
 
     }
-
+    
     public static class Extensions
     {
         
@@ -332,16 +335,7 @@ namespace doru
         {
             if (!Directory.Exists("logs")) Directory.CreateDirectory("logs");
         }
-        public static T DeserealizeOrCreate<T>(this XmlSerializer x, string path, T t)
-        {
-            if (!File.Exists(path))
-            {
-                using (FileStream fs = File.Create(path)) x.Serialize(fs, t);
-                return t;
-            }
-            using (FileStream fs1 = File.Open(path, FileMode.Open))
-                return (T)x.Deserialize(fs1);
-        }
+ 
         public static string Save(this string s, string comment)
         {
             Encoding.Default.GetBytes(s).Save(comment);
@@ -399,6 +393,7 @@ namespace doru
             }
         }
 #else
+        #region 
         public static void Send(this Socket _Socket, byte[] buffer) { Send(_Socket, buffer, 0, buffer.Length); }
         public static void Send(this Socket _Socket, byte[] buffer,int offset , int count)
         {
@@ -406,7 +401,8 @@ namespace doru
             _SocketAsyncEventArgs.SetBuffer(buffer,offset,count);
             _Socket.SendAsync(_SocketAsyncEventArgs);
         }
-        public static void Show(this Control _Control)
+
+        public static void Show(this Control _Control)        ///<sumary> create</sumary>
         {
             _Control.Visibility = Visibility.Visible;
             _Control.IsEnabled = true;
@@ -424,8 +420,37 @@ namespace doru
             else
                 _Control.Show();
         }
+        #endregion
 #endif
-        
+
+        public static string[] Split2(this string s,string s2)
+        {
+            return s.Split(new[] { s2 }, StringSplitOptions.RemoveEmptyEntries);
+        }
+        public static T DeserealizeOrCreate<T>(this XmlSerializer x, string path, T t)
+        {
+            if(t == null) throw new NullReferenceException("omg");
+
+            try
+            {
+                using(FileStream fs1 = File.Open(path, FileMode.Open))
+                    return (T)x.Deserialize(fs1);
+            }
+            catch {
+                using(FileStream fs = File.Create(path)) x.Serialize(fs, t);
+                return t;
+            }            
+        }
+        public static void Serialize<T>(this XmlSerializer x, string path,T t)
+        {
+            x.Serialize(File.Open(path, FileMode.Create), t);
+        }
+        public static byte[] Serialize<T>(this XmlSerializer x, T t)
+        {
+            MemoryStream ms = new MemoryStream();
+            x.Serialize(ms, t);
+            return ms.ToArray();
+        }
         public static int PutToNextFreePlace<T>(this IList<T> items,T item)
         {
             int id = items.IndexOf(default(T));
@@ -440,7 +465,12 @@ namespace doru
                 return id;
             }
         }
-
+        public static bool Contains<T>(this IList<T> list,params T[] ts)
+        {
+            foreach(T t in ts)            
+                if(!list.Contains(t)) return false;            
+            return true;
+        }
         public static T Trace<T>(this T t)
         {
             return Trace(t, "");
@@ -864,9 +894,111 @@ namespace doru
         }
     }
     
-#if (!SILVERLIGHT)
+#if(WINFORMS)
     public static class Win32
     {
+        using System.Windows.Forms;
+        private const int WH_KEYBOARD_LL = 13;
+        private const int WM_KEYDOWN = 0x0100;
+        private const int WM_KEYUP = 0x0101;
+        private static LowLevelKeyboardProc _proc = HookCallback;
+        private static IntPtr _hookID = IntPtr.Zero;
+
+
+        private static IntPtr SetHook(LowLevelKeyboardProc proc)
+        {
+            using(Process curProcess = Process.GetCurrentProcess())
+            using(ProcessModule curModule = curProcess.MainModule)
+            {
+                return SetWindowsHookEx(WH_KEYBOARD_LL, proc,
+                    GetModuleHandle(curModule.ModuleName), 0);
+            }
+        }
+
+        private delegate IntPtr LowLevelKeyboardProc(
+            int nCode, IntPtr wParam, IntPtr lParam);
+
+        public delegate bool OnKeyDown(Keys key,bool down);
+        private static OnKeyDown onKeyDown;        
+        public static OnKeyDown _OnKeyDown
+        {
+            get { return onKeyDown; }
+            set
+            {
+                if(value != null && _hookID != null) _hookID = SetHook(_proc);
+                else UnhookWindowsHookEx(_hookID);
+                onKeyDown = value;
+            }
+        }
+        private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
+        {
+
+            if(nCode >= 0 && (wParam == (IntPtr)WM_KEYDOWN || wParam == (IntPtr)WM_KEYUP))
+            {
+                int vkCode = Marshal.ReadInt32(lParam);
+                if(onKeyDown != null) onKeyDown((Keys)vkCode, wParam == (IntPtr)WM_KEYDOWN);                
+            }
+            return CallNextHookEx(_hookID, nCode, wParam, lParam);
+        }
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern IntPtr SetWindowsHookEx(int idHook,
+            LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool UnhookWindowsHookEx(IntPtr hhk);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode,
+            IntPtr wParam, IntPtr lParam);
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern IntPtr GetModuleHandle(string lpModuleName);
+
+
+        public static String GetSelectedText(bool all)
+        {
+            IntPtr hWnd = GetForegroundWindow();
+            uint processId;
+            uint activeThreadId = GetWindowThreadProcessId(hWnd, out processId);
+            uint currentThreadId = GetCurrentThreadId();
+            AttachThreadInput(activeThreadId, currentThreadId, true);
+            IntPtr focusedHandle = GetFocus();
+            AttachThreadInput(activeThreadId, currentThreadId, false);
+            int len = SendMessage(focusedHandle, WM_GETTEXTLENGTH, 0, null);
+            StringBuilder sb = new StringBuilder(len);
+            int numChars = SendMessage(focusedHandle, WM_GETTEXT, len + 1, sb);
+            if(all)
+                return sb.ToString();
+            else
+            {
+                int start, next;
+                SendMessage(focusedHandle, EM_GETSEL, out start, out next);
+                return sb.ToString().Substring(start, next - start);
+            }
+            
+        }        
+        [DllImport("user32.dll")]
+        static extern IntPtr GetForegroundWindow();
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+        [DllImport("kernel32.dll")]
+        static extern uint GetCurrentThreadId();
+        [DllImport("user32.dll")]
+        static extern bool AttachThreadInput(uint idAttach, uint idAttachTo,
+        bool fAttach);
+        [DllImport("user32.dll")]
+        static extern IntPtr GetFocus();
+        [DllImport("user32.dll")]
+        static extern int SendMessage(IntPtr hWnd, uint Msg, int wParam, StringBuilder lParam);
+        // second overload of SendMessage
+        [DllImport("user32.dll")]
+        static extern int SendMessage(IntPtr hWnd, uint Msg, out int wParam, out int lParam);
+        const uint WM_GETTEXT = 0x0D;
+        const uint WM_GETTEXTLENGTH = 0x0E;
+        const uint EM_GETSEL = 0xB0;
+
         [DllImport("user32.dll")]
         public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
@@ -980,6 +1112,8 @@ namespace doru
             return lastInPut.dwTime;
         }
     }
+#endif
+#if (!SILVERLIGHT)    
     [XmlRoot("dictionary")]
     public class SerializableDictionary<TKey, TValue> : Dictionary<TKey, TValue>, IXmlSerializable
     {
@@ -1962,6 +2096,23 @@ namespace doru
 
     }
 #else
+    public class File
+    {
+        public static IsolatedStorageFile _IsolatedStorageFile = IsolatedStorageFile.GetUserStoreForSite();
+        public static System.IO.FileStream Create(string path)
+        {
+            return _IsolatedStorageFile.CreateFile(path);
+        }
+        public static bool Exists(string path)
+        {
+            return _IsolatedStorageFile.FileExists(path);
+        }
+        public static FileStream Open(string path, FileMode mode)
+        {
+            return _IsolatedStorageFile.OpenFile(path, mode);
+        }
+
+    }
     public class NetworkStream : MemoryStream
     {
         Socket _Socket;
@@ -2018,7 +2169,7 @@ namespace doru
         }
     }    
 #endif
-
+    
     public static class STimer
     {
         public static void AddMethod(double _Time, Action _Action)
