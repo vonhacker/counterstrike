@@ -1,19 +1,24 @@
-﻿using System;
+﻿using doru;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
+using System.Reflection;
+using System.ComponentModel;
+using System.IO;
+using doru.Tcp;
 
-namespace CSLIVE
+namespace CSLIVE //this file contains code for silverlight and server
 {
     public class Config 
     {
         public static XmlSerializer _XmlSerializer = new XmlSerializer(typeof(Config), new[] { typeof(ServerListRoom), typeof(WormsRoom), typeof(CSRoom) });
         public static string _ConfigPath = "./CSLIVE.Web/ClientBin/Config.xml";
-        public List<Room> Rooms = new List<Room>() { new ServerListRoom() };
+        public List<RoomDb> Rooms = new List<RoomDb>() { new ServerListRoom(), new CSRoom() { MapPath = "estate.zip" } };
         public string _ServerName = "CounterStrikeLive Server Test";
-        public string _ServerListIp = "85.157.182.183:4530";
+        public string _ServerListIp = "localhost:4530";
         public string _WebAllowedIps = ".*";
         public string _WebRedirect = "http://cslive.mindswitch.ru/cs/CounterStrikeLiveTestPage.html";        
         public int _WebPort = 5300;
@@ -21,27 +26,36 @@ namespace CSLIVE
         public string _WebDefaultPage = @"./CSLIVE.Web/CSLIVETestPage.html";
         public int _GamePort = 4530;
         public string _Irc = "85.202.112.192:4534";
-        public string _IrcRoom = "#cslive";        
+        public string _IrcRoom = "#cslive";
     }
-    
-    public abstract class Room
+
+    #region Room
+    public abstract class RoomDb //base class for room static info
     {        
 #if(!SILVERLIGHT)        
         [XmlIgnore]
         public CSLIVE.Server.Program.GameServer.Client[] _Clients = new CSLIVE.Server.Program.GameServer.Client[255];
 #endif
-    }
-    
-    public class CSRoom : Room //cslive room
+    }    
+    public class CSRoom : RoomDb //cslive room
     {
-        public string mapname;        
-    }
+
+        public string MapPath;        
+    }    
+    public class ServerListRoom : RoomDb { }
     
-    public class ServerListRoom : Room { }
-    
-    public class WormsRoom : Room { } //future worms game room
+    public class WormsRoom : RoomDb { } //future worms game room
+    #endregion        
     public enum PacketType : byte
     {
+        /// <summary>
+        /// client->server
+        /// </summary>
+        getip = 122,
+        /// <summary>
+        /// server->client
+        /// </summary>
+        ip = 123,
         connect = 188,
         possitions = 56,
         nick = 86,
@@ -106,11 +120,11 @@ namespace CSLIVE
         /// <summary>
         /// client->server client asks map file
         /// </summary>
-        getmap = 40,
+        getrooms = 40,
         /// <summary>
-        /// server->client map [BinaryFormater Room._data]
+        /// server->client map serialized data
         /// </summary>
-        map = 21,
+        room = 21,
         /// <summary>
         /// client->client [byte client id][data]
         /// </summary>
@@ -118,6 +132,8 @@ namespace CSLIVE
         /// <summary>
         /// client->server first message from client - join room, after that server send player id [byte] 
         /// </summary>
-        roomid = 39
+        roomid = 39                
     }
+    
+    
 }

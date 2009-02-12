@@ -34,12 +34,12 @@ namespace CSLIVE.Server
             {
                 
                 Console.WriteLine("Web SErver Started");
-                _TcpListener = new TcpListener(IPAddress.Any, _Database._WebPort);
+                _TcpListener = new TcpListener(IPAddress.Any, _Config._WebPort);
                 try
                 {
                     _TcpListener.Start();
                 }
-                catch(SocketException) { _Database._WebPort.Trace("cannot listen port"); return; }
+                catch(SocketException) { _Config._WebPort.Trace("cannot listen port"); return; }
                 while (true)
                 {
                     Socket _Socket = _TcpListener.AcceptSocket();                    
@@ -87,15 +87,15 @@ namespace CSLIVE.Server
 
                 private string OnReceive(string path)
                 {
-                    if (!Regex.IsMatch((_Socket.RemoteEndPoint as IPEndPoint).Address.ToString(), _Database._WebAllowedIps, RegexOptions.IgnoreCase))
+                    if (!Regex.IsMatch((_Socket.RemoteEndPoint as IPEndPoint).Address.ToString(), _Config._WebAllowedIps, RegexOptions.IgnoreCase))
                     {                        
-                        _Database._WebRedirect.Trace("redirect");
-                        return string.Format(Res._redirect, _Database._WebRedirect);
+                        _Config._WebRedirect.Trace("redirect");
+                        return string.Format(Res._redirect, _Config._WebRedirect);
                     }
                     else
                     {
-                        if(path.Length == 0 || path == "CSLIVETestPage.html") return string.Format(Res._redirect, _Database._WebDefaultPage);
-                        path = Path.Combine(_Database._WebRoot, path);                        
+                        if(path.Length == 0 || path == "CSLIVETestPage.html") return string.Format(Res._redirect, _Config._WebDefaultPage);
+                        path = Path.Combine(_Config._WebRoot, path);                        
                         if (!File.Exists(path)) throw new ExceptionA("File Not Exists");
                         if (Path.IsPathRooted(path)) throw new ExceptionA("Path Rooted");
                         if (!Path.GetFullPath(path).Contains(Environment.CurrentDirectory)) throw new ExceptionA("not allowed path");

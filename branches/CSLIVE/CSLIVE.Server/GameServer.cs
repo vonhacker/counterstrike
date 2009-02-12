@@ -12,7 +12,100 @@
     using System.Threading;
     using System.Diagnostics;
     using System.Runtime.Serialization.Formatters.Binary;
+    using System.ComponentModel;
+    using System.Reflection;
+    public class SharedObjectAttribute : Attribute
+    {
+        public int _Priority;
+        public SharedObjectAttribute(int _Priority)
+        {
+            this._Priority = _Priority;
+        }
+    }
+    public abstract class SharedObj<T> where T : class, INotifyPropertyChanged
+    {
+        public T _SharedObject; 
+        protected List<PropertyInfo> _Properties;
+        public SharedObj()
+        {
+            _Properties = (from p in _SharedObject.GetType().GetProperties() where (p.GetCustomAttributes(true).FirstOrDefault(a => a is SharedObjectAttribute) != null) select p).ToList();
+            if(_Properties.Count == 0) throw new Exception("sharedobject does not have attributes");
+        }
+    }
+    public class LocalSharedObj<T> : SharedObj<T> where T : class, INotifyPropertyChanged
+    {
+         
+        public LocalSharedObj()
+        {
+            _SharedObject.PropertyChanged += new PropertyChangedEventHandler(SharedObject_PropertyChanged);
+            _OnBytesToSend(WriteAllBytes());
+        }                        
+        private byte[] WriteAllBytes()
+        {
+            MemoryStream ms = new MemoryStream();
+            //ms.WriteByte((byte)PacketType.sharedObject);
+            for(int i = 0; i < _Properties.Count; i++)
+                WriteBytes(i, ms);
+            return ms.ToArray();
+        }
+        public void WriteAllBytes(MemoryStream ms)
+        {
+            for(int i = 0; i < _Properties.Count; i++)
+                WriteBytes(i, ms);
+        }
+        private byte[] WriteBytes(int i)
+        {
+            MemoryStream _MemoryStream = new MemoryStream();
+            WriteAllBytes(_MemoryStream);
+            return _MemoryStream.ToArray();
+        }
+        private void WriteBytes(int i, MemoryStream _ms)
+        {
+            PropertyInfo _PropertyInfo = _Properties[i];
+            object value = _PropertyInfo.GetValue(_SharedObject, null);
 
+            _ms.WriteByte((byte)i);
+            if(value is int) _ms.Write((Int16)(int)value);
+            else if(value is string) _ms.Write((string)value);
+            else if(value is Enum) _ms.Write(value.ToString());
+            else if(value is float) _ms.Write((float)value);
+            else if(value is byte) _ms.Write((byte)value);
+            else if(value is bool) _ms.Write((bool)value);
+            else throw new Exception("Shared Send Unkown value");
+
+        }
+        public delegate void OnBytesToSend(byte[] bytes);
+        public OnBytesToSend _OnBytesToSend;
+
+        void SharedObject_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            _OnBytesToSend(WriteBytes(_Properties.IndexOf(_SharedObject.GetType().GetProperty(e.PropertyName))));
+        }
+    }
+    public class RemoteSharedObj<T> : SharedObj<T> where T : class, INotifyPropertyChanged
+    {
+        public void OnBytesToRead(MemoryStream ms)
+        {
+            ms.ReadB();            
+            int id = ms.ReadByte();
+            PropertyInfo _PropertyInfo = _Properties[id];
+            if(_PropertyInfo.GetCustomAttributes(true).FirstOrDefault(a => a is SharedObjectAttribute) == null)
+                throw new Exception("Break");
+            Type type = _PropertyInfo.PropertyType;
+            if(type.IsAssignableFrom(typeof(int)))
+                _PropertyInfo.SetValue(this, ms.ReadInt16(), null);
+            else if(type.IsAssignableFrom(typeof(string)))
+                _PropertyInfo.SetValue(this, ms.ReadString(), null);
+            else if(type.BaseType == typeof(Enum))
+                _PropertyInfo.SetValue(this, Enum.Parse(type, ms.ReadString(), false), null);
+            else if(type.IsAssignableFrom(typeof(float)))
+                _PropertyInfo.SetValue(this, ms.ReadSingle(), null);
+            else if(type.IsAssignableFrom(typeof(bool)))
+                _PropertyInfo.SetValue(this, ms.ReadBoolean(), null);
+            else throw new Exception("Break");
+        }
+        
+    }
 
     public partial class Program
     {
@@ -21,9 +114,8 @@
         {
 
             public static TimerA _TimerA = new TimerA();
-            public class Client
-            {
-
+            public class Client 
+            {                
                 public Socket _Socket;
                 Listener _Listener;
                 Sender _Sender;
@@ -32,7 +124,7 @@
                 public Client[] _Clients { get { return _Rooms[_room.Value]._Clients; } }
                 public double _PingElapsed;
                 public int _PingTime;
-                public void Start()
+                public void Start() 
                 {
                     _Listener = new Listener() { _Socket = _Socket };
                     _Listener.StartAsync(_id.ToString());
@@ -46,19 +138,20 @@
                         OnReceive(_bytes);
                     if(!_Listener._Connected) Close();
                 }
-                XmlSerializer _XmlSerializer = Helper.CreateSchema("room", typeof(Room), typeof(CSRoom), typeof(WormsRoom));
+                XmlSerializer _XmlSerializerRoom = Helper.CreateSchema("room",typeof(List<RoomDb>), typeof(RoomDb), typeof(CSRoom), typeof(WormsRoom));
+                
                 private void OnReceive(byte[] _bytess)
                 {
                     using(MemoryStream _ms = new MemoryStream(_bytess))
                     {
-                        PacketType _pk = (PacketType)_ms.ReadB();
-                        if(_id == null)
-                            switch(_pk)
+                        PacketType _packet = (PacketType)_ms.ReadB();
+                        if(_id == null) //client not in room
+                            switch(_packet)
                             {
-                                case PacketType.roomid:
+                                case PacketType.roomid:  //player join room 
                                     _room = _ms.ReadB();
                                     if(_room > _Rooms.Count) throw new Exception("unknown room");
-                                    _id = _Clients.PutToNextFreePlace(this);
+                                    _id = _Clients.PutToNextFreePlace(this);                                    
                                     _id.Trace("Sended Player id");
                                     Send(new byte[] { (byte)PacketType.serverid, (byte)PacketType.playerid, (byte)_id });
                                     foreach(Client _Client in _Clients) // send all clients id to joined player                                
@@ -66,13 +159,13 @@
                                             Send(new byte[] { (byte)_Client._id, (byte)PacketType.PlayerJoined });
                                     SendToAll(new byte[] { (byte)PacketType.PlayerJoined });
                                     break;
-                                case PacketType.getmap:
-                                    byte[] data =_XmlSerializer.Serialize(_Rooms[_ms.ReadB()]);
-                                    _Sender.Send(new byte[] { (byte)PacketType.map }.Join(data));
+                                case PacketType.getrooms:
+                                    byte[] data =_XmlSerializerRoom.Serialize(_Rooms);
+                                    _Sender.Send(new byte[] { (byte)PacketType.room }.Join(data));
                                     break;
                             }
-                        if(_id != null)
-                            switch((PacketType)_pk)
+                        if(_id != null) //client is in room
+                            switch((PacketType)_packet)
                             {
                                 case PacketType.sendTo:
                                     int clientid = _ms.ReadB();
@@ -98,6 +191,7 @@
                             }
                     }
                 }
+
                 public void Ping()
                 {
                     _PingElapsed = 0;
@@ -126,13 +220,13 @@
                     _Sender.Send(_bytes);
                 }
             }
-            public static List<Room> _Rooms { get { return _Database.Rooms; } }
+            public static List<RoomDb> _Rooms { get { return _Config.Rooms; } }
             ClientWait _ClientWait;
             public void StartAsync() { new Thread(Start).StartBackground("GameServer"); }
             public void Start()
             {
                 "game server started".Trace();
-                _ClientWait = new ClientWait() { _Port = _Database._GamePort };
+                _ClientWait = new ClientWait() { _Port = _Config._GamePort };
                 _ClientWait.Start();
                 while(true)
                 {

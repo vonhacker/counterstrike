@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSLIVE.Server", "CSLIVE.Ser
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSLIVE", "CSLIVE\CSLIVE.csproj", "{EB4D542C-1CD5-4D09-8C69-2FF900FB413A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication1", "ConsoleApplication1\ConsoleApplication1.csproj", "{258328C9-BBA6-4D33-BA0B-B4A4BD99B791}"
+EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True
@@ -29,6 +31,10 @@ Global
 		{EB4D542C-1CD5-4D09-8C69-2FF900FB413A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB4D542C-1CD5-4D09-8C69-2FF900FB413A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB4D542C-1CD5-4D09-8C69-2FF900FB413A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{258328C9-BBA6-4D33-BA0B-B4A4BD99B791}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{258328C9-BBA6-4D33-BA0B-B4A4BD99B791}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{258328C9-BBA6-4D33-BA0B-B4A4BD99B791}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{258328C9-BBA6-4D33-BA0B-B4A4BD99B791}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

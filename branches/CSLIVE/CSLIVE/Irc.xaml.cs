@@ -21,8 +21,7 @@ namespace CSLIVE
     public partial class Irc : UserControl
     {
         public Irc()
-        {
-            
+        {            
             InitializeComponent();
             Loaded += new RoutedEventHandler(Irc_Loaded);
         }

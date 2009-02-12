@@ -24,12 +24,12 @@ namespace CSLIVE.Server
             new Program();
         }
         
-        public static Config _Database;
+        public static Config _Config;
 
 
         public Program()
         {
-            _Database = Config._XmlSerializer.DeserealizeOrCreate(Config._ConfigPath, new Config());
+            _Config = Config._XmlSerializer.DeserealizeOrCreate(Config._ConfigPath, new Config());
             GameServer _GameServer = new GameServer();
             _GameServer.StartAsync();
             new PolicyServer().StartAsync();
@@ -37,6 +37,9 @@ namespace CSLIVE.Server
             WebServer _WebServer = new WebServer();
             _WebServer.Start();
             Thread.Sleep(-1);
+
+            ServerList _ServerList = new ServerList();
+
         }
 
 
