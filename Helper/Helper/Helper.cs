@@ -191,7 +191,21 @@ namespace doru
             return new TcpClient(ip, port).Client;
         }
 #endif
-
+        public static byte[] JoinBytes(params object[] objects)
+        {
+            using(MemoryStream ms = new MemoryStream())
+            {
+                foreach(object o in objects)
+                {
+                    if(o is byte[])
+                        ms.Write((byte[])o);
+                    else
+                        ms.Write((byte)o);
+                    
+                }
+                return ms.ToArray();
+            }            
+        }
         public static string ReplaceRandoms(string text, string[] _RandomTags)
         {
             text = Regex.Replace(text, @"_randomtext(\d+)_", delegate(Match m)
@@ -422,7 +436,48 @@ namespace doru
         }
         #endregion
 #endif
+        public static Int16 ReadInt16(this Stream s)
+        {
+            return BitConverter.ToInt16(s.Read(2), 0);
+        }
+        public static float ReadSingle(this Stream s) { return ReadFloat(s); }
+        public static bool ReadBoolean(this Stream s)
+        {
+            return BitConverter.ToBoolean(new[] { s.ReadB() }, 0);
+        }
+        public static float ReadFloat(this Stream s)
+        {
+            return BitConverter.ToSingle(s.Read(4), 0);
+        }
+        public static string ReadString(this Stream s)
+        {
+            int c = s.ReadB();
+            return s.Read(c).ToStr();
+        }
 
+        public static void Write(this Stream s, byte _int)
+        {
+            s.WriteByte(_int);
+        }
+        public static void Write(this Stream s, bool _int)
+        {
+            s.Write(BitConverter.GetBytes(_int));
+        }
+        public static void Write(this Stream s, Int16 _int)
+        {
+            s.Write(BitConverter.GetBytes(_int));
+        }
+
+        public static void Write(this Stream s, float str)
+        {
+            s.Write(BitConverter.GetBytes(str));
+        }
+        public static void Write(this Stream s, string _str)
+        {
+            byte[] bs = _str.ToBytes();
+            s.Write(Helper.JoinBytes(new[] { (byte)bs.Length }, bs));
+        }
+        
         public static string[] Split2(this string s,string s2)
         {
             return s.Split(new[] { s2 }, StringSplitOptions.RemoveEmptyEntries);
@@ -602,11 +657,7 @@ namespace doru
             if (_bytes.Length == 0) throw new Exception();
             _Stream.Write(_bytes, 0, _bytes.Length);
         }
-        public static void Write(this Stream _Stream, string s)
-        {
-            byte[] _bytes = Encoding.Default.GetBytes(s);
-            _Stream.Write(_bytes, 0, _bytes.Length);
-        }
+        
 
         public static string GetString(this System.Text.Encoding e, byte[] str)
         {
@@ -793,6 +844,7 @@ namespace doru
             }
             return _StringBuilder.ToString();
         }
+        
         public static byte[] Join(this byte[] a, byte[] b)
         {
             byte[] c = new byte[a.Length + b.Length];
