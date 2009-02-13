@@ -17,6 +17,7 @@ namespace CSLIVE
     
     public partial class UserControl : System.Windows.Controls.UserControl //storing all global vars here
     {
+        public static Random _Random = new Random();
         public static Config _Config;
         public static LocalDatabase _LocalDatabase;
         public static Page _Page;

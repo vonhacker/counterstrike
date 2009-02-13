@@ -45,7 +45,8 @@ namespace CSLIVE
             AddMessage("socket connection established, connecting to irc");
             _Socket = (Socket)e.UserToken;
             _NetworkStream = new NetworkStream(_Socket);
-            _NetworkStream.WriteLine(Trace2(string.Format("NICK {0}", _Nick)));
+            Thread.Sleep(1000);
+            _NetworkStream.WriteLine(Trace2(string.Format("NICK {0}", _Nick + _Random.Next(100))));
             _NetworkStream.WriteLine(Trace2("USER " + "CsLiveClient" + " " + "CsLiveClient" + " server :" + "CsLiveClient"));            
             new Thread(Read).Start();
 
@@ -134,6 +135,7 @@ namespace CSLIVE
         }
         public void OnConnected() //irc Connected
         {
+            _NetworkStream.WriteLine("CODEPAGE UTF-8");
             AddMessage("connected");
             Join(_Room);
         }

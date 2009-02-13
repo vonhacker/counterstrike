@@ -17,52 +17,60 @@
     public class SharedObjectAttribute : Attribute
     {
         public int _Priority;
+        public SharedObjectAttribute() { }
         public SharedObjectAttribute(int _Priority)
         {
             this._Priority = _Priority;
         }
     }
-    public abstract class SharedObj<T> where T : class, INotifyPropertyChanged
+    public interface ISh<T>
     {
-        public T _SharedObject; 
+        T _SharedObj { get; set; }
+    }
+    public abstract class SharedObj<T> where T : class, INotifyPropertyChanged , ISh<SharedObj<T>>
+    {
+        public T _Object = Activator.CreateInstance<T>(); 
         protected List<PropertyInfo> _Properties;
+        public static implicit operator T (SharedObj<T> s)
+        {            
+            return s._Object;
+        }
         public SharedObj()
-        {
-            _Properties = (from p in _SharedObject.GetType().GetProperties() where (p.GetCustomAttributes(true).FirstOrDefault(a => a is SharedObjectAttribute) != null) select p).ToList();
+        {            
+            _Properties = (from p in _Object.GetType().GetProperties() where (p.GetCustomAttributes(true).FirstOrDefault(a => a is SharedObjectAttribute) != null) select p).ToList();
             if(_Properties.Count == 0) throw new Exception("sharedobject does not have attributes");
         }
     }
-    public class LocalSharedObj<T> : SharedObj<T> where T : class, INotifyPropertyChanged
+    public class LocalSharedObj<T> : SharedObj<T> where T : class, INotifyPropertyChanged, ISh<SharedObj<T>>
     {
-         
+        public MemoryStream _ms = new MemoryStream();
         public LocalSharedObj()
         {
-            _SharedObject.PropertyChanged += new PropertyChangedEventHandler(SharedObject_PropertyChanged);
-            _OnBytesToSend(WriteAllBytes());
+            _Object.PropertyChanged += new PropertyChangedEventHandler(Object_PropertyChanged);            
         }                        
-        private byte[] WriteAllBytes()
-        {
-            MemoryStream ms = new MemoryStream();
-            //ms.WriteByte((byte)PacketType.sharedObject);
-            for(int i = 0; i < _Properties.Count; i++)
-                WriteBytes(i, ms);
-            return ms.ToArray();
+        //private byte[] Serialize()
+        //{
+        //    MemoryStream ms = new MemoryStream();            
+        //    for(int i = 0; i < _Properties.Count; i++)
+        //        WriteBytes(i, ms);
+        //    return ms.ToArray();
+        //}
+        public void Serialize(MemoryStream ms)
+        {            
+            for (int i = 0; i < _Properties.Count; i++)
+                if (_Properties[i].GetCustomAttributes(true).Any(a => a is SharedObjectAttribute))
+                    WriteBytes(i, _ms);                
         }
-        public void WriteAllBytes(MemoryStream ms)
+        public byte[] GetChanges()
         {
-            for(int i = 0; i < _Properties.Count; i++)
-                WriteBytes(i, ms);
-        }
-        private byte[] WriteBytes(int i)
-        {
-            MemoryStream _MemoryStream = new MemoryStream();
-            WriteAllBytes(_MemoryStream);
-            return _MemoryStream.ToArray();
+            if (_ms.Length == 0) return new byte[] { };
+            using (_ms)            
+                return _ms.ToArray();                        
         }
         private void WriteBytes(int i, MemoryStream _ms)
         {
             PropertyInfo _PropertyInfo = _Properties[i];
-            object value = _PropertyInfo.GetValue(_SharedObject, null);
+            object value = _PropertyInfo.GetValue(_Object, null);
 
             _ms.WriteByte((byte)i);
             if(value is int) _ms.Write((Int16)(int)value);
@@ -74,42 +82,42 @@
             else throw new Exception("Shared Send Unkown value");
 
         }
-        public delegate void OnBytesToSend(byte[] bytes);
-        public OnBytesToSend _OnBytesToSend;
-
-        void SharedObject_PropertyChanged(object sender, PropertyChangedEventArgs e)
+                
+        void Object_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            _OnBytesToSend(WriteBytes(_Properties.IndexOf(_SharedObject.GetType().GetProperty(e.PropertyName))));
+            WriteBytes(_Properties.IndexOf(_Object.GetType().GetProperty(e.PropertyName)),_ms);
         }
     }
-    public class RemoteSharedObj<T> : SharedObj<T> where T : class, INotifyPropertyChanged
+    public class RemoteSharedObj<T> : SharedObj<T> where T : class, INotifyPropertyChanged, ISh<SharedObj<T>>
     {
         public void OnBytesToRead(MemoryStream ms)
         {
-            ms.ReadB();            
-            int id = ms.ReadByte();
-            PropertyInfo _PropertyInfo = _Properties[id];
-            if(_PropertyInfo.GetCustomAttributes(true).FirstOrDefault(a => a is SharedObjectAttribute) == null)
-                throw new Exception("Break");
-            Type type = _PropertyInfo.PropertyType;
-            if(type.IsAssignableFrom(typeof(int)))
-                _PropertyInfo.SetValue(this, ms.ReadInt16(), null);
-            else if(type.IsAssignableFrom(typeof(string)))
-                _PropertyInfo.SetValue(this, ms.ReadString(), null);
-            else if(type.BaseType == typeof(Enum))
-                _PropertyInfo.SetValue(this, Enum.Parse(type, ms.ReadString(), false), null);
-            else if(type.IsAssignableFrom(typeof(float)))
-                _PropertyInfo.SetValue(this, ms.ReadSingle(), null);
-            else if(type.IsAssignableFrom(typeof(bool)))
-                _PropertyInfo.SetValue(this, ms.ReadBoolean(), null);
-            else throw new Exception("Break");
+            while (ms.Position != ms.Length)
+            {
+                int id = ms.ReadByte();
+                PropertyInfo _PropertyInfo = _Properties[id];
+                if (_PropertyInfo.GetCustomAttributes(true).FirstOrDefault(a => a is SharedObjectAttribute) == null)
+                    throw new Exception("Break");
+                Type type = _PropertyInfo.PropertyType;
+                if (type.IsAssignableFrom(typeof(int)))
+                    _PropertyInfo.SetValue(_Object, ms.ReadInt16(), null);
+                else if (type.IsAssignableFrom(typeof(string)))
+                    _PropertyInfo.SetValue(_Object, ms.ReadString(), null);
+                else if (type.BaseType == typeof(Enum))
+                    _PropertyInfo.SetValue(_Object, Enum.Parse(type, ms.ReadString(), false), null);
+                else if (type.IsAssignableFrom(typeof(float)))
+                    _PropertyInfo.SetValue(_Object, ms.ReadSingle(), null);
+                else if (type.IsAssignableFrom(typeof(bool)))
+                    _PropertyInfo.SetValue(_Object, ms.ReadBoolean(), null);
+                else throw new Exception("Break");
+            }
         }
         
     }
 
     public partial class Program
     {
-
+        public static XmlSerializer _XmlSerializerRoom = Helper.CreateSchema("room", typeof(List<RoomDb>), typeof(RoomDb), typeof(CSRoom), typeof(WormsRoom));
         public class GameServer
         {
 
@@ -138,7 +146,7 @@
                         OnReceive(_bytes);
                     if(!_Listener._Connected) Close();
                 }
-                XmlSerializer _XmlSerializerRoom = Helper.CreateSchema("room",typeof(List<RoomDb>), typeof(RoomDb), typeof(CSRoom), typeof(WormsRoom));
+                
                 
                 private void OnReceive(byte[] _bytess)
                 {
@@ -161,7 +169,7 @@
                                     break;
                                 case PacketType.getrooms:
                                     byte[] data =_XmlSerializerRoom.Serialize(_Rooms);
-                                    _Sender.Send(new byte[] { (byte)PacketType.room }.Join(data));
+                                    _Sender.Send(new byte[] { (byte)PacketType.rooms }.Join(data));
                                     break;
                             }
                         if(_id != null) //client is in room

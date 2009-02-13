@@ -46,7 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Helper\Helper\Helper.cs">
+    <Compile Include="..\..\..\..\..\Desktop\Helper\Helper.cs">
       <Link>Helper.cs</Link>
     </Compile>
     <Compile Include="Silverlight.cs" />

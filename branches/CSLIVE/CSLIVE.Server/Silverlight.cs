@@ -122,9 +122,9 @@ namespace CSLIVE //this file contains code for silverlight and server
         /// </summary>
         getrooms = 40,
         /// <summary>
-        /// server->client map serialized data
+        /// server->client List<room> serialized data
         /// </summary>
-        room = 21,
+        rooms = 21,
         /// <summary>
         /// client->client [byte client id][data]
         /// </summary>
