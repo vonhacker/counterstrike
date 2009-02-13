@@ -23,10 +23,7 @@ namespace CSLIVE.Server
             Logging.Setup("../../../");
             new Program();
         }
-        
-        
-
-
+                
         public Program()
         {
             _Config = Config._XmlSerializer.DeserealizeOrCreate(Config._ConfigPath, new Config());
@@ -38,8 +35,8 @@ namespace CSLIVE.Server
             WebServer _WebServer = new WebServer();
             _WebServer.StartAsync();
 
-            BossClient _ServerList = new BossClient();
-            _ServerList.StartAsync();
+            BossClient _BossClient = new BossClient();
+            _BossClient.StartAsync();
             
             Thread.Sleep(-1);
             

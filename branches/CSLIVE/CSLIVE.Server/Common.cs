@@ -15,11 +15,12 @@ namespace CSLIVE //this file contains code for silverlight and server
 {
     public class Config //"./CSLIVE.Web/ClientBin/Config.xml"
     {
-        public static XmlSerializer _XmlSerializer = new XmlSerializer(typeof(Config), new[] { typeof(ServerListRoom), typeof(WormsRoom), typeof(CSRoom) });
+        public const byte _ServerId = 254;
+        public static XmlSerializer _XmlSerializer = new XmlSerializer(typeof(Config), new[] { typeof(BossRoom), typeof(WormsRoom), typeof(CSRoom) });
         public static string _ConfigPath = "./CSLIVE.Web/ClientBin/Config.xml";
-        public List<RoomDb> Rooms = new List<RoomDb>() { new ServerListRoom(), new CSRoom() { MapPath = "estate.zip" } };
+        public List<RoomDb> Rooms = new List<RoomDb>() { new BossRoom(), new CSRoom() { MapPath = "estate.zip" } };
         public string _ServerName = "CounterStrikeLive Server Test";
-        public string _ServerListIp = "localhost:4530";
+        public string _BossServerIp = "localhost:4530";
         public string _WebAllowedIps = ".*";
         public string _WebRedirect = "http://cslive.mindswitch.ru/cs/CounterStrikeLiveTestPage.html";        
         public int _WebPort = 5300;
@@ -127,7 +128,7 @@ namespace CSLIVE //this file contains code for silverlight and server
                 else if(type.BaseType == typeof(Enum))
                     _PropertyInfo.SetValue(_Object, Enum.Parse(type, ms.ReadString(), false), null);
                 else if(type.IsAssignableFrom(typeof(float)))
-                    _PropertyInfo.SetValue(_Object, ms.ReadSingle(), null);
+                    _PropertyInfo.SetValue(_Object, ms.ReadFloat(), null);
                 else if(type.IsAssignableFrom(typeof(bool)))
                     _PropertyInfo.SetValue(_Object, ms.ReadBoolean(), null);
                 else throw new Exception("Break");
@@ -149,10 +150,11 @@ namespace CSLIVE //this file contains code for silverlight and server
 
         public string MapPath;        
     }    
-    public class ServerListRoom : RoomDb { }
+    public class BossRoom : RoomDb { }
     
     public class WormsRoom : RoomDb { } //future worms game room
     #endregion        
+    
     public enum PacketType : byte
     {
         /// <summary>
@@ -203,11 +205,7 @@ namespace CSLIVE //this file contains code for silverlight and server
         /// <summary>
         /// client->client shoot [byte - player angle]
         /// </summary>
-        shoot = 46,
-        /// <summary>
-        /// static server id
-        /// </summary>
-        serverid = 254,
+        shoot = 46,        
         /// <summary>
         /// server->client sets player id [byte]
         /// </summary>

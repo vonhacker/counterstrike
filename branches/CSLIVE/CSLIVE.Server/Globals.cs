@@ -9,18 +9,21 @@ namespace CSLIVE.Server
 {
     public partial class Program
     {
-        public static XmlSerializer _XmlSerializerRoom = Helper.CreateSchema("room", typeof(List<RoomDb>), typeof(RoomDb), typeof(CSRoom), typeof(WormsRoom));
+        public static XmlSerializer _XmlSerializerRoom = Helper.CreateSchema("room", typeof(List<RoomDb>), typeof(BossRoom), typeof(CSRoom), typeof(WormsRoom));
         public static TimerA _TimerA = new TimerA();
+        
         public static Config _Config;
         
         public partial class GameServer
-        {
-            public static List<RoomDb> _Rooms { get { return _Config.Rooms; } }
-            public static IEnumerable<Client> _Clients
-            {
-                get { return _Rooms.SelectMany(room => room._Clients).OfType<Client>(); }
-            }
+        {            
+            public static List<Client> _Clients = new List<Client>();
+            public static List<RoomDb> _Rooms { get { return _Config.Rooms; } }            
+            
         }
     }
     
 }
+//public static IEnumerable<Client> _ClientsInRooms
+//{
+//    get { return _Rooms.SelectMany(room => room._Clients).OfType<Client>(); }
+//}
