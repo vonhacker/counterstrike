@@ -23,39 +23,21 @@ namespace CSLIVE.Server
             {
                 new Thread(Start).StartBackground("ServerListClient");
             }
-            public class Client : INotifyPropertyChanged, ISh<SharedObj<Client>>
+            private void Start()
             {
-                
-                private bool server;                
-                public bool _Server { get { return server; } set { server = value; new PropertyChangedEventArgs("_Server"); } }
-                public SharedObj<Client> _SharedObj { get; set; }
-                public LocalSharedObj<Client> _LocalSharedObj { get { return (LocalSharedObj<Client>)_SharedObj; } }
-                public RemoteSharedObj<Client> _RemoteSharedObj { get { return (RemoteSharedObj<Client>)_SharedObj; } }
-                private string name;                
-                public string _Name { get { return name; } set { name = value; PropertyChanged(this, new PropertyChangedEventArgs("_Name")); } }
-                private string ipAddress;                
-                public string _IpAddress { get { return ipAddress; } set { ipAddress = value; PropertyChanged(this, new PropertyChangedEventArgs("_IpAddress")); } }
-                
-                public event PropertyChangedEventHandler PropertyChanged;                
-            }
+                "boss sender started".Trace();
+                Client _Client = new LocalSharedObj<Client>();
 
-            public void Start()
-            {
-                Client _Client= new LocalSharedObj<Client>();
-                
-                _Local._Name = _Config._ServerName;
-                
+                _Local._Name = _Config._ServerName;                
                 string[] ipport = _Config._ServerListIp.Split(":");
                 Socket _Socket = Helper.Connect(ipport[0], int.Parse(ipport[1]));
                 _Listener = new Listener { _Socket = _Socket };
                 _Listener.StartAsync("ServerListClientListener");
-                _Sender = new Sender();
+                _Sender = new Sender { _Socket = _Socket };
                 _Sender.Send(new[] { (byte)PacketType.getip });
-                while (true)
+                while(true)
                     Update();
-            }
-            
-            
+            }                                                
             public void Update()
             {
                 foreach (byte[] msg in _Listener.GetMessages())
@@ -73,8 +55,7 @@ namespace CSLIVE.Server
                                 case PacketType.rooms:
                                     List<RoomDb> _rooms = (List<RoomDb>)_XmlSerializerRoom.Deserialize(ms);
                                     int i = 0;
-                                    while(!(_rooms[i++] is ServerListRoom)) ;                                    
-                                    _Local._SharedObj = new LocalSharedObj<Client> { _Object = _Local };
+                                    while(!(_rooms[i++] is ServerListRoom)) ;                                                                        
                                     _Sender.Send(new byte[] { (byte)PacketType.roomid, (byte)i });
                                     break;                                
                                 case PacketType.sharedObject:
@@ -101,6 +82,24 @@ namespace CSLIVE.Server
                 byte[] bts = _Local._LocalSharedObj.GetChanges();
                 if (bts != null) _Sender.Send(Helper.JoinBytes((byte)PacketType.sharedObject, bts));
                 Thread.Sleep(20);
+            }
+            public class Client : INotifyPropertyChanged, ISh<SharedObj<Client>>
+            {
+
+                private bool server;
+                [SharedObject]
+                public bool _Server { get { return server; } set { server = value; new PropertyChangedEventArgs("_Server"); } }                
+                public SharedObj<Client> _SharedObj { get; set; }                
+                public LocalSharedObj<Client> _LocalSharedObj { get { return (LocalSharedObj<Client>)_SharedObj; } }                
+                public RemoteSharedObj<Client> _RemoteSharedObj { get { return (RemoteSharedObj<Client>)_SharedObj; } }
+                private string name;
+                [SharedObject]
+                public string _Name { get { return name; } set { name = value; PropertyChanged(this, new PropertyChangedEventArgs("_Name")); } }
+                private string ipAddress;
+                [SharedObject]
+                public string _IpAddress { get { return ipAddress; } set { ipAddress = value; PropertyChanged(this, new PropertyChangedEventArgs("_IpAddress")); } }
+
+                public event PropertyChangedEventHandler PropertyChanged;
             }
         }
     }

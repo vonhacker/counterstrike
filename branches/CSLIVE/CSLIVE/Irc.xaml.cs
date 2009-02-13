@@ -45,9 +45,7 @@ namespace CSLIVE
             AddMessage("socket connection established, connecting to irc");
             _Socket = (Socket)e.UserToken;
             _NetworkStream = new NetworkStream(_Socket);
-            Thread.Sleep(1000);
-            _NetworkStream.WriteLine(Trace2(string.Format("NICK {0}", _Nick + _Random.Next(100))));
-            _NetworkStream.WriteLine(Trace2("USER " + "CsLiveClient" + " " + "CsLiveClient" + " server :" + "CsLiveClient"));            
+            _NetworkStream.Write(string.Format(Res._ircon, _Nick, "cslive", "localhost", "http://cslive.no-ip.org").Trace());            
             new Thread(Read).Start();
 
             _Storyboard.Completed += new EventHandler(_Storyboard_Completed);
@@ -89,6 +87,7 @@ namespace CSLIVE
                 }
             }
             catch(IOException) { }
+            _Connected = false;
             "disconnected".Trace();
 
         }
@@ -118,9 +117,16 @@ namespace CSLIVE
             if((m = Regex.Match(s, "^.+? 451 .+?:(.+?)$")).Success)
                 OnConnectionFailed(m.Groups[1].Value);
 
+            if(Regex.Match(s,".+? 433 ").Success)            
+                OnNickAlreadyInUse();
+            
         }
-        [Obsolete]
-        public new string Name;//use _Nick
+
+        public void OnNickAlreadyInUse()
+        {
+            _LocalDatabase._Nick = null;
+            AddMessage("Nick Already In Use");
+        }
         public void OnUserJoin(string s) //user joined to irc
         {            
             _UserList.Items.Add(s);
@@ -135,17 +141,18 @@ namespace CSLIVE
         }
         public void OnConnected() //irc Connected
         {
-            _NetworkStream.WriteLine("CODEPAGE UTF-8");
+            _Connected = true;
+            Send("CODEPAGE UTF-8");
             AddMessage("connected");
             Join(_Room);
         }
         public void Leave(string room)
         {
-            _NetworkStream.WriteLine(Trace2("part " + room));
+            Send(Trace2("part " + room));
         }
         public void Join(string room)
         {
-            _NetworkStream.WriteLine(Trace2("join " + room));
+            Send(Trace2("join " + room));
         }
         ObservableCollection<Item> _ServerList = new ObservableCollection<Item>(); //serverlist for datagrid
         public void AddMessage(string msg) { AddMessage(null, msg); }
@@ -156,12 +163,19 @@ namespace CSLIVE
         }
         public string _Nick { get { return _LocalDatabase._Nick; } } 
         public string _Room { get { return _Config._IrcRoom; } }
+        bool _Connected;
         public void SendMessage(string msg) //sending message to irc
         {
             AddMessage(_Nick, msg);
-            
             foreach(string s in msg.Split(new[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries))
-                _NetworkStream.WriteLine(String.Format("PRIVMSG {0} :{1}", _Room, s));
+                Send(String.Format("PRIVMSG {0} :{1}", _Room, s));
+            
+        }
+        public void Send(string s)
+        {
+            if(_Connected)
+                _NetworkStream.WriteLine(s);
+            else AddMessage("error you are not connected");
         }
         public class IrcIm  //irc message
         {

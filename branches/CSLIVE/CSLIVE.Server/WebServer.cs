@@ -30,7 +30,7 @@ namespace CSLIVE.Server
             {
                 new Thread(Start).StartBackground("webserver");
             }
-            public void Start()
+            private void Start()
             {
                 
                 Console.WriteLine("Web SErver Started");

@@ -19,7 +19,7 @@ namespace CSLIVE.Server
     public partial class Program
     {
         static void Main(string[] args)
-        {
+        {            
             Logging.Setup("../../../");
             new Program();
         }
@@ -32,14 +32,17 @@ namespace CSLIVE.Server
             _Config = Config._XmlSerializer.DeserealizeOrCreate(Config._ConfigPath, new Config());
             GameServer _GameServer = new GameServer();
             _GameServer.StartAsync();
+            
             new PolicyServer().StartAsync();
 
             WebServer _WebServer = new WebServer();
-            _WebServer.Start();
-            Thread.Sleep(-1);
+            _WebServer.StartAsync();
 
             ServerList _ServerList = new ServerList();
-
+            _ServerList.StartAsync();
+            
+            Thread.Sleep(-1);
+            
         }
 
 

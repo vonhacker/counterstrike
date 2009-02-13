@@ -4,7 +4,7 @@
     <Room xsi:type="ServerListRoom" />
   </Rooms>
   <_ServerName>CounterStrikeLive Server Test</_ServerName>
-  <_ServerListIp>85.157.182.183:4530</_ServerListIp>
+  <_ServerListIp>localhost:4530</_ServerListIp>
   <_WebAllowedIps>.*</_WebAllowedIps>
   <_WebRedirect>http://cslive.mindswitch.ru/cs/CounterStrikeLiveTestPage.html</_WebRedirect>
   <_WebPort>5300</_WebPort>
