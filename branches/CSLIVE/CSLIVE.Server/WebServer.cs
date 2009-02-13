@@ -11,15 +11,7 @@ using System.Threading;
 using System.Diagnostics;
 namespace CSLIVE.Server
 {
-    public static class Ext
-    {
-        public static T Trace<T>(this T t) { return Trace(t, ""); }
-        public static T Trace<T>(this T t, string s)
-        {
-            Console.WriteLine(s + t);
-            return t;
-        }
-    }
+    
     partial class Program
     {
         
@@ -113,6 +105,15 @@ namespace CSLIVE.Server
                     }
                 }
             }
+        }
+    }
+    public static class Ext
+    {
+        public static T Trace<T>(this T t) { return Trace(t, ""); }
+        public static T Trace<T>(this T t, string s)
+        {
+            Console.WriteLine(s + t);
+            return t;
         }
     }
 }

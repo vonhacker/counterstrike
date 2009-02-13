@@ -46,11 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\..\..\Desktop\Helper\Helper.cs">
+    <Compile Include="..\..\Helper\Helper.cs">
       <Link>Helper.cs</Link>
     </Compile>
-    <Compile Include="Silverlight.cs" />
+    <Compile Include="Common.cs" />
     <Compile Include="GameServer.cs" />
+    <Compile Include="Globals.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Res.Designer.cs">

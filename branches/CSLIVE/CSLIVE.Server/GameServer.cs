@@ -18,11 +18,9 @@
 
     public partial class Program
     {
-        public static XmlSerializer _XmlSerializerRoom = Helper.CreateSchema("room", typeof(List<RoomDb>), typeof(RoomDb), typeof(CSRoom), typeof(WormsRoom));
-        public class GameServer
-        {
-
-            public static TimerA _TimerA = new TimerA();
+        
+        public partial class GameServer
+        {            
             public class Client 
             {                
                 public Socket _Socket;
@@ -129,7 +127,7 @@
                     _Sender.Send(_bytes);
                 }
             }
-            public static List<RoomDb> _Rooms { get { return _Config.Rooms; } }
+            
             ClientWait _ClientWait;
             public void StartAsync() { new Thread(Start).StartBackground("GameServer"); }
             private void Start()
@@ -143,10 +141,7 @@
                 }
             }
 
-            public static IEnumerable<Client> _Clients
-            {
-                get { return _Rooms.SelectMany(room => room._Clients).OfType<Client>(); }
-            }
+            
             private void Update()
             {                
                 foreach(Socket s in _ClientWait.GetClients())

@@ -58,41 +58,41 @@
     <Reference Include="System.Xml.Serialization, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\..\..\Desktop\Helper\Helper.cs">
+    <Compile Include="..\..\Helper\Helper.cs">
       <Link>Helper.cs</Link>
     </Compile>
-    <Compile Include="..\CSLIVE.Server\Silverlight.cs">
-      <Link>Silverlight.cs</Link>
+    <Compile Include="..\CSLIVE.Server\Common.cs">
+      <Link>Common.cs</Link>
     </Compile>
-    <Compile Include="App.xaml.cs">
+    <Compile Include="xaml\App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="EnterNick.xaml.cs">
+    <Compile Include="Globals.cs" />
+    <Compile Include="xaml\EnterNick.xaml.cs">
       <DependentUpon>EnterNick.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Globals.cs" />
-    <Compile Include="Irc.xaml.cs">
+    <Compile Include="xaml\Irc.xaml.cs">
       <DependentUpon>Irc.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Page.xaml.cs">
+    <Compile Include="xaml\Page.xaml.cs">
       <DependentUpon>Page.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
+    <ApplicationDefinition Include="xaml\App.xaml">
       <Generator>MSBuild:MarkupCompilePass1</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="EnterNick.xaml">
+    <Page Include="xaml\EnterNick.xaml">
       <Generator>MSBuild:MarkupCompilePass1</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Irc.xaml">
+    <Page Include="xaml\Irc.xaml">
       <Generator>MSBuild:MarkupCompilePass1</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Page.xaml">
+    <Page Include="xaml\Page.xaml">
       <Generator>MSBuild:MarkupCompilePass1</Generator>
       <SubType>Designer</SubType>
     </Page>

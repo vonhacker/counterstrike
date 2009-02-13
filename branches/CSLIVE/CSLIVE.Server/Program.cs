@@ -24,7 +24,7 @@ namespace CSLIVE.Server
             new Program();
         }
         
-        public static Config _Config;
+        
 
 
         public Program()
