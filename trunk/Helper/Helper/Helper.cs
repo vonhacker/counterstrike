@@ -474,6 +474,10 @@ namespace doru
         }
         public static void Write(this Stream s, string _str)
         {
+            s.Write(_str.ToBytes());
+        }
+        public static void WriteString(this Stream s, string _str)
+        {
             byte[] bs = _str.ToBytes();
             s.Write(Helper.JoinBytes(new[] { (byte)bs.Length }, bs));
         }
@@ -2544,15 +2548,19 @@ namespace doru
             public int _Port;
             private List<Socket> _Sockets = new List<Socket>();
 
-            public void Start()
+            public void StartAsync()
+            {
+                new Thread(Start).StartBackground("ClientWait");
+            }
+            private void Start()
             {
                 TcpListener _TcpListener = new TcpListener(IPAddress.Any, _Port);
                 _TcpListener.Start();
                 while (true)
                 {
-                    TcpClient _TcpClient = _TcpListener.AcceptTcpClient();
+                    Socket _Socket = _TcpListener.AcceptSocket();
                     lock ("clientwait")
-                        _Sockets.Add(_TcpClient.Client);
+                        _Sockets.Add(_Socket);
                     Thread.Sleep(10);
                 }
             }
@@ -2569,8 +2577,7 @@ namespace doru
         }
         public class Listener
         {
-            public Socket _Socket;
-            NetworkStream _NetworkStream;
+            public Socket _Socket;            
             List<byte[]> _Messages = new List<byte[]>();
             public void Start()
             {
@@ -2578,10 +2585,11 @@ namespace doru
                 while (true)
                 {
                     _NetworkStream = new NetworkStream(_Socket);
-                    if (_NetworkStream.Read(2) != new byte[] { 42, 42 }) throw new Exception("dammaged packet");
-                    byte length = _NetworkStream.ReadB();
-                    byte[] bytes = _NetworkStream.Read(length);
-                    _Messages.Add(bytes);
+                    byte[] split = _NetworkStream.Read(2); //every packet begins with "**" 42,42
+                    if(!split.Equals2(new byte[] { 42, 42 })) throw new Exception("dammaged packet");
+                    byte length = _NetworkStream.ReadB(); //length
+                    byte[] bytes = _NetworkStream.Read(length); //bytes
+                    _Messages.Add(bytes);//add to packets buffer
                 }
             }
             public bool _Connected { get { return _Socket.Connected; } }
@@ -2607,8 +2615,8 @@ namespace doru
             {
                 if (_Socket.Connected)
                 {
-                    _bytes = _bytes.Join(new byte[] { 42, 42, (byte)_bytes.Length });
-                    _Socket.Send(_bytes);
+                    byte[] _bytes2 = Helper.JoinBytes(new byte[] { 42, 42, (byte)_bytes.Length }, _bytes);
+                    _Socket.Send(_bytes2);
                 }
                 else "socket not connected".Trace();
             }
