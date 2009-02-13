@@ -13,7 +13,7 @@ namespace CSLIVE.Server
 {
     public partial class Program
     {
-        public class ServerList
+        public class BossClient
         {
             Listener _Listener;
             Sender _Sender;
@@ -56,7 +56,7 @@ namespace CSLIVE.Server
                                     List<RoomDb> _rooms = (List<RoomDb>)_XmlSerializerRoom.Deserialize(ms);
                                     int i = 0;
                                     while(!(_rooms[i++] is ServerListRoom)) ;                                                                        
-                                    _Sender.Send(new byte[] { (byte)PacketType.roomid, (byte)i });
+                                    _Sender.Send(new byte[] { (byte)PacketType.joinroom, (byte)i });
                                     break;                                
                                 case PacketType.sharedObject:
                                     Client _RemoteClient = new RemoteSharedObj<Client>();

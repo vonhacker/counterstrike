@@ -57,7 +57,7 @@
                         if(_id == null) //client not in room
                             switch(_packet)
                             {
-                                case PacketType.roomid:  //player join room 
+                                case PacketType.joinroom:  //player join room 
                                     _room = _ms.ReadB();
                                     if(_room > _Rooms.Count) throw new Exception("unknown room");
                                     _id = _Clients.PutToNextFreePlace(this);                                    

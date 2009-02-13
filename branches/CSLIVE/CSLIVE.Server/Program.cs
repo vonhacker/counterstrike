@@ -38,7 +38,7 @@ namespace CSLIVE.Server
             WebServer _WebServer = new WebServer();
             _WebServer.StartAsync();
 
-            ServerList _ServerList = new ServerList();
+            BossClient _ServerList = new BossClient();
             _ServerList.StartAsync();
             
             Thread.Sleep(-1);

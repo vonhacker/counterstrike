@@ -240,7 +240,7 @@ namespace CSLIVE //this file contains code for silverlight and server
         /// <summary>
         /// client->server first message from client - join room, after that server send player id [byte] 
         /// </summary>
-        roomid = 39                
+        joinroom = 39                
     }
     
     
