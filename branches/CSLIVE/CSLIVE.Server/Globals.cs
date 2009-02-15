@@ -8,8 +8,7 @@ using doru;
 namespace CSLIVE.Server
 {
     public partial class Program
-    {
-        public static XmlSerializer _XmlSerializerRoom = Helper.CreateSchema("room", typeof(List<RoomDb>), typeof(BossRoom), typeof(CSRoom), typeof(WormsRoom));
+    {        
         public static TimerA _TimerA = new TimerA();
         
         public static Config _Config;

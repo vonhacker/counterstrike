@@ -26,7 +26,7 @@ namespace CSLIVE.Server
                 
         public Program()
         {
-            _Config = Config._XmlSerializer.DeserealizeOrCreate(Config._ConfigPath, new Config());
+            _Config = Common._XmlSerializer.DeserealizeOrCreate(Common._ConfigPath, new Config());
             GameServer _GameServer = new GameServer();
             _GameServer.StartAsync();
             
@@ -35,7 +35,7 @@ namespace CSLIVE.Server
             WebServer _WebServer = new WebServer();
             _WebServer.StartAsync();
 
-            BossClient _BossClient = new BossClient();
+            BossClientApp _BossClient = new BossClientApp();
             _BossClient.StartAsync();
             
             Thread.Sleep(-1);

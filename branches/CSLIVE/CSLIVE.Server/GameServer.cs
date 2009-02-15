@@ -26,9 +26,8 @@
             public void StartAsync() { new Thread(Start).StartBackground("GameServer"); }
             private void Start()
             {
-                "game server started".Trace();
-                
-                _ClientWait = new ClientWait() { _Port = _Config._GamePort };
+                "game server started".Trace();                
+                _ClientWait = new ClientWait() { _Port = _Config._GamePort }; //listen socket
                 _ClientWait.StartAsync();
                 while(true)
                 {
@@ -37,15 +36,15 @@
             }            
             private void Update()
             {                
-                foreach(Socket s in _ClientWait.GetClients())
+                foreach(Socket s in _ClientWait.GetClients()) //on Client Connected
                 {
                     Client _Client = new Client { _Socket = s };
                     _Clients.Add(_Client);
                     _Client.Start();
                 }
 
-                StringBuilder sb = new StringBuilder();
-                foreach(Client _Client in _Clients)
+                StringBuilder sb = new StringBuilder(); //Updating Console Title
+                foreach(Client _Client in _Clients.ToArray())
                 {
                     _Client.Update();
                     sb.AppendFormat("{0}:{1}:{2} ", _Client._room, _Client._id, _Client._PingTime);
@@ -63,7 +62,7 @@
                 public Client[] _ClientsInRoom { get { return _Rooms[_room.Value]._Clients; } }
                 public double _PingElapsed;
                 public int _PingTime;
-                public void Start()
+                public void Start() //intializing listener and sender
                 {
                     _Listener = new Listener() { _Socket = _Socket };
                     _Listener.StartAsync(_id.ToString());
@@ -74,12 +73,11 @@
                 {
                     _PingElapsed += _TimerA._TimeElapsed;
                     foreach (byte[] _bytes in _Listener.GetMessages())
-                        OnReceive(_bytes);
+                        OnReceive(_bytes);  //on message received from client
                     if (!_Listener._Connected) Close();
                 }
 
-                
-                private void OnReceive(byte[] _bytess)
+                private void OnReceive(byte[] _bytess) //on message received from client
                 {
                     using (MemoryStream _ms = new MemoryStream(_bytess))
                     {
@@ -91,20 +89,20 @@
                                 case PacketType.joinroom:  //player join room 
                                     _room = _ms.ReadB();
                                     Debug.Assert(_room <= _Rooms.Count);
-                                    _id = _ClientsInRoom.PutToNextFreePlace(this);
-                                    _id.Trace("Sended Player id");
-                                    Send(Config._ServerId, PacketType.playerid, new[] { (byte)_id });
-                                    foreach (Client _Client in _ClientsInRoom) // send all clients id to joined player                                
+                                    _id = _ClientsInRoom.PutToNextFreePlace(this);  // setting id
+                                    ("Game Player connected "+_id +" in room "+_room).Trace();
+                                    Send(Common._ServerId, PacketType.JoinRoomSuccess, new[] { (byte)_id }); //seinding id
+                                    foreach (Client _Client in _ClientsInRoom) // send all clients id 
                                         if (_Client != null && _Client != this)
-                                            Send(_Client._id.Value, PacketType.PlayerJoined);
-                                    SendToAll(Config._ServerId, PacketType.PlayerJoined );
+                                            _Client.Send(Common._ServerId, PacketType.PlayerJoined, new byte[] { (byte)_id.Value });
+                                    SendToAll(Common._ServerId, PacketType.PlayerJoined, new byte[] { (byte)_id.Value }); //send player joined to all
                                     break;
-                                case PacketType.getrooms:
-                                    byte[] data = _XmlSerializerRoom.Serialize(_Rooms);
-                                    Send(Config._ServerId, PacketType.rooms, data);
+                                case PacketType.getrooms: //serializing and sending rooms on server
+                                    byte[] data = Common. _XmlSerializerRoom.Serialize(_Rooms);
+                                    Send(Common._ServerId, PacketType.rooms, data);
                                     break;
-                                case PacketType.getip:
-                                    Send(Config._ServerId,PacketType.ip, ((IPEndPoint)_Socket.RemoteEndPoint).Address.ToString().ToBytes());                                    
+                                case PacketType.getip: //returing ip
+                                    Send(Common._ServerId,PacketType.ip, ((IPEndPoint)_Socket.RemoteEndPoint).Address.ToString().ToBytes());                                    
                                     break;
                                 default:
                                     Debug.Fail("wrong packet");
@@ -113,46 +111,47 @@
                         else //client is in room
                             switch ((PacketType)_packet)
                             {
-                                case PacketType.sendTo:
+                                case PacketType.sendTo: //seinding packet to player
                                     int clientid = _ms.ReadB();
-                                    if (_ClientsInRoom[clientid] != null) _ClientsInRoom[clientid].Send(_id.Value,_packet,_ms.Read());
+                                    PacketType pk = (PacketType)_ms.ReadB();                                    
+                                    if (_ClientsInRoom[clientid] != null) _ClientsInRoom[clientid].Send(_id.Value,pk,_ms.Read());   
                                     break;
-                                case PacketType.ping:
-                                    Send(Config._ServerId, PacketType.pong);                                    
+                                case PacketType.ping: 
+                                    Send(Common._ServerId, PacketType.pong);                                    
                                     break;
-                                case PacketType.pong:
+                                case PacketType.pong: 
                                     _PingTime = (int)_PingElapsed;
                                     SendToAll(_id.Value, PacketType.pinginfo, BitConverter.GetBytes((Int16)_PingElapsed), true);                                    
                                     _TimerA.AddMethod(1000, Ping);
                                     break;
-                                default:
+                                default: //sending packet to all players
                                     SendToAll(_id.Value, _packet,_ms.Read());
                                     break;
                             }
+                        Trace.Assert(_ms.Length == _ms.Position);
                     }
                 }
 
                 public void Ping()
                 {
                     _PingElapsed = 0;
-                    Send(Config._ServerId, PacketType.ping);
+                    Send(Common._ServerId, PacketType.ping);
                 }
 
                 private void Close()
                 {
                     if (_room != null)
                     {
-                        _Clients[_id.Value] = null;
-                        _id.Trace("Client Disconected from " + _room);
-                        SendToAll(_id.Value , PacketType.PlayerLeaved);
+                        _ClientsInRoom[_id.Value] = null;
+                        ("Client " + _id + " Disconected from " + _room).Trace();
+                        SendToAll(Common._ServerId, PacketType.PlayerLeaved, new byte[] { (byte)_id.Value });
                     }
                     _Clients.Remove(this);
                 }
                 private void SendToAll(int id, PacketType _PacketType) { SendToAll(id, _PacketType, new byte[] { }); }
                 private void SendToAll(int id, PacketType _PacketType, byte[] _data) { SendToAll(id, _PacketType, _data, false); }
                 private void SendToAll(int id, PacketType _PacketType, byte[] _data, bool includeself)
-                {                    
-                    _data = _data.Join(new byte[] { (byte)_data.Length });
+                {                                        
                     foreach (Client _Client in _ClientsInRoom)
                         if (_Client != null && (_Client != this || includeself))
                             _Client.Send(id,_PacketType,_data);
