@@ -18,7 +18,7 @@ using System.Collections.ObjectModel;
 
 namespace CSLIVE
 {
-    public partial class Irc : UserControl
+    public partial class Irc : UserControl , IUpdate
     {
         public Irc()
         {            
@@ -26,10 +26,14 @@ namespace CSLIVE
             Loaded += new RoutedEventHandler(Irc_Loaded);
         }
 
+        public void Update()
+        {
+            _ServerList.Update();
+        }
         void Irc_Loaded(object sender, RoutedEventArgs e) //creating socket, connecting to _Config._Irc
         {
-            AddMessage("connecting to irc server");
-            _GameServerList.ItemsSource = _ServerList;
+            _ServerList.Start();
+            AddMessage("connecting to irc server");            
             string[] ss = _Config._Irc.Split(":");
             Helper.Connect(ss[0], int.Parse(ss[1])).Completed += delegate(object o, SocketAsyncEventArgs e2)
             {
@@ -46,11 +50,7 @@ namespace CSLIVE
             _Socket = (Socket)e.UserToken;
             _NetworkStream = new NetworkStream(_Socket);
             _NetworkStream.Write(string.Format(Res._ircon, _Nick, "cslive", "localhost", "http://cslive.no-ip.org").Trace());            
-            new Thread(Read).Start();
-
-            _Storyboard.Completed += new EventHandler(_Storyboard_Completed);
-            Update();
-
+            new Thread(Read).Start();            
             _TextInput.KeyDown += new KeyEventHandler(TextInput_KeyDown);
         }
 
@@ -62,26 +62,15 @@ namespace CSLIVE
                 _TextInput.Text = "";
             }
         }
-
-        void _Storyboard_Completed(object sender, EventArgs e)
-        {
-            Update();
-            _Storyboard.Begin();
-
-        }
-        public void Update()
-        {
-            Trace.WriteLine("Irc Update");
-        }
-        Storyboard _Storyboard = new Storyboard();
+        
+        
         List<IrcIm> messages = new List<IrcIm>();
         public void Read() //reading irc from networkstream 
         {
             try
             {
                 while(true)
-                {
-                    
+                {                    
                     string s = _NetworkStream.ReadLine().Trace();
                     Dispatcher.BeginInvoke(new Action<string>(OnIrcMessage),s);                    
                 }
@@ -154,7 +143,7 @@ namespace CSLIVE
         {
             Send(Trace2("join " + room));
         }
-        ObservableCollection<Item> _ServerList = new ObservableCollection<Item>(); //serverlist for datagrid
+        
         public void AddMessage(string msg) { AddMessage(null, msg); }
         public void AddMessage(string user, string msg)//adding message to textwindow
         {
@@ -175,7 +164,8 @@ namespace CSLIVE
         {
             if(_Connected)
                 _NetworkStream.WriteLine(s);
-            else AddMessage("error you are not connected");
+            else 
+                AddMessage("error you are not connected");
         }
         public class IrcIm  //irc message
         {
@@ -183,15 +173,7 @@ namespace CSLIVE
             public string msg;
             public string user;
         }
-        public class Item //ServerListView
-        {
-            public string _Name { get; set; }
-            public string _Players { get; set; }
-            public string _Port { get; set; }
-            public string _Version { get; set; }
-            public string _Ip { get; set; }
-            public string _Map { get; set; }
-        }
+        
         public static T Trace2<T>(T t)
         {
             t.Trace();

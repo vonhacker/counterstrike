@@ -18,7 +18,7 @@ using doru;
 namespace CSLIVE
 {
 
-    public partial class Page : UserControl
+    public partial class Page : UserControl//holds _RootVisual and update it
     {
         public Page() //start ->page_loaded
         {            
@@ -39,22 +39,20 @@ namespace CSLIVE
             _WebClient.OpenReadAsync(new Uri("Config.xml", UriKind.Relative));
             _WebClient.OpenReadCompleted += delegate(object o, OpenReadCompletedEventArgs e2)
             {
-                _Config = (Config)Config._XmlSerializer.Deserialize(e2.Result);
+                _Config = (Config)Common._XmlSerializer.Deserialize(e2.Result);
                 LoadIrc();
             };
 
             _Storyboard.Completed += new EventHandler(_Storyboard_Completed);
+            _Storyboard.Begin();
         }
 
         void _Storyboard_Completed(object sender, EventArgs e)
-        {
-            Update();
+        {             
+            if(_RootVisual is IUpdate) ((IUpdate)_RootVisual).Update();
             _Storyboard.Begin();
         }
-        public void Update()
-        {
-            Trace.WriteLine("page update");
-        }
+        
         void LoadIrc() //asking for EnterNick -> loading irc
         {            
             if (_LocalDatabase._Nick == null)
@@ -70,7 +68,6 @@ namespace CSLIVE
             else
                 _RootVisual = new Irc();
         }
-
 
         XmlSerializer _XmlSerializerLocal = new XmlSerializer(typeof(LocalDatabase));
         

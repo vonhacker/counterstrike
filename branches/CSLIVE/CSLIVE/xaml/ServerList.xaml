@@ -1,0 +1,40 @@
+﻿<Local:UserControl x:Class="CSLIVE.ServerList" xmlns:Local="clr-namespace:CSLIVE"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"       
+    Width="549" Height="214">
+	<UserControl.Resources>
+		<DataTemplate x:Key="RoomListTemplate">
+			<Grid>
+				<StackPanel Orientation="Horizontal">
+					<TextBox x:Name="_MapName" Width="179" Text="_MapName" TextWrapping="Wrap"/>
+					<TextBox Text="_PlayerCount" TextWrapping="Wrap" x:Name="_PlayerCount"/>
+				</StackPanel>
+			</Grid>
+		</DataTemplate>
+		<DataTemplate x:Key="ServerListTemplate">
+			<Grid Height="86" RenderTransformOrigin="0.5,0.5">
+				<Grid.RenderTransform>
+					<TransformGroup>
+						<ScaleTransform/>
+						<SkewTransform AngleX="-0.311"/>
+						<RotateTransform/>
+						<TranslateTransform X="-0.495"/>
+					</TransformGroup>
+				</Grid.RenderTransform>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="28"/>
+					<RowDefinition Height="*"/>
+				</Grid.RowDefinitions>
+				<StackPanel Orientation="Horizontal">
+					<TextBox x:Name="_ServerName" Width="355" Text="{Binding _Name}" TextWrapping="Wrap"/>
+                    <TextBox x:Name="_IpAddress" Width="89" Text="{Binding _IpAddress}" TextWrapping="Wrap"/>
+					<TextBox x:Name="_Ping" Width="89" Text="_Ping" TextWrapping="Wrap"/>
+				</StackPanel>
+				<ListBox Grid.Row="1" ItemTemplate="{StaticResource RoomListTemplate}"/>
+			</Grid>
+		</DataTemplate>
+	</UserControl.Resources>
+    <Grid x:Name="LayoutRoot" Background="White">
+        <ListBox Name="_ListBox" ItemTemplate="{StaticResource ServerListTemplate}"></ListBox>
+    </Grid>
+</Local:UserControl>

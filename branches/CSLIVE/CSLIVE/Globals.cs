@@ -8,13 +8,19 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using System.Xml.Serialization;
+using System.Collections.Generic;
 
 namespace CSLIVE
 {
+    public interface IUpdate { void Update(); }    
+
+
     public partial class UserControl : System.Windows.Controls.UserControl //storing all global vars here
     {
         [Obsolete]
         public new string Name;//use _Nick
+        
         public static Random _Random = new Random();
         public static Config _Config;
         public static LocalDatabase _LocalDatabase;

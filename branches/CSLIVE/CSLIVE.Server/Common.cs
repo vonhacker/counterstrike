@@ -9,15 +9,13 @@ using System.Reflection;
 using System.ComponentModel;
 using System.IO;
 using doru.Tcp;
+#if(!SILVERLIGHT)
 using System.Diagnostics;
-
+#endif
 namespace CSLIVE //this file contains code for silverlight and server
 {
     public class Config //"./CSLIVE.Web/ClientBin/Config.xml"
-    {
-        public const byte _ServerId = 254;
-        public static XmlSerializer _XmlSerializer = new XmlSerializer(typeof(Config), new[] { typeof(BossRoom), typeof(WormsRoom), typeof(CSRoom) });
-        public static string _ConfigPath = "./CSLIVE.Web/ClientBin/Config.xml";
+    {                
         public List<RoomDb> Rooms = new List<RoomDb>() { new BossRoom(), new CSRoom() { MapPath = "estate.zip" } };
         public string _ServerName = "CounterStrikeLive Server Test";
         public string _BossServerIp = "localhost:4530";
@@ -29,7 +27,31 @@ namespace CSLIVE //this file contains code for silverlight and server
         public int _GamePort = 4530;
         public string _Irc = "85.202.112.192:4534";
         public string _IrcRoom = "#cslive";
-    }    
+    }
+    public static class Common
+    {
+        public const byte _ServerId = 254;
+        public static XmlSerializer _XmlSerializer = new XmlSerializer(typeof(Config), new[] { typeof(BossRoom), typeof(WormsRoom), typeof(CSRoom) });
+        public static string _ConfigPath = "./CSLIVE.Web/ClientBin/Config.xml";
+        public static XmlSerializer _XmlSerializerRoom = new XmlSerializer(typeof(List<RoomDb>), new Type[] { typeof(BossRoom), typeof(CSRoom), typeof(WormsRoom) });
+    }
+
+    public static class Extensions
+    {
+        public static void Send(this Sender sender, PacketType pk) { sender.Send(pk, new byte[] { }); }
+        public static void Send(this Sender sender, PacketType pk, byte[] data) { sender.Send(pk, data, null); }
+        public static void Send(this Sender sender, PacketType pk, byte[] data, int? to)
+        {
+            Debug.Assert(pk.IsValid());
+            if (to != null)
+            {
+                sender.Send(Helper.JoinBytes(PacketType.sendTo, (byte)to, (byte)pk, data));
+            }
+            else
+                sender.Send(Helper.JoinBytes((byte)pk, data));
+        }
+    }
+
     #region SharedObjectProviderClasses
     public interface ISh<T>
     {
@@ -43,7 +65,7 @@ namespace CSLIVE //this file contains code for silverlight and server
         {
             this._Priority = _Priority;
         }
-    }    
+    }
     public abstract class SharedObj<T> where T : class, INotifyPropertyChanged, ISh<SharedObj<T>>
     {
         public T _Object = Activator.CreateInstance<T>();
@@ -59,28 +81,36 @@ namespace CSLIVE //this file contains code for silverlight and server
                            where a is SharedObjectAttribute
                            orderby (a as SharedObjectAttribute)._Priority
                            select p).ToList();
-            if(_Properties.Count == 0) throw new Exception("sharedobject does not have attributes");
+            if (_Properties.Count == 0) throw new Exception("sharedobject does not have attributes");
             _Object._SharedObj = this;
         }
     }
     public class LocalSharedObj<T> : SharedObj<T> where T : class, INotifyPropertyChanged, ISh<SharedObj<T>>
     {
         public MemoryStream _ms = new MemoryStream();
-        public LocalSharedObj() :base()
+        public LocalSharedObj()
+            : base()
         {
             _Object.PropertyChanged += new PropertyChangedEventHandler(Object_PropertyChanged);
         }
-
+        public byte[] Serialize()
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                Serialize(ms);
+                return ms.ToArray();
+            }
+        }
         public void Serialize(MemoryStream ms)
         {
-            for(int i = 0; i < _Properties.Count; i++)
-                if(_Properties[i].GetCustomAttributes(true).Any(a => a is SharedObjectAttribute))
-                    WriteBytes(i, _ms);
+            for (int i = 0; i < _Properties.Count; i++)
+                if (_Properties[i].GetCustomAttributes(true).Any(a => a is SharedObjectAttribute))
+                    WriteBytes(i, ms);
         }
         public byte[] GetChanges()
         {
-            if(_ms.Length == 0) return null;
-            using(MemoryStream ms2 = _ms)
+            if (_ms.Length == 0) return null;
+            using (MemoryStream ms2 = _ms)
             {
                 _ms = new MemoryStream();
                 return ms2.ToArray();
@@ -92,12 +122,12 @@ namespace CSLIVE //this file contains code for silverlight and server
             object value = _PropertyInfo.GetValue(_Object, null);
 
             _ms.WriteByte((byte)i);
-            if(value is int) _ms.Write((Int16)(int)value);
-            else if(value is string) _ms.Write((string)value);
-            else if(value is Enum) _ms.Write(value.ToString());
-            else if(value is float) _ms.Write((float)value);
-            else if(value is byte) _ms.Write((byte)value);
-            else if(value is bool) _ms.Write((bool)value);
+            if (value is int) _ms.Write((Int16)(int)value);
+            else if (value is string) _ms.WriteString((string)value);
+            else if (value is Enum) _ms.Write(value.ToString());
+            else if (value is float) _ms.Write((float)value);
+            else if (value is byte) _ms.Write((byte)value);
+            else if (value is bool) _ms.Write((bool)value);
             else throw new Exception("Shared Send Unkown value");
 
         }
@@ -105,7 +135,7 @@ namespace CSLIVE //this file contains code for silverlight and server
         void Object_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             int i = _Properties.IndexOf(_Object.GetType().GetProperty(e.PropertyName));
-            if(i == -1) Debugger.Break();
+            Trace.Assert(i != -1);
             WriteBytes(i, _ms);
         }
     }
@@ -114,22 +144,22 @@ namespace CSLIVE //this file contains code for silverlight and server
         public RemoteSharedObj() : base() { }
         public void OnBytesToRead(MemoryStream ms)
         {
-            while(ms.Position != ms.Length)
+            while (ms.Position != ms.Length)
             {
                 int id = ms.ReadByte();
                 PropertyInfo _PropertyInfo = _Properties[id];
-                if(_PropertyInfo.GetCustomAttributes(true).FirstOrDefault(a => a is SharedObjectAttribute) == null)
+                if (_PropertyInfo.GetCustomAttributes(true).FirstOrDefault(a => a is SharedObjectAttribute) == null)
                     throw new Exception("Break");
                 Type type = _PropertyInfo.PropertyType;
-                if(type.IsAssignableFrom(typeof(int)))
+                if (type.IsAssignableFrom(typeof(int)))
                     _PropertyInfo.SetValue(_Object, ms.ReadInt16(), null);
-                else if(type.IsAssignableFrom(typeof(string)))
+                else if (type.IsAssignableFrom(typeof(string)))
                     _PropertyInfo.SetValue(_Object, ms.ReadString(), null);
-                else if(type.BaseType == typeof(Enum))
+                else if (type.BaseType == typeof(Enum))
                     _PropertyInfo.SetValue(_Object, Enum.Parse(type, ms.ReadString(), false), null);
-                else if(type.IsAssignableFrom(typeof(float)))
+                else if (type.IsAssignableFrom(typeof(float)))
                     _PropertyInfo.SetValue(_Object, ms.ReadFloat(), null);
-                else if(type.IsAssignableFrom(typeof(bool)))
+                else if (type.IsAssignableFrom(typeof(bool)))
                     _PropertyInfo.SetValue(_Object, ms.ReadBoolean(), null);
                 else throw new Exception("Break");
             }
@@ -209,7 +239,7 @@ namespace CSLIVE //this file contains code for silverlight and server
         /// <summary>
         /// server->client sets player id [byte]
         /// </summary>
-        playerid = 89,
+        joinroom = 89,
         /// <summary>
         /// client->client player rotation 
         /// </summary>        
@@ -235,10 +265,27 @@ namespace CSLIVE //this file contains code for silverlight and server
         /// </summary>
         sendTo = 27,
         /// <summary>
-        /// client->server first message from client - join room, after that server send player id [byte] 
+        /// client->server first message from client - join room
         /// </summary>
-        joinroom = 39                
+        JoinRoomSuccess = 39                
     }
-    
-    
+
+    public class BossClient : INotifyPropertyChanged, ISh<SharedObj<BossClient>>
+    {
+        public int _Id;
+        private bool server;
+        [SharedObject]
+        public bool _Server { get { return server; } set { server = value; new PropertyChangedEventArgs("_Server"); } }
+        public SharedObj<BossClient> _SharedObj { get; set; }
+        public LocalSharedObj<BossClient> _LocalSharedObj { get { return (LocalSharedObj<BossClient>)_SharedObj; } }
+        public RemoteSharedObj<BossClient> _RemoteSharedObj { get { return (RemoteSharedObj<BossClient>)_SharedObj; } }
+        private string name;
+        [SharedObject]
+        public string _Name { get { return name; } set { name = value; if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("_Name")); } }
+        private string ipAddress;
+        [SharedObject]
+        public string _IpAddress { get { return ipAddress; } set { ipAddress = value; if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("_IpAddress")); } }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+    }
 }

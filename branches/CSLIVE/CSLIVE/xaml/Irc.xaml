@@ -10,9 +10,9 @@
 	<Grid x:Name="LayoutRoot">        
 		<TextBox Margin="71,51,255,0"  TextWrapping="Wrap" VerticalAlignment="Top" Height="285" x:Name="_TextOutput"/>
 		<TextBox Margin="71,359.5,69,381.5"  TextWrapping="Wrap" x:Name="_TextInput"/>
-        <data:DataGrid Height="220.5" Margin="71,0,69,135.5" VerticalAlignment="Bottom" Background="#FF969696" x:Name="_GameServerList">
-            
-        </data:DataGrid>
         <ListBox x:Name="_UserList" Height="285" HorizontalAlignment="Right" Margin="0,51,69,0" VerticalAlignment="Top" Width="158"/>
+        <Local:ServerList x:Name="_ServerList" HorizontalAlignment="Left" VerticalAlignment="Bottom" d:LayoutOverrides="Height" Margin="220,0,0,139"/>
+        
+        
 	</Grid>
 </Local:UserControl>
