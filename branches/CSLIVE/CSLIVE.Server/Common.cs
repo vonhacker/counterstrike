@@ -8,15 +8,20 @@ using System.Xml.Serialization;
 using System.Reflection;
 using System.ComponentModel;
 using System.IO;
-using doru.Tcp;
 #if(!SILVERLIGHT)
 using System.Diagnostics;
+using doru.Tcp;
+using System.Collections.ObjectModel;
+#else
+using doru.TcpSilverlight;
+using System.Collections.ObjectModel;
+
 #endif
 namespace CSLIVE //this file contains code for silverlight and server
 {
     public class Config //"./CSLIVE.Web/ClientBin/Config.xml"
-    {                
-        public List<RoomDb> Rooms = new List<RoomDb>() { new BossRoom(), new CSRoom() { MapPath = "estate.zip" } };
+    {
+        public List<RoomDb> Rooms = new List<RoomDb>();
         public string _ServerName = "CounterStrikeLive Server Test";
         public string _BossServerIp = "localhost:4530";
         public string _WebAllowedIps = ".*";
@@ -53,9 +58,9 @@ namespace CSLIVE //this file contains code for silverlight and server
     }
 
     #region SharedObjectProviderClasses
-    public interface ISh<T>
+    public interface ISh
     {
-        T _SharedObj { get; set; }
+        object _SharedObj { get; set; }
     }
     public class SharedObjectAttribute : Attribute
     {
@@ -66,7 +71,7 @@ namespace CSLIVE //this file contains code for silverlight and server
             this._Priority = _Priority;
         }
     }
-    public abstract class SharedObj<T> where T : class, INotifyPropertyChanged, ISh<SharedObj<T>>
+    public abstract class SharedObj<T> where T : class, INotifyPropertyChanged, ISh
     {
         public T _Object = Activator.CreateInstance<T>();
         protected List<PropertyInfo> _Properties;
@@ -85,7 +90,7 @@ namespace CSLIVE //this file contains code for silverlight and server
             _Object._SharedObj = this;
         }
     }
-    public class LocalSharedObj<T> : SharedObj<T> where T : class, INotifyPropertyChanged, ISh<SharedObj<T>>
+    public class LocalSharedObj<T> : SharedObj<T> where T : class, INotifyPropertyChanged, ISh
     {
         public MemoryStream _ms = new MemoryStream();
         public LocalSharedObj()
@@ -139,11 +144,13 @@ namespace CSLIVE //this file contains code for silverlight and server
             WriteBytes(i, _ms);
         }
     }
-    public class RemoteSharedObj<T> : SharedObj<T> where T : class, INotifyPropertyChanged, ISh<SharedObj<T>>
+    public class RemoteSharedObj<T> : SharedObj<T> where T : class, INotifyPropertyChanged, ISh
     {
+        public bool _Serialized = false;
         public RemoteSharedObj() : base() { }
+        public event Action _OnSerialized;
         public void OnBytesToRead(MemoryStream ms)
-        {
+        {            
             while (ms.Position != ms.Length)
             {
                 int id = ms.ReadByte();
@@ -163,6 +170,11 @@ namespace CSLIVE //this file contains code for silverlight and server
                     _PropertyInfo.SetValue(_Object, ms.ReadBoolean(), null);
                 else throw new Exception("Break");
             }
+            if (_Serialized == false)
+            {
+                if (_OnSerialized != null) _OnSerialized();
+                _Serialized = true;
+            }
         }
 
     }
@@ -170,15 +182,19 @@ namespace CSLIVE //this file contains code for silverlight and server
     #region Rooms
     public abstract class RoomDb //base class for room static info
     {        
+        
 #if(!SILVERLIGHT)        
+        public int _PlayerCount { get { return _Clients.Where(a => a != null).Count(); } set { } }
         [XmlIgnore]
         public CSLIVE.Server.Program.GameServer.Client[] _Clients = new CSLIVE.Server.Program.GameServer.Client[255];
+#else   
+        public int _PlayerCount { get; set; }
 #endif
     }    
     public class CSRoom : RoomDb //cslive room
     {
-
-        public string MapPath;        
+        public string MapName { get; set; }
+        public string MapPath { get; set; }        
     }    
     public class BossRoom : RoomDb { }
     
@@ -235,11 +251,7 @@ namespace CSLIVE //this file contains code for silverlight and server
         /// <summary>
         /// client->client shoot [byte - player angle]
         /// </summary>
-        shoot = 46,        
-        /// <summary>
-        /// server->client sets player id [byte]
-        /// </summary>
-        joinroom = 89,
+        shoot = 46,                
         /// <summary>
         /// client->client player rotation 
         /// </summary>        
@@ -265,27 +277,42 @@ namespace CSLIVE //this file contains code for silverlight and server
         /// </summary>
         sendTo = 27,
         /// <summary>
-        /// client->server first message from client - join room
+        /// server->client sets player id [byte]
         /// </summary>
-        JoinRoomSuccess = 39                
+        JoinRoomSuccess = 39,
+        /// <summary>
+        /// client->server first message from client - join room        
+        /// </summary>
+        joinroom = 89,
+
     }
 
-    public class BossClient : INotifyPropertyChanged, ISh<SharedObj<BossClient>>
-    {
-        public int _Id;
+    public class BossClient : INotifyPropertyChanged, ISh
+    {        
         private bool server;
         [SharedObject]
         public bool _Server { get { return server; } set { server = value; new PropertyChangedEventArgs("_Server"); } }
-        public SharedObj<BossClient> _SharedObj { get; set; }
+        public object _SharedObj { get; set; }
         public LocalSharedObj<BossClient> _LocalSharedObj { get { return (LocalSharedObj<BossClient>)_SharedObj; } }
-        public RemoteSharedObj<BossClient> _RemoteSharedObj { get { return (RemoteSharedObj<BossClient>)_SharedObj; } }
+        public RemoteSharedObj<BossClient> _RemoteSharedObj
+        {
+            get
+            {
+                try
+                {
+                    return (RemoteSharedObj<BossClient>)_SharedObj;
+                } catch { System.Diagnostics.Debugger.Break(); return null; }
+            }
+        }
         private string name;
         [SharedObject]
         public string _Name { get { return name; } set { name = value; if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("_Name")); } }
         private string ipAddress;
         [SharedObject]
-        public string _IpAddress { get { return ipAddress; } set { ipAddress = value; if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("_IpAddress")); } }
-
+        public string _IpAddress { get { return ipAddress; } set { ipAddress = value; if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("_IpAddress")); } }        
         public event PropertyChangedEventHandler PropertyChanged;
+        public int _Id;
+        int ping;
+        public int _Ping { get { return ping; } set { ping = value; PropertyChanged(this, new PropertyChangedEventArgs("_Ping")); } }
     }
 }

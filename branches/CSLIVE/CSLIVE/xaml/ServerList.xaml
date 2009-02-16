@@ -6,8 +6,8 @@
 		<DataTemplate x:Key="RoomListTemplate">
 			<Grid>
 				<StackPanel Orientation="Horizontal">
-					<TextBox x:Name="_MapName" Width="179" Text="_MapName" TextWrapping="Wrap"/>
-					<TextBox Text="_PlayerCount" TextWrapping="Wrap" x:Name="_PlayerCount"/>
+					<TextBlock x:Name="_MapName" Width="179" Text="{Binding MapName}" TextWrapping="Wrap"/>
+					<TextBlock TextWrapping="Wrap" Text="{Binding _PlayerCount}" x:Name="_PlayerCount"/>
 				</StackPanel>
 			</Grid>
 		</DataTemplate>
@@ -26,14 +26,15 @@
 					<RowDefinition Height="*"/>
 				</Grid.RowDefinitions>
 				<StackPanel Orientation="Horizontal">
-					<TextBox x:Name="_ServerName" Width="355" Text="{Binding _Name}" TextWrapping="Wrap"/>
-                    <TextBox x:Name="_IpAddress" Width="89" Text="{Binding _IpAddress}" TextWrapping="Wrap"/>
-					<TextBox x:Name="_Ping" Width="89" Text="_Ping" TextWrapping="Wrap"/>
+					<TextBlock x:Name="_ServerName" Width="355" Text="{Binding _Name}" TextWrapping="Wrap"/>
+                    <TextBlock x:Name="_IpAddress" Width="120" Text="{Binding _IpAddress}" TextWrapping="Wrap"/>
+					<TextBlock x:Name="_Ping" Width="50" Text="{Binding _Ping}"  TextWrapping="Wrap"/>
 				</StackPanel>
-				<ListBox Grid.Row="1" ItemTemplate="{StaticResource RoomListTemplate}"/>
+				<ListBox Grid.Row="1" ItemsSource="{Binding _RoomList}" ItemTemplate="{StaticResource RoomListTemplate}"/>
 			</Grid>
 		</DataTemplate>
 	</UserControl.Resources>
+    
     <Grid x:Name="LayoutRoot" Background="White">
         <ListBox Name="_ListBox" ItemTemplate="{StaticResource ServerListTemplate}"></ListBox>
     </Grid>

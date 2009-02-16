@@ -65,6 +65,7 @@
     <Compile Include="..\CSLIVE.Server\Common.cs">
       <Link>Common.cs</Link>
     </Compile>
+    <Compile Include="BossClientA.cs" />
     <Compile Include="xaml\ServerList.xaml.cs">
       <DependentUpon>ServerList.xaml</DependentUpon>
     </Compile>

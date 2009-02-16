@@ -45,6 +45,7 @@ namespace CSLIVE.Server
             public int _id;
             public void Update()
             {
+                
                 foreach (byte[] msg in _Listener.GetMessages())
                     using (MemoryStream _MemoryStream = new MemoryStream(msg))
                     {                        
@@ -55,7 +56,7 @@ namespace CSLIVE.Server
                             switch (_pk)
                             {
                                 case PacketType.ip:
-                                    _Local._IpAddress = _MemoryStream.Read().ToStr();                                    
+                                    _Local._IpAddress = _MemoryStream.Read().ToStr() + ":" + _Config._GamePort;                                                                        
                                     _Sender.Send(PacketType.getrooms);
                                     break;
                                 case PacketType.rooms:
@@ -67,6 +68,10 @@ namespace CSLIVE.Server
                                     break;
                                 case PacketType.JoinRoomSuccess:
                                     _id = _MemoryStream.ReadB();
+                                    foreach (byte b in _MemoryStream.Read())
+                                    {
+
+                                    }
                                     break;
                                 case PacketType.PlayerJoined: //sending shared object
                                     {

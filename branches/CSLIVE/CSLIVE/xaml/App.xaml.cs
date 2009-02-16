@@ -42,6 +42,7 @@ namespace CSLIVE
         
         private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
         {
+            Debugger.Break();
             MessageBox.Show(e.ExceptionObject.ToString());
             
         }        

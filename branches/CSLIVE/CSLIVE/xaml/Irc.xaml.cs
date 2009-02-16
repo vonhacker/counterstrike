@@ -15,6 +15,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using doru.TcpSilverlight;
 
 namespace CSLIVE
 {
@@ -35,10 +36,7 @@ namespace CSLIVE
             _ServerList.Start();
             AddMessage("connecting to irc server");            
             string[] ss = _Config._Irc.Split(":");
-            Helper.Connect(ss[0], int.Parse(ss[1])).Completed += delegate(object o, SocketAsyncEventArgs e2)
-            {
-                Dispatcher.BeginInvoke(new Action<SocketAsyncEventArgs>(Irc_Completed), e2);
-            };
+            Helper.Connect(ss[0], int.Parse(ss[1]), Dispatcher, Irc_Completed);
         }
 
         Socket _Socket;
