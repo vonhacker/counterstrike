@@ -27,7 +27,8 @@ using System.IO.IsolatedStorage;
 
 
 namespace CounterStrikeLive
-{    
+{
+    //[DebuggerStepThrough]
     public static class Random
     {
         static System.Random _Random = new System.Random();
@@ -52,15 +53,17 @@ namespace doru
 #if(WPF)
     using System.Collections.ObjectModel;
     using System.Security.Cryptography;
+    //[DebuggerStepThrough]
     public class BindableList<T> : ObservableCollection<T>
     {
-        
+
         public List<ICVS> _ArrayList = new List<ICVS>();
         public interface ICVS
         {
             void Add(object o);
             void Remove(object o);
         }
+        //[DebuggerStepThrough]
         public class CVS<T2> : ICVS
         {
             public delegate T2 Converter(T t);
@@ -122,14 +125,15 @@ namespace doru
     public abstract class Encoding : System.Text.Encoding
     {
 #if (!SILVERLIGHT)
-        public new static System.Text.Encoding Default = System.Text.Encoding.Default;                       
+        public new static System.Text.Encoding Default = System.Text.Encoding.Default;
         public static System.Text.Encoding Default2 { get { return System.Text.Encoding.Default; } }
 #else
-        public static System.Text.Encoding Default = Encoding.UTF8;        
-        static System.Text.Encoding _DefaultEncoding = Encoding.UTF8;        
+        public static System.Text.Encoding Default = Encoding.UTF8;
+        static System.Text.Encoding _DefaultEncoding = Encoding.UTF8;
 #endif
-        
+
     }
+    //[DebuggerStepThrough]
     public class ExceptionC : Exception
     {
         public ExceptionC(string s) : base(s) { }
@@ -138,73 +142,77 @@ namespace doru
             return Message;
         }
     }
+    //[DebuggerStepThrough]
     public class ExceptionB : Exception
     {
         public ExceptionB(string s) : base(s) { }
     }
 
+    //[DebuggerStepThrough]
     public class ExceptionA : Exception { public ExceptionA(string s) : base(s) { } public ExceptionA() { } };
-    public partial class Helper
+
+    //[DebuggerStepThrough]
+    public static class Helper
     {
-#if(SILVERLIGHT)
-        public static string Trace2(string s)
+        public static class IO
         {
-            Trace.WriteLine(s);
-            return s;
-
-        }
-        public static SocketAsyncEventArgs Connect(string ip,int port)
-        {
-            Socket _Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            SocketAsyncEventArgs _SocketAsyncEventArgs = new SocketAsyncEventArgs();
-            if (Application.Current.Host.Source.DnsSafeHost == "") "warning host not safe".Trace();
-            _SocketAsyncEventArgs.RemoteEndPoint = new DnsEndPoint(ip, port);
-            _SocketAsyncEventArgs.UserToken = _Socket;
-            _Socket.ConnectAsync(_SocketAsyncEventArgs);
-            return _SocketAsyncEventArgs;
-        }
-#else
-        public static string getMd5Hash(string input)
-        {
-            // Create a new instance of the MD5CryptoServiceProvider object.
-            MD5 md5Hasher = MD5.Create();
-
-            // Convert the input string to a byte array and compute the hash.
-            byte[] data = md5Hasher.ComputeHash(Encoding.Default.GetBytes(input));
-
-            // Create a new Stringbuilder to collect the bytes
-            // and create a string.
-            StringBuilder sBuilder = new StringBuilder();
-
-            // Loop through each byte of the hashed data 
-            // and format each one as a hexadecimal string.
-            for (int i = 0; i < data.Length; i++)
+            public static void CreateDirectories(List<string> _directories, string _directoryb)
             {
-                sBuilder.Append(data[i].ToString("x2"));
+                if (!Directory.Exists(_directoryb)) Directory.CreateDirectory(_directoryb);
+                foreach (string _Direcotry in _directories)
+                    try
+                    {
+                        if (!Directory.Exists(_directoryb + "/" + _Direcotry)) Directory.CreateDirectory(_directoryb + "/" + _Direcotry);
+                    }
+                    catch (PathTooLongException) { }
             }
-
-            // Return the hexadecimal string.
-            return sBuilder.ToString();
+            public static List<string> GetFiles(List<string> _directories)
+            {
+                List<string> _list = new List<string>();
+                foreach (string _string in _directories)
+                {
+                    try
+                    {
+                        string[] _files = Directory.GetFiles(_string);
+                        foreach (string file in _files)
+                        {
+                            _list.Add(file);
+                        }
+                    }
+                    catch { }
+                }
+                return _list;
+            }
+            public static List<string> GetDirectories(params string[] _strings) { List<String> list = new List<string>(); GetDirectories(list, _strings); return list; }
+            public static void GetDirectories(List<string> _strings2, string[] _strings)
+            {
+                foreach (string _string in _strings)
+                {
+                    _strings2.Add(_string);
+                    try
+                    {
+                        string[] _directories = Directory.GetDirectories(_string);
+                        GetDirectories(_strings2, _directories);
+                    }
+                    catch { }
+                }
+            }
         }
-        public static Socket Connect(string ip, int port)
-        {
-            return new TcpClient(ip, port).Client;
-        }
-#endif
         public static byte[] JoinBytes(params object[] objects)
         {
-            using(MemoryStream ms = new MemoryStream())
+            using (MemoryStream ms = new MemoryStream())
             {
-                foreach(object o in objects)
-                {
-                    if(o is byte[])
-                        ms.Write((byte[])o);
+                foreach (object o in objects)
+                    if (o is byte[])
+                    {
+                        if (((byte[])o).Length != 0)
+                            ms.Write((byte[])o);
+                    }
                     else
-                        ms.Write((byte)o);
-                    
-                }
+                        ms.Write(Convert.ToByte(o));
+
                 return ms.ToArray();
-            }            
+            }
         }
         public static string ReplaceRandoms(string text, string[] _RandomTags)
         {
@@ -224,7 +232,7 @@ namespace doru
             }
             return text;
         }
-        
+
         public static List<string> RemoveDuplicates(List<string> inputList)
         {
             Dictionary<string, int> uniqueStore = new Dictionary<string, int>();
@@ -240,7 +248,7 @@ namespace doru
             }
             return finalList;
         }
-        
+
         public static void Replace<T>(ref T[] _source, T[] _oldarray, T[] _newarray)
         {
             Replace(ref _source, _oldarray, _newarray, 0, -1);
@@ -295,8 +303,8 @@ namespace doru
             string s = "1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM";
             for (int i = 0; i < size; i++)
             {
-                chars[i] = s[_Random.Next(s.Length-1)];
-            }            
+                chars[i] = s[_Random.Next(s.Length - 1)];
+            }
             return new string(chars);
         }
 
@@ -337,19 +345,133 @@ namespace doru
         }
 
 
-        
+#if(SILVERLIGHT)
+
+        public static SocketAsyncEventArgs Connect(string ip)
+        {
+            string[] ss = ip.Split(":");
+            return Connect(ss[0], int.Parse(ss[1]));
+        }
+        public static SocketAsyncEventArgs Connect(string ip, int port)
+        {
+            Socket _Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            SocketAsyncEventArgs _SocketAsyncEventArgs = new SocketAsyncEventArgs();
+            if (Application.Current.Host.Source.DnsSafeHost == "") "warning host not safe".Trace();
+            _SocketAsyncEventArgs.RemoteEndPoint = new DnsEndPoint(ip, port);
+            _SocketAsyncEventArgs.UserToken = _Socket;
+            _Socket.ConnectAsync(_SocketAsyncEventArgs);
+            return _SocketAsyncEventArgs;
+        }
+        public delegate void OnConnected(Socket s);
+
+#else
+        public static void Trace2(string t, string prefix)
+        {
+            string[] ss = t.Split(new[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+            if (ss.Length > 3)
+            {
+                System.Diagnostics.Trace.Write(prefix + ":");
+                t.ToString().Save();
+            }
+            else
+            {
+                foreach (string s in ss)
+                    System.Diagnostics.Trace.WriteLine(prefix + ":" + s);
+            }
+        }
+        public static XmlSerializer CreateSchema(string name, params Type[] types)
+        {
+            string SchemasPath = Environment.GetEnvironmentVariable("VS90COMNTOOLS");
+            if (SchemasPath == null) SchemasPath = "./";
+            else SchemasPath = Path.GetFullPath(SchemasPath + "../../Xml/Schemas");
+            XmlReflectionImporter _XmlReflectionImporter = new XmlReflectionImporter(name);
+            XmlSchemas _XmlSchemas = new XmlSchemas();
+
+            XmlSchemaExporter _XmlSchemaExporter = new XmlSchemaExporter(_XmlSchemas);
+            List<Type> xtratypes = new List<Type>();
+            for (int i = 1; i < types.Length; i++)
+            {
+                _XmlReflectionImporter.IncludeType(types[i]);
+                xtratypes.Add(types[i]);
+            }
+            XmlTypeMapping map = _XmlReflectionImporter.ImportTypeMapping(types[0]);
+            _XmlSchemaExporter.ExportTypeMapping(map);
+
+
+            using (StringWriter fs = new StringWriter())
+            {
+                _XmlSchemas[0].Write(fs);
+                //FixSchema(_XmlSchemas[0]);
+                string s = fs.ToString();
+                s = Regex.Replace(s.Replace("xs:sequence", "xs:all"), @"minOccurs=""?"" maxOccurs=""?""", "minOccurs=\"0\"");
+                s = s.Replace("\"utf-16\"", "\"utf-8\"");
+                s = Regex.Replace(s, @"(ArrayOf.*\n.*xs\:)all(.*\n.*\n.*</xs:)all", "${1}sequence${2}sequence");
+                s = Regex.Replace(s, @"xs:all(>\r?\n?.*<xs:element ref=""xs:schema"" />\r?\n?.*\r?\n?.*)xs:all", "xs:sequence${1}xs:sequence", RegexOptions.Multiline);
+                File.WriteAllText(SchemasPath + "/" + name + ".xsd", s, Encoding.Default);
+            }
+            XmlSerializer _XmlSerializer = new XmlSerializer(types[0], new XmlAttributeOverrides(), xtratypes.ToArray(), new XmlRootAttribute(), name);
+            return _XmlSerializer;
+        }
+        public static Process StartProcess(string s)
+        {
+            ProcessStartInfo _ProcessStartInfo = new ProcessStartInfo(Path.GetFullPath(s));
+            _ProcessStartInfo.WorkingDirectory = Path.GetDirectoryName(s);
+            return Process.Start(_ProcessStartInfo);
+        }
+        public static void GenerateXsd(Type _type, Type[] _types, string filename)
+        {
+            XmlReflectionImporter _XmlReflectionImporter = new XmlReflectionImporter();
+            XmlSchemas _XmlSchemas = new XmlSchemas();
+
+            XmlSchemaExporter _XmlSchemaExporter = new XmlSchemaExporter(_XmlSchemas);
+            foreach (Type _Type in _types)
+                _XmlReflectionImporter.IncludeType(_Type);
+
+            _XmlSchemaExporter.ExportTypeMapping(_XmlReflectionImporter.ImportTypeMapping(_type));
+
+            using (FileStream _FileStream = new FileStream(filename, FileMode.Create, FileAccess.Write))
+                _XmlSchemas[0].Write(_FileStream);
+        }
+        public static string getMd5Hash(string input)
+        {
+            // Create a new instance of the MD5CryptoServiceProvider object.
+            MD5 md5Hasher = MD5.Create();
+
+            // Convert the input string to a byte array and compute the hash.
+            byte[] data = md5Hasher.ComputeHash(Encoding.Default.GetBytes(input));
+
+            // Create a new Stringbuilder to collect the bytes
+            // and create a string.
+            StringBuilder sBuilder = new StringBuilder();
+
+            // Loop through each byte of the hashed data 
+            // and format each one as a hexadecimal string.
+            for (int i = 0; i < data.Length; i++)
+            {
+                sBuilder.Append(data[i].ToString("x2"));
+            }
+
+            // Return the hexadecimal string.
+            return sBuilder.ToString();
+        }
+        public static Socket Connect(string ip, int port)
+        {
+            return new TcpClient(ip, port).Client;
+        }
+#endif
 
     }
-    
+
+    //[DebuggerStepThrough]
     public static class Extensions
     {
-        
+
 #if(!SILVERLIGHT)
         static Extensions()
         {
             if (!Directory.Exists("logs")) Directory.CreateDirectory("logs");
         }
- 
+
         public static string Save(this string s, string comment)
         {
             Encoding.Default.GetBytes(s).Save(comment);
@@ -359,7 +481,7 @@ namespace doru
         {
             Encoding.Default.GetBytes(s).Save();
             return s;
-        }        
+        }
         public static byte[] Save(this byte[] s)
         {
             return Save(s, "");
@@ -407,12 +529,12 @@ namespace doru
             }
         }
 #else
-        #region 
+        #region
         public static void Send(this Socket _Socket, byte[] buffer) { Send(_Socket, buffer, 0, buffer.Length); }
-        public static void Send(this Socket _Socket, byte[] buffer,int offset , int count)
+        public static void Send(this Socket _Socket, byte[] buffer, int offset, int count)
         {
             SocketAsyncEventArgs _SocketAsyncEventArgs = new SocketAsyncEventArgs();
-            _SocketAsyncEventArgs.SetBuffer(buffer,offset,count);
+            _SocketAsyncEventArgs.SetBuffer(buffer, offset, count);
             _Socket.SendAsync(_SocketAsyncEventArgs);
         }
 
@@ -429,32 +551,109 @@ namespace doru
         }
         public static void Toggle(this Control _Control)
         {
-            if(_Control.Visibility == Visibility.Visible)
+            if (_Control.Visibility == Visibility.Visible)
                 _Control.Hide();
             else
                 _Control.Show();
         }
         #endregion
 #endif
+        #region Stream
+        public static byte[] Cut(this Stream source, string pattern)
+        {
+            return Cut(source, Encoding.Default.GetBytes(pattern));
+        }
+        public static byte[] Cut(this Stream source, byte[] pattern)
+        {
+            MemoryStream _MemoryStream = new MemoryStream();
+            while (true)
+            {
+                for (int i = 0; i < pattern.Length; i++)
+                {
+                    int b = source.ReadByte();
+                    if (b == -1) throw new IOException("Cut: unable to cut");
+                    _MemoryStream.WriteByte((byte)b);
+                    if (pattern[i] != b) break;
+                    if (i == pattern.Length - 1) return _MemoryStream.ToArray();
+                }
+            }
+        }
+        public static string WriteLine(this Stream _Stream, string s)
+        {
+            _Stream.Write(s + "\r\n");
+            return s;
+        }
+        public static string ReadLine(this Stream _Stream)
+        {
+            return _Stream.Cut("\n").ToStr().TrimEnd('\r', '\n');
+        }
+        public static byte[] Read(this Stream _Stream)
+        {
+            byte[] buffer = new byte[2048];
+            int bytesRead;
+            using (MemoryStream outputStream = new MemoryStream())
+            {
+                while ((bytesRead = _Stream.Read(buffer, 0, buffer.Length)) != 0)
+                {
+                    outputStream.Write(buffer, 0, bytesRead);
+                }
+                return outputStream.ToArray();
+            }
+        }
+        public static void Write(this Stream _Stream, byte[] _bytes)
+        {
+            if (_bytes.Length == 0) throw new Exception();
+            _Stream.Write(_bytes, 0, _bytes.Length);
+        }
+#if(BIGENDIAN)
+        public static UInt32 ReadUInt32(this Stream _Stream)
+        {
+            return BitConverter.ToUInt32(_Stream.Read(4).ReverseA(), 0);
+        }
+        public static UInt16 ReadUInt16(this Stream _Stream)
+        {
+            return BitConverter.ToUInt16(_Stream.Read(2).ReverseA(), 0);
+        }
+        public static void WriteUint32(this Stream _Stream, UInt32 i)
+        {
+            _Stream.Write(BitConverter.GetBytes(i).ReverseA());
+        }
+        public static void WriteUint16(this Stream _Stream, UInt16 i)
+        {
+            _Stream.Write(BitConverter.GetBytes(i).ReverseA(2), 0, 2);
+        }
+
+#else
+
         public static Int16 ReadInt16(this Stream s)
         {
             return BitConverter.ToInt16(s.Read(2), 0);
         }
-        public static float ReadSingle(this Stream s) { return ReadFloat(s); }
-        public static bool ReadBoolean(this Stream s)
+        public static UInt16 ReadUInt16(this Stream s)
         {
-            return BitConverter.ToBoolean(new[] { s.ReadB() }, 0);
+            return BitConverter.ToUInt16(s.Read(2), 0);
         }
         public static float ReadFloat(this Stream s)
         {
             return BitConverter.ToSingle(s.Read(4), 0);
         }
-        public static string ReadString(this Stream s)
+        public static void Write(this Stream s, Int16 _int)
         {
-            int c = s.ReadB();
-            return s.Read(c).ToStr();
+            s.Write(BitConverter.GetBytes(_int));
         }
-
+        public static void Write(this Stream s, UInt16 _int)
+        {
+            s.Write(BitConverter.GetBytes(_int));
+        }
+        public static void Write(this Stream s, float str)
+        {
+            s.Write(BitConverter.GetBytes(str));
+        }
+#endif
+        public static void Write(this Stream s, string _str)
+        {
+            s.Write(_str.ToBytes());
+        }
         public static void Write(this Stream s, byte _int)
         {
             s.WriteByte(_int);
@@ -463,44 +662,71 @@ namespace doru
         {
             s.Write(BitConverter.GetBytes(_int));
         }
-        public static void Write(this Stream s, Int16 _int)
+        public static bool ReadBoolean(this Stream s)
         {
-            s.Write(BitConverter.GetBytes(_int));
+            return BitConverter.ToBoolean(new[] { s.ReadB() }, 0);
+        }
+        public static byte ReadB(this Stream _Stream)
+        {
+            int i = _Stream.ReadByte();
+            if (i == -1) throw new IOException();
+            return (byte)i;
+        }
+        public static byte[] ReadBlock(this Stream _Stream)
+        {
+            byte[] _bytes = new byte[9999999];
+            _Stream.Read(_bytes, 0, _bytes.Length);
+            return _bytes.Cut(_bytes.Length);
+            //_Stream.Read(_b
+        }
+        public static byte[] Read(this Stream _Stream, int length)
+        {
+            if (length == 0) throw new Exception("length == 0");
+            byte[] _buffer = new byte[length];
+            using (MemoryStream _MemoryStream = new MemoryStream())
+            {
+                while (true)
+                {
+                    int count = _Stream.Read(_buffer, 0, length);
+                    if (count == 0) throw new IOException("Read Stream failed");
+                    _MemoryStream.Write(_buffer, 0, count);
+                    length -= count;
+                    if (length == 0) return _MemoryStream.ToArray();
+                }
+            }
         }
 
-        public static void Write(this Stream s, float str)
+        public static string ReadString(this Stream s)
         {
-            s.Write(BitConverter.GetBytes(str));
-        }
-        public static void Write(this Stream s, string _str)
-        {
-            s.Write(_str.ToBytes());
+            int c = s.ReadB();
+            return s.Read(c).ToStr();
         }
         public static void WriteString(this Stream s, string _str)
         {
             byte[] bs = _str.ToBytes();
             s.Write(Helper.JoinBytes(new[] { (byte)bs.Length }, bs));
         }
-        
-        public static string[] Split2(this string s,string s2)
+        #endregion
+        public static string[] Split2(this string s, string s2)
         {
             return s.Split(new[] { s2 }, StringSplitOptions.RemoveEmptyEntries);
         }
         public static T DeserealizeOrCreate<T>(this XmlSerializer x, string path, T t)
         {
-            if(t == null) throw new NullReferenceException("omg");
+            if (t == null) throw new NullReferenceException("omg");
 
             try
             {
-                using(FileStream fs1 = File.Open(path, FileMode.Open))
+                using (FileStream fs1 = File.Open(path, FileMode.Open))
                     return (T)x.Deserialize(fs1);
             }
-            catch {
-                using(FileStream fs = File.Create(path)) x.Serialize(fs, t);
+            catch
+            {
+                using (FileStream fs = File.Create(path)) x.Serialize(fs, t);
                 return t;
-            }            
+            }
         }
-        public static void Serialize<T>(this XmlSerializer x, string path,T t)
+        public static void Serialize<T>(this XmlSerializer x, string path, T t)
         {
             x.Serialize(File.Open(path, FileMode.Create), t);
         }
@@ -510,7 +736,11 @@ namespace doru
             x.Serialize(ms, t);
             return ms.ToArray();
         }
-        public static int PutToNextFreePlace<T>(this IList<T> items,T item)
+        public static bool IsValid(this Enum e)
+        {
+            return Enum.IsDefined(e.GetType(), e);
+        }
+        public static int PutToNextFreePlace<T>(this IList<T> items, T item)
         {
             int id = items.IndexOf(default(T));
             if (id == -1)
@@ -524,10 +754,10 @@ namespace doru
                 return id;
             }
         }
-        public static bool Contains<T>(this IList<T> list,params T[] ts)
+        public static bool Contains<T>(this IList<T> list, params T[] ts)
         {
-            foreach(T t in ts)            
-                if(!list.Contains(t)) return false;            
+            foreach (T t in ts)
+                if (!list.Contains(t)) return false;
             return true;
         }
         public static T Trace<T>(this T t)
@@ -539,11 +769,11 @@ namespace doru
 #if(SILVERLIGHT)
             doru.Trace.WriteLine(s + t);
 #else
-            System.Diagnostics.Trace.WriteLine(s+t);
+            System.Diagnostics.Trace.WriteLine(s + t);
 #endif
             return t;
         }
-        
+
         public static string Join<T>(this IEnumerable<T> list, string text)
         {
             string s = "";
@@ -552,7 +782,7 @@ namespace doru
             return s.Substring(0, s.Length - text.Length);
         }
         //public static string 
-        public static IEnumerable<T> Last<T>(this IEnumerable<T> list,int c)
+        public static IEnumerable<T> Last<T>(this IEnumerable<T> list, int c)
         {
             return list.Skip(Math.Max(0, list.Count() - c));
         }
@@ -629,19 +859,7 @@ namespace doru
             return _bytes;
         }
 
-        public static byte[] Read(this Stream _Stream)
-        {
-            byte[] buffer = new byte[2048];
-            int bytesRead;
-            using (MemoryStream outputStream = new MemoryStream())
-            {
-                while ((bytesRead = _Stream.Read(buffer, 0, buffer.Length)) != 0)
-                {
-                    outputStream.Write(buffer, 0, bytesRead);
-                }
-                return outputStream.ToArray();
-            }
-        }
+
         public static T Random<T>(this IList<T> list, T t2)
         {
             T t;
@@ -656,12 +874,8 @@ namespace doru
         {
             return _Tags[_Random.Next(_Tags.Length)];
         }
-        public static void Write(this Stream _Stream, byte[] _bytes)
-        {
-            if (_bytes.Length == 0) throw new Exception();
-            _Stream.Write(_bytes, 0, _bytes.Length);
-        }
-        
+
+
 
         public static string GetString(this System.Text.Encoding e, byte[] str)
         {
@@ -676,15 +890,7 @@ namespace doru
             }
             return mString;
         }
-        public static string WriteLine(this Stream _Stream, string s)
-        {
-            _Stream.Write(s + "\r\n");
-            return s;
-        }
-        public static string ReadLine(this Stream _Stream)
-        {
-            return _Stream.Cut("\n").ToStr().TrimEnd('\r', '\n');
-        }
+
         public static string Replace(this string s, string a, string b)
         {
             Debugger.Break();
@@ -764,6 +970,14 @@ namespace doru
                 sb.Append("\r\n");
             }
         }
+
+        public static string ToDec(this byte[] _bytes)
+        {
+            string s ="";
+            foreach (byte b in _bytes)
+                s += b + " ";
+            return s;
+        }
         public static string ToStr(this byte[] _Bytes)
         {
             return Encoding.Default.GetString(_Bytes);
@@ -780,52 +994,7 @@ namespace doru
         {
             return Encoding.Default.GetBytes(_String);
         }
-        public static UInt32 ReadUInt32(this Stream _Stream)
-        {
-            return BitConverter.ToUInt32(_Stream.Read(4).ReverseA(), 0);
-        }
-        public static UInt16 ReadUInt16(this Stream _Stream)
-        {
-            return BitConverter.ToUInt16(_Stream.Read(2).ReverseA(), 0);
-        }
-        public static void WriteUint32(this Stream _Stream, UInt32 i)
-        {
-            _Stream.Write(BitConverter.GetBytes(i).ReverseA());
-        }
-        public static void WriteUint16(this Stream _Stream, UInt16 i)
-        {
-            _Stream.Write(BitConverter.GetBytes(i).ReverseA(2), 0, 2);
-        }
-        public static byte ReadB(this Stream _Stream)
-        {
-            int i = _Stream.ReadByte();
-            if (i == -1) throw new IOException();
-            return (byte)i;
-        }
-        public static byte[] ReadBlock(this Stream _Stream)
-        {
-            byte[] _bytes = new byte[9999999];
-            _Stream.Read(_bytes, 0, _bytes.Length);
-            return _bytes.Cut(_bytes.Length);
-            //_Stream.Read(_b
-        }
 
-        public static byte[] Read(this Stream _Stream, int length)
-        {
-            if (length == 0) throw new Exception("length == 0");
-            byte[] _buffer = new byte[length];
-            using (MemoryStream _MemoryStream = new MemoryStream())
-            {
-                while (true)
-                {
-                    int count = _Stream.Read(_buffer, 0, length);
-                    if (count == 0) throw new IOException("Read Stream failed");
-                    _MemoryStream.Write(_buffer, 0, count);
-                    length -= count;
-                    if (length == 0) return _MemoryStream.ToArray();
-                }
-            }
-        }
 
         public static string Crypter(this string s)
         {
@@ -848,7 +1017,7 @@ namespace doru
             }
             return _StringBuilder.ToString();
         }
-        
+
         public static byte[] Join(this byte[] a, byte[] b)
         {
             byte[] c = new byte[a.Length + b.Length];
@@ -863,7 +1032,7 @@ namespace doru
             }
             return c;
         }
-        public static byte[][] Split(this byte[] source,int pos)
+        public static byte[][] Split(this byte[] source, int pos)
         {
             byte[] _bytes = new byte[source.Length - pos];
             byte[] _bytes2 = new byte[pos];
@@ -879,7 +1048,7 @@ namespace doru
         }
         public static byte[] Cut(this byte[] source, int start, out byte[] _bytes2)
         {
-            byte[][] bss = source.Split(start);            
+            byte[][] bss = source.Split(start);
             _bytes2 = bss[1];
             return bss[0];
         }
@@ -920,25 +1089,7 @@ namespace doru
             return IndexOf2(source, pattern, 0);
         }
 
-        public static byte[] Cut(this Stream source, string pattern)
-        {
-            return Cut(source, Encoding.Default.GetBytes(pattern));
-        }
-        public static byte[] Cut(this Stream source, byte[] pattern)
-        {
-            MemoryStream _MemoryStream = new MemoryStream();
-            while (true)
-            {
-                for (int i = 0; i < pattern.Length; i++)
-                {
-                    int b = source.ReadByte();
-                    if (b == -1) throw new IOException("Cut: unable to cut");
-                    _MemoryStream.WriteByte((byte)b);
-                    if (pattern[i] != b) break;
-                    if (i == pattern.Length - 1) return _MemoryStream.ToArray();
-                }
-            }
-        }
+
         public static int IndexOf2<T>(this T[] source, T[] pattern, int startpos)
         {
             for (int i = startpos; i < source.Length; i++)
@@ -949,9 +1100,9 @@ namespace doru
             return -1;
         }
     }
-    
+
 #if(WINFORMS)
-    public static class Win32
+    //[DebuggerStepThrough] public static class Win32
     {
         using System.Windows.Forms;
         private const int WH_KEYBOARD_LL = 13;
@@ -1169,8 +1320,9 @@ namespace doru
         }
     }
 #endif
-#if (!SILVERLIGHT)    
+#if (!SILVERLIGHT)
     [XmlRoot("dictionary")]
+    //[DebuggerStepThrough]
     public class SerializableDictionary<TKey, TValue> : Dictionary<TKey, TValue>, IXmlSerializable
     {
         #region IXmlSerializable Members
@@ -1286,6 +1438,7 @@ namespace doru
 
         #endregion
     }
+    //[DebuggerStepThrough]
     public class MemoryStreamA : MemoryStream
     {
         public SortedList<int, byte[]> _List = new SortedList<int, byte[]>();
@@ -1335,6 +1488,7 @@ namespace doru
             Seek(oldpos, SeekOrigin.Begin);
         }
     }
+    //[DebuggerStepThrough]
     public class PolicyServer
     {
         class PolicyConnection
@@ -1401,7 +1555,7 @@ namespace doru
         public void StartAsync()
         {
             Console.WriteLine("PolicyServer Started");
-                        
+
             if (policyFile == null)
             {
                 m_policy = @"<?xml version=""1.0"" encoding =""utf-8""?>
@@ -1422,7 +1576,7 @@ namespace doru
   </cross-domain-access>
 </access-policy>".ToBytes();
             }
-            else m_policy = File.ReadAllBytes(policyFile);                        
+            else m_policy = File.ReadAllBytes(policyFile);
             m_listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             m_listener.Bind(new IPEndPoint(IPAddress.Any, _PolicyPort));
             m_listener.Listen(10);
@@ -1449,6 +1603,7 @@ namespace doru
             m_listener.Close();
         }
     }
+    //[DebuggerStepThrough]
     public class intA
     {
 
@@ -1478,7 +1633,8 @@ namespace doru
                     return _i.Value;
                 }
             }
-            set {
+            set
+            {
                 lock ("intA")
                 {
                     _i = value; File.WriteAllText(file, _i.ToString());
@@ -1486,6 +1642,7 @@ namespace doru
             }
         }
     }
+    //[DebuggerStepThrough]
     public class ListA : List<string>
     {
         string file;
@@ -1512,6 +1669,8 @@ namespace doru
             File.WriteAllLines(file, this.ToArray(), Encoding.Default);
         }
     }
+
+    //[DebuggerStepThrough]
     public class ListB<T> : List<T>
     {
         public ListB()
@@ -1543,79 +1702,10 @@ namespace doru
             }
         }
     }
-    public partial class Helper
-    {
-        public static void Trace2(string t, string prefix)
-        {
-            string[] ss = t.Split(new []{"\r","\n"},StringSplitOptions.RemoveEmptyEntries);
-            if (ss.Length > 3)
-            {
-                System.Diagnostics.Trace.Write(prefix + ":");
-                t.ToString().Save();
-            }
-            else
-            {
-                foreach (string s in ss)
-                    System.Diagnostics.Trace.WriteLine(prefix + ":" + s);
-            }            
-        }
-        public static XmlSerializer CreateSchema(string name, params Type[] types)
-        {
-            string SchemasPath = Environment.GetEnvironmentVariable("VS90COMNTOOLS");
-            if(SchemasPath == null) SchemasPath = "./";
-            else SchemasPath = Path.GetFullPath(SchemasPath + "../../Xml/Schemas");
-            XmlReflectionImporter _XmlReflectionImporter = new XmlReflectionImporter(name);
-            XmlSchemas _XmlSchemas = new XmlSchemas();
 
-            XmlSchemaExporter _XmlSchemaExporter = new XmlSchemaExporter(_XmlSchemas);
-            List<Type> xtratypes = new List<Type>();
-            for (int i = 1; i < types.Length; i++)
-            {
-                _XmlReflectionImporter.IncludeType(types[i]);
-                xtratypes.Add(types[i]);
-            }
-            XmlTypeMapping map = _XmlReflectionImporter.ImportTypeMapping(types[0]);
-            _XmlSchemaExporter.ExportTypeMapping(map);
-
-
-            using (StringWriter fs = new StringWriter())
-            {
-                _XmlSchemas[0].Write(fs);
-                //FixSchema(_XmlSchemas[0]);
-                string s = fs.ToString();
-                s = Regex.Replace(s.Replace("xs:sequence", "xs:all"), @"minOccurs=""?"" maxOccurs=""?""", "minOccurs=\"0\"");
-                s = s.Replace("\"utf-16\"", "\"utf-8\"");
-                s = Regex.Replace(s, @"(ArrayOf.*\n.*xs\:)all(.*\n.*\n.*</xs:)all", "${1}sequence${2}sequence");
-                s = Regex.Replace(s, @"xs:all(>\r?\n?.*<xs:element ref=""xs:schema"" />\r?\n?.*\r?\n?.*)xs:all", "xs:sequence${1}xs:sequence", RegexOptions.Multiline);
-                File.WriteAllText(SchemasPath + "/" + name + ".xsd", s, Encoding.Default);
-            }
-            XmlSerializer _XmlSerializer = new XmlSerializer(types[0], new XmlAttributeOverrides(), xtratypes.ToArray(), new XmlRootAttribute(), name);
-            return _XmlSerializer;
-        }
-
-
-        public static Process StartProcess(string s)
-        {
-            ProcessStartInfo _ProcessStartInfo = new ProcessStartInfo(Path.GetFullPath(s));
-            _ProcessStartInfo.WorkingDirectory = Path.GetDirectoryName(s);
-            return Process.Start(_ProcessStartInfo);
-        }
-        public static void GenerateXsd(Type _type, Type[] _types, string filename)
-        {
-            XmlReflectionImporter _XmlReflectionImporter = new XmlReflectionImporter();
-            XmlSchemas _XmlSchemas = new XmlSchemas();
-
-            XmlSchemaExporter _XmlSchemaExporter = new XmlSchemaExporter(_XmlSchemas);
-            foreach (Type _Type in _types)
-                _XmlReflectionImporter.IncludeType(_Type);
-
-            _XmlSchemaExporter.ExportTypeMapping(_XmlReflectionImporter.ImportTypeMapping(_type));
-
-            using (FileStream _FileStream = new FileStream(filename, FileMode.Create, FileAccess.Write))
-                _XmlSchemas[0].Write(_FileStream);
-        }
-    }
     
+
+    //[DebuggerStepThrough]
     public class TcpRedirect
     {
         public string _LocalhostReplace;
@@ -1668,6 +1758,7 @@ namespace doru
             File.WriteAllText(hosts, "");
             Thread.Sleep(500);
         }
+        //[DebuggerStepThrough]
         public class Client
         {
             public Socket _ListenSocket;
@@ -1705,7 +1796,8 @@ namespace doru
             }
         }
     }
-    
+
+    //[DebuggerStepThrough]
     public static class Proxy
     {
         public static Socket Socks5Connect(string _proxyAddress, int _proxyPort, string _DestAddress, int _DestPort)
@@ -1736,6 +1828,7 @@ namespace doru
             return _Socket;
         }
     }
+    //[DebuggerStepThrough]
     public static class Http
     {
 
@@ -1827,8 +1920,9 @@ namespace doru
             return _MemoryStream.ToArray();
         }
 
-        
+
     }
+    //[DebuggerStepThrough]
     public class DMime
     {
         static Dictionary<String, string> _Mimes = new Dictionary<string, string>();
@@ -2051,21 +2145,23 @@ namespace doru
 
     }
     [Obsolete]
+    //[DebuggerStepThrough]
     public class Spammer3 : Logging { }
+    //[DebuggerStepThrough]
     public class Logging
-    {        
+    {
         public static string title;
         public static string _Title
         {
             set { if (title != value) title = Console.Title = value; }
         }
-        public static Random _Random = new Random();        
+        public static Random _Random = new Random();
 
         public static bool done;
         public static bool Beep = true;
 
         public static void Setup() { Setup("../../"); }
-        public static bool _supsend;        
+        public static bool _supsend;
         public static IEnumerable<Process> FindProcess(string s)
         {
             IEnumerable<Process> ps = (from p in Process.GetProcesses() where p.ProcessName == s select p);
@@ -2073,7 +2169,7 @@ namespace doru
         }
 
         public static List<string> _console = new List<string>();
-        
+
         public static void StartRemoteConsoleAsync(int port)
         {
             Thread _Thread = new Thread(StartRemoteConsole);
@@ -2086,7 +2182,7 @@ namespace doru
             TcpListener _TcpListener = new TcpListener(IPAddress.Any, port);
             _TcpListener.Start();
             while (true)
-            {                
+            {
                 Socket _Socket = _TcpListener.AcceptSocket();
                 Thread _Thread = new Thread(StartListenClient);
                 _Thread.IsBackground = true;
@@ -2115,8 +2211,8 @@ namespace doru
         }
         private static void StartReadConsole()
         {
-            while (true)            
-                _console.Add(Console.ReadLine());            
+            while (true)
+                _console.Add(Console.ReadLine());
         }
         public static void Setup(string s)
         {
@@ -2126,13 +2222,13 @@ namespace doru
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
             Process _Process = Process.GetCurrentProcess();
-            if (FindProcess(_Process.ProcessName).Count() > 1)
+            if (!_AllowDuplicates && FindProcess(_Process.ProcessName).Count() > 1)
             {
                 Console.Beep(100, 10);
                 _Process.Kill();
             }
             Directory.SetCurrentDirectory(s);
-            Trace.Listeners.Add(new TextWriterTraceListener("log.txt"));            
+            Trace.Listeners.Add(new TextWriterTraceListener("log.txt"));
             if (Console.LargestWindowHeight != 0)
             {
                 new Thread(StartReadConsole).StartBackground();
@@ -2142,7 +2238,7 @@ namespace doru
             Trace.AutoFlush = true;
             Trace.WriteLine("Programm Started " + DateTime.Now);
         }
-
+        public static bool _AllowDuplicates;
         static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             Trace.WriteLine(e.ExceptionObject);
@@ -2152,6 +2248,7 @@ namespace doru
 
     }
 #else
+    //[DebuggerStepThrough]
     public class File
     {
         public static IsolatedStorageFile _IsolatedStorageFile = IsolatedStorageFile.GetUserStoreForSite();
@@ -2169,6 +2266,7 @@ namespace doru
         }
 
     }
+    ////[DebuggerStepThrough]
     public class NetworkStream : MemoryStream
     {
         Socket _Socket;
@@ -2189,20 +2287,21 @@ namespace doru
         void SocketAsyncEventArgs_Completed(object sender, SocketAsyncEventArgs e)
         {
             long pos = Position;
+            Seek(0, SeekOrigin.End);
             base.Write(e.Buffer, 0, e.BytesTransferred);
             Position = pos;
             StartReceive();
         }
         public override int Read(byte[] buffer, int offset, int count)
         {
-            while(Position == Length) Thread.Sleep(2);
-            if(Position == Length) return 0;
+            while (Position == Length) Thread.Sleep(2);
+            if (Position == Length) return 0;
             else
                 return base.Read(buffer, offset, count);
         }
         public override int ReadByte()
         {
-            while(Position == Length) Thread.Sleep(2);
+            while (Position == Length) Thread.Sleep(2);
             return base.ReadByte();
         }
         public override void Write(byte[] buffer, int offset, int count)
@@ -2210,22 +2309,38 @@ namespace doru
             _Socket.Send(buffer);
         }
     }
+    //[DebuggerStepThrough]
     public class Trace : Debug
     {
     }
+
+    //[DebuggerStepThrough]
     public class Debug
     {
+        public static void Assert(bool b, string s)
+        {
+            if (!b) Debugger.Break();
+        }
+        public static void Assert(bool b)
+        {
+            if (!b) Debugger.Break();
+        }
+        public static void Fail(string s)
+        {
+            Debugger.Break();
+        }
         public static void WriteLine<T>(T o)
-        {            
+        {
             System.Diagnostics.Debug.WriteLine(o);
         }
         public static void Write<T>(T o)
         {
             System.Diagnostics.Debug.WriteLine(o);
         }
-    }    
+    }
 #endif
-    
+
+    //[DebuggerStepThrough]
     public static class STimer
     {
         public static void AddMethod(double _Time, Action _Action)
@@ -2252,7 +2367,9 @@ namespace doru
         }
     }
     [Obsolete]
+    //[DebuggerStepThrough]
     public class Timer2 : TimerA { }
+    //[DebuggerStepThrough]
     public class TimerA
     {
         DateTime _DateTime = DateTime.Now;
@@ -2324,84 +2441,63 @@ namespace doru
             public Action _Action;
         }
     }
-    
+
     namespace OldTcp
     {
-#if (SILVERLIGHT)    
-    public class Sender
-    {
-        public static byte Encode(float _V, float _min, float _max)
+#if (SILVERLIGHT)
+        //[DebuggerStepThrough]
+        public class Sender
         {
-            _V = Math.Min(Math.Max(_V, _min), _max);
-            float _range = _max - _min;
-            float _dopolnenie = _V - _min;
-            float _Procent = _dopolnenie / _range;
-            float _fullV = _Procent * byte.MaxValue;
-            return (byte)Math.Max(Math.Min((byte)_fullV, byte.MaxValue), byte.MinValue);
-        }
-        public static UInt16 EncodeInt(float _V, float _min, float _max)
-        {
-            _V = Math.Min(Math.Max(_V, _min), _max);
-            float _range = _max - _min;
-            float _dopolnenie = _V - _min;
-            float _Procent = _dopolnenie / _range;
-            float _fullV = _Procent * UInt16.MaxValue;
-            return (UInt16)Math.Max(Math.Min((UInt16)_fullV, UInt16.MaxValue), UInt16.MinValue);
-        }
-
-        public Socket _Socket;
-        public void Send(byte[] _Buffer2) 
-        {
-            byte[] _Buffer = new byte[_Buffer2.Length + 1];
-            _Buffer[0] = (byte)_Buffer2.Length;
-            Buffer.BlockCopy(_Buffer2, 0, _Buffer, 1, _Buffer2.Length);
-            if (_Buffer2.Length == 0) throw new Exception("Break");
-            SocketAsyncEventArgs _SocketAsyncEventArgs = new SocketAsyncEventArgs();
-            _SocketAsyncEventArgs.SetBuffer(_Buffer, 0, _Buffer.Length);
-            _Socket.SendAsync(_SocketAsyncEventArgs);
-        }
-    }
-    public class Listener
-    {
-        public Socket _Socket;
-
-        public static float Decode(byte _fullV, float _min, float _max)
-        {
-            float _range = _max - _min;
-            float _V1 = ((float)_fullV) / byte.MaxValue;
-            float _ranged = _V1 * _range;
-            float _V = _ranged + _min;
-            return _V;
-        }
-        public static float DecodeInt(UInt16 _fullV, float _min, float _max)
-        {
-            float _range = _max - _min;
-            float _V1 = ((float)_fullV) / UInt16.MaxValue;
-            float _ranged = _V1 * _range;
-            float _V = _ranged + _min;
-            return _V;
-        }
-
-
-        public bool _Connected 
-        {
-            get { return _Socket.Connected; }
-        }
-
-        private List<byte[]> _Messages = new List<byte[]>(); 
-
-        public List<byte[]> GetMessages() 
-        {
-            lock ("Get")
+            public Socket _Socket;
+            public void Send(byte[] _Buffer2)
             {
-                List<byte[]> _Return = _Messages;
-                _Messages = new List<byte[]>();
-                return _Return;
+                byte[] _Buffer = new byte[_Buffer2.Length + 1];
+                _Buffer[0] = (byte)_Buffer2.Length;
+                Buffer.BlockCopy(_Buffer2, 0, _Buffer, 1, _Buffer2.Length);
+                if (_Buffer2.Length == 0) throw new Exception("Break");
+                SocketAsyncEventArgs _SocketAsyncEventArgs = new SocketAsyncEventArgs();
+                _SocketAsyncEventArgs.SetBuffer(_Buffer, 0, _Buffer.Length);
+                _Socket.SendAsync(_SocketAsyncEventArgs);
+            }
+            public static byte Encode(float _V, float _min, float _max)
+            {
+                _V = Math.Min(Math.Max(_V, _min), _max);
+                float _range = _max - _min;
+                float _dopolnenie = _V - _min;
+                float _Procent = _dopolnenie / _range;
+                float _fullV = _Procent * byte.MaxValue;
+                return (byte)Math.Max(Math.Min((byte)_fullV, byte.MaxValue), byte.MinValue);
+            }
+            public static UInt16 EncodeInt(float _V, float _min, float _max)
+            {
+                _V = Math.Min(Math.Max(_V, _min), _max);
+                float _range = _max - _min;
+                float _dopolnenie = _V - _min;
+                float _Procent = _dopolnenie / _range;
+                float _fullV = _Procent * UInt16.MaxValue;
+                return (UInt16)Math.Max(Math.Min((UInt16)_fullV, UInt16.MaxValue), UInt16.MinValue);
             }
         }
-        void SocketAsyncEventArgs_Completed(object sender, SocketAsyncEventArgs _SocketAsyncEventArgs) 
+        //[DebuggerStepThrough]
+        public class Listener
         {
-            lock ("Receive")
+            public Socket _Socket;
+            long _position;
+            public bool _Connected
+            {
+                get { return _Socket.Connected; }
+            }
+            private List<byte[]> _Messages = new List<byte[]>();
+            public List<byte[]> GetMessages()
+            {
+                lock ("Get")
+                {
+                    List<byte[]> _Return = _Messages;
+                    _Messages = new List<byte[]>();
+                    return _Return;
+                }
+            }
+            void SocketAsyncEventArgs_Completed(object sender, SocketAsyncEventArgs _SocketAsyncEventArgs)
             {
                 _MemoryStream.Write(_SocketAsyncEventArgs.Buffer, 0, _SocketAsyncEventArgs.BytesTransferred);
                 _MemoryStream.Seek(_position, SeekOrigin.Begin);
@@ -2419,25 +2515,39 @@ namespace doru
                 _MemoryStream.Seek(0, SeekOrigin.End);
                 StartReceive();
             }
+            MemoryStream _MemoryStream = new MemoryStream();
+            public void Start()
+            {
+                StartReceive();
+            }
+            private void StartReceive()
+            {
+                SocketAsyncEventArgs _SocketAsyncEventArgs = new SocketAsyncEventArgs();
+                _SocketAsyncEventArgs.Completed += new EventHandler<SocketAsyncEventArgs>(SocketAsyncEventArgs_Completed);
+                //_Socket.ReceiveBufferSize = 100;
+                //_Socket.SendBufferSize = 100;
+                _SocketAsyncEventArgs.SetBuffer(new byte[100], 0, 100);
+                _Socket.ReceiveAsync(_SocketAsyncEventArgs);
+            }
+            public static float Decode(byte _fullV, float _min, float _max)
+            {
+                float _range = _max - _min;
+                float _V1 = ((float)_fullV) / byte.MaxValue;
+                float _ranged = _V1 * _range;
+                float _V = _ranged + _min;
+                return _V;
+            }
+            public static float DecodeInt(UInt16 _fullV, float _min, float _max)
+            {
+                float _range = _max - _min;
+                float _V1 = ((float)_fullV) / UInt16.MaxValue;
+                float _ranged = _V1 * _range;
+                float _V = _ranged + _min;
+                return _V;
+            }
         }
-        MemoryStream _MemoryStream = new MemoryStream(); 
-        public void Start()
-        {
-            StartReceive();
-        }
-
-        private void StartReceive()
-        {
-            SocketAsyncEventArgs _SocketAsyncEventArgs = new SocketAsyncEventArgs();
-            _SocketAsyncEventArgs.Completed += new EventHandler<SocketAsyncEventArgs>(SocketAsyncEventArgs_Completed);
-            //_Socket.ReceiveBufferSize = 100;
-            //_Socket.SendBufferSize = 100;
-            _SocketAsyncEventArgs.SetBuffer(new byte[100], 0, 100);
-            _Socket.ReceiveAsync(_SocketAsyncEventArgs);
-        }
-        long _position;
-    }
 #else
+        //[DebuggerStepThrough]
         public class ClientWait
         {
             public int _Port;
@@ -2466,6 +2576,7 @@ namespace doru
                 }
             }
         }
+        //[DebuggerStepThrough]
         public class Sender
         {
             public TcpClient _TcpClient;
@@ -2484,6 +2595,7 @@ namespace doru
                     catch (SocketException e) { Trace.WriteLine(e.Message); }
             }
         }
+        //[DebuggerStepThrough]
         public class Listener
         {
             public TcpClient _TcpClient;
@@ -2540,9 +2652,10 @@ namespace doru
 #endif
     }
 
-    namespace Tcp
+    namespace Tcp //first byte is length, if length is more than 254 then first byte is 255 second is uint16 packet length 
     {
 #if(!SILVERLIGHT)
+        //[DebuggerStepThrough]
         public class ClientWait
         {
             public int _Port;
@@ -2575,22 +2688,28 @@ namespace doru
                 }
             }
         }
+        //[DebuggerStepThrough]
         public class Listener
         {
-            public Socket _Socket;            
+            public Socket _Socket;
             List<byte[]> _Messages = new List<byte[]>();
             public void Start()
             {
                 NetworkStream _NetworkStream = new NetworkStream(_Socket);
-                while (true)
+                try
                 {
-                    _NetworkStream = new NetworkStream(_Socket);
-                    byte[] split = _NetworkStream.Read(2); //every packet begins with "**" 42,42
-                    if(!split.Equals2(new byte[] { 42, 42 })) throw new Exception("dammaged packet");
-                    byte length = _NetworkStream.ReadB(); //length
-                    byte[] bytes = _NetworkStream.Read(length); //bytes
-                    _Messages.Add(bytes);//add to packets buffer
+                    while (true)
+                    {
+                        byte[] split = _NetworkStream.Read(2); //every packet begins with "**" 42,42
+                        if (!split.Equals2(new byte[] { 42, 42 })) throw new Exception("dammaged packet");
+                        UInt16 length = _NetworkStream.ReadB(); //length
+                        if (length == 255)
+                            length = _NetworkStream.ReadUInt16();
+                        byte[] bytes = _NetworkStream.Read(length); //bytes
+                        _Messages.Add(bytes);//add to packets buffer
+                    }
                 }
+                catch (IOException) { }
             }
             public bool _Connected { get { return _Socket.Connected; } }
             public List<byte[]> GetMessages()
@@ -2598,6 +2717,7 @@ namespace doru
                 lock ("Get")
                 {
                     List<byte[]> _Return = _Messages;
+                    //if (_Messages.Count > 0) Debugger.Break();
                     _Messages = new List<byte[]>();
                     return _Return;
                 }
@@ -2608,19 +2728,140 @@ namespace doru
                 new Thread(Start).StartBackground(s);
             }
         }
+        //[DebuggerStepThrough]
         public class Sender
         {
             public Socket _Socket;
             public void Send(byte[] _bytes)
             {
-                if (_Socket.Connected)
+                Debug.Assert(_bytes.Length > 0);
+                Debug.Assert(_Socket.Connected);
+                byte[] _bytes2;
+                if (_bytes.Length > 254)
                 {
-                    byte[] _bytes2 = Helper.JoinBytes(new byte[] { 42, 42, (byte)_bytes.Length }, _bytes);
-                    _Socket.Send(_bytes2);
+                    Debug.Assert(_bytes.Length < UInt16.MaxValue);
+                    _bytes2 = Helper.JoinBytes(new byte[] { 42, 42, 255 }, BitConverter.GetBytes((UInt16)_bytes.Length), _bytes);
                 }
-                else "socket not connected".Trace();
+                else
+                    _bytes2 = Helper.JoinBytes(new byte[] { 42, 42, (byte)_bytes.Length }, _bytes);
+                _Socket.Send(_bytes2);
+
             }
-        }        
+        }
+#else
+        //[DebuggerStepThrough]
+        public class Sender
+        {
+            public Socket _Socket;
+            public void Send(byte[] _Buffer)
+            {
+                SocketAsyncEventArgs _SocketAsyncEventArgs = new SocketAsyncEventArgs();
+                Trace.Assert(_Buffer.Length > 0);
+                byte[] bytes;
+                if (_Buffer.Length < 255)
+                    bytes = Helper.JoinBytes(42, 42, (byte)_Buffer.Length, _Buffer);
+                else
+                {
+                    bytes = Helper.JoinBytes(42, 42, (byte)255, BitConverter.GetBytes(_Buffer.Length), _Buffer);
+                    Trace.Assert(_Buffer.Length < UInt16.MaxValue);
+                }
+                _SocketAsyncEventArgs.SetBuffer(bytes, 0, bytes.Length);
+                bool b = _Socket.SendAsync(_SocketAsyncEventArgs);                
+            }
+            public static byte Encode(float _V, float _min, float _max)
+            {
+                _V = Math.Min(Math.Max(_V, _min), _max);
+                float _range = _max - _min;
+                float _dopolnenie = _V - _min;
+                float _Procent = _dopolnenie / _range;
+                float _fullV = _Procent * byte.MaxValue;
+                return (byte)Math.Max(Math.Min((byte)_fullV, byte.MaxValue), byte.MinValue);
+            } //converting float to byte
+            public static UInt16 EncodeInt(float _V, float _min, float _max)
+            {
+                _V = Math.Min(Math.Max(_V, _min), _max);
+                float _range = _max - _min;
+                float _dopolnenie = _V - _min;
+                float _Procent = _dopolnenie / _range;
+                float _fullV = _Procent * UInt16.MaxValue;
+                return (UInt16)Math.Max(Math.Min((UInt16)_fullV, UInt16.MaxValue), UInt16.MinValue);
+            } //converting float to uint16
+        }
+        //[DebuggerStepThrough]
+        public class Listener
+        {
+            public Socket _Socket;
+            long _position;
+            public bool _Connected
+            {
+                get { return _Socket.Connected; }
+            }
+            private List<byte[]> _Messages = new List<byte[]>();
+            public List<byte[]> GetMessages()
+            {
+                Trace.Assert(_Socket != null);
+                lock ("Get")
+                {
+                    List<byte[]> _Return = _Messages;
+                    _Messages = new List<byte[]>();
+                    return _Return;
+                }
+            }
+            void SocketAsyncEventArgs_Completed(object sender, SocketAsyncEventArgs _SocketAsyncEventArgs)
+            {
+                StartReceive(); 
+                _MemoryStream.Seek(0, SeekOrigin.End); //write at the end
+                _MemoryStream.Write(_SocketAsyncEventArgs.Buffer, 0, _SocketAsyncEventArgs.BytesTransferred);
+                _MemoryStream.Seek(_position, SeekOrigin.Begin); // go to last position                
+                while (true)
+                {
+                    byte[] split = _MemoryStream.Read(2);
+                    if (!split.Equals2(new byte[] { 42, 42 })) throw new Exception("dammaged packet");
+                    int _length = _MemoryStream.ReadByte();
+                    if (_length == 255)
+                        _length = _MemoryStream.ReadUInt16();
+
+                    if (_length == -1 || _MemoryStream.Length <= _position + _length) break; //break if not success
+                    Byte[] _Buffer = new byte[_length];
+
+                    _MemoryStream.Read(_Buffer, 0, _length);
+                    _position = _MemoryStream.Position; // move position when read success
+                    lock ("Get")
+                        _Messages.Add(_Buffer);
+                }
+                //loop
+            }
+            MemoryStream _MemoryStream = new MemoryStream();
+            public void Start()
+            {
+                StartReceive();
+            }
+            private void StartReceive()
+            {
+                SocketAsyncEventArgs _SocketAsyncEventArgs = new SocketAsyncEventArgs();
+                _SocketAsyncEventArgs.Completed += new EventHandler<SocketAsyncEventArgs>(SocketAsyncEventArgs_Completed);
+                //_Socket.ReceiveBufferSize = 100;
+                //_Socket.SendBufferSize = 100;
+                _SocketAsyncEventArgs.SetBuffer(new byte[100], 0, 100);
+                _Socket.ReceiveAsync(_SocketAsyncEventArgs);
+            }
+            public static float Decode(byte _fullV, float _min, float _max)
+            {
+                float _range = _max - _min;
+                float _V1 = ((float)_fullV) / byte.MaxValue;
+                float _ranged = _V1 * _range;
+                float _V = _ranged + _min;
+                return _V;
+            }
+            public static float DecodeInt(UInt16 _fullV, float _min, float _max)
+            {
+                float _range = _max - _min;
+                float _V1 = ((float)_fullV) / UInt16.MaxValue;
+                float _ranged = _V1 * _range;
+                float _V = _ranged + _min;
+                return _V;
+            }
+        }
 #endif
     }
 }
