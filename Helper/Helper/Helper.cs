@@ -156,6 +156,16 @@ namespace doru
     //[DebuggerStepThrough]
     public static class Helper
     {
+        public static void MergeList<T>(IList<T> a, IList<T> b)
+        {
+            for (int i = 0; i < Math.Max(a.Count, b.Count); i++)
+            {
+
+                if (a.Count <= i) { a.Add(b[i]); continue; }
+                if (b.Count <= i) { a.RemoveAt(i); continue; }
+                if (!a[i].Equals(b[i])) a[i] = b[i];
+            }
+        }
         public static class IO
         {
             public static void CreateDirectories(List<string> _directories, string _directoryb)
@@ -493,7 +503,7 @@ namespace doru
     //[DebuggerStepThrough]
     public static class Extensions
     {
-
+        
 #if(!SILVERLIGHT)
         static Extensions()
         {
@@ -941,15 +951,17 @@ namespace doru
             _Random.NextBytes(_bytes);
             return _bytes;
         }
-        public static void StartBackground(this Thread t, string name)
+        public static Thread StartBackground(this Thread t, string name)
         {
             t.Name = name;
             StartBackground(t);
+            return t;
         }
-        public static void StartBackground(this Thread t)
+        public static Thread StartBackground(this Thread t)
         {
             t.IsBackground = true;
             t.Start();
+            return t;
         }
 
         public static void ReplaceOnce(this string text, string a, string b, out string text2)
@@ -2709,10 +2721,10 @@ namespace doru
                     return _Return;
                 }
             }
-
+            Thread _Thread;
             internal void StartAsync(string s)
             {
-                new Thread(Start).StartBackground(s);
+                 _Thread = new Thread(Start).StartBackground(s);
             }
         }
         //[DebuggerStepThrough]
