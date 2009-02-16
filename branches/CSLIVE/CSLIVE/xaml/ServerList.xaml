@@ -6,8 +6,9 @@
 		<DataTemplate x:Key="RoomListTemplate">
 			<Grid>
 				<StackPanel Orientation="Horizontal">
-					<TextBlock x:Name="_MapName" Width="179" Text="{Binding MapName}" TextWrapping="Wrap"/>
-					<TextBlock TextWrapping="Wrap" Text="{Binding _PlayerCount}" x:Name="_PlayerCount"/>
+                    <TextBlock Width="179" Text="{Binding _Type}"/>
+					<TextBlock Width="179" Text="{Binding MapName}" />
+					<TextBlock Width="40" Text="{Binding _PlayerCount}" />
 				</StackPanel>
 			</Grid>
 		</DataTemplate>

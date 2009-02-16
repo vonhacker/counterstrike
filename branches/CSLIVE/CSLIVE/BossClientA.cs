@@ -15,6 +15,7 @@ using doru.TcpSilverlight;
 using System.Windows.Threading;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace CSLIVE
 {
@@ -33,13 +34,9 @@ namespace CSLIVE
         }
         void Connect()
         {
-
-            if (_Server)
-            {                                
-                Helper.Connect(_IpAddress, Dispatcher, Connected);                
-            }
+            if (_Server)            
+                Helper.Connect(_IpAddress, Dispatcher, Connected);                            
         }        
-
         
         public new LocalSharedObj<BossClientA> _LocalSharedObj { get { return (LocalSharedObj<BossClientA>)_SharedObj; } }
         public new RemoteSharedObj<BossClientA> _RemoteSharedObj { get { return (RemoteSharedObj<BossClientA>)_SharedObj; } }
@@ -50,22 +47,41 @@ namespace CSLIVE
             NetworkStream nw = new NetworkStream(_Socket);
             _Listener = new Listener { _NetworkStream = nw };
             _Listener.StartAsync();
-            _Sender = new Sender() { _NetworkStream = nw };
-            _Sender.Send(PacketType.getrooms);
+            _Sender = new Sender() { _NetworkStream = nw };            
+            new DispatcherTimer().RepeatMethod(2, SendGetRooms);            
             new DispatcherTimer().RepeatMethod(1, Ping);            
         }
         Listener _Listener;
         Sender _Sender;
         DateTime _PingDate;
 
+        public void SendGetRooms()
+        {
+            _Sender.Send(PacketType.getrooms);
+        }
+        private void OnRoomsReceived(MemoryStream _MemoryStream)
+        {
+            List<RoomDb> _rooms = (List<RoomDb>)Common._XmlSerializerRoom.Deserialize(_MemoryStream);
+            
+            _RoomList.Clear();
+            foreach (RoomDb room in _rooms)
+                _RoomList.Add(room);
+        }
         public void Pong()
         {
             TimeSpan ts = DateTime.Now - _PingDate;
             _Ping = (int)ts.TotalMilliseconds;
         }
         private ObservableCollection<RoomDb> roomList = new ObservableCollection<RoomDb>();
-        public ObservableCollection<RoomDb> _RoomList { get { return roomList; } set { roomList = value; } }
-
+        public ObservableCollection<RoomDb> _RoomList
+        {
+            get { return roomList; }
+            set
+            {
+                roomList = value;                
+            }
+        }
+        //public new event PropertyChangedEventHandler PropertyChanged;
         public void Ping()
         {
             ("connecting to server3" + _Server).Trace();
@@ -89,10 +105,7 @@ namespace CSLIVE
                                 Pong();
                                 break;
                             case PacketType.rooms:
-                                List<RoomDb> _rooms = (List<RoomDb>)Common._XmlSerializerRoom.Deserialize(_MemoryStream);
-                                foreach (RoomDb room in _rooms)
-                                    if (room is CSRoom)
-                                        _RoomList.Add(room);                                
+                                OnRoomsReceived(_MemoryStream);
                                 break;
                             default:                            
                                 Trace.Fail("wrong packet");
@@ -101,6 +114,8 @@ namespace CSLIVE
                 }
             
         }
+
+        
     }
 }
 

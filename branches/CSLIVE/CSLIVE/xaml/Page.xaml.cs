@@ -39,7 +39,7 @@ namespace CSLIVE
             _WebClient.OpenReadAsync(new Uri("Config.xml", UriKind.Relative));
             _WebClient.OpenReadCompleted += delegate(object o, OpenReadCompletedEventArgs e2)
             {
-                _Config = (Config)Common._XmlSerializer.Deserialize(e2.Result);
+                _Config = (Config)Common._XmlSerializerConfig.Deserialize(e2.Result);
                 LoadIrc();
             };
 

@@ -85,7 +85,7 @@ namespace CSLIVE
                                 }
                                 break;
                             case PacketType.JoinRoomSuccess:
-                                Connected(_MemoryStream);
+                                OnJoinedRoom(_MemoryStream);
                                 break;
                             case PacketType.PlayerJoined: //adding new client, sending shared object                                
                                     CreateClient(_IdFrom);
@@ -126,7 +126,7 @@ namespace CSLIVE
             }
         }
 
-        private void Connected(MemoryStream _MemoryStream)
+        private void OnJoinedRoom(MemoryStream _MemoryStream)
         {
             _Status = Status.Connected;
             _id = _MemoryStream.ReadB();

@@ -36,7 +36,7 @@ namespace CSLIVE //this file contains code for silverlight and server
     public static class Common
     {
         public const byte _ServerId = 254;
-        public static XmlSerializer _XmlSerializer = new XmlSerializer(typeof(Config), new[] { typeof(BossRoom), typeof(WormsRoom), typeof(CSRoom) });
+        public static XmlSerializer _XmlSerializerConfig = new XmlSerializer(typeof(Config), new[] { typeof(BossRoom), typeof(WormsRoom), typeof(CSRoom) });
         public static string _ConfigPath = "./CSLIVE.Web/ClientBin/Config.xml";
         public static XmlSerializer _XmlSerializerRoom = new XmlSerializer(typeof(List<RoomDb>), new Type[] { typeof(BossRoom), typeof(CSRoom), typeof(WormsRoom) });
     }
@@ -181,8 +181,9 @@ namespace CSLIVE //this file contains code for silverlight and server
     #endregion
     #region Rooms
     public abstract class RoomDb //base class for room static info
-    {        
-        
+    {
+        public string MapName { get; set; }
+        public string _Type { get { return this.GetType().ToString(); } }
 #if(!SILVERLIGHT)        
         public int _PlayerCount { get { return _Clients.Where(a => a != null).Count(); } set { } }
         [XmlIgnore]
@@ -192,8 +193,7 @@ namespace CSLIVE //this file contains code for silverlight and server
 #endif
     }    
     public class CSRoom : RoomDb //cslive room
-    {
-        public string MapName { get; set; }
+    {        
         public string MapPath { get; set; }        
     }    
     public class BossRoom : RoomDb { }

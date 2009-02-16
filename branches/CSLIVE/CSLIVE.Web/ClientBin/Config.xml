@@ -2,6 +2,7 @@
 <Config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Rooms>
     <RoomDb xsi:type="BossRoom">
+      <MapName>BossServer</MapName>
       <_PlayerCount>0</_PlayerCount>
     </RoomDb>
     <RoomDb xsi:type="CSRoom">
