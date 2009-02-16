@@ -4,6 +4,7 @@ using System.Text;
 #if(!SILVERLIGHT)
 using System.IO.Compression;
 #else
+using System.Windows.Threading;
 using System.Windows.Controls;
 using System.Windows;
 #endif
@@ -22,6 +23,7 @@ using System.Collections;
 using System.Xml.Schema;
 using System.Collections.Specialized;
 using System.IO.IsolatedStorage;
+
 
 
 
@@ -346,25 +348,51 @@ namespace doru
 
 
 #if(SILVERLIGHT)
+        public static DispatcherTimer RepeatMethod(this DispatcherTimer ds, double secconds, Action d)
+        {
+            ds.Interval = TimeSpan.FromSeconds(secconds);
+            ds.Tick += delegate { d(); };
+            ds.Start();
+            return ds;
+        }
+        public static DispatcherTimer CallMethod(this DispatcherTimer ds, double secconds,Delegate d,params object[] os)
+        {
+            ds.Interval = TimeSpan.FromSeconds(secconds);
+            ds.Tick += delegate { ds.Stop(); d.DynamicInvoke(os); };
+            ds.Start();
+            return ds;
+        }
 
-        public static SocketAsyncEventArgs Connect(string ip)
+        public static SocketAsyncEventArgs Connect(string ip, Dispatcher Dispatcher, OnConnected _OnConnected)
         {
             string[] ss = ip.Split(":");
-            return Connect(ss[0], int.Parse(ss[1]));
+            return Connect(ss[0], int.Parse(ss[1]), Dispatcher, _OnConnected);
         }
-        public static SocketAsyncEventArgs Connect(string ip, int port)
+        public delegate void OnConnected(SocketAsyncEventArgs s);
+        public static SocketAsyncEventArgs Connect(string ip, int port, Dispatcher Dispatcher, OnConnected _OnConnected)
         {
             Socket _Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             SocketAsyncEventArgs _SocketAsyncEventArgs = new SocketAsyncEventArgs();
             if (Application.Current.Host.Source.DnsSafeHost == "") "warning host not safe".Trace();
             _SocketAsyncEventArgs.RemoteEndPoint = new DnsEndPoint(ip, port);
-            _SocketAsyncEventArgs.UserToken = _Socket;
+            _SocketAsyncEventArgs.UserToken = _Socket;            
+            _SocketAsyncEventArgs.Completed += delegate
+            {
+                "0".Trace();
+                Dispatcher.BeginInvoke(
+                    delegate
+                    {
+                        "1".Trace();
+                        _OnConnected(_SocketAsyncEventArgs);
+                    });
+            };
             _Socket.ConnectAsync(_SocketAsyncEventArgs);
             return _SocketAsyncEventArgs;
         }
-        public delegate void OnConnected(Socket s);
+        
 
 #else
+        public delegate void OnConnected(Socket s);
         public static void Trace2(string t, string prefix)
         {
             string[] ss = t.Split(new[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
@@ -973,7 +1001,7 @@ namespace doru
 
         public static string ToDec(this byte[] _bytes)
         {
-            string s ="";
+            string s = "";
             foreach (byte b in _bytes)
                 s += b + " ";
             return s;
@@ -1325,7 +1353,7 @@ namespace doru
     //[DebuggerStepThrough]
     public class SerializableDictionary<TKey, TValue> : Dictionary<TKey, TValue>, IXmlSerializable
     {
-        #region IXmlSerializable Members
+    #region IXmlSerializable Members
 
         public System.Xml.Schema.XmlSchema GetSchema()
         {
@@ -2266,61 +2294,18 @@ namespace doru
         }
 
     }
-    ////[DebuggerStepThrough]
-    public class NetworkStream : MemoryStream
-    {
-        Socket _Socket;
-        public NetworkStream(Socket s)
-        {
-            _Socket = s;
-            StartReceive();
-        }
-
-        private void StartReceive()
-        {
-            SocketAsyncEventArgs _SocketAsyncEventArgs = new SocketAsyncEventArgs();
-            _SocketAsyncEventArgs.Completed += new EventHandler<SocketAsyncEventArgs>(SocketAsyncEventArgs_Completed);
-            _SocketAsyncEventArgs.SetBuffer(new byte[1024], 0, 1024);
-            _Socket.ReceiveAsync(_SocketAsyncEventArgs);
-        }
-
-        void SocketAsyncEventArgs_Completed(object sender, SocketAsyncEventArgs e)
-        {
-            long pos = Position;
-            Seek(0, SeekOrigin.End);
-            base.Write(e.Buffer, 0, e.BytesTransferred);
-            Position = pos;
-            StartReceive();
-        }
-        public override int Read(byte[] buffer, int offset, int count)
-        {
-            while (Position == Length) Thread.Sleep(2);
-            if (Position == Length) return 0;
-            else
-                return base.Read(buffer, offset, count);
-        }
-        public override int ReadByte()
-        {
-            while (Position == Length) Thread.Sleep(2);
-            return base.ReadByte();
-        }
-        public override void Write(byte[] buffer, int offset, int count)
-        {
-            _Socket.Send(buffer);
-        }
-    }
-    //[DebuggerStepThrough]
+    [DebuggerStepThrough()]
     public class Trace : Debug
     {
     }
 
-    //[DebuggerStepThrough]
+    [DebuggerStepThrough()]
     public class Debug
     {
         public static void Assert(bool b, string s)
         {
             if (!b) Debugger.Break();
-        }
+        }        
         public static void Assert(bool b)
         {
             if (!b) Debugger.Break();
@@ -2341,6 +2326,7 @@ namespace doru
 #endif
 
     //[DebuggerStepThrough]
+    [Obsolete("use TimerA")]
     public static class STimer
     {
         public static void AddMethod(double _Time, Action _Action)
@@ -2366,7 +2352,7 @@ namespace doru
             return _Timer.GetFps();
         }
     }
-    [Obsolete]
+    [Obsolete("use TimerA")]
     //[DebuggerStepThrough]
     public class Timer2 : TimerA { }
     //[DebuggerStepThrough]
@@ -2651,10 +2637,11 @@ namespace doru
         }
 #endif
     }
+    //first byte is length, if length is more than 254 then first byte is 255 second is uint16 packet length 
 
-    namespace Tcp //first byte is length, if length is more than 254 then first byte is 255 second is uint16 packet length 
-    {
 #if(!SILVERLIGHT)
+    namespace Tcp 
+    {
         //[DebuggerStepThrough]
         public class ClientWait
         {
@@ -2734,28 +2721,82 @@ namespace doru
             public Socket _Socket;
             public void Send(byte[] _bytes)
             {
-                Debug.Assert(_bytes.Length > 0);
-                Debug.Assert(_Socket.Connected);
-                byte[] _bytes2;
-                if (_bytes.Length > 254)
+                try
                 {
-                    Debug.Assert(_bytes.Length < UInt16.MaxValue);
-                    _bytes2 = Helper.JoinBytes(new byte[] { 42, 42, 255 }, BitConverter.GetBytes((UInt16)_bytes.Length), _bytes);
+                    Debug.Assert(_bytes.Length > 0);
+                    Debug.Assert(_Socket.Connected);
+                    byte[] _bytes2;
+                    if (_bytes.Length > 254)
+                    {
+                        Debug.Assert(_bytes.Length < UInt16.MaxValue);
+                        _bytes2 = Helper.JoinBytes(new byte[] { 42, 42, 255 }, BitConverter.GetBytes((UInt16)_bytes.Length), _bytes);
+                    }
+                    else
+                        _bytes2 = Helper.JoinBytes(new byte[] { 42, 42, (byte)_bytes.Length }, _bytes);
+                    _Socket.Send(_bytes2);
                 }
-                else
-                    _bytes2 = Helper.JoinBytes(new byte[] { 42, 42, (byte)_bytes.Length }, _bytes);
-                _Socket.Send(_bytes2);
+                catch (SocketException) { }
 
             }
         }
+    }
 #else
+    namespace TcpSilverlight
+    {
+        ////[DebuggerStepThrough]
+        public class NetworkStream : MemoryStream
+        {
+            public bool Connected { get { return _Socket.Connected; } }
+            public override string ToString()
+            {
+                return base.ToString() + " " + Length + " " + Connected;
+            }
+            public Socket _Socket;
+            public NetworkStream(Socket s)
+            {
+                _Socket = s;
+                StartReceive();
+            }
+
+            private void StartReceive()
+            {
+                SocketAsyncEventArgs _SocketAsyncEventArgs = new SocketAsyncEventArgs();
+                _SocketAsyncEventArgs.Completed += new EventHandler<SocketAsyncEventArgs>(SocketAsyncEventArgs_Completed);
+                _SocketAsyncEventArgs.SetBuffer(new byte[1024], 0, 1024);
+                _Socket.ReceiveAsync(_SocketAsyncEventArgs);
+            }
+
+            void SocketAsyncEventArgs_Completed(object sender, SocketAsyncEventArgs e)
+            {
+                long pos = Position;
+                Seek(0, SeekOrigin.End);
+                base.Write(e.Buffer, 0, e.BytesTransferred);
+                Position = pos;
+                StartReceive();
+            }
+            public override int Read(byte[] buffer, int offset, int count)
+            {
+                while (Position == Length) Thread.Sleep(2);
+                if (Position == Length) return 0;
+                else
+                    return base.Read(buffer, offset, count);
+            }
+            public override int ReadByte()
+            {
+                while (Position == Length) Thread.Sleep(2);
+                return base.ReadByte();
+            }
+            public override void Write(byte[] buffer, int offset, int count)
+            {
+                _Socket.Send(buffer);
+            }
+        }
         //[DebuggerStepThrough]
         public class Sender
         {
-            public Socket _Socket;
+            public NetworkStream _NetworkStream;
             public void Send(byte[] _Buffer)
-            {
-                SocketAsyncEventArgs _SocketAsyncEventArgs = new SocketAsyncEventArgs();
+            {                
                 Trace.Assert(_Buffer.Length > 0);
                 byte[] bytes;
                 if (_Buffer.Length < 255)
@@ -2765,8 +2806,7 @@ namespace doru
                     bytes = Helper.JoinBytes(42, 42, (byte)255, BitConverter.GetBytes(_Buffer.Length), _Buffer);
                     Trace.Assert(_Buffer.Length < UInt16.MaxValue);
                 }
-                _SocketAsyncEventArgs.SetBuffer(bytes, 0, bytes.Length);
-                bool b = _Socket.SendAsync(_SocketAsyncEventArgs);                
+                _NetworkStream.Write(bytes);
             }
             public static byte Encode(float _V, float _min, float _max)
             {
@@ -2790,16 +2830,15 @@ namespace doru
         //[DebuggerStepThrough]
         public class Listener
         {
-            public Socket _Socket;
-            long _position;
+            public NetworkStream _NetworkStream;            
             public bool _Connected
             {
-                get { return _Socket.Connected; }
+                get { return _NetworkStream.Connected; }
             }
             private List<byte[]> _Messages = new List<byte[]>();
             public List<byte[]> GetMessages()
             {
-                Trace.Assert(_Socket != null);
+                Trace.Assert(_Connected);
                 lock ("Get")
                 {
                     List<byte[]> _Return = _Messages;
@@ -2807,43 +2846,28 @@ namespace doru
                     return _Return;
                 }
             }
-            void SocketAsyncEventArgs_Completed(object sender, SocketAsyncEventArgs _SocketAsyncEventArgs)
-            {
-                StartReceive(); 
-                _MemoryStream.Seek(0, SeekOrigin.End); //write at the end
-                _MemoryStream.Write(_SocketAsyncEventArgs.Buffer, 0, _SocketAsyncEventArgs.BytesTransferred);
-                _MemoryStream.Seek(_position, SeekOrigin.Begin); // go to last position                
-                while (true)
-                {
-                    byte[] split = _MemoryStream.Read(2);
-                    if (!split.Equals2(new byte[] { 42, 42 })) throw new Exception("dammaged packet");
-                    int _length = _MemoryStream.ReadByte();
-                    if (_length == 255)
-                        _length = _MemoryStream.ReadUInt16();
-
-                    if (_length == -1 || _MemoryStream.Length <= _position + _length) break; //break if not success
-                    Byte[] _Buffer = new byte[_length];
-
-                    _MemoryStream.Read(_Buffer, 0, _length);
-                    _position = _MemoryStream.Position; // move position when read success
-                    lock ("Get")
-                        _Messages.Add(_Buffer);
-                }
-                //loop
-            }
+            
             MemoryStream _MemoryStream = new MemoryStream();
-            public void Start()
+            public void StartAsync()
             {
-                StartReceive();
+                new Thread(Start).StartBackground("listener");                
             }
-            private void StartReceive()
+            private void Start()
             {
-                SocketAsyncEventArgs _SocketAsyncEventArgs = new SocketAsyncEventArgs();
-                _SocketAsyncEventArgs.Completed += new EventHandler<SocketAsyncEventArgs>(SocketAsyncEventArgs_Completed);
-                //_Socket.ReceiveBufferSize = 100;
-                //_Socket.SendBufferSize = 100;
-                _SocketAsyncEventArgs.SetBuffer(new byte[100], 0, 100);
-                _Socket.ReceiveAsync(_SocketAsyncEventArgs);
+                try
+                {
+                    while (true)
+                    {
+                        byte[] split = _NetworkStream.Read(2); //every packet begins with "**" 42,42
+                        if (!split.Equals2(new byte[] { 42, 42 })) throw new Exception("dammaged packet");
+                        UInt16 length = _NetworkStream.ReadB(); //length
+                        if (length == 255)
+                            length = _NetworkStream.ReadUInt16();
+                        byte[] bytes = _NetworkStream.Read(length); //bytes
+                        _Messages.Add(bytes);//add to packets buffer
+                    }
+                }
+                catch (AccessViolationException) { }
             }
             public static float Decode(byte _fullV, float _min, float _max)
             {
@@ -2862,6 +2886,119 @@ namespace doru
                 return _V;
             }
         }
-#endif
+        ////[DebuggerStepThrough]
+        //public class Sender
+        //{
+        //    public Socket _Socket;
+        //    public void Send(byte[] _Buffer)
+        //    {
+        //        SocketAsyncEventArgs _SocketAsyncEventArgs = new SocketAsyncEventArgs();
+        //        Trace.Assert(_Buffer.Length > 0);
+        //        byte[] bytes;
+        //        if (_Buffer.Length < 255)
+        //            bytes = Helper.JoinBytes(42, 42, (byte)_Buffer.Length, _Buffer);
+        //        else
+        //        {
+        //            bytes = Helper.JoinBytes(42, 42, (byte)255, BitConverter.GetBytes(_Buffer.Length), _Buffer);
+        //            Trace.Assert(_Buffer.Length < UInt16.MaxValue);
+        //        }
+        //        _SocketAsyncEventArgs.SetBuffer(bytes, 0, bytes.Length);
+        //        bool b = _Socket.SendAsync(_SocketAsyncEventArgs);
+        //    }
+        //    public static byte Encode(float _V, float _min, float _max)
+        //    {
+        //        _V = Math.Min(Math.Max(_V, _min), _max);
+        //        float _range = _max - _min;
+        //        float _dopolnenie = _V - _min;
+        //        float _Procent = _dopolnenie / _range;
+        //        float _fullV = _Procent * byte.MaxValue;
+        //        return (byte)Math.Max(Math.Min((byte)_fullV, byte.MaxValue), byte.MinValue);
+        //    } //converting float to byte
+        //    public static UInt16 EncodeInt(float _V, float _min, float _max)
+        //    {
+        //        _V = Math.Min(Math.Max(_V, _min), _max);
+        //        float _range = _max - _min;
+        //        float _dopolnenie = _V - _min;
+        //        float _Procent = _dopolnenie / _range;
+        //        float _fullV = _Procent * UInt16.MaxValue;
+        //        return (UInt16)Math.Max(Math.Min((UInt16)_fullV, UInt16.MaxValue), UInt16.MinValue);
+        //    } //converting float to uint16
+        //}
+        ////[DebuggerStepThrough]
+        //public class Listener
+        //{
+        //    public Socket _Socket;
+        //    long _position;
+        //    public bool _Connected
+        //    {
+        //        get { return _Socket.Connected; }
+        //    }
+        //    private List<byte[]> _Messages = new List<byte[]>();
+        //    public List<byte[]> GetMessages()
+        //    {
+        //        Trace.Assert(_Socket != null);
+        //        lock ("Get")
+        //        {
+        //            List<byte[]> _Return = _Messages;
+        //            _Messages = new List<byte[]>();
+        //            return _Return;
+        //        }
+        //    }
+        //    void SocketAsyncEventArgs_Completed(object sender, SocketAsyncEventArgs _SocketAsyncEventArgs)
+        //    {
+        //        StartReceive();
+        //        _MemoryStream.Seek(0, SeekOrigin.End); //write at the end
+        //        _MemoryStream.Write(_SocketAsyncEventArgs.Buffer, 0, _SocketAsyncEventArgs.BytesTransferred);
+        //        _MemoryStream.Seek(_position, SeekOrigin.Begin); // go to last position                
+        //        while (true)
+        //        {
+        //            byte[] split = _MemoryStream.Read(2);
+        //            if (!split.Equals2(new byte[] { 42, 42 })) throw new Exception("dammaged packet");
+        //            int _length = _MemoryStream.ReadByte();
+        //            if (_length == 255)
+        //                _length = _MemoryStream.ReadUInt16();
+
+        //            if (_length == -1 || _MemoryStream.Length <= _position + _length) break; //break if not success
+        //            Byte[] _Buffer = new byte[_length];
+
+        //            _MemoryStream.Read(_Buffer, 0, _length);
+        //            _position = _MemoryStream.Position; // move position when read success
+        //            lock ("Get")
+        //                _Messages.Add(_Buffer);
+        //        }
+        //        //loop
+        //    }
+        //    MemoryStream _MemoryStream = new MemoryStream();
+        //    public void Start()
+        //    {
+        //        StartReceive();
+        //    }
+        //    private void StartReceive()
+        //    {
+        //        SocketAsyncEventArgs _SocketAsyncEventArgs = new SocketAsyncEventArgs();
+        //        _SocketAsyncEventArgs.Completed += new EventHandler<SocketAsyncEventArgs>(SocketAsyncEventArgs_Completed);
+        //        //_Socket.ReceiveBufferSize = 100;
+        //        //_Socket.SendBufferSize = 100;
+        //        _SocketAsyncEventArgs.SetBuffer(new byte[100], 0, 100);
+        //        _Socket.ReceiveAsync(_SocketAsyncEventArgs);
+        //    }
+        //    public static float Decode(byte _fullV, float _min, float _max)
+        //    {
+        //        float _range = _max - _min;
+        //        float _V1 = ((float)_fullV) / byte.MaxValue;
+        //        float _ranged = _V1 * _range;
+        //        float _V = _ranged + _min;
+        //        return _V;
+        //    }
+        //    public static float DecodeInt(UInt16 _fullV, float _min, float _max)
+        //    {
+        //        float _range = _max - _min;
+        //        float _V1 = ((float)_fullV) / UInt16.MaxValue;
+        //        float _ranged = _V1 * _range;
+        //        float _V = _ranged + _min;
+        //        return _V;
+        //    }
+        //}
     }
+#endif
 }
