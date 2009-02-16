@@ -52,14 +52,17 @@
                 Logging._Title = sb.ToString();
                 Thread.Sleep(20);
             }
+
+
             public class Client
             {
                 public Socket _Socket;
                 Listener _Listener;
                 Sender _Sender;
-                public int? _id;
-                public int? _room;
+                public byte? _id;
+                public byte? _room;
                 public Client[] _ClientsInRoom { get { return _Rooms[_room.Value]._Clients; } }
+                
                 public double _PingElapsed;
                 public int _PingTime;
                 public void Start() //intializing listener and sender
@@ -71,6 +74,7 @@
 
                 public void Update()
                 {
+                    
                     _PingElapsed += _TimerA._TimeElapsed;
                     foreach (byte[] _bytes in _Listener.GetMessages())
                         OnReceive(_bytes);  //on message received from client
@@ -89,20 +93,22 @@
                                 case PacketType.joinroom:  //player join room 
                                     _room = _ms.ReadB();
                                     Debug.Assert(_room <= _Rooms.Count);
-                                    _id = _ClientsInRoom.PutToNextFreePlace(this);  // setting id
+                                    _id = (byte)_ClientsInRoom.PutToNextFreePlace(this);  // setting id
                                     ("Game Player connected "+_id +" in room "+_room).Trace();
-                                    Send(Common._ServerId, PacketType.JoinRoomSuccess, new[] { (byte)_id }); //seinding id
-                                    foreach (Client _Client in _ClientsInRoom) // send all clients id 
-                                        if (_Client != null && _Client != this)
-                                            _Client.Send(Common._ServerId, PacketType.PlayerJoined, new byte[] { (byte)_id.Value });
-                                    SendToAll(Common._ServerId, PacketType.PlayerJoined, new byte[] { (byte)_id.Value }); //send player joined to all
+                                    //Send(Common._ServerId, PacketType.JoinRoomSuccess, new[] { (byte)_id }); //seinding id                                    
+                                    byte[] playerlist = GetPLayerList();
+                                    Send(Common._ServerId, PacketType.JoinRoomSuccess, Helper.JoinBytes((byte)_id, playerlist));// send all clients id to "this" player
+                                    SendToAll(Common._ServerId, PacketType.PlayerJoined, new byte[] { (byte)_id.Value }); //send player joined to all                                    
                                     break;
                                 case PacketType.getrooms: //serializing and sending rooms on server
-                                    byte[] data = Common. _XmlSerializerRoom.Serialize(_Rooms);
+                                    byte[] data = Common._XmlSerializerRoom.Serialize(_Rooms);
                                     Send(Common._ServerId, PacketType.rooms, data);
                                     break;
                                 case PacketType.getip: //returing ip
                                     Send(Common._ServerId,PacketType.ip, ((IPEndPoint)_Socket.RemoteEndPoint).Address.ToString().ToBytes());                                    
+                                    break;
+                                case PacketType.ping:
+                                    Send(Common._ServerId, PacketType.pong);
                                     break;
                                 default:
                                     Debug.Fail("wrong packet");
@@ -115,10 +121,7 @@
                                     int clientid = _ms.ReadB();
                                     PacketType pk = (PacketType)_ms.ReadB();                                    
                                     if (_ClientsInRoom[clientid] != null) _ClientsInRoom[clientid].Send(_id.Value,pk,_ms.Read());   
-                                    break;
-                                case PacketType.ping: 
-                                    Send(Common._ServerId, PacketType.pong);                                    
-                                    break;
+                                    break;                                
                                 case PacketType.pong: 
                                     _PingTime = (int)_PingElapsed;
                                     SendToAll(_id.Value, PacketType.pinginfo, BitConverter.GetBytes((Int16)_PingElapsed), true);                                    
@@ -130,6 +133,11 @@
                             }
                         Trace.Assert(_ms.Length == _ms.Position);
                     }
+                }
+
+                private byte[] GetPLayerList()
+                {
+                    return (from a in _ClientsInRoom where a != null && a._id != null && a != this select a._id.Value).ToArray();                    
                 }
 
                 public void Ping()
