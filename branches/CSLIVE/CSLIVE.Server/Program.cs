@@ -26,7 +26,7 @@ namespace CSLIVE.Server
                 
         public Program()
         {
-            _Config = Common._XmlSerializer.DeserealizeOrCreate(Common._ConfigPath, new Config());
+            _Config = Common._XmlSerializerConfig.DeserealizeOrCreate(Common._ConfigPath, new Config());
             GameServer _GameServer = new GameServer();
             _GameServer.StartAsync();
             
