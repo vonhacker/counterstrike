@@ -31,12 +31,12 @@
                     <TextBlock x:Name="_IpAddress" Width="120" Text="{Binding _IpAddress}" TextWrapping="Wrap"/>
 					<TextBlock x:Name="_Ping" Width="50" Text="{Binding _Ping}"  TextWrapping="Wrap"/>
 				</StackPanel>
-				<ListBox Grid.Row="1" ItemsSource="{Binding _RoomList}" ItemTemplate="{StaticResource RoomListTemplate}"/>
+				<Local:ListBox Grid.Row="1" ItemsSource="{Binding _RoomList}" ItemTemplate="{StaticResource RoomListTemplate}"/>
 			</Grid>
 		</DataTemplate>
 	</UserControl.Resources>
     
     <Grid x:Name="LayoutRoot" Background="White">
-        <ListBox Name="_ListBox" ItemTemplate="{StaticResource ServerListTemplate}"></ListBox>
+        <Local:ListBox Name="_ListBox" ItemTemplate="{StaticResource ServerListTemplate}" />
     </Grid>
 </Local:UserControl>

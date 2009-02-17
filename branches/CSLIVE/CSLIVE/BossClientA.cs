@@ -22,6 +22,8 @@ namespace CSLIVE
 
     public class BossClientA : BossClient, IUpdate
     {
+        
+
         public BossClientA()
             : base()
         {
@@ -59,10 +61,11 @@ namespace CSLIVE
         {
             _Sender.Send(PacketType.getrooms);
         }
+        
         private void OnRoomsReceived(MemoryStream _MemoryStream)
         {
             List<RoomDb> _rooms = (List<RoomDb>)Common._XmlSerializerRoom.Deserialize(_MemoryStream);
-            
+           // Helper.MergeList(_RoomList, _rooms);
             _RoomList.Clear();
             foreach (RoomDb room in _rooms)
                 _RoomList.Add(room);
@@ -116,6 +119,27 @@ namespace CSLIVE
         }
 
         
+    }
+    public class ListBox : System.Windows.Controls.ListBox
+    {
+        public ListBox()
+        {
+            SelectionChanged += new SelectionChangedEventHandler(ListBox2_SelectionChanged);
+        }
+
+        void ListBox2_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(SelectedIndex != -1)
+                oldindex = SelectedIndex;
+        }
+        int oldindex;
+
+        protected override void OnItemsChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            base.OnItemsChanged(e);
+            if (this.Items.Count > oldindex)
+                SelectedIndex = oldindex;                
+        }
     }
 }
 
