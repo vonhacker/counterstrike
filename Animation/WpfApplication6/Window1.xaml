@@ -3,6 +3,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="Window1" Height="700" Width="700">
     <Canvas Name="LayoutRoot" >
-        <TextBlock FontSize="40">use a,s,w,d keys</TextBlock>
+        <TextBlock FontSize="40">use q,e,a,s,w,d keys</TextBlock>
     </Canvas>
 </Window>
