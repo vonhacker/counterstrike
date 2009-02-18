@@ -812,8 +812,7 @@ namespace doru
             return true;
         }
 
-#if(SILVERLIGHT||WPF)
-        
+#if(SILVERLIGHT||WPF)        
         public static DispatcherTimer StartRepeatMethod(this DispatcherTimer ds, double secconds, Action d)
         {
             ds.Interval = TimeSpan.FromSeconds(secconds);
