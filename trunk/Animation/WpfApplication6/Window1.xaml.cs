@@ -42,17 +42,29 @@ namespace WpfApplication6
         public static DataBase _DataBase;
         void Window1_Loaded(object sender, RoutedEventArgs e)
         {
+            close1.MouseDown += new MouseButtonEventHandler(close1_MouseDown);
             FileStream fs = File.Open(_ContentFolder, FileMode.Open);
             FastZip _FastZip = new FastZip();
             Helper.OpenZip(fs, App._Resources);
             _DataBase = (DataBase)Common._XmlSerializer.Deserialize(App._Resources["db.xml"]);
             KeyDown += new KeyEventHandler(Window1_KeyDown);
             KeyUp += new KeyEventHandler(Window1_KeyUp);
+            this.MouseDown += new MouseButtonEventHandler(Window1_MouseDown); 
 
             _Player = new Player() { _x = 100, _y = 100 };
             _Player.Load();
             LayoutRoot.Children.Add(_Player);
             new DispatcherTimer().StartRepeatMethod(.01, Update);
+        }
+
+        void Window1_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
+        }
+
+        void close1_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            this.Close();
         }
         public void Update()
         {
@@ -81,28 +93,41 @@ namespace WpfApplication6
 
         ContentControl _ContentControl = new ContentControl();
         public AnimatedImage _CurrentAnimation { get { return (AnimatedImage)_ContentControl.Content; } set { _ContentControl.Content = value; } }
+        ContentControl _ContentControl2 = new ContentControl();
+        public AnimatedImage _CurrentAnimation2 { get { return (AnimatedImage)_ContentControl2.Content; } set { _ContentControl2.Content = value; } }
+
         public static DataBase _DataBase { get { return Window1._DataBase; } }
         public override void Load()
         {
-
+            Add(_ContentControl2);
             Add(_ContentControl);
-            _runup =LoadBitmap("phoenix_run");
+            _runup = LoadBitmap("phoenix_run");
             _runleft = LoadBitmap("Phoenix_run_left");
             _runright = LoadBitmap("Phoenix_run_right");
             _rundown = LoadBitmap("phoenix_run_back");
             _stay = LoadBitmap("Phoenix_stay");
             _die = LoadBitmap("phoenix_dead");
-            _CurrentAnimation = _runup;
+            
+            _CurrentAnimation = _stay;
+            _CurrentAnimation2= _staygun;
             base.Load();
         }
 
-        private AnimatedImage LoadBitmap(string s)
+        public static AnimatedImage LoadBitmap(string s)
         {
             AnimatedImage  anim = new AnimatedImage();
             anim._AnimatedBitmap = _DataBase.Get(s);
+            if (anim._AnimatedBitmap == null) Debugger.Break();
             anim.Load();
             return anim;
         }
+        AnimatedImage _runupgun = LoadBitmap("Run");
+        AnimatedImage _runbackgun = LoadBitmap("run_back");
+        AnimatedImage _runleftgun = LoadBitmap("run_left");
+        AnimatedImage _runrightgun = LoadBitmap("run_right");
+        AnimatedImage _staygun = LoadBitmap("stay");
+        AnimatedImage _rundowngun = LoadBitmap("run_back");
+        //        
         AnimatedImage _runleft;
         AnimatedImage _runright;
         AnimatedImage _runup;
@@ -112,6 +137,7 @@ namespace WpfApplication6
         public override void Update()
         {
             _CurrentAnimation.Update();
+            _CurrentAnimation2.Update();
             UpdateKeyboard();
             _x += _S.X;
             _y += _S.Y;
@@ -122,6 +148,7 @@ namespace WpfApplication6
         private void UpdateKeyboard()
         {
             _CurrentAnimation = _stay;
+            _CurrentAnimation2 = _staygun;
             _power = new Vector();
             if (_Keys.Contains(Key.Q))
             {
@@ -134,11 +161,13 @@ namespace WpfApplication6
 
             if (_Keys.Contains(Key.A))
             {
+                _CurrentAnimation2 = _runleftgun;
                 _CurrentAnimation = _runleft;
                 _power += new Vector(-3, 0);
             }
             if (_Keys.Contains(Key.D))
             {
+                _CurrentAnimation2 = _runrightgun;
                 _CurrentAnimation = _runright;
                 _power += new Vector(3, 0);
             }
@@ -149,12 +178,14 @@ namespace WpfApplication6
             }
             if (_Keys.Contains(Key.W))
             {
+                _CurrentAnimation2 = _runupgun;
                 _CurrentAnimation = _runup;
                 _power += new Vector(0, -5);
             }
             else if (_Keys.Contains(Key.S))
             {
                 _CurrentAnimation = _rundown;
+                _CurrentAnimation2 = _rundowngun;
                 _power += new Vector(0, 5);
             }
         }
