@@ -31,7 +31,7 @@ namespace CSLIVE //this file contains code for silverlight and server
         public string _WebDefaultPage = @"./CSLIVE.Web/CSLIVETestPage.html";
         public int _GamePort = 4530;
         public string _Irc = "85.202.112.192:4534";
-        public string _IrcRoom = "#cslive";
+        public string _IrcRoom = "#cs-general";
     }
     public static class Common
     {

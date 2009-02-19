@@ -21,7 +21,8 @@ namespace CSLIVE
 {
     public partial class ServerList : UserControl, IUpdate
     {
-        
+        public static LocalDatabase _LocalDatabase { get { return App._LocalDatabase; } set { App._LocalDatabase = value; } }
+        public static Config _Config { get { return App._Config; } set { App._Config = value; } }
         public ServerList()
         {
             _Local._Server = false;

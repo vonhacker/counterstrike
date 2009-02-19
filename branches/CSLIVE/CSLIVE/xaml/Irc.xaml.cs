@@ -21,6 +21,8 @@ namespace CSLIVE
 {
     public partial class Irc : UserControl , IUpdate
     {
+        public static LocalDatabase _LocalDatabase { get { return App._LocalDatabase; } set { App._LocalDatabase = value; } }
+        public static Config _Config { get { return App._Config; } set { App._Config = value; } }
         public Irc()
         {            
             InitializeComponent();

@@ -19,13 +19,14 @@ namespace CSLIVE
     public partial class UserControl : System.Windows.Controls.UserControl //storing all global vars here
     {
         [Obsolete]
-        public new string Name;//use _Nick
-        
+        public new string Name;//use _Nick                
+    }
+    public partial class App
+    {
         public static Random _Random = new Random();
         public static Config _Config;
         public static LocalDatabase _LocalDatabase;
-        public static Page _Page;
-        public static UIElement _RootVisual { get { return _Page.Content; } set { _Page.Content = value; } }
+        public static Page _Page;        
     }
     public class LocalDatabase //Cookies
     {

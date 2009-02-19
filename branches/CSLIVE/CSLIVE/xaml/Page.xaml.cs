@@ -18,8 +18,11 @@ using doru;
 namespace CSLIVE
 {
 
-    public partial class Page : UserControl//holds _RootVisual and update it
+    public partial class Page : UserControl//holds _Page.Content and update it
     {
+        public static LocalDatabase _LocalDatabase { get { return App._LocalDatabase; } set { App._LocalDatabase = value; } }
+        public static Config _Config { get { return App._Config; } set { App._Config = value; } }
+        public static Page _Page { get { return App._Page; } set { App._Page = value; } }
         public Page() //start ->page_loaded
         {            
             _Page = this;
@@ -49,7 +52,7 @@ namespace CSLIVE
 
         void _Storyboard_Completed(object sender, EventArgs e)
         {             
-            if(_RootVisual is IUpdate) ((IUpdate)_RootVisual).Update();
+            if(_Page.Content is IUpdate) ((IUpdate)_Page.Content).Update();
             _Storyboard.Begin();
         }
         
@@ -58,15 +61,15 @@ namespace CSLIVE
             if (_LocalDatabase._Nick == null)
             {
                 EnterNick _EnterNick = new EnterNick();                
-                _RootVisual = _EnterNick;
+                _Page.Content = _EnterNick;
                 _EnterNick._OnNick += delegate(string nick)
                 {
                     _LocalDatabase._Nick = nick;
-                    _RootVisual = new Irc();
+                    _Page.Content = new Irc();
                 };
             }
             else
-                _RootVisual = new Irc();
+                _Page.Content = new Irc();
         }
 
         XmlSerializer _XmlSerializerLocal = new XmlSerializer(typeof(LocalDatabase));

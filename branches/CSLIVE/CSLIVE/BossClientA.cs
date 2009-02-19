@@ -49,9 +49,10 @@ namespace CSLIVE
             NetworkStream nw = new NetworkStream(_Socket);
             _Listener = new Listener { _NetworkStream = nw };
             _Listener.StartAsync();
-            _Sender = new Sender() { _NetworkStream = nw };            
-            new DispatcherTimer().RepeatMethod(2, SendGetRooms);            
-            new DispatcherTimer().RepeatMethod(1, Ping);            
+            _Sender = new Sender() { _NetworkStream = nw };    
+            
+            new DispatcherTimer().StartRepeatMethod(10, SendGetRooms);            
+            new DispatcherTimer().StartRepeatMethod(1, Ping);            
         }
         Listener _Listener;
         Sender _Sender;
@@ -86,8 +87,7 @@ namespace CSLIVE
         }
         //public new event PropertyChangedEventHandler PropertyChanged;
         public void Ping()
-        {
-            ("connecting to server3" + _Server).Trace();
+        {            
             _PingDate = DateTime.Now;
             _Sender.Send(PacketType.ping);
         }
