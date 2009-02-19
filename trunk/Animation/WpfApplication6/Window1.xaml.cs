@@ -18,6 +18,7 @@ using ConsoleApplication1;
 using System.Diagnostics;
 using doru.WPF.Vectors;
 using System.Windows.Threading;
+using System.Threading;
 
 
 namespace WpfApplication6
@@ -34,9 +35,17 @@ namespace WpfApplication6
     {
         public Window1()
         {
+            App.Current.DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(Current_DispatcherUnhandledException);
             Logging.Setup("../../../");
             InitializeComponent();
             Loaded += new RoutedEventHandler(Window1_Loaded);
+        }
+
+        void Current_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            if(!Debugger.IsAttached)
+                MessageBox.Show(e.Exception.ToString(),"press ctrl+c to coppy");
+            
         }
         public static string _ContentFolder = "./Content/content.zip";
         public static DataBase _DataBase;
@@ -90,65 +99,61 @@ namespace WpfApplication6
     }
     public class Player : GameObj
     {
-
+        public string PlModel = "phoenix";
+        public string GunModel = "ak47";
         ContentControl _ContentControl = new ContentControl();
-        public AnimatedImage _CurrentAnimation { get { return (AnimatedImage)_ContentControl.Content; } set { _ContentControl.Content = value; } }
+        public AnimatedImage _PlayerCurrentAnimation { get { return (AnimatedImage)_ContentControl.Content; } set { _ContentControl.Content = value; } }
         ContentControl _ContentControl2 = new ContentControl();
-        public AnimatedImage _CurrentAnimation2 { get { return (AnimatedImage)_ContentControl2.Content; } set { _ContentControl2.Content = value; } }
+        public AnimatedImage _GunCurrentAnimation { get { return (AnimatedImage)_ContentControl2.Content; } set { _ContentControl2.Content = value; } }
 
         public static DataBase _DataBase { get { return Window1._DataBase; } }
         public override void Load()
         {
-            Add(_ContentControl2);
             Add(_ContentControl);
-            _runup = LoadBitmap("phoenix_run");
-            _runleft = LoadBitmap("Phoenix_run_left");
-            _runright = LoadBitmap("Phoenix_run_right");
-            _rundown = LoadBitmap("phoenix_run_back");
-            _stay = LoadBitmap("Phoenix_stay");
-            _die = LoadBitmap("phoenix_dead");
-            
-            _CurrentAnimation = _stay;
-            _CurrentAnimation2= _staygun;
+            Add(_ContentControl2);            
+            SetAnimation(Anims._stay);
             base.Load();
         }
-
-        public static AnimatedImage LoadBitmap(string s)
+        public Dictionary<string, AnimatedImage> _Bitmaps = new Dictionary<string, AnimatedImage>();
+        public AnimatedImage GetBitmap(string s)
         {
-            AnimatedImage  anim = new AnimatedImage();
-            anim._AnimatedBitmap = _DataBase.Get(s);
-            if (anim._AnimatedBitmap == null) Debugger.Break();
-            anim.Load();
-            return anim;
+            if (_Bitmaps.ContainsKey(s))
+                return _Bitmaps[s];
+            else
+            {
+                AnimatedImage anim = new AnimatedImage();
+                anim._AnimatedBitmap = _DataBase.Get(s);
+                if (anim._AnimatedBitmap == null)
+                {
+                    throw new Exception(s + " animation not found");                                        
+                }
+                anim.Load();
+                _Bitmaps[s] = anim;
+                return anim;
+            }
+            
         }
-        AnimatedImage _runupgun = LoadBitmap("Run");
-        AnimatedImage _runbackgun = LoadBitmap("run_back");
-        AnimatedImage _runleftgun = LoadBitmap("run_left");
-        AnimatedImage _runrightgun = LoadBitmap("run_right");
-        AnimatedImage _staygun = LoadBitmap("stay");
-        AnimatedImage _rundowngun = LoadBitmap("run_back");
-        //        
-        AnimatedImage _runleft;
-        AnimatedImage _runright;
-        AnimatedImage _runup;
-        AnimatedImage _rundown;
-        AnimatedImage _stay;
-        AnimatedImage _die;
+        
         public override void Update()
         {
-            _CurrentAnimation.Update();
-            _CurrentAnimation2.Update();
+            _PlayerCurrentAnimation.Update();
+            _GunCurrentAnimation.Update();
             UpdateKeyboard();
             _x += _S.X;
             _y += _S.Y;
             base.Update();
         }
-        
-        public static List<Key> _Keys { get { return Window1._Keys; } }
+        public enum Anims { _run, _run_left, _run_right, _stay, _dead ,_run_back}
+        public static List<Key> _Keys { get { return Window1._Keys; } }        
+        public void SetAnimation(Anims _Anims )
+        {            
+            _PlayerCurrentAnimation = GetBitmap(PlModel + _Anims);
+            _GunCurrentAnimation = GetBitmap(GunModel + _Anims);            
+        }
         private void UpdateKeyboard()
         {
-            _CurrentAnimation = _stay;
-            _CurrentAnimation2 = _staygun;
+            
+            SetAnimation(Anims._stay);
             _power = new Vector();
             if (_Keys.Contains(Key.Q))
             {
@@ -161,31 +166,27 @@ namespace WpfApplication6
 
             if (_Keys.Contains(Key.A))
             {
-                _CurrentAnimation2 = _runleftgun;
-                _CurrentAnimation = _runleft;
+                SetAnimation(Anims._run_left);
                 _power += new Vector(-3, 0);
             }
             if (_Keys.Contains(Key.D))
             {
-                _CurrentAnimation2 = _runrightgun;
-                _CurrentAnimation = _runright;
+                SetAnimation(Anims._run_right);
                 _power += new Vector(3, 0);
             }
 
             if (_Keys.Contains(Key.Space))
             {
-                _CurrentAnimation = _die;
+                SetAnimation(Anims._dead);
             }
             if (_Keys.Contains(Key.W))
             {
-                _CurrentAnimation2 = _runupgun;
-                _CurrentAnimation = _runup;
+                SetAnimation(Anims._run);
                 _power += new Vector(0, -5);
             }
             else if (_Keys.Contains(Key.S))
             {
-                _CurrentAnimation = _rundown;
-                _CurrentAnimation2 = _rundowngun;
+                SetAnimation(Anims._run_back);
                 _power += new Vector(0, 5);
             }
         }
@@ -224,10 +225,15 @@ namespace WpfApplication6
             }
         }
         float _frame;
-
+        public void Reset()
+        {
+            _frame = 0;
+        }
+        DateTime _DateTime = DateTime.Now;
         public void Update()
         {
-
+            if(DateTime.Now - _DateTime>TimeSpan.FromMilliseconds(500)) Reset();
+            _DateTime = DateTime.Now;
             _frame += 30 * (float)_TimerA._SecodsElapsed;
             if (_frame >= _Bitmaps.Count) _frame = 0;
 
