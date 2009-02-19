@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 #if(SILVERLIGHT||WPF)
 using System.Windows.Threading;
-using System.Windows.Controls;
 using System.Windows;
+#endif
+#if(SILVERLIGHT)
+using System.Windows.Controls;
 #endif
 using System.Linq;
 using System.IO;
@@ -1274,7 +1276,7 @@ namespace doru
 #if(SILVERLIGHT)
             doru.Trace.WriteLine(s + t);
 #else
-            System.Diagnostics.Trace.WriteLine(s + t);
+            System.Diagnostics.Trace.WriteLine(s +":"+ t);
 #endif
             return t;
         }
@@ -2164,16 +2166,18 @@ namespace doru
         }
         public new bool Add(string s)
         {
-            if (!Contains(s))
-            {
-                base.Add(s);
-                return true;
-            }
+            lock ("add")
+                if (!Contains(s))
+                {
+                    base.Add(s);
+                    return true;
+                }
             else return false;
         }
         public void Flush()
         {
-            File.WriteAllLines(file, this.ToArray(), Encoding.Default);
+            lock("flush")
+                File.WriteAllLines(file, this.ToArray(), Encoding.Default);
         }
     }
 
@@ -2721,6 +2725,7 @@ namespace doru
             while (true)
                 _console.Add(Console.ReadLine());
         }
+        public static bool _RedirectOutPut = true;
         public static void Setup(string s)
         {
             if (Directory.Exists("./logs/")) Directory.Delete("logs", true);
@@ -2740,7 +2745,8 @@ namespace doru
             {
                 new Thread(StartReadConsole).StartBackground();
                 Console.Title = Assembly.GetEntryAssembly().GetName().Name;
-                Trace.Listeners.Add(new TextWriterTraceListener(Console.OpenStandardOutput()));
+                if(_RedirectOutPut)
+                    Trace.Listeners.Add(new TextWriterTraceListener(Console.OpenStandardOutput()));
             }
             Trace.AutoFlush = true;
             Trace.WriteLine("Programm Started " + DateTime.Now);
