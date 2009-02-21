@@ -11,11 +11,13 @@ using System.Windows.Shapes;
 using doru;
 using System.IO;
 using System.Net.Sockets;
-using doru.TcpSilverlight;
+using doru.Tcp;
+
 using System.Windows.Threading;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace CSLIVE
 {
@@ -27,11 +29,12 @@ namespace CSLIVE
         public BossClientA()
             : base()
         {
-
+            
         }
         public Dispatcher Dispatcher;
         public void Load()
         {
+            
             _RemoteSharedObj._OnSerialized += new Action(Connect);
         }
         void Connect()
@@ -47,11 +50,11 @@ namespace CSLIVE
             Trace.Assert(e.SocketError == SocketError.Success);
             Socket _Socket = (Socket)e.UserToken;
             NetworkStream nw = new NetworkStream(_Socket);
-            _Listener = new Listener { _NetworkStream = nw };
-            _Listener.StartAsync();
-            _Sender = new Sender() { _NetworkStream = nw };    
-            
-            new DispatcherTimer().StartRepeatMethod(10, SendGetRooms);            
+            _Listener = new Listener { _NetworkStream = nw ,_Socket = _Socket };
+            _Listener.StartAsync("bossClientListerer");
+            _Sender = new Sender() { _NetworkStream = nw ,_Socket = _Socket};
+
+            new DispatcherTimer().StartRepeatMethod(10, SendGetRooms); SendGetRooms();
             new DispatcherTimer().StartRepeatMethod(1, Ping);            
         }
         Listener _Listener;

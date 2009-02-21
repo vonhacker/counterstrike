@@ -37,6 +37,6 @@
 	</UserControl.Resources>
     
     <Grid x:Name="LayoutRoot" Background="White">
-        <Local:ListBox Name="_ListBox" ItemTemplate="{StaticResource ServerListTemplate}" />
+        <Local:ListBox x:Name="_ListBox" ItemTemplate="{StaticResource ServerListTemplate}" />
     </Grid>
 </Local:UserControl>

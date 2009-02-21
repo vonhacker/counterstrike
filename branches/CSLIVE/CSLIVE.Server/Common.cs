@@ -8,13 +8,11 @@ using System.Xml.Serialization;
 using System.Reflection;
 using System.ComponentModel;
 using System.IO;
+using doru.Tcp;
 #if(!SILVERLIGHT)
 using System.Diagnostics;
-using doru.Tcp;
 using System.Collections.ObjectModel;
 #else
-using doru.TcpSilverlight;
-using System.Collections.ObjectModel;
 
 #endif
 namespace CSLIVE //this file contains code for silverlight and server
@@ -184,7 +182,7 @@ namespace CSLIVE //this file contains code for silverlight and server
     {
         public string MapName { get; set; }
         public string _Type { get { return this.GetType().ToString(); } }
-#if(!SILVERLIGHT)        
+#if(!CLIENT)        
         public int _PlayerCount { get { return _Clients.Where(a => a != null).Count(); } set { } }
         [XmlIgnore]
         public CSLIVE.Server.Program.GameServer.Client[] _Clients = new CSLIVE.Server.Program.GameServer.Client[255];

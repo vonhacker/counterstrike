@@ -23,6 +23,7 @@ namespace CSLIVE
     }
     public partial class App
     {
+        public static IDictionary<string, string> _InitParams = new Dictionary<string, string>();
         public static Random _Random = new Random();
         public static Config _Config;
         public static LocalDatabase _LocalDatabase;

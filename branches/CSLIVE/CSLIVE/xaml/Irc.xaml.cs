@@ -15,8 +15,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using doru.TcpSilverlight;
-
+using doru.Tcp;
 namespace CSLIVE
 {
     public partial class Irc : UserControl , IUpdate
@@ -33,7 +32,7 @@ namespace CSLIVE
         {
             _ServerList.Update();
         }
-        void Irc_Loaded(object sender, RoutedEventArgs e) //creating socket, connecting to _Config._Irc
+        void Irc_Loaded(object sender, RoutedEventArgs e) //creating socket, connecting to _Config._Irc,starting ServerList
         {
             _ServerList.Start();
             AddMessage("connecting to irc server");            
@@ -50,7 +49,7 @@ namespace CSLIVE
             _Socket = (Socket)e.UserToken;
             _NetworkStream = new NetworkStream(_Socket);
             _NetworkStream.Write(string.Format(Res._ircon, _Nick, "cslive", "localhost", "http://cslive.no-ip.org").Trace());            
-            new Thread(Read).Start();            
+            new Thread(Read).StartBackground("ircRead");            
             _TextInput.KeyDown += new KeyEventHandler(TextInput_KeyDown);
         }
 

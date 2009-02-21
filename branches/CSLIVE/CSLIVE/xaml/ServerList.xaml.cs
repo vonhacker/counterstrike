@@ -13,13 +13,19 @@ using doru;
 using System.Net.Sockets;
 using System.IO;
 using System.Collections.ObjectModel;
-using doru.TcpSilverlight;
+using doru.Tcp;
+#if(SILVERLIGHT)
+
+#else
+using System.Diagnostics;
+#endif
 using System.Collections.Specialized;
 using System.Windows.Threading;
 
+
 namespace CSLIVE
 {
-    public partial class ServerList : UserControl, IUpdate
+    public partial class ServerList : UserControl, IUpdate //provides list of avaible games
     {
         public static LocalDatabase _LocalDatabase { get { return App._LocalDatabase; } set { App._LocalDatabase = value; } }
         public static Config _Config { get { return App._Config; } set { App._Config = value; } }
@@ -41,10 +47,11 @@ namespace CSLIVE
         public void Connected(SocketAsyncEventArgs e2) // connected to boss server
         {
             Debug.Assert(e2.SocketError == SocketError.Success);
+            Socket _Socket = (Socket)e2.UserToken;
             _NetworkStream = new NetworkStream((Socket)e2.UserToken);
-            _Listener = new Listener { _NetworkStream = _NetworkStream};
-            _Listener.StartAsync();
-            _Sender = new Sender { _NetworkStream = _NetworkStream};
+            _Listener = new Listener { _NetworkStream = _NetworkStream, _Socket = _Socket};
+            _Listener.StartAsync("ServerList");
+            _Sender = new Sender { _NetworkStream = _NetworkStream, _Socket = _Socket};
             _Sender.Send(PacketType.getrooms);
             _BossClients.CollectionChanged += delegate { UpdateList(); };
         }

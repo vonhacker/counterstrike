@@ -13,6 +13,8 @@ using System.Windows.Shapes;
 using System.IO;
 using System.IO.IsolatedStorage;
 using doru;
+using System.Diagnostics;
+using System.Windows.Threading;
 
 
 namespace CSLIVE
@@ -23,58 +25,79 @@ namespace CSLIVE
         public static LocalDatabase _LocalDatabase { get { return App._LocalDatabase; } set { App._LocalDatabase = value; } }
         public static Config _Config { get { return App._Config; } set { App._Config = value; } }
         public static Page _Page { get { return App._Page; } set { App._Page = value; } }
+        public static IDictionary<string, string> _InitParams { get { return App._InitParams; } set { App._InitParams = value; } }
         public Page() //start ->page_loaded
-        {            
+        {
+#if(!SILVERLIGHT)
+            Logging.Setup("../../../CSLIVE.Web/ClientBin");
+#endif
             _Page = this;
             InitializeComponent();
-            App.Current.Exit += new EventHandler(Current_Exit);
+
+            App.Current.Exit += delegate
+            {
+                Exit();
+            };                
             Loaded += new RoutedEventHandler(Page_Loaded);
+      
         }
 
-        Storyboard _Storyboard = new Storyboard();
+        
+
+        
 
         void Page_Loaded(object sender, RoutedEventArgs e) //loading config ->loadIrc
-        {            
-            _LocalDatabase = (LocalDatabase)_XmlSerializerLocal.DeserealizeOrCreate("db.xml", new LocalDatabase());
+        {
 
-            WebClient _WebClient = new WebClient();
+            _LocalDatabase = (LocalDatabase)_XmlSerializerLocal.DeserealizeOrCreate("db.xml", new LocalDatabase());                        
+
             
-            _WebClient.OpenReadAsync(new Uri("Config.xml", UriKind.Relative));
-            _WebClient.OpenReadCompleted += delegate(object o, OpenReadCompletedEventArgs e2)
+            DispatcherTimer _DispatcherTimer = new DispatcherTimer();
+            _DispatcherTimer.Interval = TimeSpan.FromMilliseconds(2);
+            _DispatcherTimer.Tick += new EventHandler(_DispatcherTimer_Tick);
+            _DispatcherTimer.Start();
+            new Downloader().Download("Config.xml", delegate(Stream s)
             {
-                _Config = (Config)Common._XmlSerializerConfig.Deserialize(e2.Result);
-                LoadIrc();
-            };
-
-            _Storyboard.Completed += new EventHandler(_Storyboard_Completed);
-            _Storyboard.Begin();
+                _Config = (Config)Common._XmlSerializerConfig.Deserialize(s);
+                EnterNick();
+            });
         }
 
-        void _Storyboard_Completed(object sender, EventArgs e)
-        {             
-            if(_Page.Content is IUpdate) ((IUpdate)_Page.Content).Update();
-            _Storyboard.Begin();
+        void _DispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            if (_Page.Content is IUpdate) ((IUpdate)_Page.Content).Update();
+        }
+
+
+
+        private void LoadGame()
+        {
+            if (_InitParams.ContainsKey("ip")) { }
+            else
+                _Page.Content = new Irc();
         }
         
-        void LoadIrc() //asking for EnterNick -> loading irc
-        {            
+        
+
+        void EnterNick() //asking for EnterNick -> loading irc
+        {
             if (_LocalDatabase._Nick == null)
             {
-                EnterNick _EnterNick = new EnterNick();                
+                EnterNick _EnterNick = new EnterNick();
                 _Page.Content = _EnterNick;
                 _EnterNick._OnNick += delegate(string nick)
                 {
                     _LocalDatabase._Nick = nick;
-                    _Page.Content = new Irc();
+                    LoadGame();
                 };
             }
             else
-                _Page.Content = new Irc();
+                LoadGame();
         }
 
         XmlSerializer _XmlSerializerLocal = new XmlSerializer(typeof(LocalDatabase));
-        
-        void Current_Exit(object sender, EventArgs e) //saving config on exit
+
+        void Exit() //saving config on exit
         {
             _XmlSerializerLocal.Serialize("db.xml", _LocalDatabase);
             Trace.WriteLine("Exit");
