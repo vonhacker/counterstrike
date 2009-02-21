@@ -163,7 +163,7 @@ name={0}&map={1}&version={2}&port={3}&players={4}&id={5}";
                     _TcpClient.Close();
                 }
                 catch (SocketException e) { Trace.WriteLine("phpSender:" + e.Message); }
-                Thread.Sleep(10000);
+                Thread.Sleep(60000);
             }
         }
 
