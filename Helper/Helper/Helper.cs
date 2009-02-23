@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-#if(SILVERLIGHT||WPF)
-using System.Windows.Threading;
 using System.Windows;
-#endif
-#if(SILVERLIGHT)
-using System.Windows.Controls;
-#endif
+using System.Collections.ObjectModel;
+using System.Windows.Threading;
 using System.Linq;
 using System.IO;
 using System.Net.Sockets;
@@ -23,551 +19,679 @@ using System.Collections;
 using System.Xml.Schema;
 using System.Collections.Specialized;
 using System.IO.IsolatedStorage;
-#if(!SILVERLIGHT)
-using System.IO.Compression;
-#endif
-#if(ZIPLIB)
+using System.Windows.Media.Imaging;
 using ICSharpCode.SharpZipLib.Zip;
+#if(SILVERLIGHT)
+using System.Windows.Controls;
+using System.ComponentModel;
+#else
+using System.Windows.Forms;
+using System.IO.Compression;
+using System.Windows.Controls;
+using System.ComponentModel;
+using System.Web;
 #endif
 
 
 
 
-namespace CounterStrikeLive
-{
-    //[DebuggerStepThrough]
-    public static class Random
-    {
-        static System.Random _Random = new System.Random();
-        public static int Next(int min, int max)
-        {
-            return _Random.Next(min, max);
-        }
-        public static float Next(float min, float max)
-        {
-            return min + ((float)_Random.NextDouble()) * (max - min);
-        }
-        public static int Next(int max)
-        {
-            return _Random.Next(max);
-        }
-    }
-}
 
 namespace doru
 {
-
-#if(WPF)
-    namespace WPF
+#if(!SILVERLIGHT)
+    namespace Vectors
     {
-        using System.Windows;
-        using System.Collections.ObjectModel;
-        //[DebuggerStepThrough]
-        public class BindableList<T> : ObservableCollection<T>
+
+        public static class VectorExtensions
         {
-
-            public List<ICVS> _ArrayList = new List<ICVS>();
-            public interface ICVS
+            public static void Multiply(ref Vector value1, double scaleFactor, out Vector result)
             {
-                void Add(object o);
-                void Remove(object o);
+                result = new Vector();
+                result.X = value1.X * scaleFactor;
+                result.Y = value1.Y * scaleFactor;
             }
-            //[DebuggerStepThrough]
-            public class CVS<T2> : ICVS
+            public static Vector Multiply(Vector value1, Vector value2)
             {
-                public delegate T2 Converter(T t);
-                public IList<T2> _list;
-                public void Add(object o)
-                {
-                    T2 t2 = _Converter((T)o);
-                    if (!_list.Contains(t2))
-                        _list.Add(t2);
-                }
-                public void Remove(object o)
-                {
-                    T2 t2 = _Converter((T)o);
-                    if (_list.Contains(t2))
-                        _list.Remove(t2);
-                }
-                public CVS()
-                {
-                    if (_Converter == null) _Converter = DefaultConverter;
-                }
-                public Converter _Converter;
-                public T2 DefaultConverter(T t)
-                {
-                    object o = (object)t;
-                    return (T2)o;
-                }
+                Vector vector = new Vector();
+                vector.X = value1.X * value2.X;
+                vector.Y = value1.Y * value2.Y;
+                return vector;
             }
-            public void BindTo<T2>(IList<T2> list)
+            public static Vector Multiply(Vector value1, double scaleFactor)
             {
-                CVS<T2> _CVS = new CVS<T2> { _list = list };
-                _ArrayList.Add(_CVS);
+                Vector vector = new Vector();
+                vector.X = value1.X * scaleFactor;
+                vector.Y = value1.Y * scaleFactor;
+                return vector;
+            }
+            public static void Multiply(ref Vector value1, ref Vector value2, out Vector result)
+            {
+                result = new Vector();
+                result.X = value1.X * value2.X;
+                result.Y = value1.Y * value2.Y;
+            }
+            public static double Dot(Vector value1, Vector value2)
+            {
+                return ((value1.X * value2.X) + (value1.Y * value2.Y));
             }
 
-            public void BindTo<T2>(IList<T2> list, CVS<T2>.Converter cv)
+            public static void Dot(ref Vector value1, ref Vector value2, out double result)
             {
-                CVS<T2> _CVS = new CVS<T2> { _Converter = cv, _list = list };
-                _ArrayList.Add(_CVS);
-            }
-            protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
-            {
-
-                switch (e.Action)
-                {
-                    case NotifyCollectionChangedAction.Add:
-                        foreach (T t in e.NewItems)
-                            foreach (ICVS o in _ArrayList)
-                                o.Add(t);
-                        break;
-                    case NotifyCollectionChangedAction.Remove:
-                        foreach (T t in e.OldItems)
-                            foreach (ICVS o in _ArrayList)
-                                o.Remove(t);
-                        break;
-                }
-                base.OnCollectionChanged(e);
+                result = (value1.X * value2.X) + (value1.Y * value2.Y);
             }
         }
-        namespace Vectors
+        
+        public static class Extensions
         {
-            public static class Vector2
+            public static double Length(this Vector p)
             {
-                public static void Multiply(ref Vector value1, double scaleFactor, out Vector result)
-                {                    
-                    result = new Vector();
-                    result.X = value1.X * scaleFactor;
-                    result.Y = value1.Y * scaleFactor;
-                }
-                public static Vector Multiply(Vector value1, Vector value2)
-                {
-                    Vector vector = new Vector();
-                    vector.X = value1.X * value2.X;
-                    vector.Y = value1.Y * value2.Y;
-                    return vector;
-                }
-                public static Vector Multiply(Vector value1, double scaleFactor)
-                {
-                    Vector vector = new Vector();
-                    vector.X = value1.X * scaleFactor;
-                    vector.Y = value1.Y * scaleFactor;
-                    return vector;
-                }
-                public static void Multiply(ref Vector value1, ref Vector value2, out Vector result)
-                {
-                    result = new Vector();
-                    result.X = value1.X * value2.X;
-                    result.Y = value1.Y * value2.Y;
-                }
-                public static double Dot(Vector value1, Vector value2)
-                {
-                    return ((value1.X * value2.X) + (value1.Y * value2.Y));
-                }
+                double num = (p.X * p.X) + (p.Y * p.Y);
+                return Math.Sqrt((double)num);
 
-                public static void Dot(ref Vector value1, ref Vector value2, out double result)
-                {
-                    result = (value1.X * value2.X) + (value1.Y * value2.Y);
-                }
             }
-            public static class Extensions
+        }
+
+        public static class Calculator
+        {
+            public const double TwoPi = 6.28318531f;
+            public const double DegreesToRadiansRatio = 57.29577957855f;
+            public const double RadiansToDegreesRatio = 1f / 57.29577957855f;
+            private static Random random = new Random();
+
+            public static double Sin(double angle)
             {
-
-                public static double Length(this Vector p)
-                {
-                    double num = (p.X * p.X) + (p.Y * p.Y);
-                    return Math.Sqrt((double)num);
-
-                }
+                return (double)Math.Sin((double)angle);
             }
-            public static class Calculator
+
+            public static double Cos(double angle)
             {
-                public const double TwoPi = 6.28318531f;
-                public const double DegreesToRadiansRatio = 57.29577957855f;
-                public const double RadiansToDegreesRatio = 1f / 57.29577957855f;
-                private static Random random = new Random();
+                return (double)Math.Cos((double)angle);
+            }
 
-                public static double Sin(double angle)
+            public static double ACos(double value)
+            {
+                return (double)Math.Acos((double)value);
+            }
+
+            public static double ATan2(double y, double x)
+            {
+                return (double)Math.Atan2((double)y, (double)x);
+            }
+
+            //performs bilinear interpolation of a Vector
+            public static double BiLerp(Vector Vector, Vector min, Vector max, double value1, double value2, double value3, double value4, double minValue, double maxValue)
+            {
+                double x = Vector.X;
+                double y = Vector.Y;
+                double value;
+
+                x = MathHelper.Clamp(x, min.X, max.X);
+                y = MathHelper.Clamp(y, min.Y, max.Y);
+
+                double xRatio = (x - min.X) / (max.X - min.X);
+                double yRatio = (y - min.Y) / (max.Y - min.Y);
+
+                double top = MathHelper.Lerp(value1, value4, xRatio);
+                double bottom = MathHelper.Lerp(value2, value3, xRatio);
+
+                value = MathHelper.Lerp(top, bottom, yRatio);
+                value = MathHelper.Clamp(value, minValue, maxValue);
+                return value;
+            }
+
+            public static double Clamp(double value, double low, double high)
+            {
+                return Math.Max(low, Math.Min(value, high));
+            }
+
+            public static double DistanceBetweenVectorAndVector(Vector Vector1, Vector Vector2)
+            {
+                Vector v = Vector.Subtract(Vector1, Vector2);
+                return v.Length();
+            }
+
+            public static double DistanceBetweenVectorAndLineSegment(Vector Vector, Vector lineEndVector1, Vector lineEndVector2, out Vector VectorOnLine)
+            {
+                Vector v = Vector.Subtract(lineEndVector2, lineEndVector1);
+                Vector w = Vector.Subtract(Vector, lineEndVector1);
+
+                double c1 = VectorExtensions.Dot(w, v);
+                if (c1 <= 0)
                 {
-                    return (double)Math.Sin((double)angle);
+
+                    VectorOnLine = lineEndVector1;
+                    return DistanceBetweenVectorAndVector(Vector, lineEndVector1);
                 }
 
-                public static double Cos(double angle)
+                double c2 = VectorExtensions.Dot(v, v);
+
+                if (c2 <= c1)
                 {
-                    return (double)Math.Cos((double)angle);
+                    VectorOnLine = lineEndVector2;
+                    return DistanceBetweenVectorAndVector(Vector, lineEndVector2);
                 }
 
-                public static double ACos(double value)
+                double b = c1 / c2;
+                VectorOnLine = Vector.Add(lineEndVector1, Vector.Multiply(v, b));
+                return DistanceBetweenVectorAndVector(Vector, VectorOnLine);
+            }
+
+            public static double Cross(Vector value1, Vector value2)
+            {
+                return value1.X * value2.Y - value1.Y * value2.X;
+            }
+
+            public static Vector Cross(Vector value1, double value2)
+            {
+                return new Vector(value2 * value1.Y, -value2 * value1.X);
+            }
+
+            public static Vector Cross(double value2, Vector value1)
+            {
+                return new Vector(-value2 * value1.Y, value2 * value1.X);
+            }
+
+            public static void Cross(ref Vector value1, ref Vector value2, out double ret)
+            {
+                ret = value1.X * value2.Y - value1.Y * value2.X;
+            }
+
+            public static void Cross(ref Vector value1, ref double value2, out Vector ret)
+            {
+                ret = value1; //necassary to get past a compile error on 360
+                ret.X = value2 * value1.Y;
+                ret.Y = -value2 * value1.X;
+            }
+
+            public static void Cross(ref double value2, ref Vector value1, out Vector ret)
+            {
+                ret = value1;//necassary to get past a compile error on 360
+                ret.X = -value2 * value1.Y;
+                ret.Y = value2 * value1.X;
+            }
+
+            public static Vector Project(Vector projectVector, Vector onToVector)
+            {
+                double multiplier = 0;
+                double numerator = (onToVector.X * projectVector.X + onToVector.Y * projectVector.Y);
+                double denominator = (onToVector.X * onToVector.X + onToVector.Y * onToVector.Y);
+
+                if (denominator != 0)
                 {
-                    return (double)Math.Acos((double)value);
+                    multiplier = numerator / denominator;
                 }
 
-                public static double ATan2(double y, double x)
+                return Vector.Multiply(onToVector, multiplier);
+            }
+
+            public static void Truncate(ref Vector vector, double maxLength, out Vector truncatedVector)
+            {
+                double length = vector.Length();
+                length = Math.Min(length, maxLength);
+                if (length > 0)
                 {
-                    return (double)Math.Atan2((double)y, (double)x);
+                    vector.Normalize();
+                }
+                VectorExtensions.Multiply(ref vector, length, out truncatedVector);
+            }
+
+            public static double DegreesToRadians(double degrees)
+            {
+                return degrees * RadiansToDegreesRatio;
+            }
+
+            public static double RandomNumber(double min, double max)
+            {
+                return (double)((max - min) * random.NextDouble() + min);
+            }
+
+            public static bool IsBetweenNonInclusive(double number, double min, double max)
+            {
+                if (number > min && number < max)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
                 }
 
-                //performs bilinear interpolation of a Vector
-                public static double BiLerp(Vector Vector, Vector min, Vector max, double value1, double value2, double value3, double value4, double minValue, double maxValue)
+            }
+
+            /// Temp variables to speed up the following code.
+            private static double tPow2;
+            private static double wayToGo;
+            private static double wayToGoPow2;
+
+            private static Vector startCurve;
+            private static Vector curveEnd;
+            private static Vector _temp;
+
+            public static double VectorToRadians(Vector vector)
+            {
+                return (double)Math.Atan2((double)vector.X, -(double)vector.Y);
+            }
+
+            public static Vector RadiansToVector(double radians)
+            {
+                return new Vector((double)Math.Sin((double)radians), -(double)Math.Cos((double)radians));
+            }
+
+            public static void RadiansToVector(double radians, ref Vector vector)
+            {
+                vector.X = (double)Math.Sin((double)radians);
+                vector.Y = -(double)Math.Cos((double)radians);
+            }
+
+            public static void RotateVector(ref Vector vector, double radians)
+            {
+                double length = vector.Length();
+                double newRadians = (double)Math.Atan2((double)vector.X, -(double)vector.Y) + radians;
+
+                vector.X = (double)Math.Sin((double)newRadians) * length;
+                vector.Y = -(double)Math.Cos((double)newRadians) * length;
+            }
+
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="start"></param>
+            /// <param name="end"></param>
+            /// <param name="t">Value between 0.0f and 1.0f.</param>
+            /// <returns></returns>
+            public static Vector LinearBezierCurve(Vector start, Vector end, double t)
+            {
+                return start + (end - start) * t;
+            }
+
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="start"></param>
+            /// <param name="curve"></param>
+            /// <param name="end"></param>
+            /// <param name="t">Value between 0.0f and 1.0f.</param>
+            /// <returns></returns>
+            public static Vector QuadraticBezierCurve(Vector start, Vector curve, Vector end, double t)
+            {
+                wayToGo = 1.0f - t;
+
+                return wayToGo * wayToGo * start
+                       + 2.0f * t * wayToGo * curve
+                       + t * t * end;
+            }
+
+            public static Vector QuadraticBezierCurve(Vector start, Vector curve, Vector end, double t, ref double radians)
+            {
+                startCurve = start + (curve - start) * t;
+                curveEnd = curve + (end - curve) * t;
+                _temp = curveEnd - startCurve;
+
+                radians = (double)Math.Atan2((double)_temp.X, -(double)_temp.Y);
+                return startCurve + _temp * t;
+            }
+
+            public static Vector CubicBezierCurve2(Vector start, Vector startVectorsTo, Vector end, Vector endVectorsTo, double t)
+            {
+                return CubicBezierCurve(start, start + startVectorsTo, end + endVectorsTo, end, t);
+            }
+
+            public static Vector CubicBezierCurve2(Vector start, Vector startVectorsTo, Vector end, Vector endVectorsTo, double t, ref double radians)
+            {
+                return CubicBezierCurve(start, start + startVectorsTo, end + endVectorsTo, end, t, ref radians);
+            }
+
+            public static Vector CubicBezierCurve2(Vector start, double startVectorDirection, double startVectorLength,
+                                                    Vector end, double endVectorDirection, double endVectorLength,
+                                                    double t, ref double radians)
+            {
+                return CubicBezierCurve(start,
+                                        Calculator.RadiansToVector(startVectorDirection) * startVectorLength,
+                                        Calculator.RadiansToVector(endVectorDirection) * endVectorLength,
+                                        end,
+                                        t,
+                                        ref radians);
+            }
+
+            public static Vector CubicBezierCurve(Vector start, Vector curve1, Vector curve2, Vector end, double t)
+            {
+                tPow2 = t * t;
+                wayToGo = 1.0f - t;
+                wayToGoPow2 = wayToGo * wayToGo;
+
+                return wayToGo * wayToGoPow2 * start
+                       + 3.0f * t * wayToGoPow2 * curve1
+                       + 3.0f * tPow2 * wayToGo * curve2
+                       + t * tPow2 * end;
+            }
+
+            public static Vector CubicBezierCurve(Vector start, Vector curve1, Vector curve2, Vector end, double t, ref double radians)
+            {
+                return QuadraticBezierCurve(start + (curve1 - start) * t,
+                                            curve1 + (curve2 - curve1) * t,
+                                            curve2 + (end - curve2) * t,
+                                            t,
+                                            ref radians);
+            }
+
+            //Interpolate normal vectors ...
+            public static Vector InterpolateNormal(Vector vector1, Vector Vector, double t)
+            {
+                vector1 += (Vector - vector1) * t;
+                vector1.Normalize();
+
+                return vector1;
+            }
+
+            public static void InterpolateNormal(Vector vector1, Vector Vector, double t, out Vector vector)
+            {
+                vector = vector1 + (Vector - vector1) * t;
+                vector.Normalize();
+            }
+
+            public static void InterpolateNormal(ref Vector vector1, Vector Vector, double t)
+            {
+                vector1 += (Vector - vector1) * t;
+                vector1.Normalize();
+            }
+
+            public static double InterpolateRotation(double radians1, double radians2, double t)
+            {
+                Vector vector1 = new Vector((double)Math.Sin((double)radians1), -(double)Math.Cos((double)radians1));
+                Vector Vector = new Vector((double)Math.Sin((double)radians2), -(double)Math.Cos((double)radians2));
+
+                vector1 += (Vector - vector1) * t;
+                vector1.Normalize();
+
+                return (double)Math.Atan2((double)vector1.X, -(double)vector1.Y);
+            }
+
+            public static void ProjectToAxis(ref Vector[] Vectors, ref Vector axis, out double min, out double max)
+            {
+                // To project a Vector on an axis use the dot product
+                double dotProduct = VectorExtensions.Dot(axis, Vectors[0]);
+                min = dotProduct;
+                max = dotProduct;
+
+                for (int i = 0; i < Vectors.Length; i++)
                 {
-                    double x = Vector.X;
-                    double y = Vector.Y;
-                    double value;
-
-                    x = MathHelper.Clamp(x, min.X, max.X);
-                    y = MathHelper.Clamp(y, min.Y, max.Y);
-
-                    double xRatio = (x - min.X) / (max.X - min.X);
-                    double yRatio = (y - min.Y) / (max.Y - min.Y);
-
-                    double top = MathHelper.Lerp(value1, value4, xRatio);
-                    double bottom = MathHelper.Lerp(value2, value3, xRatio);
-
-                    value = MathHelper.Lerp(top, bottom, yRatio);
-                    value = MathHelper.Clamp(value, minValue, maxValue);
-                    return value;
-                }
-
-                public static double Clamp(double value, double low, double high)
-                {
-                    return Math.Max(low, Math.Min(value, high));
-                }
-
-                public static double DistanceBetweenVectorAndVector(Vector Vector1, Vector Vector2)
-                {
-                    Vector v = Vector.Subtract(Vector1, Vector2);
-                    return v.Length();
-                }
-
-                public static double DistanceBetweenVectorAndLineSegment(Vector Vector, Vector lineEndVector1, Vector lineEndVector2, out Vector VectorOnLine)
-                {
-                    Vector v = Vector.Subtract(lineEndVector2, lineEndVector1);
-                    Vector w = Vector.Subtract(Vector, lineEndVector1);
-
-                    double c1 = Vector2.Dot(w, v);
-                    if (c1 <= 0)
+                    dotProduct = VectorExtensions.Dot(Vectors[i], axis);
+                    if (dotProduct < min)
                     {
-
-                        VectorOnLine = lineEndVector1;
-                        return DistanceBetweenVectorAndVector(Vector, lineEndVector1);
-                    }
-
-                    double c2 = Vector2.Dot(v, v);
-
-                    if (c2 <= c1)
-                    {
-                        VectorOnLine = lineEndVector2;
-                        return DistanceBetweenVectorAndVector(Vector, lineEndVector2);
-                    }
-
-                    double b = c1 / c2;
-                    VectorOnLine = Vector.Add(lineEndVector1, Vector.Multiply(v, b));
-                    return DistanceBetweenVectorAndVector(Vector, VectorOnLine);
-                }
-
-                public static double Cross(Vector value1, Vector value2)
-                {
-                    return value1.X * value2.Y - value1.Y * value2.X;
-                }
-
-                public static Vector Cross(Vector value1, double value2)
-                {
-                    return new Vector(value2 * value1.Y, -value2 * value1.X);
-                }
-
-                public static Vector Cross(double value2, Vector value1)
-                {
-                    return new Vector(-value2 * value1.Y, value2 * value1.X);
-                }
-
-                public static void Cross(ref Vector value1, ref Vector value2, out double ret)
-                {
-                    ret = value1.X * value2.Y - value1.Y * value2.X;
-                }
-
-                public static void Cross(ref Vector value1, ref double value2, out Vector ret)
-                {
-                    ret = value1; //necassary to get past a compile error on 360
-                    ret.X = value2 * value1.Y;
-                    ret.Y = -value2 * value1.X;
-                }
-
-                public static void Cross(ref double value2, ref Vector value1, out Vector ret)
-                {
-                    ret = value1;//necassary to get past a compile error on 360
-                    ret.X = -value2 * value1.Y;
-                    ret.Y = value2 * value1.X;
-                }
-
-                public static Vector Project(Vector projectVector, Vector onToVector)
-                {
-                    double multiplier = 0;
-                    double numerator = (onToVector.X * projectVector.X + onToVector.Y * projectVector.Y);
-                    double denominator = (onToVector.X * onToVector.X + onToVector.Y * onToVector.Y);
-
-                    if (denominator != 0)
-                    {
-                        multiplier = numerator / denominator;
-                    }
-
-                    return Vector.Multiply(onToVector, multiplier);
-                }
-
-                public static void Truncate(ref Vector vector, double maxLength, out Vector truncatedVector)
-                {
-                    double length = vector.Length();
-                    length = Math.Min(length, maxLength);
-                    if (length > 0)
-                    {
-                        vector.Normalize();
-                    }
-                    Vector2.Multiply(ref vector, length, out truncatedVector);
-                }
-
-                public static double DegreesToRadians(double degrees)
-                {
-                    return degrees * RadiansToDegreesRatio;
-                }
-
-                public static double RandomNumber(double min, double max)
-                {
-                    return (double)((max - min) * random.NextDouble() + min);
-                }
-
-                public static bool IsBetweenNonInclusive(double number, double min, double max)
-                {
-                    if (number > min && number < max)
-                    {
-                        return true;
+                        min = dotProduct;
                     }
                     else
                     {
-                        return false;
-                    }
-
-                }
-
-                /// Temp variables to speed up the following code.
-                private static double tPow2;
-                private static double wayToGo;
-                private static double wayToGoPow2;
-
-                private static Vector startCurve;
-                private static Vector curveEnd;
-                private static Vector _temp;
-
-                public static double VectorToRadians(Vector vector)
-                {
-                    return (double)Math.Atan2((double)vector.X, -(double)vector.Y);
-                }
-
-                public static Vector RadiansToVector(double radians)
-                {
-                    return new Vector((double)Math.Sin((double)radians), -(double)Math.Cos((double)radians));
-                }
-
-                public static void RadiansToVector(double radians, ref Vector vector)
-                {
-                    vector.X = (double)Math.Sin((double)radians);
-                    vector.Y = -(double)Math.Cos((double)radians);
-                }
-
-                public static void RotateVector(ref Vector vector, double radians)
-                {
-                    double length = vector.Length();
-                    double newRadians = (double)Math.Atan2((double)vector.X, -(double)vector.Y) + radians;
-
-                    vector.X = (double)Math.Sin((double)newRadians) * length;
-                    vector.Y = -(double)Math.Cos((double)newRadians) * length;
-                }
-
-                /// <summary>
-                /// 
-                /// </summary>
-                /// <param name="start"></param>
-                /// <param name="end"></param>
-                /// <param name="t">Value between 0.0f and 1.0f.</param>
-                /// <returns></returns>
-                public static Vector LinearBezierCurve(Vector start, Vector end, double t)
-                {
-                    return start + (end - start) * t;
-                }
-
-                /// <summary>
-                /// 
-                /// </summary>
-                /// <param name="start"></param>
-                /// <param name="curve"></param>
-                /// <param name="end"></param>
-                /// <param name="t">Value between 0.0f and 1.0f.</param>
-                /// <returns></returns>
-                public static Vector QuadraticBezierCurve(Vector start, Vector curve, Vector end, double t)
-                {
-                    wayToGo = 1.0f - t;
-
-                    return wayToGo * wayToGo * start
-                           + 2.0f * t * wayToGo * curve
-                           + t * t * end;
-                }
-
-                public static Vector QuadraticBezierCurve(Vector start, Vector curve, Vector end, double t, ref double radians)
-                {
-                    startCurve = start + (curve - start) * t;
-                    curveEnd = curve + (end - curve) * t;
-                    _temp = curveEnd - startCurve;
-
-                    radians = (double)Math.Atan2((double)_temp.X, -(double)_temp.Y);
-                    return startCurve + _temp * t;
-                }
-
-                public static Vector CubicBezierCurve2(Vector start, Vector startVectorsTo, Vector end, Vector endVectorsTo, double t)
-                {
-                    return CubicBezierCurve(start, start + startVectorsTo, end + endVectorsTo, end, t);
-                }
-
-                public static Vector CubicBezierCurve2(Vector start, Vector startVectorsTo, Vector end, Vector endVectorsTo, double t, ref double radians)
-                {
-                    return CubicBezierCurve(start, start + startVectorsTo, end + endVectorsTo, end, t, ref radians);
-                }
-
-                public static Vector CubicBezierCurve2(Vector start, double startVectorDirection, double startVectorLength,
-                                                        Vector end, double endVectorDirection, double endVectorLength,
-                                                        double t, ref double radians)
-                {
-                    return CubicBezierCurve(start,
-                                            Calculator.RadiansToVector(startVectorDirection) * startVectorLength,
-                                            Calculator.RadiansToVector(endVectorDirection) * endVectorLength,
-                                            end,
-                                            t,
-                                            ref radians);
-                }
-
-                public static Vector CubicBezierCurve(Vector start, Vector curve1, Vector curve2, Vector end, double t)
-                {
-                    tPow2 = t * t;
-                    wayToGo = 1.0f - t;
-                    wayToGoPow2 = wayToGo * wayToGo;
-
-                    return wayToGo * wayToGoPow2 * start
-                           + 3.0f * t * wayToGoPow2 * curve1
-                           + 3.0f * tPow2 * wayToGo * curve2
-                           + t * tPow2 * end;
-                }
-
-                public static Vector CubicBezierCurve(Vector start, Vector curve1, Vector curve2, Vector end, double t, ref double radians)
-                {
-                    return QuadraticBezierCurve(start + (curve1 - start) * t,
-                                                curve1 + (curve2 - curve1) * t,
-                                                curve2 + (end - curve2) * t,
-                                                t,
-                                                ref radians);
-                }
-
-                //Interpolate normal vectors ...
-                public static Vector InterpolateNormal(Vector vector1, Vector Vector, double t)
-                {
-                    vector1 += (Vector - vector1) * t;
-                    vector1.Normalize();
-
-                    return vector1;
-                }
-
-                public static void InterpolateNormal(Vector vector1, Vector Vector, double t, out Vector vector)
-                {
-                    vector = vector1 + (Vector - vector1) * t;
-                    vector.Normalize();
-                }
-
-                public static void InterpolateNormal(ref Vector vector1, Vector Vector, double t)
-                {
-                    vector1 += (Vector - vector1) * t;
-                    vector1.Normalize();
-                }
-
-                public static double InterpolateRotation(double radians1, double radians2, double t)
-                {
-                    Vector vector1 = new Vector((double)Math.Sin((double)radians1), -(double)Math.Cos((double)radians1));
-                    Vector Vector = new Vector((double)Math.Sin((double)radians2), -(double)Math.Cos((double)radians2));
-
-                    vector1 += (Vector - vector1) * t;
-                    vector1.Normalize();
-
-                    return (double)Math.Atan2((double)vector1.X, -(double)vector1.Y);
-                }
-
-                public static void ProjectToAxis(ref Vector[] Vectors, ref Vector axis, out double min, out double max)
-                {
-                    // To project a Vector on an axis use the dot product
-                    double dotProduct = Vector2.Dot(axis, Vectors[0]);
-                    min = dotProduct;
-                    max = dotProduct;
-
-                    for (int i = 0; i < Vectors.Length; i++)
-                    {
-                        dotProduct = Vector2.Dot(Vectors[i], axis);
-                        if (dotProduct < min)
+                        if (dotProduct > max)
                         {
-                            min = dotProduct;
-                        }
-                        else
-                        {
-                            if (dotProduct > max)
-                            {
-                                max = dotProduct;
-                            }
+                            max = dotProduct;
                         }
                     }
                 }
-
-
             }
-            public class MathHelper
+
+
+        }
+        public class MathHelper
+        {
+            public const double DegreesToRadiansRatio = 57.29577957855f;
+            public const double RadiansToDegreesRatio = 1f / 57.29577957855f;
+
+            public static double Lerp(double value1, double value2, double amount)
             {
-                public const double DegreesToRadiansRatio = 57.29577957855f;
-                public const double RadiansToDegreesRatio = 1f / 57.29577957855f;
-
-                public static double Lerp(double value1, double value2, double amount)
-                {
-                    return value1 + (value2 - value1) * amount;
-                }
-
-                public static double Min(double value1, double value2)
-                {
-                    return Math.Min(value1, value2);
-                }
-
-                public static double Max(double value1, double value2)
-                {
-                    return Math.Max(value1, value2);
-                }
-
-                public static double Clamp(double value, double min, double max)
-                {
-                    return Math.Max(min, Math.Min(value, max));
-                }
-
-
-
-                public static double Distance(double value1, double value2)
-                {
-                    return Math.Abs((double)(value1 - value2));
-                }
-
-                public static double ToRadians(double degrees)
-                {
-                    return degrees * RadiansToDegreesRatio;
-                }
-
-                public static double TwoPi = (double)(Math.PI * 2.0);
-                public static double Pi = (double)(Math.PI);
-                public static double PiOver2 = (double)(Math.PI / 2.0);
-                public static double PiOver4 = (double)(Math.PI / 4.0);
-
+                return value1 + (value2 - value1) * amount;
             }
+
+            public static double Min(double value1, double value2)
+            {
+                return Math.Min(value1, value2);
+            }
+
+            public static double Max(double value1, double value2)
+            {
+                return Math.Max(value1, value2);
+            }
+
+            public static double Clamp(double value, double min, double max)
+            {
+                return Math.Max(min, Math.Min(value, max));
+            }
+
+
+
+            public static double Distance(double value1, double value2)
+            {
+                return Math.Abs((double)(value1 - value2));
+            }
+
+            public static double ToRadians(double degrees)
+            {
+                return degrees * RadiansToDegreesRatio;
+            }
+
+            public static double TwoPi = (double)(Math.PI * 2.0);
+            public static double Pi = (double)(Math.PI);
+            public static double PiOver2 = (double)(Math.PI / 2.0);
+            public static double PiOver4 = (double)(Math.PI / 4.0);
+
         }
     }
 #endif
+    //[DebuggerStepThrough]
+    [Obsolete("Use clinq")]
+    public class BindableList<T> : ObservableCollection<T>
+    {
 
+        public List<ICVS> _ArrayList = new List<ICVS>();
+        public interface ICVS
+        {
+            void Add(object o);
+            void Remove(object o);
+        }
+        //[DebuggerStepThrough]
+        public class CVS<T2> : ICVS
+        {
+            public delegate T2 Converter(T t);
+            public IList<T2> _list;
+            public void Add(object o)
+            {
+                T2 t2 = _Converter((T)o);
+                if (!_list.Contains(t2))
+                    _list.Add(t2);
+            }
+            public void Remove(object o)
+            {
+                T2 t2 = _Converter((T)o);
+                if (_list.Contains(t2))
+                    _list.Remove(t2);
+            }
+            public CVS()
+            {
+                if (_Converter == null) _Converter = DefaultConverter;
+            }
+            public Converter _Converter;
+            public T2 DefaultConverter(T t)
+            {
+                object o = (object)t;
+                return (T2)o;
+            }
+        }
+        public void BindTo<T2>(IList<T2> list)
+        {
+            CVS<T2> _CVS = new CVS<T2> { _list = list };
+            _ArrayList.Add(_CVS);
+        }
+
+        public void BindTo<T2>(IList<T2> list, CVS<T2>.Converter cv)
+        {
+            CVS<T2> _CVS = new CVS<T2> { _Converter = cv, _list = list };
+            _ArrayList.Add(_CVS);
+        }
+        protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+        {
+
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (T t in e.NewItems)
+                        foreach (ICVS o in _ArrayList)
+                            o.Add(t);
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (T t in e.OldItems)
+                        foreach (ICVS o in _ArrayList)
+                            o.Remove(t);
+                    break;
+            }
+            base.OnCollectionChanged(e);
+        }
+    }
+    [Obsolete("Use clinq")]
+    public class ObservableArray<T> : IEnumerable<T>, INotifyCollectionChanged
+    {
+        ObservableCollection<T> _List = new ObservableCollection<T>();
+        T[] a;
+        public ObservableArray(int count)
+        {
+            _List.CollectionChanged += new NotifyCollectionChangedEventHandler(List_CollectionChanged);
+            a = new T[count];
+        }
+
+
+        void List_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (CollectionChanged != null) CollectionChanged(sender, e);
+        }
+        public T this[int i]
+        {
+            get { return a[i]; }
+            set
+            {
+                T oldValue = a[i];
+                a[i] = value;
+
+                if (oldValue == null)
+                {
+                    _List.Add(value);
+                }
+                else
+                {
+                    _List.Remove(oldValue);
+                    if (value != null) _List.Add(value);
+                }
+            }
+        }
+
+        public event NotifyCollectionChangedEventHandler CollectionChanged;
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            return _List.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return _List.GetEnumerator();
+        }
+    }
+    public class NotifyPropertyChanged : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+        public Dictionary<string, object> _Vars = new Dictionary<string, object>();
+        public void Set(string s, object o)
+        {
+            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(s));
+            if (_Vars.ContainsKey(s)) _Vars[s] = o;
+        }
+        public T Get<T>(string s) where T : new()
+        {
+            if (_Vars.ContainsKey(s))
+                return (T)_Vars[s];
+            else
+            {
+                T t = new T();
+                _Vars[s] = t;
+                return t;
+            }
+        }
+    }
+    public class BindableGrid : System.Windows.Controls.Grid
+    {
+        public INotifyCollectionChanged Source
+        {
+            get { return (INotifyCollectionChanged)GetValue(SourceProperty); }
+            set { SetValue(SourceProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Source.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SourceProperty =
+            DependencyProperty.Register("Source", typeof(INotifyCollectionChanged), typeof(Grid), new PropertyMetadata(OnSourceSet));
+
+        public static void OnSourceSet(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            BindableGrid _Grid = ((BindableGrid)d);
+            foreach (UIElement ui in (IEnumerable)_Grid.Source)
+                _Grid.Children.Add(ui);
+
+            _Grid.Source.CollectionChanged += new NotifyCollectionChangedEventHandler(_Grid.Source_CollectionChanged);
+        }
+
+        void Source_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (UIElement ui in e.NewItems)
+                        Children.Add(ui);
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (UIElement ui in e.OldItems)
+                        Children.Add(ui);
+                    break;
+            }
+        }
+
+    }
+    public class BindableCanvas : System.Windows.Controls.Canvas
+    {
+
+        public INotifyCollectionChanged Source
+        {
+            get { return (INotifyCollectionChanged)GetValue(SourceProperty); }
+            set { SetValue(SourceProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Source.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SourceProperty =
+            DependencyProperty.Register("Source", typeof(INotifyCollectionChanged), typeof(Canvas), new PropertyMetadata(OnSourceSet));
+
+        public static void OnSourceSet(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            BindableCanvas _Canvas = ((BindableCanvas)d);
+            foreach (UIElement ui in (IEnumerable)_Canvas.Source)
+                _Canvas.Children.Add(ui);
+
+            _Canvas.Source.CollectionChanged += new NotifyCollectionChangedEventHandler(_Canvas.Source_CollectionChanged);
+        }
+
+        void Source_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (UIElement ui in e.NewItems)
+                        Children.Add(ui);
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (UIElement ui in e.OldItems)
+                        Children.Add(ui);
+                    break;
+            }
+        }
+
+    }
     public abstract class Encoding : System.Text.Encoding
     {
 #if (!SILVERLIGHT)
@@ -579,12 +703,14 @@ namespace doru
 #endif
 
     }
+    
+    
     //[DebuggerStepThrough]
     public class ExceptionC : Exception
     {
         public ExceptionC(string s) : base(s) { }
         public override string ToString()
-        {
+        {            
             return Message;
         }
     }
@@ -601,7 +727,7 @@ namespace doru
     public class Downloader
     {
         public delegate void OpenReadCompleted(Stream s);
-        
+
         public void Download(string s, OpenReadCompleted _OpenReadCompleted)
         {
 #if(SILVERLIGHT)
@@ -611,17 +737,20 @@ namespace doru
                 _OpenReadCompleted(e.Result);
             };
             _WebClient.OpenReadAsync(new Uri(s,UriKind.Relative));
-#else            
+#else
             _OpenReadCompleted(File.OpenRead(s));
 #endif
         }
     }
     //[DebuggerStepThrough]    
     public static class Helper
-    {                
-#if(ZIPLIB)
-        public static void OpenZip(FileStream fs, Dictionary<string, Stream> _Resources)
-        {
+    {
+        public static int _DefaultSilverlightPort = 4530;
+        [Obsolete]
+        public static void OpenZip(Stream fs, Dictionary<string, Stream> _Resources) { LoadResourcesFromZip(fs, _Resources); }
+        
+        public static void LoadResourcesFromZip(Stream fs, IDictionary<string, Stream> _Resources)
+        {            
             ZipInputStream _ZipInputStream = new ZipInputStream(fs);
             while (true)
             {
@@ -632,7 +761,7 @@ namespace doru
                     _Resources.Add(_ZipEntry.Name.Trace(), ms);
             }
         }
-#endif
+
         public static void MergeList<T>(IList<T> a, IList<T> b)
         {
             for (int i = 0; i < Math.Max(a.Count, b.Count); i++)
@@ -833,7 +962,7 @@ namespace doru
             return true;
         }
 
-#if(SILVERLIGHT||WPF)        
+
         public static DispatcherTimer StartRepeatMethod(this DispatcherTimer ds, double secconds, Action d)
         {
             ds.Interval = TimeSpan.FromSeconds(secconds);
@@ -875,15 +1004,15 @@ namespace doru
             _Socket.ConnectAsync(_SocketAsyncEventArgs);
             return _SocketAsyncEventArgs;
         }
-        
 
-#endif
+
+
 #if(SILVERLIGHT)        
                 
-#else   
+#else
         public class DnsEndPoint : IPEndPoint
-        {   
-            
+        {
+
             public DnsEndPoint(string ip, int port) : base(Dns.GetHostAddresses(ip)[0], port) { }
         }
         public static void Trace2(string t, string prefix)
@@ -975,7 +1104,7 @@ namespace doru
             // Return the hexadecimal string.
             return sBuilder.ToString();
         }
-        
+
 
         public static Socket Connect(string ip, int port)
         {
@@ -990,18 +1119,38 @@ namespace doru
     //[DebuggerStepThrough]
     public static class Extensions
     {
-        
-
-        public static string Replace(this string s,params string[] ss)
+        public static void SetX(this UIElement fw,double x)
+        {
+            Canvas.SetLeft(fw,x);
+        }
+        public static void SetY(this UIElement fw, double y)
+        {
+            Canvas.SetTop(fw,y);
+        }
+        public static double GetX(this UIElement fw)
+        {
+            return Canvas.GetLeft(fw);
+        }
+        public static double GetY(this UIElement fw)
+        {
+            return Canvas.GetTop(fw);
+        }
+        public static string Replace(this string s, params string[] ss)
         {
             for (int i = 0; i < ss.Length; i++)
             {
                 s = s.Replace(ss[i], ss[++i]);
             }
-            return s;    
-			
+            return s;
+
         }
 #if(!SILVERLIGHT)
+        public static void SetSource(this BitmapImage bm, Stream st)
+        {
+            bm.BeginInit();
+            bm.StreamSource = st;
+            bm.EndInit();
+        }
         static Extensions()
         {
             if (!Directory.Exists("logs")) Directory.CreateDirectory("logs");
@@ -1305,7 +1454,7 @@ namespace doru
 #if(SILVERLIGHT)
             doru.Trace.WriteLine(s + t);
 #else
-            System.Diagnostics.Trace.WriteLine(s +":"+ t);
+            System.Diagnostics.Trace.WriteLine(s + ":" + t);
 #endif
             return t;
         }
@@ -1498,7 +1647,7 @@ namespace doru
                 {
                     for (int i = 0; ; i++)
                     {
-                        sb.Append(_bytes[x] > 15 ? String.Format("{0:X}", _bytes[x]) : String.Format("0{0:X}", _bytes[x]));
+                        sb.Append(_bytes[x] > 15 ? String.Format("{0:GetX}", _bytes[x]) : String.Format("0{0:GetX}", _bytes[x]));
                         if (++x == _bytes.Length) return sb.ToString().Trim();
                         if (i == 8) break;
                         sb.Append(" ");
@@ -1639,10 +1788,15 @@ namespace doru
         }
     }
 
-#if(WINFORMS)
-    //[DebuggerStepThrough] public static class Win32
+
+    //[DebuggerStepThrough] 
+
+    
+
+#if (!SILVERLIGHT)
+    public static class Win32
     {
-        using System.Windows.Forms;
+        
         private const int WH_KEYBOARD_LL = 13;
         private const int WM_KEYDOWN = 0x0100;
         private const int WM_KEYUP = 0x0101;
@@ -1857,8 +2011,6 @@ namespace doru
             return lastInPut.dwTime;
         }
     }
-#endif
-#if (!SILVERLIGHT)
     [XmlRoot("dictionary")]
     //[DebuggerStepThrough]
     public class SerializableDictionary<TKey, TValue> : Dictionary<TKey, TValue>, IXmlSerializable
@@ -2201,11 +2353,11 @@ namespace doru
                     base.Add(s);
                     return true;
                 }
-            else return false;
+                else return false;
         }
         public void Flush()
         {
-            lock("flush")
+            lock ("flush")
                 File.WriteAllLines(file, this.ToArray(), Encoding.Default);
         }
     }
@@ -2243,7 +2395,7 @@ namespace doru
         }
     }
 
-    
+
 
     //[DebuggerStepThrough]
     public class TcpRedirect
@@ -2774,7 +2926,7 @@ namespace doru
             {
                 new Thread(StartReadConsole).StartBackground();
                 Console.Title = Assembly.GetEntryAssembly().GetName().Name;
-                if(_RedirectOutPut)
+                if (_RedirectOutPut)
                     Trace.Listeners.Add(new TextWriterTraceListener(Console.OpenStandardOutput()));
             }
             Trace.AutoFlush = true;
@@ -2943,13 +3095,13 @@ namespace doru
         }
     }
 
-    
+
     //first byte is length, if length is more than 254 then first byte is 255 second is uint16 packet length 
 
 
     namespace Tcp
     {
-        
+
         //[DebuggerStepThrough]
         public class Sender
         {
@@ -3000,7 +3152,7 @@ namespace doru
             private List<byte[]> _Messages = new List<byte[]>();
             public List<byte[]> GetMessages()
             {
-               // Trace.Assert(_Connected);
+                // Trace.Assert(_Connected);
                 lock ("Get")
                 {
                     List<byte[]> _Return = _Messages;
