@@ -16,7 +16,7 @@ namespace SocketTest
 {
     public partial class Page : UserControl
     {
-        TextBox _TextBox;
+        
         public Page()
         {
             
@@ -26,8 +26,7 @@ namespace SocketTest
 
         void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            _TextBox = new TextBox();
-            this.Content = _TextBox;
+                        
             string ipAddress = "localhost";            
             Helper.Connect(ipAddress,Helper._DefaultSilverlightPort,Dispatcher,OnConnected);
         }
@@ -36,18 +35,41 @@ namespace SocketTest
         {
             Trace.Assert(sc.SocketError == SocketError.Success);
             _Socket = (Socket)sc.UserToken;
+            Bytes_Accepted(null, null);
             Update();
+            BeginAccept();
         }
 
-        int _packetscount = 0;
-        int _totalBytes = 0;
+        void BeginAccept()
+        {
+            SocketAsyncEventArgs s2 = new SocketAsyncEventArgs();
+            s2.SetBuffer(new byte[1024], 0, 1024);
+            s2.Completed += new EventHandler<SocketAsyncEventArgs>(Bytes_Accepted);
+            _Socket.ReceiveAsync(s2);
+        }
+        void Bytes_Accepted(object sender, SocketAsyncEventArgs e)
+        {
+            BeginAccept();
+            _receivedpacketscount++;
+            _receivedtotalBytes++;
+            Dispatcher.BeginInvoke(new Action(delegate()
+                {
+                    _TextBox1.Text = "bytes received" + _receivedtotalBytes + " Packet count" + _receivedpacketscount;
+                }));
+        }
+        int _receivedpacketscount = 0;
+        int _receivedtotalBytes = 0;
+
+        int _sendedpacketscount = 0;
+        int _sendedtotalBytes = 0;
         public void Update()
         {
-            byte[] bts = new byte[] { 1, 2, 3, 4, 5, 6 };
-            _totalBytes += bts.Length;
-            _packetscount++;
-            _TextBox.Text = "bytessended" + _totalBytes + " count" + _packetscount;
+            byte[] bts = new byte[] { 1 };
+            _sendedtotalBytes += bts.Length;
+            _sendedpacketscount++;
+            _TextBox.Text = "bytes sended" + _sendedtotalBytes + " Packet count" + _sendedpacketscount;
             _Socket.Send(bts);
+            
             Dispatcher.BeginInvoke(Update);
         }
     }

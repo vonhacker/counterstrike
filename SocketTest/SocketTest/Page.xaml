@@ -3,6 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
     Width="400" Height="300">
     <Grid x:Name="LayoutRoot" Background="White">
-
+    	<TextBox Name="_TextBox" Height="39" Margin="53,57,45,0" VerticalAlignment="Top" Text="TextBox" TextWrapping="Wrap"/>
+    	<TextBox Name="_TextBox1" Margin="53,96,45,0" Text="TextBox" TextWrapping="Wrap" Height="39" VerticalAlignment="Top"/>
     </Grid>
 </UserControl>
