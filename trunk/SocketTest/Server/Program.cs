@@ -5,6 +5,7 @@ using System.Text;
 using doru;
 using System.Net.Sockets;
 using System.Net;
+using System.Threading;
 
 namespace Server
 {
@@ -22,16 +23,9 @@ namespace Server
             TcpListener _TcpListener = new TcpListener(IPAddress.Any,4530);
             _TcpListener.Start();
             Socket _Socket = _TcpListener.AcceptSocket();
-            
-            while (true)
-            {
-                byte[] bytes = _Socket.Receive();
-                _totalBytes += bytes.Length;
-                _packetscount++;
-                Console.Write("\r totalbytes:" + _totalBytes + " packetCount" + _packetscount);
-            }
-        }
-        int _packetscount=0;
-        int _totalBytes = 0;
+            new Client(_Socket);
+        }        
+        
+        
     }
 }
