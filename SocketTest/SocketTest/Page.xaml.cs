@@ -11,6 +11,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using doru;
 using System.Net.Sockets;
+using System.Windows.Threading;
 
 namespace SocketTest
 {
@@ -36,8 +37,16 @@ namespace SocketTest
             Trace.Assert(sc.SocketError == SocketError.Success);
             _Socket = (Socket)sc.UserToken;
             Bytes_Accepted(null, null);
-            Update();
+            DispatcherTimer _DispatcherTimer = new DispatcherTimer();
+            _DispatcherTimer.Interval = TimeSpan.FromMilliseconds(2);
+            _DispatcherTimer.Tick += new EventHandler(_DispatcherTimer_Tick);
+            _DispatcherTimer.Start();
             BeginAccept();
+        }
+
+        void _DispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            Update();
         }
 
         void BeginAccept()
@@ -70,7 +79,7 @@ namespace SocketTest
             _TextBox.Text = "bytes sended" + _sendedtotalBytes + " Packet count" + _sendedpacketscount;
             _Socket.Send(bts);
             
-            Dispatcher.BeginInvoke(Update);
+            //Dispatcher.BeginInvoke(Update);
         }
     }
 }
