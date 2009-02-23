@@ -70,6 +70,9 @@
     <Content Include="ContinuousLinq.dll" />
     <Content Include="ICSharpCode.SharpZipLib.dll" />
     <Content Include="SharpZipLib.dll" />
+    <Content Include="WPFToolkit.Design.dll" />
+    <Content Include="WPFToolkit.dll" />
+    <Content Include="WPFToolkit.VisualStudio.Design.dll" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
