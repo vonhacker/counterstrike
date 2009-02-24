@@ -22,8 +22,13 @@ namespace Server
             new PolicyServer().StartAsync();
             TcpListener _TcpListener = new TcpListener(IPAddress.Any,4530);
             _TcpListener.Start();
-            Socket _Socket = _TcpListener.AcceptSocket();
-            new Client(_Socket);
+            while (true)
+                try
+                {
+                    Socket _Socket = _TcpListener.AcceptSocket();
+                    new Client(_Socket);
+                }
+                catch (SocketException) { }
         }        
         
         

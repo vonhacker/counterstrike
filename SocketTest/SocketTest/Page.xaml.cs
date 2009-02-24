@@ -36,7 +36,7 @@ namespace SocketTest
         {
             Trace.Assert(sc.SocketError == SocketError.Success);
             _Socket = (Socket)sc.UserToken;
-            Bytes_Accepted(null, null);
+            BeginAccept();
             DispatcherTimer _DispatcherTimer = new DispatcherTimer();
             _DispatcherTimer.Interval = TimeSpan.FromMilliseconds(2);
             _DispatcherTimer.Tick += new EventHandler(_DispatcherTimer_Tick);
@@ -60,10 +60,10 @@ namespace SocketTest
         {
             BeginAccept();
             _receivedpacketscount++;
-            _receivedtotalBytes++;
+            _receivedtotalBytes += e.BytesTransferred;
             Dispatcher.BeginInvoke(new Action(delegate()
                 {
-                    _TextBox1.Text = "bytes received" + _receivedtotalBytes + " Packet count" + _receivedpacketscount;
+                    _TextBox1.Text = "total bytes received" + _receivedtotalBytes + " Packet count" + _receivedpacketscount;
                 }));
         }
         int _receivedpacketscount = 0;
