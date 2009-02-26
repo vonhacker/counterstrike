@@ -5,11 +5,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocketTest", "SocketTest\So
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{C08E4E24-DA57-4030-880B-F4A4478AD11F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helper", "..\..\..\code\Helper\Helper.csproj", "{4DE8D8C1-6F75-42AD-AA46-BD35BB71352A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelperSL", "..\..\..\code\Helper\HelperSL.csproj", "{443B377E-8155-43E3-821D-429BFB595770}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{207B7B69-6889-44B2-BCC6-50BADFC702D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helper", "..\Helper\Helper.csproj", "{4DE8D8C1-6F75-42AD-AA46-BD35BB71352A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelperSL", "..\Helper\HelperSL.csproj", "{443B377E-8155-43E3-821D-429BFB595770}"
 EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
@@ -29,6 +29,10 @@ Global
 		{C08E4E24-DA57-4030-880B-F4A4478AD11F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C08E4E24-DA57-4030-880B-F4A4478AD11F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C08E4E24-DA57-4030-880B-F4A4478AD11F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{207B7B69-6889-44B2-BCC6-50BADFC702D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{207B7B69-6889-44B2-BCC6-50BADFC702D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{207B7B69-6889-44B2-BCC6-50BADFC702D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{207B7B69-6889-44B2-BCC6-50BADFC702D3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4DE8D8C1-6F75-42AD-AA46-BD35BB71352A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4DE8D8C1-6F75-42AD-AA46-BD35BB71352A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4DE8D8C1-6F75-42AD-AA46-BD35BB71352A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -37,10 +41,6 @@ Global
 		{443B377E-8155-43E3-821D-429BFB595770}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{443B377E-8155-43E3-821D-429BFB595770}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{443B377E-8155-43E3-821D-429BFB595770}.Release|Any CPU.Build.0 = Release|Any CPU
-		{207B7B69-6889-44B2-BCC6-50BADFC702D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{207B7B69-6889-44B2-BCC6-50BADFC702D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{207B7B69-6889-44B2-BCC6-50BADFC702D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{207B7B69-6889-44B2-BCC6-50BADFC702D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

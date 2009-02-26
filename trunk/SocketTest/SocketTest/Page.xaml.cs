@@ -36,9 +36,10 @@ namespace SocketTest
         {
             Trace.Assert(sc.SocketError == SocketError.Success);
             _Socket = (Socket)sc.UserToken;
+            
             BeginAccept();
             DispatcherTimer _DispatcherTimer = new DispatcherTimer();
-            _DispatcherTimer.Interval = TimeSpan.FromMilliseconds(2);
+            _DispatcherTimer.Interval = TimeSpan.FromMilliseconds(5);
             _DispatcherTimer.Tick += new EventHandler(_DispatcherTimer_Tick);
             _DispatcherTimer.Start();
             BeginAccept();
@@ -52,6 +53,7 @@ namespace SocketTest
         void BeginAccept()
         {
             SocketAsyncEventArgs s2 = new SocketAsyncEventArgs();
+            
             s2.SetBuffer(new byte[1024], 0, 1024);
             s2.Completed += new EventHandler<SocketAsyncEventArgs>(Bytes_Accepted);
             _Socket.ReceiveAsync(s2);
@@ -76,7 +78,7 @@ namespace SocketTest
             byte[] bts = new byte[] { 1 };
             _sendedtotalBytes += bts.Length;
             _sendedpacketscount++;
-            _TextBox.Text = "bytes sended" + _sendedtotalBytes + " Packet count" + _sendedpacketscount;
+            _TextBox.Text = "total bytes sended" + _sendedtotalBytes + " Packet count" + _sendedpacketscount;
             _Socket.Send(bts);
             
             //Dispatcher.BeginInvoke(Update);
