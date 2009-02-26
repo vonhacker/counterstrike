@@ -10,7 +10,7 @@ using System.Threading;
 using doru;
 
 namespace Scheduler
-{//чет в свн нехочет добовлятся)
+{
     public class Program
     {
         
