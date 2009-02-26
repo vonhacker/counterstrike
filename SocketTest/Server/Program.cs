@@ -20,17 +20,14 @@ namespace Server
             Logging._AllowDuplicates = true;
             Logging.Setup();
             new PolicyServer().StartAsync();
-            TcpListener _TcpListener = new TcpListener(IPAddress.Any,4530);
+            TcpListener _TcpListener = new TcpListener(IPAddress.Any, 4530);
             _TcpListener.Start();
-            while (true)
-                try
-                {
-                    Socket _Socket = _TcpListener.AcceptSocket();
-                    new Client(_Socket);
-                }
-                catch (SocketException) { }
-        }        
-        
-        
+
+            Socket _Socket = _TcpListener.AcceptSocket();
+            new Client(_Socket);
+
+        }
+
+
     }
 }

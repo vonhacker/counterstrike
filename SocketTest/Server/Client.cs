@@ -6,6 +6,8 @@ using doru;
 using System.Net.Sockets;
 using System.Net;
 using System.Threading;
+using System.Windows.Threading;
+using System.Windows;
 
 namespace Server
 {
@@ -15,18 +17,31 @@ namespace Server
         public Client(Socket _Socket)
         {
             this._Socket = _Socket;
-
-            Timer t= new Timer(Update,_Socket,0,2);            
-            while (true)
-            {
-                byte[] bytes = _Socket.Receive();
-                _receivedtotalBytes += bytes.Length;
-                _receivedpacketscount++;
-                Console.Write("\r receivedtotalbytes:" + _receivedtotalBytes + " packetCount" + _receivedpacketscount);
-                Thread.Sleep(2);
-            }
+            DispatcherTimer dt = new DispatcherTimer();
+            dt.Interval = TimeSpan.FromMilliseconds(5);
+            dt.Tick += new EventHandler(dt_Tick);
+            dt.Start();
+            new Thread(delegate()
+                {
+                    while (true)
+                    {
+                        byte[] bytes = _Socket.Receive();
+                        _receivedtotalBytes += bytes.Length;
+                        _receivedpacketscount++;
+                        Console.Write("\r receivedtotalbytes:" + _receivedtotalBytes + " packetCount" + _receivedpacketscount);
+                        Thread.Sleep(2);
+                    }
+                }).Start();
+            
+            System.Windows.Forms.Application.Run();
         }
-        public void Update(object state)
+
+        void dt_Tick(object sender, EventArgs e)
+        {
+            Update();
+        }
+        
+        public void Update()
         {
             byte[] bts = new byte[] { 1 };
             _sendedPacketcount++;
