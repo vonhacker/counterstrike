@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<Database xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="organizer">
+  <_Tasks>
+    <Task>
+      <_SourcePath>D:\Documents and Settings\doru\My Documents\</_SourcePath>
+      <_Dirs>
+        <Dir>
+          <match>0</match>
+          <Path>D:\Documents and Settings\doru\My Documents\AfterEffects</Path>
+          <FileTypes>*.aep</FileTypes>
+        </Dir>
+        <Dir>
+          <match>0</match>
+          <Path>D:\Documents and Settings\doru\My Documents\sites</Path>
+          <FileTypes>*.php|*.fla|*.as</FileTypes>
+        </Dir>
+        <Dir>
+          <match>0</match>
+          <Path>D:\Documents and Settings\doru\My Documents\code</Path>
+          <FileTypes>*.cs|*.cpp</FileTypes>
+        </Dir>
+        <Dir>
+          <match>0</match>
+          <Path>D:\Documents and Settings\doru\My Documents\soft</Path>
+          <FileTypes>*.exe|*.zip|*.rar|*.msi|*.iso|*.r??|*.7z</FileTypes>
+        </Dir>
+        <Dir>
+          <match>0</match>
+          <Path>D:\Documents and Settings\doru\My Documents\video</Path>
+          <FileTypes>*.avi|*.flv|*.mov</FileTypes>
+        </Dir>
+        <Dir>
+          <match>0.4</match>
+          <Path>D:\Documents and Settings\doru\My Documents\music</Path>
+          <FileTypes>*.mp3</FileTypes>
+        </Dir>
+        <Dir>
+          <match>0.8</match>
+          <Path>D:\Documents and Settings\doru\My Documents\yiff</Path>
+          <FileTypes>*.jpg|*.png|*.gif</FileTypes>
+        </Dir>
+      </_Dirs>
+    </Task>
+  </_Tasks>
+</Database>

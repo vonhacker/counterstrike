@@ -1,0 +1,21 @@
+﻿<Database xmlns="Cleaner2">
+  <_Tasks>    
+    <Task>
+      <_directorya>../../CounterStrikeLive/</_directorya>
+      <_directoryb>cslive.zip</_directoryb>
+      <_pattern>\.dll|\\clientbin\\.+\.xap|\.exe|\.txt|\.xml|\.xaml|\.config|\.ini|\.resx|\.settings|\.html|\.htm|\.ico|\.js|\.bmp|\.css|\.asp|\.aspx|\.rtf|\.zip|Visual Studio|Microsoft|Opera|Winamp|mytemp|\.lnk|\.bat|\.suo|\.dbml|\.sitemap</_pattern>
+      <_pattern2>CounterStrikeLive\\|\\Obj\\|\.svn|log.txt</_pattern2>
+    </Task>
+    <!--<Task>
+      <_directorya>../Updater/</_directorya>
+      <_directoryb>updater.zip</_directoryb>      
+      <_pattern>\.dll|\.xap|\.exe|\.txt|\.xml|\.xaml|\.config|\.ini|\.resx|\.settings|\.html|\.htm|\.ico|\.js|\.bmp|\.css|\.asp|\.aspx|\.rtf|Visual Studio|Microsoft|Opera|Winamp|mytemp|\.lnk|\.bat|\.suo|\.dbml|\.sitemap</_pattern>
+      <_pattern2>\.svn|csliveServer|log.txt</_pattern2>
+    </Task>-->
+  </_Tasks>
+  
+  <!--<_pattern>
+    \.jpg|\.png|\.txt|\.xml|\.jpeg|\.gif|\.csproj|\.sln|\.cs|\.xaml|\.config|\.ini|\.fla|\.as|\.resx|\.settings|\.html|\.htm|\.ico|\.js|\.bmp|\.css|\.php|\.asp|\.aspx|\.rtf|Visual Studio|Microsoft|Opera|Winamp|mytemp|\.lnk|\.bat|\.suo|\.dbml|\.sitemap
+  </_pattern>-->
+</Database>
+ 
