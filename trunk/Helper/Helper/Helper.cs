@@ -36,12 +36,232 @@ using System.Web;
 
 
 
+
 namespace doru
 {
-#if(!SILVERLIGHT)
+
     namespace Vectors
     {
+#if(SILVERLIGHT)
+        public struct Vector
+        {
+            
+            public double X;
+            public double Y;
+            public Vector(double x, double y) { X = x; Y = y; }
 
+            public override bool Equals(object obj)
+            {
+                Vector other = (Vector)obj;
+                if (this.X == other.X)
+                {
+                    return (this.Y == other.Y);
+                }
+                return false;
+            }
+            
+
+            public override int GetHashCode()
+            {
+                return (this.X.GetHashCode() + this.Y.GetHashCode());
+            }
+
+            public void Normalize()
+            {
+                double num2 = (this.X * this.X) + (this.Y * this.Y);
+                double num = 1f / ((double)Math.Sqrt((double)num2));
+                this.X *= num;
+                this.Y *= num;
+            }
+
+            public static Vector Normalize(Vector value)
+            {
+                Vector vector;
+                double num2 = (value.X * value.X) + (value.Y * value.Y);
+                double num = 1f / ((double)Math.Sqrt((double)num2));
+                vector.X = value.X * num;
+                vector.Y = value.Y * num;
+                return vector;
+            }
+
+            public static void Normalize(ref Vector value, out Vector result)
+            {
+                double num2 = (value.X * value.X) + (value.Y * value.Y);
+                double num = 1f / ((double)Math.Sqrt((double)num2));
+                result.X = value.X * num;
+                result.Y = value.Y * num;
+            }
+
+            public static Vector Add(Vector value1, Vector value2)
+            {
+                Vector vector;
+                vector.X = value1.X + value2.X;
+                vector.Y = value1.Y + value2.Y;
+                return vector;
+            }
+
+            public static void Add(ref Vector value1, ref Vector value2, out Vector result)
+            {
+                result.X = value1.X + value2.X;
+                result.Y = value1.Y + value2.Y;
+            }
+
+            public static Vector Subtract(Vector value1, Vector value2)
+            {
+                Vector vector;
+                vector.X = value1.X - value2.X;
+                vector.Y = value1.Y - value2.Y;
+                return vector;
+            }
+
+            public static void Subtract(ref Vector value1, ref Vector value2, out Vector result)
+            {
+                result.X = value1.X - value2.X;
+                result.Y = value1.Y - value2.Y;
+            }
+
+            public static Vector Multiply(Vector value1, Vector value2)
+            {
+                Vector vector;
+                vector.X = value1.X * value2.X;
+                vector.Y = value1.Y * value2.Y;
+                return vector;
+            }
+
+            public static void Multiply(ref Vector value1, ref Vector value2, out Vector result)
+            {
+                result.X = value1.X * value2.X;
+                result.Y = value1.Y * value2.Y;
+            }
+
+            public static Vector Multiply(Vector value1, double scaleFactor)
+            {
+                Vector vector;
+                vector.X = value1.X * scaleFactor;
+                vector.Y = value1.Y * scaleFactor;
+                return vector;
+            }
+
+            public static void Multiply(ref Vector value1, double scaleFactor, out Vector result)
+            {
+                result.X = value1.X * scaleFactor;
+                result.Y = value1.Y * scaleFactor;
+            }
+
+            public static Vector Divide(Vector value1, Vector value2)
+            {
+                Vector vector;
+                vector.X = value1.X / value2.X;
+                vector.Y = value1.Y / value2.Y;
+                return vector;
+            }
+
+            public static void Divide(ref Vector value1, ref Vector value2, out Vector result)
+            {
+                result.X = value1.X / value2.X;
+                result.Y = value1.Y / value2.Y;
+            }
+
+            public static Vector Divide(Vector value1, double divider)
+            {
+                Vector vector;
+                double num = 1f / divider;
+                vector.X = value1.X * num;
+                vector.Y = value1.Y * num;
+                return vector;
+            }
+
+            public static void Divide(ref Vector value1, double divider, out Vector result)
+            {
+                double num = 1f / divider;
+                result.X = value1.X * num;
+                result.Y = value1.Y * num;
+            }
+
+            public static Vector operator -(Vector value)
+            {
+                Vector vector;
+                vector.X = -value.X;
+                vector.Y = -value.Y;
+                return vector;
+            }
+
+            public static bool operator ==(Vector value1, Vector value2)
+            {
+                if (value1.X == value2.X)
+                {
+                    return (value1.Y == value2.Y);
+                }
+                return false;
+            }
+
+            public static bool operator !=(Vector value1, Vector value2)
+            {
+                if (value1.X == value2.X)
+                {
+                    return (value1.Y != value2.Y);
+                }
+                return true;
+            }
+
+            public static Vector operator +(Vector value1, Vector value2)
+            {
+                Vector vector;
+                vector.X = value1.X + value2.X;
+                vector.Y = value1.Y + value2.Y;
+                return vector;
+            }
+
+            public static Vector operator -(Vector value1, Vector value2)
+            {
+                Vector vector;
+                vector.X = value1.X - value2.X;
+                vector.Y = value1.Y - value2.Y;
+                return vector;
+            }
+
+            public static Vector operator *(Vector value1, Vector value2)
+            {
+                Vector vector;
+                vector.X = value1.X * value2.X;
+                vector.Y = value1.Y * value2.Y;
+                return vector;
+            }
+
+            public static Vector operator *(Vector value, double scaleFactor)
+            {
+                Vector vector;
+                vector.X = value.X * scaleFactor;
+                vector.Y = value.Y * scaleFactor;
+                return vector;
+            }
+
+            public static Vector operator *(double scaleFactor, Vector value)
+            {
+                Vector vector;
+                vector.X = value.X * scaleFactor;
+                vector.Y = value.Y * scaleFactor;
+                return vector;
+            }
+
+            public static Vector operator /(Vector value1, Vector value2)
+            {
+                Vector vector;
+                vector.X = value1.X / value2.X;
+                vector.Y = value1.Y / value2.Y;
+                return vector;
+            }
+
+            public static Vector operator /(Vector value1, double divider)
+            {
+                Vector vector;
+                double num = 1f / divider;
+                vector.X = value1.X * num;
+                vector.Y = value1.Y * num;
+                return vector;
+            }
+        }
+#endif
         public static class VectorExtensions
         {
             public static void Multiply(ref Vector value1, double scaleFactor, out Vector result)
@@ -476,7 +696,7 @@ namespace doru
 
         }
     }
-#endif
+
     //[DebuggerStepThrough]
     [Obsolete("Use clinq")]
     public class BindableList<T> : ObservableCollection<T>
@@ -594,104 +814,40 @@ namespace doru
             return _List.GetEnumerator();
         }
     }
-    public class NotifyPropertyChanged : INotifyPropertyChanged
+    public class NotifyPropertyChanged : DependencyObject, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        public Dictionary<string, object> _Vars = new Dictionary<string, object>();
-        public void Set(string s, object o)
+        protected void OnPropertyChanged(string s)
         {
-            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(s));
-            if (_Vars.ContainsKey(s)) _Vars[s] = o;
+            
+            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(s));            
         }
-        public T Get<T>(string s) where T : new()
+        private Dictionary<string, DependencyProperty> _Vars = new Dictionary<string, DependencyProperty>();
+        public void Set<T>(string s, T o)
+        {
+            if (!_Vars.ContainsKey(s)) Create(s, o);
+            SetValue(_Vars[s], o);
+            OnPropertyChanged(s);
+        }
+
+        private void Create<T>(string s, T o)
+        {            
+            DependencyProperty dp = DependencyProperty.Register(s, typeof(T), this.GetType(), new PropertyMetadata());
+            _Vars.Add(s, dp);
+        }
+        public T Get<T>(string s) 
         {
             if (_Vars.ContainsKey(s))
-                return (T)_Vars[s];
+                return  (T)GetValue(_Vars[s]);
             else
             {
-                T t = new T();
-                _Vars[s] = t;
+                T t = default(T); //= Activator.CreateInstance<T>();                
+                Create(s, t);
                 return t;
             }
         }
     }
-    public class BindableGrid : System.Windows.Controls.Grid
-    {
-        public INotifyCollectionChanged Source
-        {
-            get { return (INotifyCollectionChanged)GetValue(SourceProperty); }
-            set { SetValue(SourceProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for Source.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty SourceProperty =
-            DependencyProperty.Register("Source", typeof(INotifyCollectionChanged), typeof(Grid), new PropertyMetadata(OnSourceSet));
-
-        public static void OnSourceSet(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            BindableGrid _Grid = ((BindableGrid)d);
-            foreach (UIElement ui in (IEnumerable)_Grid.Source)
-                _Grid.Children.Add(ui);
-
-            _Grid.Source.CollectionChanged += new NotifyCollectionChangedEventHandler(_Grid.Source_CollectionChanged);
-        }
-
-        void Source_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (UIElement ui in e.NewItems)
-                        Children.Add(ui);
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (UIElement ui in e.OldItems)
-                        Children.Add(ui);
-                    break;
-            }
-        }
-
-    }
-    public class BindableCanvas : System.Windows.Controls.Canvas
-    {
-
-        public INotifyCollectionChanged Source
-        {
-            get { return (INotifyCollectionChanged)GetValue(SourceProperty); }
-            set { SetValue(SourceProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for Source.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty SourceProperty =
-            DependencyProperty.Register("Source", typeof(INotifyCollectionChanged), typeof(Canvas), new PropertyMetadata(OnSourceSet));
-
-        public static void OnSourceSet(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            BindableCanvas _Canvas = ((BindableCanvas)d);
-            foreach (UIElement ui in (IEnumerable)_Canvas.Source)
-                _Canvas.Children.Add(ui);
-
-            _Canvas.Source.CollectionChanged += new NotifyCollectionChangedEventHandler(_Canvas.Source_CollectionChanged);
-        }
-
-        void Source_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (UIElement ui in e.NewItems)
-                        Children.Add(ui);
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (UIElement ui in e.OldItems)
-                        Children.Add(ui);
-                    break;
-            }
-        }
-
-    }
+    
     public abstract class Encoding : System.Text.Encoding
     {
 #if (!SILVERLIGHT)
@@ -745,6 +901,17 @@ namespace doru
     //[DebuggerStepThrough]    
     public static class Helper
     {
+        //public static object OnCoerceValueCallback(DependencyObject d, object baseValue)
+        //{
+        //    d.GetType().InvokeMember("_Text", System.Reflection.BindingFlags.SetProperty, Type.DefaultBinder, d, new object[] { baseValue});
+        //    return baseValue;
+        //}
+#if(!SILVERLIGHT)
+        public static void OnPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            d.GetType().InvokeMember(e.Property.Name, System.Reflection.BindingFlags.SetProperty, Type.DefaultBinder, d, new object[] { e.NewValue });
+        }        
+#endif
         public static int _DefaultSilverlightPort = 4530;
         [Obsolete]
         public static void OpenZip(Stream fs, Dictionary<string, Stream> _Resources) { LoadResourcesFromZip(fs, _Resources); }
@@ -1116,9 +1283,13 @@ namespace doru
 
     }
 
-    //[DebuggerStepThrough]
+    [DebuggerStepThrough]
     public static class Extensions
     {
+        public static string[] SplitString(this string a)
+        {
+            return a.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+        }
         public static void SetX(this UIElement fw,double x)
         {
             Canvas.SetLeft(fw,x);
@@ -1242,7 +1413,50 @@ namespace doru
         }
         #endregion
 #endif
+
         #region Stream
+
+        public static bool BigEndian;
+        private static byte[] CV(this Byte[] bts)
+        {
+            if (BigEndian) return bts.ReverseA();
+            else return bts;
+        }
+        public static Int16 ReadInt16(this Stream s)
+        {
+            return BitConverter.ToInt16(s.Read(2).CV(), 0);
+        }
+        public static UInt32 ReadUInt32(this Stream s)
+        {
+            return BitConverter.ToUInt32(s.Read(4).CV(), 0);
+        }
+        public static UInt16 ReadUInt16(this Stream s)
+        {
+            return BitConverter.ToUInt16(s.Read(2).CV(), 0);
+        }
+        public static float ReadFloat(this Stream s)
+        {
+            return BitConverter.ToSingle(s.Read(4).CV(), 0);
+        }
+        public static void Write(this Stream s, Int16 _int)
+        {
+            s.Write(BitConverter.GetBytes(_int).CV());
+        }
+        public static void WriteUint16(this Stream s, UInt16 _int) { Write(s, _int); }
+        public static void Write(this Stream s, UInt16 _int)
+        {
+            s.Write(BitConverter.GetBytes(_int).CV());
+        }
+        public static void WriteUint32(this Stream s, UInt32 _int) { Write(s, _int); }
+        public static void Write(this Stream s, UInt32 str)
+        {
+            s.Write(BitConverter.GetBytes(str).CV());
+        }
+        public static void Write(this Stream s, float str)
+        {
+            s.Write(BitConverter.GetBytes(str).CV());
+        }
+
         public static byte[] Cut(this Stream source, string pattern)
         {
             return Cut(source, Encoding.Default.GetBytes(pattern));
@@ -1271,6 +1485,7 @@ namespace doru
         {
             return _Stream.Cut("\n").ToStr().TrimEnd('\r', '\n');
         }
+
         public static byte[] Read(this Stream _Stream)
         {
             byte[] buffer = new byte[2048];
@@ -1289,51 +1504,7 @@ namespace doru
             if (_bytes.Length == 0) throw new Exception();
             _Stream.Write(_bytes, 0, _bytes.Length);
         }
-#if(BIGENDIAN)
-        public static UInt32 ReadUInt32(this Stream _Stream)
-        {
-            return BitConverter.ToUInt32(_Stream.Read(4).ReverseA(), 0);
-        }
-        public static UInt16 ReadUInt16(this Stream _Stream)
-        {
-            return BitConverter.ToUInt16(_Stream.Read(2).ReverseA(), 0);
-        }
-        public static void WriteUint32(this Stream _Stream, UInt32 i)
-        {
-            _Stream.Write(BitConverter.GetBytes(i).ReverseA());
-        }
-        public static void WriteUint16(this Stream _Stream, UInt16 i)
-        {
-            _Stream.Write(BitConverter.GetBytes(i).ReverseA(2), 0, 2);
-        }
 
-#else
-
-        public static Int16 ReadInt16(this Stream s)
-        {
-            return BitConverter.ToInt16(s.Read(2), 0);
-        }
-        public static UInt16 ReadUInt16(this Stream s)
-        {
-            return BitConverter.ToUInt16(s.Read(2), 0);
-        }
-        public static float ReadFloat(this Stream s)
-        {
-            return BitConverter.ToSingle(s.Read(4), 0);
-        }
-        public static void Write(this Stream s, Int16 _int)
-        {
-            s.Write(BitConverter.GetBytes(_int));
-        }
-        public static void Write(this Stream s, UInt16 _int)
-        {
-            s.Write(BitConverter.GetBytes(_int));
-        }
-        public static void Write(this Stream s, float str)
-        {
-            s.Write(BitConverter.GetBytes(str));
-        }
-#endif
         public static void Write(this Stream s, string _str)
         {
             s.Write(_str.ToBytes());
@@ -1363,6 +1534,7 @@ namespace doru
             return _bytes.Cut(_bytes.Length);
             //_Stream.Read(_b
         }
+        
         public static byte[] Read(this Stream _Stream, int length)
         {
             if (length == 0) throw new Exception("length == 0");
@@ -1748,6 +1920,7 @@ namespace doru
             }
             return _bytes2;
         }
+
         public static string Substr(this string s, string a)
         {
             return s.Substring(0, s.IndexOf(a));
@@ -2909,7 +3082,7 @@ namespace doru
         public static bool _RedirectOutPut = true;
         public static void Setup(string s)
         {
-            if (Directory.Exists("./logs/")) Directory.Delete("logs", true);
+            
             if (done == true) return;
             done = true;
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
@@ -2920,7 +3093,9 @@ namespace doru
                 Console.Beep(100, 10);
                 _Process.Kill();
             }
-            Directory.SetCurrentDirectory(s);
+            
+            Directory.SetCurrentDirectory(Assembly.GetEntryAssembly().Location+"../../"+s);
+            if (Directory.Exists("./logs/")) Directory.Delete("logs", true);
             Trace.Listeners.Add(new TextWriterTraceListener("log.txt"));
             if (Console.LargestWindowHeight != 0)
             {
@@ -2971,7 +3146,7 @@ namespace doru
         public static void Assert(bool b, string s)
         {
             if (!b) Debugger.Break();
-        }        
+        }
         public static void Assert(bool b)
         {
             if (!b) Debugger.Break();
@@ -3288,5 +3463,27 @@ namespace doru
         }
 #endif
     }
-
+    
+    //namespace BigEndian
+    //{
+    //    public static class Extensions
+    //    {
+    //        public static UInt32 ReadUInt32(this Stream _Stream)
+    //        {
+    //            return BitConverter.ToUInt32(_Stream.Read(4).ReverseA(), 0);
+    //        }
+    //        public static UInt16 ReadUInt16(this Stream _Stream)
+    //        {
+    //            return BitConverter.ToUInt16(_Stream.Read(2).ReverseA(), 0);
+    //        }
+    //        public static void WriteUint32(this Stream _Stream, UInt32 i)
+    //        {
+    //            _Stream.Write(BitConverter.GetBytes(i).ReverseA());
+    //        }
+    //        public static void WriteUint16(this Stream _Stream, UInt16 i)
+    //        {
+    //            _Stream.Write(BitConverter.GetBytes(i).ReverseA(2), 0, 2);
+    //        }
+    //    }
+    //}
 }
