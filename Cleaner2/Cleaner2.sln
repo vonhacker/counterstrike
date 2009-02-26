@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cleaner2", "Cleaner2\Cleaner2.csproj", "{D2B571A0-218D-4798-874B-AD8204125C27}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scheduler", "Scheduler\Scheduler.csproj", "{D13F559C-0761-4233-ACCE-54658C32FEE7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helper", "..\Helper\Helper.csproj", "{4DE8D8C1-6F75-42AD-AA46-BD35BB71352A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Organizer", "Organizer\Organizer.csproj", "{771CDF02-D71E-47D5-88BD-56FC702BD2F0}"
+EndProject
+Global
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D2B571A0-218D-4798-874B-AD8204125C27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2B571A0-218D-4798-874B-AD8204125C27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2B571A0-218D-4798-874B-AD8204125C27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2B571A0-218D-4798-874B-AD8204125C27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D13F559C-0761-4233-ACCE-54658C32FEE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D13F559C-0761-4233-ACCE-54658C32FEE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D13F559C-0761-4233-ACCE-54658C32FEE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D13F559C-0761-4233-ACCE-54658C32FEE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DE8D8C1-6F75-42AD-AA46-BD35BB71352A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DE8D8C1-6F75-42AD-AA46-BD35BB71352A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DE8D8C1-6F75-42AD-AA46-BD35BB71352A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DE8D8C1-6F75-42AD-AA46-BD35BB71352A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{771CDF02-D71E-47D5-88BD-56FC702BD2F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{771CDF02-D71E-47D5-88BD-56FC702BD2F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{771CDF02-D71E-47D5-88BD-56FC702BD2F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{771CDF02-D71E-47D5-88BD-56FC702BD2F0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
