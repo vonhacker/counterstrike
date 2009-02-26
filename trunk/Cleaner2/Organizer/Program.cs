@@ -29,7 +29,7 @@ namespace Organizer
                 new Dir { Path = @"D:\Documents and Settings\doru\My Documents\AfterEffects",  FileTypes = @"\.aep"},                
                 new Dir { Path = @"D:\Documents and Settings\doru\My Documents\code", FileTypes = @"\.cs|\.cpp"},
                 new Dir { Path = @"D:\Documents and Settings\doru\My Documents\soft", FileTypes = @"\.exe|\.zip|\.rar|\.msi|\.iso|\.r01|\.7z|\.dmg"},
-                new Dir { Path = @"D:\Documents and Settings\doru\My Documents\yiff", FileTypes = @"\.jpg|\.png|\.gif|\.swf" , match = .8f},
+                new Dir { Path = @"D:\Documents and Settings\doru\My Documents\pics", FileTypes = @"\.jpg|\.png|\.gif|\.swf" , match = .8f},
                 new Dir { Path = @"D:\Documents and Settings\doru\My Documents\video", FileTypes = @"\.avi|\.flv|\.mov"},                                                
                 new Dir { Path = @"D:\Documents and Settings\doru\My Documents\music", FileTypes = @"\.mp3" , match = .4f},                 
                 new Dir { Path = @"D:\Documents and Settings\doru\My Documents\sites",FileTypes = @"\.php|\.fla|\.as|\.html"},
