@@ -25,6 +25,7 @@ namespace Server
                 {
                     while (true)
                     {
+                        
                         byte[] bytes = _Socket.Receive();
                         _receivedtotalBytes += bytes.Length;
                         _receivedpacketscount++;
@@ -46,7 +47,7 @@ namespace Server
             byte[] bts = new byte[] { 1 };
             _sendedPacketcount++;
             _sendedtotalbytes += bts.Length;
-            _Socket.Send(bts);
+            _Socket.Send(bts);            
             Logging._Title = ("sendedtotalbytes:" + _sendedtotalbytes + " packetCount" + _sendedPacketcount);
             Thread.Sleep(2);
         }
