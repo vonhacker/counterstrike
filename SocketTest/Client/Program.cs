@@ -16,7 +16,8 @@ namespace Client
         }
         public Program()
         {
-            Socket _Socket = Helper.Connect("localhost", Helper._DefaultSilverlightPort);
+            
+            Socket _Socket = new TcpClient("localhost", Helper._DefaultSilverlightPort).Client;
             new Server.Client(_Socket);
         }
 
