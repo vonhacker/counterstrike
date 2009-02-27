@@ -831,8 +831,8 @@ namespace doru
         }
 
         private void Create<T>(string s, T o)
-        {            
-            DependencyProperty dp = DependencyProperty.Register(s, typeof(T), this.GetType(), new PropertyMetadata());
+        {               
+            DependencyProperty dp = DependencyProperty.Register(s, typeof(T), this.GetType(),new PropertyMetadata(o));
             _Vars.Add(s, dp);
         }
         public T Get<T>(string s) 
@@ -841,7 +841,11 @@ namespace doru
                 return  (T)GetValue(_Vars[s]);
             else
             {
-                T t = default(T); //= Activator.CreateInstance<T>();                
+                T t;
+                try
+                {
+                    t = Activator.CreateInstance<T>();
+                } catch { t = default(T); }
                 Create(s, t);
                 return t;
             }
@@ -1316,6 +1320,30 @@ namespace doru
 
         }
 #if(!SILVERLIGHT)
+        public static byte[] Receive(this Socket _Socket)
+        {
+
+            byte[] _buffer = new byte[99999];
+            int count = _Socket.Receive(_buffer);
+            if (count == 0) throw new SocketException();
+            return _buffer.Substr(count);
+
+        }
+        public static byte[] Receive(this Socket _Socket, int length)
+        {
+            byte[] _buffer = new byte[length];
+            using (MemoryStream _MemoryStream = new MemoryStream())
+            {
+                while (true)
+                {
+                    int count = _Socket.Receive(_buffer, length, 0);
+                    if (count == 0) throw new ExceptionA("Read Socket failed");
+                    _MemoryStream.Write(_buffer, 0, count);
+                    length -= count;
+                    if (length == 0) return _MemoryStream.ToArray();
+                }
+            }
+        }
         public static void SetSource(this BitmapImage bm, Stream st)
         {
             bm.BeginInit();
@@ -1359,30 +1387,8 @@ namespace doru
             if (count == 0) throw new ExceptionA();
             return Encoding.Default.GetString(_buffer.Substr(count));
         }
-        public static byte[] Receive(this Socket _Socket)
-        {
 
-            byte[] _buffer = new byte[99999];
-            int count = _Socket.Receive(_buffer);
-            if (count == 0) throw new SocketException();
-            return _buffer.Substr(count);
-
-        }
-        public static byte[] Receive(this Socket _Socket, int length)
-        {
-            byte[] _buffer = new byte[length];
-            using (MemoryStream _MemoryStream = new MemoryStream())
-            {
-                while (true)
-                {
-                    int count = _Socket.Receive(_buffer, length, 0);
-                    if (count == 0) throw new ExceptionA("Read Socket failed");
-                    _MemoryStream.Write(_buffer, 0, count);
-                    length -= count;
-                    if (length == 0) return _MemoryStream.ToArray();
-                }
-            }
-        }
+        
 #else
         #region
         public static void Send(this Socket _Socket, byte[] buffer) { Send(_Socket, buffer, 0, buffer.Length); }
