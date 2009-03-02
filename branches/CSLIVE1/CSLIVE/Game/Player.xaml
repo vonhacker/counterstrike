@@ -1,0 +1,8 @@
+﻿<a:GameObj x:Class="CSLIVE.Game.Player" xmlns:a="clr-namespace:CSLIVE.Game.Controls"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Canvas x:Name="LayoutRoot">          
+        <ContentControl x:Name="_GunCurrentAnimationContentControl"></ContentControl>
+        <ContentControl x:Name="_PlayerCurrentAnimationContentControl"></ContentControl>
+    </Canvas>
+</a:GameObj>

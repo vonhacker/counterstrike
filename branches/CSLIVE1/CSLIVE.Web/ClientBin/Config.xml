@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<Config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Rooms>
+    <RoomDb xsi:type="BossRoom">
+      <MapName>BossServer</MapName>
+      <_PlayerCount>0</_PlayerCount>
+    </RoomDb>
+    <RoomDb xsi:type="CSRoom">
+      <_PlayerCount>0</_PlayerCount>
+      <MapName>estate</MapName>
+      <MapPath>estate.zip</MapPath>
+    </RoomDb>
+  </Rooms>
+  <_ServerName>CounterStrikeLive Server Test</_ServerName>
+  <_BossServerIp>localhost:4530</_BossServerIp>
+  <_WebAllowedIps>.*</_WebAllowedIps>
+  <_WebRedirect>http://cslive.mindswitch.ru/cs/CounterStrikeLiveTestPage.html</_WebRedirect>
+  <_WebPort>5300</_WebPort>
+  <_WebRoot>./</_WebRoot>
+  <_WebDefaultPage>./CSLIVE.Web/CSLIVETestPage.html</_WebDefaultPage>
+  <_GamePort>4530</_GamePort>
+  <_Irc>85.202.112.192:4534</_Irc>
+  <_IrcRoom>#cslive</_IrcRoom>
+</Config>
