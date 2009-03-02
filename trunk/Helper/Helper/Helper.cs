@@ -698,7 +698,7 @@ namespace doru
     }
 
     //[DebuggerStepThrough]
-    [Obsolete("Use clinq")]
+    
     public class BindableList<T> : ObservableCollection<T>
     {
 
@@ -814,13 +814,55 @@ namespace doru
             return _List.GetEnumerator();
         }
     }
+
+    [Obsolete]
+    public static class NotifyPropertyChangedExt
+    {
+        //class cs
+        //{
+        //    public string _prop;
+        //    public object _c;
+        //}
+        private static Dictionary<string, DependencyProperty> _Vars = new Dictionary<string, DependencyProperty>();
+        public static void Set<T>(this DependencyObject _This, string s2, T o) 
+        {
+            string s = _This.GetHashCode() + s2;
+            if (!_Vars.ContainsKey(s)) _This.Create(s, o);
+            _This.SetValue(_Vars[s], o);
+        }
+        private static void Create<T>(this DependencyObject _This, string s2, T o) 
+        {
+            string s = s2;
+            DependencyProperty dp = DependencyProperty.Register(s, typeof(T), _This.GetType(), new PropertyMetadata(o));
+            _Vars.Add(s, dp);
+        }
+
+        public static T Get<T>(this DependencyObject _This, string s2) 
+        {
+            string s = _This.GetHashCode() + s2;
+            if (_Vars.ContainsKey(s))
+                return (T)_This.GetValue(_Vars[s]);
+            else
+            {
+                T t;
+                try
+                {
+                    t = Activator.CreateInstance<T>();
+                } catch { t = default(T); }
+                _This.Create(s, t);
+                return t;
+            }
+        }
+
+    }
+    [Obsolete("use NotifyPropertyChangedExt")]
     public class NotifyPropertyChanged : DependencyObject, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string s)
         {
-            
-            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(s));            
+
+            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(s));
         }
         private Dictionary<string, DependencyProperty> _Vars = new Dictionary<string, DependencyProperty>();
         public void Set<T>(string s, T o)
@@ -831,14 +873,14 @@ namespace doru
         }
 
         private void Create<T>(string s, T o)
-        {               
-            DependencyProperty dp = DependencyProperty.Register(s, typeof(T), this.GetType(),new PropertyMetadata(o));
+        {
+            DependencyProperty dp = DependencyProperty.Register(s, typeof(T), this.GetType(), new PropertyMetadata(o));
             _Vars.Add(s, dp);
         }
-        public T Get<T>(string s) 
+        public T Get<T>(string s)
         {
             if (_Vars.ContainsKey(s))
-                return  (T)GetValue(_Vars[s]);
+                return (T)GetValue(_Vars[s]);
             else
             {
                 T t;
@@ -851,7 +893,6 @@ namespace doru
             }
         }
     }
-    
     public abstract class Encoding : System.Text.Encoding
     {
 #if (!SILVERLIGHT)
@@ -903,13 +944,11 @@ namespace doru
         }
     }
     //[DebuggerStepThrough]    
+
+
     public static class Helper
     {
-        //public static object OnCoerceValueCallback(DependencyObject d, object baseValue)
-        //{
-        //    d.GetType().InvokeMember("_Text", System.Reflection.BindingFlags.SetProperty, Type.DefaultBinder, d, new object[] { baseValue});
-        //    return baseValue;
-        //}
+        
 #if(!SILVERLIGHT)
         public static void OnPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -1287,7 +1326,7 @@ namespace doru
 
     }
 
-    [DebuggerStepThrough]
+    
     public static class Extensions
     {
         public static string[] SplitString(this string a)
@@ -1402,13 +1441,13 @@ namespace doru
         public static void Show(this Control _Control)        ///<sumary> create</sumary>
         {
             _Control.Visibility = Visibility.Visible;
-            _Control.IsEnabled = true;
+            //_Control.IsEnabled = true;
             _Control.Focus();
         }
         public static void Hide(this Control _Control)
         {
             _Control.Visibility = Visibility.Collapsed;
-            _Control.IsEnabled = false;
+            //_Control.IsEnabled = false;
         }
         public static void Toggle(this Control _Control)
         {
@@ -1927,9 +1966,13 @@ namespace doru
             return _bytes2;
         }
 
-        public static string Substr(this string s, string a)
+        //public static string Substr(this string s, string a)
+        //{
+        //    return s.Substring(0, s.IndexOf(a));
+        //}
+        public static string Strstr(this string s, string a)
         {
-            return s.Substring(0, s.IndexOf(a));
+            return s=s.Substring(s.IndexOf(a)+a.Length,s.Length- a.Length);
         }
         public static byte[] Cut(this byte[] source, int start)
         {
