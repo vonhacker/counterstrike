@@ -95,7 +95,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Helper\HelperSL.csproj">
+    <ProjectReference Include="..\..\Helper\Helper\HelperSL.csproj">
       <Project>{443B377E-8155-43E3-821D-429BFB595770}</Project>
       <Name>HelperSL</Name>
     </ProjectReference>
