@@ -1,0 +1,185 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{5C497995-C328-4CCC-A898-ED262FA09087}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CSLIVE.ContentCompiler</RootNamespace>
+    <AssemblyName>ContentCompiler</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;ZIPLIB</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.5.452, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Desktop\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\phoenix_dead\phoenix_dead0000.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0001.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0002.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0003.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0004.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0005.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0006.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0007.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0008.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0009.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0010.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0011.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0012.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0013.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0014.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0015.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0016.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0017.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0018.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0019.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0020.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0021.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0022.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0023.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0024.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0025.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0026.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0027.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0028.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0029.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0030.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0031.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0032.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0000.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0001.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0002.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0003.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0004.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0005.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0006.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0007.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0008.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0009.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0010.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0011.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0012.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0013.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0014.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0015.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0016.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0017.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0018.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0019.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0020.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0021.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0022.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0023.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0024.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0025.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0026.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0027.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0028.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0029.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0030.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0031.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0032.png" />
+    <Content Include="Content\Phoenix_run_left\Phoenix_run_left0000.png" />
+    <Content Include="Content\Phoenix_run_left\Phoenix_run_left0001.png" />
+    <Content Include="Content\Phoenix_run_left\Phoenix_run_left0002.png" />
+    <Content Include="Content\Phoenix_run_left\Phoenix_run_left0003.png" />
+    <Content Include="Content\Phoenix_run_left\Phoenix_run_left0004.png" />
+    <Content Include="Content\Phoenix_run_left\Phoenix_run_left0005.png" />
+    <Content Include="Content\Phoenix_run_left\Phoenix_run_left0006.png" />
+    <Content Include="Content\Phoenix_run_left\Phoenix_run_left0007.png" />
+    <Content Include="Content\Phoenix_run_left\Phoenix_run_left0008.png" />
+    <Content Include="Content\Phoenix_run_left\Phoenix_run_left0009.png" />
+    <Content Include="Content\Phoenix_run_left\Phoenix_run_left0010.png" />
+    <Content Include="Content\Phoenix_run_left\Phoenix_run_left0011.png" />
+    <Content Include="Content\Phoenix_run_left\Phoenix_run_left0012.png" />
+    <Content Include="Content\Phoenix_run_left\Phoenix_run_left0013.png" />
+    <Content Include="Content\Phoenix_run_left\Phoenix_run_left0014.png" />
+    <Content Include="Content\Phoenix_run_left\Phoenix_run_left0015.png" />
+    <Content Include="Content\Phoenix_run_left\Phoenix_run_left0016.png" />
+    <Content Include="Content\Phoenix_run_right\Phoenix_run_right0000.png" />
+    <Content Include="Content\Phoenix_run_right\Phoenix_run_right0001.png" />
+    <Content Include="Content\Phoenix_run_right\Phoenix_run_right0002.png" />
+    <Content Include="Content\Phoenix_run_right\Phoenix_run_right0003.png" />
+    <Content Include="Content\Phoenix_run_right\Phoenix_run_right0004.png" />
+    <Content Include="Content\Phoenix_run_right\Phoenix_run_right0005.png" />
+    <Content Include="Content\Phoenix_run_right\Phoenix_run_right0006.png" />
+    <Content Include="Content\Phoenix_run_right\Phoenix_run_right0007.png" />
+    <Content Include="Content\Phoenix_run_right\Phoenix_run_right0008.png" />
+    <Content Include="Content\Phoenix_run_right\Phoenix_run_right0009.png" />
+    <Content Include="Content\Phoenix_run_right\Phoenix_run_right0010.png" />
+    <Content Include="Content\Phoenix_run_right\Phoenix_run_right0011.png" />
+    <Content Include="Content\Phoenix_run_right\Phoenix_run_right0012.png" />
+    <Content Include="Content\Phoenix_run_right\Phoenix_run_right0013.png" />
+    <Content Include="Content\Phoenix_run_right\Phoenix_run_right0014.png" />
+    <Content Include="Content\Phoenix_run_right\Phoenix_run_right0015.png" />
+    <Content Include="Content\Phoenix_run_right\Phoenix_run_right0016.png" />
+    <Content Include="Content\Phoenix_stay\Phoenix_run_right0000.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Content\phoenix_dead\Thumbs.db" />
+    <None Include="Content\phoenix_run_back\Thumbs.db" />
+    <None Include="Content\Phoenix_run_right\Thumbs.db" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Helper\Helper.csproj">
+      <Project>{4DE8D8C1-6F75-42AD-AA46-BD35BB71352A}</Project>
+      <Name>Helper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CSLIVE.Common\CSLIVE.Common.csproj">
+      <Project>{D66EA292-8A8B-41BA-9DFE-F926F85AB880}</Project>
+      <Name>CSLIVE.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
