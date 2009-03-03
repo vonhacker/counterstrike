@@ -155,7 +155,7 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Helper\Helper.csproj">
+    <ProjectReference Include="..\..\Helper\Helper\Helper.csproj">
       <Project>{4DE8D8C1-6F75-42AD-AA46-BD35BB71352A}</Project>
       <Name>Helper</Name>
     </ProjectReference>
