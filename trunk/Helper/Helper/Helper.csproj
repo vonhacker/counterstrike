@@ -36,6 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.5.452, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL" />
+    <Reference Include="ManagedWinapi, Version=0.3.0.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="PresentationCore">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -67,12 +68,17 @@
     <Compile Include="Helper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ContinuousLinq.dll" />
-    <Content Include="ICSharpCode.SharpZipLib.dll" />
-    <Content Include="SharpZipLib.dll" />
-    <Content Include="WPFToolkit.Design.dll" />
-    <Content Include="WPFToolkit.dll" />
-    <Content Include="WPFToolkit.VisualStudio.Design.dll" />
+    <Content Include="dlls\ContinuousLinq.dll" />
+    <Content Include="dlls\ICSharpCode.SharpZipLib.dll" />
+    <Content Include="dlls\ManagedWinapi.dll" />
+    <Content Include="dlls\ManagedWinapiNativeHelper.dll" />
+    <Content Include="dlls\SharpZipLib.dll" />
+    <Content Include="dlls\WPFToolkit.Design.dll" />
+    <Content Include="dlls\WPFToolkit.dll" />
+    <Content Include="dlls\WPFToolkit.VisualStudio.Design.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dlls\ManagedWinapi.chm" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
