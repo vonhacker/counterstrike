@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="CSLIVE.Game.Game"    
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"               
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Background="Blue" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"              
+    xmlns:Local="clr-namespace:CSLIVE.Game.Controls"
+    mc:Ignorable="d"
+    d:DesignWidth="1024" d:DesignHeight="768">
+    <Grid Background="Azure">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.505*"/>
+            <RowDefinition Height="0.495*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.473*"/>
+            <ColumnDefinition Width="0.527*"/>
+        </Grid.ColumnDefinitions>
+
+        <Canvas x:Name="RootLayout" Grid.ColumnSpan="2" Grid.RowSpan="2">
+            <Canvas.RenderTransform>
+                <TransformGroup>
+                    <RotateTransform x:Name="_RotateTransform"></RotateTransform>
+                    <ScaleTransform x:Name="_ScaleTransform"></ScaleTransform>
+                    <TranslateTransform x:Name="_TranslateTransform"></TranslateTransform>
+                </TransformGroup>
+            </Canvas.RenderTransform>
+            <ContentControl  x:Name="_MapContentControl" />
+            <Canvas x:Name="_PlayersCanvas" />
+            <Canvas x:Name="_AnimatedSpritesCanvas" />
+            <Rectangle Height="20" Width="20" Fill="Blue" Stroke="#FF000000" Canvas.Left="481" Canvas.Top="368" d:IsHidden="True"/>
+        </Canvas>
+        <TextBlock x:Name="_KillTextBlock" Text="{Binding Path=_KillText}" Margin="-8,0,8,0" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Height="28"/>
+        
+        <Local:TeamSelect x:Name="_TeamSelect" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="-241,-193,0,93" Grid.Row="1" Grid.Column="1" d:LayoutOverrides="Height"/>
+
+    </Grid>
+</UserControl>
