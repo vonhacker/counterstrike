@@ -93,9 +93,12 @@ namespace CSLIVE.Game
         
         public void OnTeamSelected(Player.Team _Team, Player.PlayerModel _PlayerModel)
         {
+            
             _LocalClient._PlayerModel = _PlayerModel;
             _LocalClient._Team = Player.Team.terr;
             _LocalClient._PlayerState = Client.PlayerState.alive;
+            _LocalClient._StartPosX = _Map.GetPos(_Team).X;
+            _LocalClient._StartPosY = _Map.GetPos(_Team).Y;
         }
 
         public string _KillText { get { return _KillTextBlock.Text; } set { _KillTextBlock.Text = value; } }
@@ -226,12 +229,11 @@ namespace CSLIVE.Game
     public class PerspCamera : Camera
     {
         public GameObj _GameObj;
-        public int _distance = 2;
+        public int _distance = 1200;
         public override void Update()
         {
             base.Update();
-            //_FreeViewPos.GetX = _Pos.GetX;
-            //_FreeViewPos.GetY = _Pos.GetY;
+            
             double _mousex = (Page._Mouse.X / _Game._Width) - .5;
             double _mousey = (Page._Mouse.Y / _Game._Height) - .5;
 

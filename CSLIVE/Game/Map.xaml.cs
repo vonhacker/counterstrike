@@ -37,17 +37,11 @@ namespace CSLIVE.Game
 
         MapDatabase _MapDatabase;
         Random _Random = new Random();
-        public Point GetStartPosition()
-        {
-            if (_StartPoints.Count == 0) throw new Exception("Break");
-            Point _Point = _StartPoints[_Random.Next(_StartPoints.Count)];
-            return _Point;
-        }
+        
         public static Dictionary<string, Stream> _Resources = new Dictionary<string, Stream>();
         public List<UIElement> _List = new List<UIElement>();
         public void Load()
-        {
-
+        {            
             Trace.Assert(_Resources.ContainsKey("map.xml"));
             _MapDatabase = (MapDatabase)Common._XmlSerializerMap.Deserialize(_Resources["map.xml"]);
             foreach (MapDatabase.Layer _Layer in _MapDatabase._Layers)
@@ -97,8 +91,7 @@ namespace CSLIVE.Game
             }
         }
         
-        List<MapDatabase.Polygon> _Polygons = new List<MapDatabase.Polygon>();
-        public List<Point> _StartPoints { get { return _MapDatabase._StartPositions; } set { _MapDatabase._StartPositions = value; } }
+        List<MapDatabase.Polygon> _Polygons = new List<MapDatabase.Polygon>();        
 
         //public class LV
         //{

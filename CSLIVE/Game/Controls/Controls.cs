@@ -19,7 +19,7 @@ namespace CSLIVE.Game.Controls
         TranslateTransform _TranslateTransform = new TranslateTransform();
         RotateTransform _RotateTransform = new RotateTransform();
         private ScaleTransform _ScaleTransform = new ScaleTransform();
-        public TransformGroup _TransformGroup { get { return this.Get<TransformGroup>("_TransformGroup"); } set { this.Set("_TransformGroup", value); } }
+        public TransformGroup _TransformGroup { get { return (TransformGroup)RenderTransform; } set { RenderTransform = value; } }
 
         public Vector _Position { get { return new Vector(_x, _y); } set { _x = value.X; _y = value.Y; } }
         public Vector s;
@@ -34,7 +34,7 @@ namespace CSLIVE.Game.Controls
             }
         }
 
-        public double _rad { get { return Calculator.DegreesToRadians(_angle); } }
+        public double _rad { get { return Calculator.DegreesToRadians(_angle); } set { _angle = value / Calculator.RadiansToDegreesRatio; } }
 
         public Vector power;
         public Vector _power
@@ -83,10 +83,10 @@ namespace CSLIVE.Game.Controls
 
         public GameObj()
         {
+            _TransformGroup = new TransformGroup();
             _TransformGroup.Children.Add(_RotateTransform);
             _TransformGroup.Children.Add(_ScaleTransform);
             _TransformGroup.Children.Add(_TranslateTransform);
-
         }
         public double _x { get { return _TranslateTransform.X; } set { _TranslateTransform.X = value; } }
         public double _y { get { return _TranslateTransform.Y; } set { _TranslateTransform.Y = value; } }
