@@ -1501,7 +1501,10 @@ namespace doru
         {
             s.Write(BitConverter.GetBytes(str).CV());
         }
-
+        public static void Write(this Stream s, double str)
+        {
+            s.Write(BitConverter.GetBytes(str).CV());
+        }
         public static byte[] Cut(this Stream source, string pattern)
         {
             return Cut(source, Encoding.Default.GetBytes(pattern));
