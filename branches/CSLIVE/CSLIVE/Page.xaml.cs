@@ -24,19 +24,7 @@ using CSLIVE.Menu;
 
 namespace CSLIVE 
 {
-    public interface IUpdate { void Update(); }
-
-    public class LocalDatabase //Cookies
-    {
-        public string _Nick;
-    }
-    public static class Res //Resources resx
-    {
-        //nick,client,host,about
-        public static string _ircon = @"NICK {0}
-USER {1} {2} server :{3}
-";
-    }
+    
 
     public partial class Page : UserControl //глобальные переменые, Contnet содержит один из контролов irc,game и тд 
     {
@@ -91,6 +79,7 @@ USER {1} {2} server :{3}
             KeyUp += new KeyEventHandler(Page_KeyUp);
             MouseLeftButtonDown += new MouseButtonEventHandler(Page_MouseLeftButtonDown);
             MouseLeftButtonUp += new MouseButtonEventHandler(Page_MouseLeftButtonUp);
+            MouseMove +=new MouseEventHandler(Page_MouseMove);
             DispatcherTimer _DispatcherTimer = new DispatcherTimer();
             _DispatcherTimer.Interval = TimeSpan.FromMilliseconds(2);
             _DispatcherTimer.Tick += new EventHandler(Update);
@@ -180,7 +169,19 @@ USER {1} {2} server :{3}
             Trace.WriteLine("Exit");
         }
     }
+    public interface IUpdate { void Update(); }
 
+    public class LocalDatabase //Cookies
+    {
+        public string _Nick;
+    }
+    public static class Res //Resources resx
+    {
+        //nick,client,host,about
+        public static string _ircon = @"NICK {0}
+USER {1} {2} server :{3}
+";
+    }
 
     
 }

@@ -64,8 +64,7 @@ namespace CSLIVE //this file contains code for silverlight and server
     {
         public float _Scale;
         public Point _TStartPos;
-        public Point _CStartPos;
-        public List<Point> _StartPositions = new List<Point>();
+        public Point _CStartPos;        
         public class Image
         {
             public double Width;

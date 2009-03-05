@@ -17,6 +17,63 @@ namespace CSLIVE.Game
 {
     public class LocalPlayer : Player
     {
+        public static double _leftright = 5;
+        public static double _updown = 5;
+
+        private void UpdateKeyboard()
+        {
+            SetAnimation(Anims._stay);
+            _power = new Vector();
+            if (_Keys.Contains(Key.Q))
+            {
+                _angle -= 3;
+            } else if (_Keys.Contains(Key.E))
+            {
+                _angle += 3;
+            }
+
+            if (_Keys.Contains(Key.A))
+            {
+                SetAnimation(Anims._run_left);
+                _power -= new Vector(_leftright, 0);
+            }
+            if (_Keys.Contains(Key.D))
+            {
+                SetAnimation(Anims._run_right);
+                _power += new Vector(_leftright, 0);
+            }
+
+            if (_Keys.Contains(Key.Space))
+            {
+                SetAnimation(Anims._dead);
+            }
+            if (_Keys.Contains(Key.R))
+            {
+                SetAnimation(Anims._reload);
+            }
+            if (_Keys.Contains(Key.W))
+            {
+                SetAnimation(Anims._run);
+                _power += new Vector(0, -_updown);
+            } else if (_Keys.Contains(Key.S))
+            {
+                SetAnimation(Anims._run_back);
+                _power += new Vector(0, _updown);
+            }
+        }
+        public override void Update()
+        {
+            base.Update();
+
+            if (Page._MouseEventArgs != null)
+            {
+                Point _Mouse = Page._MouseEventArgs.GetPosition(_Game.RootLayout);
+                double _x = (_Mouse.X - this._x);
+                double _y = (_Mouse.Y - this._y);
+                _rad = Calculator.VectorToRadians(new Vector(_x, _y));
+            }
+            UpdateKeyboard();
+        }
         public override void Load()
         {
             base.Load();
@@ -109,50 +166,7 @@ namespace CSLIVE.Game
             _GunCurrentAnimation = GetBitmap(_GunModel + "" + _Anims);
         }
 
-        //private void UpdateKeyboard()
-        //{
-
-        //    SetAnimation(Anims._stay);
-        //    _power = new Vector();
-        //    if (_Keys.Contains(Key.Q))
-        //    {
-        //        _angle -= 3;
-        //    }
-        //    else if (_Keys.Contains(Key.E))
-        //    {
-        //        _angle += 3;
-        //    }
-
-        //    if (_Keys.Contains(Key.A))
-        //    {
-        //        SetAnimation(Anims._run_left);
-        //        _power += new Vector(_Settings._leftright, 0);
-        //    }
-        //    if (_Keys.Contains(Key.D))
-        //    {
-        //        SetAnimation(Anims._run_right);
-        //        _power += new Vector(_Settings._leftright, 0);
-        //    }
-
-        //    if (_Keys.Contains(Key.Space))
-        //    {
-        //        SetAnimation(Anims._dead);
-        //    }
-        //    if (_Keys.Contains(Key.R))
-        //    {
-        //        SetAnimation(Anims._reload);
-        //    }
-        //    if (_Keys.Contains(Key.W))
-        //    {
-        //        SetAnimation(Anims._run);
-        //        _power += new Vector(0, -_Settings._updown);
-        //    }
-        //    else if (_Keys.Contains(Key.S))
-        //    {
-        //        SetAnimation(Anims._run_back);
-        //        _power += new Vector(0, _Settings._updown);
-        //    }
-        //}
+        
 
     }
 
