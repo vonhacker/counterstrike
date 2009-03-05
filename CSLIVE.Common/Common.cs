@@ -179,6 +179,7 @@ namespace CSLIVE //this file contains code for silverlight and server
             else if (value is float) _ms.Write((float)value);
             else if (value is byte) _ms.Write((byte)value);
             else if (value is bool) _ms.Write((bool)value);
+            else if (value is double) _ms.Write((double)value);
             else throw new Exception("Shared Send Unkown value");
 
         }
