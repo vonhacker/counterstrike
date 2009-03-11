@@ -948,7 +948,15 @@ namespace doru
 
     public static class Helper
     {
-        
+
+        public static bool IsPrime(int x)
+        {
+            for (int i = 2; i <= Math.Sqrt(x); i++)
+                if (x % i == 0)
+                    return false;
+            return true;
+        }
+
 #if(!SILVERLIGHT)
         public static void OnPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -1329,6 +1337,14 @@ namespace doru
     
     public static class Extensions
     {
+        public static double Pow(this double a, double b)
+        {
+            return Math.Pow(a, b);
+        }
+        public static double Pow(this double a)
+        {
+            return Math.Pow(a, 2);
+        }
         public static string[] SplitString(this string a)
         {
             return a.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
