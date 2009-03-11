@@ -73,12 +73,23 @@
     <Content Include="dlls\ManagedWinapi.dll" />
     <Content Include="dlls\ManagedWinapiNativeHelper.dll" />
     <Content Include="dlls\SharpZipLib.dll" />
+    <Content Include="dlls\Svn\SharpPlink-Win32.pdb" />
+    <Content Include="dlls\Svn\SharpSvn-DB44-20-win32.dll" />
+    <Content Include="dlls\Svn\SharpSvn-Sasl21-22-win32.dll" />
+    <Content Include="dlls\Svn\SharpSvn.dll" />
+    <Content Include="dlls\Svn\SharpSvn.pdb" />
+    <Content Include="dlls\Svn\SharpSvn.UI.dll" />
+    <Content Include="dlls\Svn\SharpSvn.UI.pdb" />
+    <Content Include="dlls\Svn\SharpSvn.UI.xml" />
+    <Content Include="dlls\Svn\SharpSvn.xml" />
     <Content Include="dlls\WPFToolkit.Design.dll" />
     <Content Include="dlls\WPFToolkit.dll" />
     <Content Include="dlls\WPFToolkit.VisualStudio.Design.dll" />
   </ItemGroup>
   <ItemGroup>
     <None Include="dlls\ManagedWinapi.chm" />
+    <None Include="dlls\Svn\SharpPlink-Win32.svnExe" />
+    <None Include="dlls\Svn\SharpSvn.wxs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
