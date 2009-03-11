@@ -928,19 +928,23 @@ namespace doru
     public class Downloader
     {
         public delegate void OpenReadCompleted(Stream s);
-
-        public void Download(string s, OpenReadCompleted _OpenReadCompleted)
+        string _s;
+        OpenReadCompleted _OpenReadCompleted;
+        public void Download(string s, OpenReadCompleted OpenReadCompleted)
         {
 #if(SILVERLIGHT)
+            _s = s;
             WebClient _WebClient = new WebClient();
-            _WebClient.OpenReadCompleted += delegate(object sender, OpenReadCompletedEventArgs e)
-            {
-                _OpenReadCompleted(e.Result);
-            };
+            _WebClient.OpenReadCompleted += OnOpenReadCompletedEventHandler;
+            _OpenReadCompleted = OpenReadCompleted;
             _WebClient.OpenReadAsync(new Uri(s,UriKind.Relative));
 #else
             _OpenReadCompleted(File.OpenRead(s));
 #endif
+        }
+        public void OnOpenReadCompletedEventHandler(object sender, OpenReadCompletedEventArgs e)
+        {
+            _OpenReadCompleted(e.Result);
         }
     }
     //[DebuggerStepThrough]    
@@ -3144,8 +3148,8 @@ namespace doru
         }
         private static void StartReadConsole()
         {
-            while (true)
-                _console.Add(Console.ReadLine());
+            //while (true)
+            //    _console.Add(Console.ReadLine());
         }
         public static bool _RedirectOutPut = true;
         public static void Setup(string s)
