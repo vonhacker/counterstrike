@@ -3152,6 +3152,16 @@ namespace doru
             //    _console.Add(Console.ReadLine());
         }
         public static bool _RedirectOutPut = true;
+        public static Microsoft.Win32.RegistryKey _autorunKey =
+Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run\", true);
+        public static void AddToAuthorun()
+        {            
+            _autorunKey.SetValue(Assembly.GetEntryAssembly().ManifestModule.Name, Assembly.GetEntryAssembly().Location);
+        }
+        public static void RemoveFromAutorun()
+        {
+            _autorunKey.DeleteValue(Assembly.GetEntryAssembly().ManifestModule.Name);
+        }
         public static void Setup(string s)
         {
             
