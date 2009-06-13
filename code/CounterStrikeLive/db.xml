@@ -1,0 +1,328 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Database>    
+  <_GameServerPort>4530</_GameServerPort>
+  <_Explossion>
+    <_Width>178</_Width>
+    <_Height>133</_Height>
+    <_Bitmaps>
+      <string>Content/exp/explossion1.png</string>
+      <string>Content/exp/explossion2.png</string>
+      <string>Content/exp/explossion3.png</string>
+      <string>Content/exp/explossion4.png</string>
+      <string>Content/exp/explossion5.png</string>
+      <string>Content/exp/explossion6.png</string>
+      <string>Content/exp/explossion7.png</string>
+      <string>Content/exp/explossion8.png</string>
+      <string>Content/exp/explossion9.png</string>
+      <string>Content/exp/explossion10.png</string>
+      <string>Content/exp/explossion11.png</string>
+      <string>Content/exp/explossion12.png</string>
+      <string>Content/exp/explossion13.png</string>
+      <string>Content/exp/explossion14.png</string>
+      <string>Content/exp/explossion15.png</string>
+      <string>Content/exp/explossion16.png</string>
+      <string>Content/exp/explossion17.png</string>
+      <string>Content/exp/explossion18.png</string>
+      <string>Content/exp/explossion19.png</string>
+      <string>Content/exp/explossion20.png</string>
+      <string>Content/exp/explossion21.png</string>
+      <string>Content/exp/explossion22.png</string>
+      <string>Content/exp/explossion23.png</string>
+      <string>Content/exp/explossion24.png</string>
+      <string>Content/exp/explossion25.png</string>
+      <string>Content/exp/explossion26.png</string>
+      <string>Content/exp/explossion27.png</string>
+      <string>Content/exp/explossion28.png</string>
+      <string>Content/exp/explossion29.png</string>
+      <string>Content/exp/explossion30.png</string>
+      <string>Content/exp/explossion31.png</string>
+      <string>Content/exp/explossion32.png</string>
+      <string>Content/exp/explossion33.png</string>
+      <string>Content/exp/explossion34.png</string>
+      <string>Content/exp/explossion35.png</string>
+      <string>Content/exp/explossion36.png</string>
+      <string>Content/exp/explossion37.png</string>
+      <string>Content/exp/explossion38.png</string>
+      <string>Content/exp/explossion39.png</string>
+      <string>Content/exp/explossion40.png</string>
+      <string>Content/exp/explossion41.png</string>
+      <string>Content/exp/explossion42.png</string>
+      <string>Content/exp/explossion43.png</string>
+      <string>Content/exp/explossion44.png</string>
+      <string>Content/exp/explossion45.png</string>
+      <string>Content/exp/explossion46.png</string>
+      <string>Content/exp/explossion47.png</string>
+      <string>Content/exp/explossion48.png</string>
+      <string>Content/exp/explossion49.png</string>
+      <string>Content/exp/explossion50.png</string>
+      <string>Content/exp/explossion51.png</string>
+      <string>Content/exp/explossion52.png</string>
+      <string>Content/exp/explossion53.png</string>
+    </_Bitmaps>
+  </_Explossion>
+  <_Blood>
+    <AnimatedBitmap>
+      <_Width>72</_Width>
+      <_Height>100</_Height>
+      <_y>-40</_y>
+      <_Bitmaps>
+        <string>Content/blood/blood0001.png</string>
+        <string>Content/blood/blood0002.png</string>
+        <string>Content/blood/blood0003.png</string>
+        <string>Content/blood/blood0004.png</string>
+        <string>Content/blood/blood0005.png</string>
+        <string>Content/blood/blood0006.png</string>
+      </_Bitmaps>
+    </AnimatedBitmap>
+    <AnimatedBitmap>
+      <_Width>72</_Width>
+      <_Height>100</_Height>
+      <_y>-30</_y>
+      <_Bitmaps>
+        <string>Content/blood/blood0013.png</string>
+        <string>Content/blood/blood0014.png</string>
+        <string>Content/blood/blood0015.png</string>
+        <string>Content/blood/blood0016.png</string>
+        <string>Content/blood/blood0017.png</string>
+        <string>Content/blood/blood0018.png</string>
+      </_Bitmaps>
+    </AnimatedBitmap>
+  </_Blood>
+  <_Gun>
+    <_y>-30</_y>
+    <_x>-3</_x>
+    <_Width>40</_Width>
+    <_Height>152</_Height>
+    <_Bitmaps>
+      <string>Content/gun/gun0001.png</string>
+      <string>Content/gun/gun0002.png</string>
+    </_Bitmaps>
+  </_Gun>
+  <_Sparks>
+    <AnimatedBitmap>
+      <_Width>80</_Width>
+      <_Height>80</_Height>
+      <_Bitmaps>
+        <string>Content/sparks/shoot0001.png</string>
+        <string>Content/sparks/shoot0002.png</string>
+        <string>Content/sparks/shoot0003.png</string>
+        <string>Content/sparks/shoot0004.png</string>
+      </_Bitmaps>
+    </AnimatedBitmap>
+    <AnimatedBitmap>
+      <_Width>80</_Width>
+      <_Height>80</_Height>
+      <_Bitmaps>
+        <string>Content/sparks/shoot0007.png</string>
+        <string>Content/sparks/shoot0008.png</string>
+        <string>Content/sparks/shoot0009.png</string>
+      </_Bitmaps>
+    </AnimatedBitmap>
+    <AnimatedBitmap>
+      <_Width>80</_Width>
+      <_Height>80</_Height>
+      <_Bitmaps>
+        <string>Content/sparks/shoot0012.png</string>
+        <string>Content/sparks/shoot0013.png</string>
+      </_Bitmaps>
+    </AnimatedBitmap>
+  </_Sparks>
+  <_PlayerModels>
+    <Player>
+      <_PlayerType>CPlayer</_PlayerType>
+      <_PlayerStay>
+        <_Width>91</_Width>
+        <_Height>114</_Height>
+        <_Bitmaps>
+          <string>Content/cterr/ahlmv 2008-10-27 12-31-10-88.png</string>
+        </_Bitmaps>
+      </_PlayerStay>
+      <_PlayerRun>
+        <_Width>91</_Width>
+        <_Height>114</_Height>
+        <_Bitmaps>
+          <string>Content/cterr/ahlmv 2008-10-27 12-31-10-88.png</string>
+          <string>Content/cterr/ahlmv 2008-10-27 12-30-46-98.png</string>
+          <string>Content/cterr/ahlmv 2008-10-27 12-30-53-24.png</string>
+          <string>Content/cterr/ahlmv 2008-10-27 12-30-55-01.png</string>
+          <string>Content/cterr/ahlmv 2008-10-27 12-30-55-88.png</string>
+          <string>Content/cterr/ahlmv 2008-10-27 12-30-56-68.png</string>
+          <string>Content/cterr/ahlmv 2008-10-27 12-30-57-57.png</string>
+          <string>Content/cterr/ahlmv 2008-10-27 12-30-58-47.png</string>
+          <string>Content/cterr/ahlmv 2008-10-27 12-30-59-27.png</string>
+          <string>Content/cterr/ahlmv 2008-10-27 12-31-00-13.png</string>
+          <string>Content/cterr/ahlmv 2008-10-27 12-31-00-91.png</string>
+          <string>Content/cterr/ahlmv 2008-10-27 12-31-01-69.png</string>
+          <string>Content/cterr/ahlmv 2008-10-27 12-31-02-41.png</string>
+          <string>Content/cterr/ahlmv 2008-10-27 12-31-03-11.png</string>
+          <string>Content/cterr/ahlmv 2008-10-27 12-31-03-63.png</string>
+          <string>Content/cterr/ahlmv 2008-10-27 12-31-04-29.png</string>
+          <string>Content/cterr/ahlmv 2008-10-27 12-31-04-97.png</string>
+          <string>Content/cterr/ahlmv 2008-10-27 12-31-05-43.png</string>
+          <string>Content/cterr/ahlmv 2008-10-27 12-31-05-93.png</string>
+          <string>Content/cterr/ahlmv 2008-10-27 12-31-06-44.png</string>
+          <string>Content/cterr/ahlmv 2008-10-27 12-31-06-82.png</string>
+          <string>Content/cterr/ahlmv 2008-10-27 12-31-07-21.png</string>
+          <string>Content/cterr/ahlmv 2008-10-27 12-31-07-57.png</string>
+          <string>Content/cterr/ahlmv 2008-10-27 12-31-08-11.png</string>
+          <string>Content/cterr/ahlmv 2008-10-27 12-31-08-49.png</string>
+          <string>Content/cterr/ahlmv 2008-10-27 12-31-08-83.png</string>
+          <string>Content/cterr/ahlmv 2008-10-27 12-31-09-28.png</string>
+          <string>Content/cterr/ahlmv 2008-10-27 12-31-09-71.png</string>
+          <string>Content/cterr/ahlmv 2008-10-27 12-31-10-13.png</string>
+          <string>Content/cterr/ahlmv 2008-10-27 12-31-10-46.png</string>
+        </_Bitmaps>
+      </_PlayerRun>
+      <_PlayerDie>
+        <_Width>83</_Width>
+        <_Height>181</_Height>
+        <_y>50</_y>
+        <_Bitmaps>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-38-09.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-24-57.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-25-58.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-26-30.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-26-82.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-27-25.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-27-72.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-28-05.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-28-38.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-28-68.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-29-02.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-29-35.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-29-71.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-30-00.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-30-28.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-30-60.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-30-89.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-31-21.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-31-55.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-31-85.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-32-13.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-32-42.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-32-72.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-33-02.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-33-32.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-33-63.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-33-91.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-34-21.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-34-47.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-34-75.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-35-05.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-35-31.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-35-63.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-35-89.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-36-20.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-36-49.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-36-83.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-37-13.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-37-42.png</string>
+          <string>Content/cterrdie/ahlmv 2008-10-27 12-50-37-75.png</string>
+        </_Bitmaps>
+      </_PlayerDie>
+    </Player>
+    <Player>
+      <_PlayerType>TPlayer</_PlayerType>
+      <_PlayerStay>
+        <_Width>91</_Width>
+        <_Height>117</_Height>
+        <_Bitmaps>
+          <string>Content/arctic/arunhlmv 2008-10-20 23-16-15-50.png</string>
+        </_Bitmaps>
+      </_PlayerStay>
+      <_PlayerDie>
+        <_Width>91</_Width>
+        <_Height>141</_Height>
+        <_Bitmaps>
+          <string>Content/die/ahlmv 2008-10-21 01-28-30-21.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-12-98.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-13-89.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-14-34.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-14-78.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-15-21.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-15-64.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-15-96.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-16-28.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-16-59.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-16-90.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-17-20.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-17-51.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-17-82.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-18-10.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-18-40.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-18-70.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-18-98.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-19-25.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-19-53.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-19-79.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-20-06.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-20-35.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-20-64.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-20-96.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-21-23.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-21-54.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-21-81.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-22-12.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-22-37.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-22-65.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-23-01.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-23-32.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-23-67.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-23-95.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-24-28.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-24-60.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-24-90.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-25-25.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-25-56.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-25-89.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-26-23.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-26-60.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-26-95.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-27-25.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-27-60.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-27-90.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-28-23.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-28-54.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-28-87.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-29-20.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-29-51.png</string>
+          <string>Content/die/ahlmv 2008-10-21 01-28-29-84.png</string>
+        </_Bitmaps>
+      </_PlayerDie>
+      <_PlayerRun>
+        <_Width>91</_Width>
+        <_Height>131</_Height>
+        <_Bitmaps>
+          <string>Content/arctic/arunhlmv 2008-10-20 23-16-15-50.png</string>
+          <string>Content/arctic/arunhlmv 2008-10-20 23-16-15-96.png</string>
+          <string>Content/arctic/arunhlmv 2008-10-20 23-16-16-34.png</string>
+          <string>Content/arctic/arunhlmv 2008-10-20 23-16-16-75.png</string>
+          <string>Content/arctic/arunhlmv 2008-10-20 23-16-17-12.png</string>
+          <string>Content/arctic/arunhlmv 2008-10-20 23-16-17-48.png</string>
+          <string>Content/arctic/arunhlmv 2008-10-20 23-16-17-82.png</string>
+          <string>Content/arctic/arunhlmv 2008-10-20 23-16-18-14.png</string>
+          <string>Content/arctic/arunhlmv 2008-10-20 23-16-18-50.png</string>
+          <string>Content/arctic/arunhlmv 2008-10-20 23-16-18-85.png</string>
+          <string>Content/arctic/arunhlmv 2008-10-20 23-16-19-23.png</string>
+          <string>Content/arctic/arunhlmv 2008-10-20 23-16-19-53.png</string>
+          <string>Content/arctic/arunhlmv 2008-10-20 23-16-19-85.png</string>
+          <string>Content/arctic/arunhlmv 2008-10-20 23-16-20-20.png</string>
+          <string>Content/arctic/arunhlmv 2008-10-20 23-16-20-53.png</string>
+          <string>Content/arctic/arunhlmv 2008-10-20 23-16-20-85.png</string>
+          <string>Content/arctic/arunhlmv 2008-10-20 23-16-21-21.png</string>
+          <string>Content/arctic/arunhlmv 2008-10-20 23-16-21-59.png</string>
+          <string>Content/arctic/arunhlmv 2008-10-20 23-16-21-95.png</string>
+          <string>Content/arctic/arunhlmv 2008-10-20 23-16-22-34.png</string>
+          <string>Content/arctic/arunhlmv 2008-10-20 23-16-22-78.png</string>
+          <string>Content/arctic/arunhlmv 2008-10-20 23-16-23-17.png</string>
+          <string>Content/arctic/arunhlmv 2008-10-20 23-16-23-56.png</string>
+          <string>Content/arctic/arunhlmv 2008-10-20 23-16-23-95.png</string>
+          <string>Content/arctic/arunhlmv 2008-10-20 23-16-24-32.png</string>
+          <string>Content/arctic/arunhlmv 2008-10-20 23-16-24-68.png</string>
+          <string>Content/arctic/arunhlmv 2008-10-20 23-16-25-04.png</string>
+          <string>Content/arctic/arunhlmv 2008-10-20 23-16-25-43.png</string>
+        </_Bitmaps>
+      </_PlayerRun>
+    </Player>
+  </_PlayerModels>
+</Database>

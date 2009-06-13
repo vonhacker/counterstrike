@@ -1,0 +1,518 @@
+﻿<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{52D58643-014A-4299-B07B-F8B810316168}</ProjectGuid>
+    <ProjectTypeGuids>{A1591282-1198-4647-A2B1-27E5FF5F6F3B};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CounterStrikeLive</RootNamespace>
+    <AssemblyName>CounterStrikeLive</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <SilverlightApplication>true</SilverlightApplication>
+    <SupportedCultures>
+    </SupportedCultures>
+    <XapOutputs>true</XapOutputs>
+    <GenerateSilverlightManifest>true</GenerateSilverlightManifest>
+    <XapFilename>CounterStrikeLive.xap</XapFilename>
+    <SilverlightManifestTemplate>Properties\AppManifest.xml</SilverlightManifestTemplate>
+    <SilverlightAppEntry>CounterStrikeLive.App</SilverlightAppEntry>
+    <TestPageFileName>TestPage.html</TestPageFileName>
+    <CreateTestPage>true</CreateTestPage>
+    <ValidateXaml>true</ValidateXaml>
+    <ThrowErrorsInValidation>false</ThrowErrorsInValidation>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;SILVERLIGHT</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Bin\Release</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="SharpZipLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="System.Windows" />
+    <Reference Include="mscorlib" />
+    <Reference Include="system" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Windows.Controls.Data, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Reference Include="System.Windows.Controls.dll" />
+    <Reference Include="System.Windows.Controls.Navigation" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Windows.Browser" />
+    <Reference Include="System.Xml.Serialization, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <BlendEmbeddedFont Include="Fonts\7 Segment.ttf">
+      <IsSystemFont>True</IsSystemFont>
+      <All>True</All>
+    </BlendEmbeddedFont>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Server\Common.cs">
+      <Link>Common.cs</Link>
+    </Compile>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ChatBox.xaml.cs">
+      <DependentUpon>ChatBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Database.cs" />
+    <Compile Include="Controls\Controls.cs" />
+    <Compile Include="Controls\GameObj.cs" />
+    <Compile Include="Controls\Maps.cs" />
+    <Compile Include="Controls\Mathematics\BilinearInterpolator.cs" />
+    <Compile Include="Controls\Mathematics\Calculator.cs" />
+    <Compile Include="Controls\Mathematics\CircularInterpolator.cs" />
+    <Compile Include="Controls\Mathematics\ConvertUnits.cs" />
+    <Compile Include="Controls\Mathematics\MathHelper.cs" />
+    <Compile Include="Controls\Mathematics\Matrix.cs" />
+    <Compile Include="Controls\Mathematics\Vector2.cs" />
+    <Compile Include="Controls\Mathematics\Vector3.cs" />
+    <Compile Include="Controls\Player.cs" />
+    <Compile Include="EscMenu.xaml.cs">
+      <DependentUpon>EscMenu.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Loading.xaml.cs">
+      <DependentUpon>Loading.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MapSelect.xaml.cs">
+      <DependentUpon>MapSelect.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Page.xaml.cs">
+      <DependentUpon>Page.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="EnterNick.xaml.cs">
+      <DependentUpon>EnterNick.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ScoreBoard.xaml.cs">
+      <DependentUpon>ScoreBoard.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TeamSelect.xaml.cs">
+      <DependentUpon>TeamSelect.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Page Include="ChatBox.xaml">
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="EscMenu.xaml">
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Loading.xaml">
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MapSelect.xaml">
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Page.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="EnterNick.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ScoreBoard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TeamSelect.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\AppManifest.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Content\CS_logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Content\arctic\arunhlmv 2008-10-20 23-16-15-50.png" />
+    <Resource Include="Content\arctic\arunhlmv 2008-10-20 23-16-15-96.png" />
+    <Resource Include="Content\arctic\arunhlmv 2008-10-20 23-16-16-34.png" />
+    <Resource Include="Content\arctic\arunhlmv 2008-10-20 23-16-16-75.png" />
+    <Resource Include="Content\arctic\arunhlmv 2008-10-20 23-16-17-12.png" />
+    <Resource Include="Content\arctic\arunhlmv 2008-10-20 23-16-17-48.png" />
+    <Resource Include="Content\arctic\arunhlmv 2008-10-20 23-16-17-82.png" />
+    <Resource Include="Content\arctic\arunhlmv 2008-10-20 23-16-18-14.png" />
+    <Resource Include="Content\arctic\arunhlmv 2008-10-20 23-16-18-50.png" />
+    <Resource Include="Content\arctic\arunhlmv 2008-10-20 23-16-18-85.png" />
+    <Resource Include="Content\arctic\arunhlmv 2008-10-20 23-16-19-23.png" />
+    <Resource Include="Content\arctic\arunhlmv 2008-10-20 23-16-19-53.png" />
+    <Resource Include="Content\arctic\arunhlmv 2008-10-20 23-16-19-85.png" />
+    <Resource Include="Content\arctic\arunhlmv 2008-10-20 23-16-20-20.png" />
+    <Resource Include="Content\arctic\arunhlmv 2008-10-20 23-16-20-53.png" />
+    <Resource Include="Content\arctic\arunhlmv 2008-10-20 23-16-20-85.png" />
+    <Resource Include="Content\arctic\arunhlmv 2008-10-20 23-16-21-21.png" />
+    <Resource Include="Content\arctic\arunhlmv 2008-10-20 23-16-21-59.png" />
+    <Resource Include="Content\arctic\arunhlmv 2008-10-20 23-16-21-95.png" />
+    <Resource Include="Content\arctic\arunhlmv 2008-10-20 23-16-22-34.png" />
+    <Resource Include="Content\arctic\arunhlmv 2008-10-20 23-16-22-78.png" />
+    <Resource Include="Content\arctic\arunhlmv 2008-10-20 23-16-23-17.png" />
+    <Resource Include="Content\arctic\arunhlmv 2008-10-20 23-16-23-56.png" />
+    <Resource Include="Content\arctic\arunhlmv 2008-10-20 23-16-23-95.png" />
+    <Resource Include="Content\arctic\arunhlmv 2008-10-20 23-16-24-32.png" />
+    <Resource Include="Content\arctic\arunhlmv 2008-10-20 23-16-24-68.png" />
+    <Resource Include="Content\arctic\arunhlmv 2008-10-20 23-16-25-04.png" />
+    <Resource Include="Content\arctic\arunhlmv 2008-10-20 23-16-25-43.png" />
+    <Resource Include="Content\arctic\arunhlmv 2008-10-20 23-16-25-81.png" />
+    <Resource Include="Content\blood\blood0001.png" />
+    <Resource Include="Content\blood\blood0002.png" />
+    <Resource Include="Content\blood\blood0003.png" />
+    <Resource Include="Content\blood\blood0004.png" />
+    <Resource Include="Content\blood\blood0005.png" />
+    <Resource Include="Content\blood\blood0006.png" />
+    <Resource Include="Content\blood\blood0007.png" />
+    <Resource Include="Content\blood\blood0008.png" />
+    <Resource Include="Content\blood\blood0009.png" />
+    <Resource Include="Content\blood\blood0010.png" />
+    <Resource Include="Content\blood\blood0011.png" />
+    <Resource Include="Content\blood\blood0012.png" />
+    <Resource Include="Content\blood\blood0013.png" />
+    <Resource Include="Content\blood\blood0014.png" />
+    <Resource Include="Content\blood\blood0015.png" />
+    <Resource Include="Content\blood\blood0016.png" />
+    <Resource Include="Content\blood\blood0017.png" />
+    <Resource Include="Content\blood\blood0018.png" />
+    <Resource Include="Content\blood\blood0019.png" />
+    <Resource Include="Content\blood\blood0020.png" />
+    <Resource Include="Content\blood\blood0021.png" />
+    <Resource Include="Content\blood\blood0022.png" />
+    <Resource Include="Content\blood\blood0023.png" />
+    <Resource Include="Content\blood\blood0024.png" />
+    <Resource Include="Content\blood\blood0025.png" />
+    <Resource Include="Content\blood\blood0026.png" />
+    <Resource Include="Content\blood\blood0027.png" />
+    <Resource Include="Content\blood\blood0028.png" />
+    <Resource Include="Content\blood\blood0029.png" />
+    <Resource Include="Content\blood\blood0030.png" />
+    <Resource Include="Content\blood\blood0031.png" />
+    <Resource Include="Content\blood\blood0032.png" />
+    <Resource Include="Content\blood\blood0033.png" />
+    <Resource Include="Content\blood\blood0034.png" />
+    <Resource Include="Content\blood\blood0035.png" />
+    <Resource Include="Content\blood\blood0036.png" />
+    <Resource Include="Content\blood\blood0037.png" />
+    <Resource Include="Content\blood\blood0038.png" />
+    <Resource Include="Content\blood\blood0039.png" />
+    <Resource Include="Content\blood\blood0040.png" />
+    <Resource Include="Content\blood\blood0041.png" />
+    <Resource Include="Content\blood\blood0042.png" />
+    <Resource Include="Content\blood\blood0043.png" />
+    <Resource Include="Content\blood\blood0044.png" />
+    <Resource Include="Content\blood\blood0045.png" />
+    <Resource Include="Content\blood\blood0046.png" />
+    <Resource Include="Content\blood\blood0047.png" />
+    <Resource Include="Content\blood\blood0048.png" />
+    <Resource Include="Content\blood\blood0049.png" />
+    <Resource Include="Content\blood\blood0050.png" />
+    <Resource Include="Content\blood\blood0051.png" />
+    <Resource Include="Content\blood\blood0052.png" />
+    <Resource Include="Content\blood\blood0053.png" />
+    <Resource Include="Content\blood\blood0054.png" />
+    <Resource Include="Content\blood\blood0055.png" />
+    <Resource Include="Content\blood\blood0056.png" />
+    <Resource Include="Content\blood\blood0057.png" />
+    <Resource Include="Content\blood\blood0058.png" />
+    <Resource Include="Content\blood\blood0059.png" />
+    <Resource Include="Content\blood\blood0060.png" />
+    <Resource Include="Content\blood\blood0061.png" />
+    <Resource Include="Content\blood\blood0062.png" />
+    <Resource Include="Content\blood\blood0063.png" />
+    <Resource Include="Content\blood\blood0064.png" />
+    <Resource Include="Content\blood\blood0065.png" />
+    <Resource Include="Content\blood\blood0066.png" />
+    <Resource Include="Content\blood\blood0067.png" />
+    <Resource Include="Content\blood\blood0068.png" />
+    <Resource Include="Content\blood\blood0069.png" />
+    <Resource Include="Content\blood\blood0070.png" />
+    <Resource Include="Content\blood\blood0071.png" />
+    <Resource Include="Content\blood\blood0072.png" />
+    <Resource Include="Content\blood\blood0073.png" />
+    <Resource Include="Content\blood\blood0074.png" />
+    <Resource Include="Content\blood\blood0075.png" />
+    <Resource Include="Content\blood\blood0076.png" />
+    <Resource Include="Content\blood\blood0077.png" />
+    <Resource Include="Content\blood\blood0078.png" />
+    <Resource Include="Content\blood\blood0079.png" />
+    <Resource Include="Content\blood\blood0080.png" />
+    <Resource Include="Content\blood\blood0081.png" />
+    <Resource Include="Content\blood\blood0082.png" />
+    <Resource Include="Content\blood\blood0083.png" />
+    <Resource Include="Content\blood\blood0084.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-24-57.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-25-58.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-26-30.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-26-82.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-27-25.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-27-72.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-28-05.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-28-38.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-28-68.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-29-02.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-29-35.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-29-71.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-30-00.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-30-28.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-30-60.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-30-89.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-31-21.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-31-55.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-31-85.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-32-13.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-32-42.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-32-72.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-33-02.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-33-32.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-33-63.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-33-91.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-34-21.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-34-47.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-34-75.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-35-05.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-35-31.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-35-63.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-35-89.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-36-20.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-36-49.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-36-83.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-37-13.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-37-42.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-37-75.png" />
+    <Resource Include="Content\cterrdie\ahlmv 2008-10-27 12-50-38-09.png" />
+    <Resource Include="Content\cterr\ahlmv 2008-10-27 12-30-46-98.png" />
+    <Resource Include="Content\cterr\ahlmv 2008-10-27 12-30-53-24.png" />
+    <Resource Include="Content\cterr\ahlmv 2008-10-27 12-30-55-01.png" />
+    <Resource Include="Content\cterr\ahlmv 2008-10-27 12-30-55-88.png" />
+    <Resource Include="Content\cterr\ahlmv 2008-10-27 12-30-56-68.png" />
+    <Resource Include="Content\cterr\ahlmv 2008-10-27 12-30-57-57.png" />
+    <Resource Include="Content\cterr\ahlmv 2008-10-27 12-30-58-47.png" />
+    <Resource Include="Content\cterr\ahlmv 2008-10-27 12-30-59-27.png" />
+    <Resource Include="Content\cterr\ahlmv 2008-10-27 12-31-00-13.png" />
+    <Resource Include="Content\cterr\ahlmv 2008-10-27 12-31-00-91.png" />
+    <Resource Include="Content\cterr\ahlmv 2008-10-27 12-31-01-69.png" />
+    <Resource Include="Content\cterr\ahlmv 2008-10-27 12-31-02-41.png" />
+    <Resource Include="Content\cterr\ahlmv 2008-10-27 12-31-03-11.png" />
+    <Resource Include="Content\cterr\ahlmv 2008-10-27 12-31-03-63.png" />
+    <Resource Include="Content\cterr\ahlmv 2008-10-27 12-31-04-29.png" />
+    <Resource Include="Content\cterr\ahlmv 2008-10-27 12-31-04-97.png" />
+    <Resource Include="Content\cterr\ahlmv 2008-10-27 12-31-05-43.png" />
+    <Resource Include="Content\cterr\ahlmv 2008-10-27 12-31-05-93.png" />
+    <Resource Include="Content\cterr\ahlmv 2008-10-27 12-31-06-44.png" />
+    <Resource Include="Content\cterr\ahlmv 2008-10-27 12-31-06-82.png" />
+    <Resource Include="Content\cterr\ahlmv 2008-10-27 12-31-07-21.png" />
+    <Resource Include="Content\cterr\ahlmv 2008-10-27 12-31-07-57.png" />
+    <Resource Include="Content\cterr\ahlmv 2008-10-27 12-31-08-11.png" />
+    <Resource Include="Content\cterr\ahlmv 2008-10-27 12-31-08-49.png" />
+    <Resource Include="Content\cterr\ahlmv 2008-10-27 12-31-08-83.png" />
+    <Resource Include="Content\cterr\ahlmv 2008-10-27 12-31-09-28.png" />
+    <Resource Include="Content\cterr\ahlmv 2008-10-27 12-31-09-71.png" />
+    <Resource Include="Content\cterr\ahlmv 2008-10-27 12-31-10-13.png" />
+    <Resource Include="Content\cterr\ahlmv 2008-10-27 12-31-10-46.png" />
+    <Resource Include="Content\cterr\ahlmv 2008-10-27 12-31-10-88.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-12-98.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-13-89.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-14-34.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-14-78.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-15-21.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-15-64.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-15-96.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-16-28.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-16-59.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-16-90.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-17-20.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-17-51.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-17-82.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-18-10.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-18-40.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-18-70.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-18-98.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-19-25.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-19-53.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-19-79.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-20-06.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-20-35.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-20-64.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-20-96.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-21-23.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-21-54.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-21-81.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-22-12.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-22-37.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-22-65.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-23-01.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-23-32.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-23-67.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-23-95.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-24-28.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-24-60.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-24-90.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-25-25.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-25-56.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-25-89.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-26-23.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-26-60.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-26-95.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-27-25.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-27-60.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-27-90.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-28-23.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-28-54.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-28-87.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-29-20.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-29-51.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-29-84.png" />
+    <Resource Include="Content\die\ahlmv 2008-10-21 01-28-30-21.png" />
+    <Resource Include="Content\gun\gun0001.png" />
+    <Resource Include="Content\gun\gun0002.png" />
+    <Resource Include="Content\sparks\shoot0001.png" />
+    <Resource Include="Content\sparks\shoot0002.png" />
+    <Resource Include="Content\sparks\shoot0003.png" />
+    <Resource Include="Content\sparks\shoot0004.png" />
+    <Resource Include="Content\sparks\shoot0005.png" />
+    <Resource Include="Content\sparks\shoot0006.png" />
+    <Resource Include="Content\sparks\shoot0007.png" />
+    <Resource Include="Content\sparks\shoot0008.png" />
+    <Resource Include="Content\sparks\shoot0009.png" />
+    <Resource Include="Content\sparks\shoot0010.png" />
+    <Resource Include="Content\sparks\shoot0011.png" />
+    <Resource Include="Content\sparks\shoot0012.png" />
+    <Resource Include="Content\sparks\shoot0013.png" />
+    <Resource Include="Content\sparks\shoot0014.png" />
+    <Resource Include="Content\sparks\shoot0015.png" />
+    <Resource Include="Content\sparks\shoot0016.png" />
+    <Resource Include="Content\sparks\shoot0017.png" />
+    <Resource Include="Content\sparks\shoot0018.png" />
+    <Resource Include="Content\sparks\shoot0019.png" />
+    <Resource Include="Content\sparks\shoot0020.png" />
+    <Resource Include="Content\sparks\shoot0021.png" />
+    <Resource Include="Content\sparks\shoot0022.png" />
+    <Resource Include="Content\sparks\shoot0023.png" />
+    <Resource Include="Content\sparks\shoot0024.png" />
+    <Resource Include="Content\sparks\shoot0025.png" />
+    <Resource Include="Content\sparks\shoot0026.png" />
+    <Resource Include="Content\sparks\shoot0027.png" />
+    <Resource Include="Content\sparks\shoot0028.png" />
+    <Resource Include="Content\sparks\shoot0029.png" />
+    <Resource Include="Content\sparks\shoot0030.png" />
+    <Resource Include="Content\sparks\shoot0031.png" />
+    <Resource Include="Content\sparks\shoot0032.png" />
+    <Resource Include="Content\sparks\shoot0033.png" />
+    <Resource Include="Content\sparks\shoot0034.png" />
+    <Resource Include="Content\sparks\shoot0035.png" />
+    <Resource Include="Content\sparks\shoot0036.png" />
+    <Resource Include="Content\sparks\shoot0037.png" />
+    <Resource Include="Content\sparks\shoot0038.png" />
+    <Resource Include="Content\sparks\shoot0039.png" />
+    <Resource Include="Content\sparks\shoot0040.png" />
+    <Resource Include="Content\sparks\shoot0041.png" />
+    <Resource Include="Content\sparks\shoot0042.png" />
+    <Resource Include="Content\sparks\shoot0043.png" />
+    <Resource Include="Content\sparks\shoot0044.png" />
+    <Resource Include="Content\sparks\shoot0045.png" />
+    <Resource Include="Content\sparks\shoot0046.png" />
+    <Resource Include="Content\sparks\shoot0047.png" />
+    <Resource Include="Content\sparks\shoot0048.png" />
+    <Resource Include="Content\sparks\shoot0049.png" />
+    <Resource Include="Content\sparks\shoot0050.png" />
+    <Resource Include="Content\sparks\shoot0051.png" />
+    <Resource Include="Content\sparks\shoot0052.png" />
+    <Resource Include="Content\sparks\shoot0053.png" />
+    <Resource Include="Content\sparks\shoot0054.png" />
+    <Resource Include="Content\sparks\shoot0055.png" />
+    <Resource Include="Content\sparks\shoot0056.png" />
+    <Resource Include="Content\sparks\shoot0057.png" />
+    <Resource Include="Content\sparks\shoot0058.png" />
+    <Resource Include="Content\sparks\shoot0059.png" />
+    <Resource Include="Content\sparks\shoot0060.png" />
+    <Resource Include="Content\sparks\shoot0061.png" />
+    <Resource Include="Content\sparks\shoot0062.png" />
+    <Resource Include="Content\sparks\shoot0063.png" />
+    <Resource Include="Content\sparks\shoot0064.png" />
+    <Resource Include="Content\sparks\shoot0065.png" />
+    <Resource Include="Content\sparks\shoot0066.png" />
+    <Resource Include="Content\sparks\shoot0067.png" />
+    <Resource Include="Content\sparks\shoot0068.png" />
+    <Resource Include="Content\sparks\shoot0069.png" />
+    <Resource Include="Content\sparks\shoot0070.png" />
+    <Resource Include="Content\sparks\shoot0071.png" />
+    <Resource Include="Content\sparks\shoot0072.png" />
+    <Resource Include="Content\sparks\shoot0073.png" />
+    <Resource Include="Content\sparks\shoot0074.png" />
+    <Resource Include="Content\sparks\shoot0075.png" />
+    <Resource Include="Content\sparks\shoot0076.png" />
+    <Resource Include="Content\sparks\shoot0077.png" />
+    <Resource Include="Content\sparks\shoot0078.png" />
+    <Resource Include="Content\sparks\shoot0079.png" />
+    <Resource Include="Content\sparks\shoot0080.png" />
+    <Resource Include="Content\sparks\shoot0081.png" />
+    <Resource Include="Content\sparks\shoot0082.png" />
+    <Resource Include="Content\sparks\shoot0083.png" />
+    <Resource Include="Content\sparks\shoot0084.png" />
+    <Resource Include="Content\sparks\shoot0085.png" />
+    <Resource Include="Content\sparks\shoot0086.png" />
+    <Resource Include="Content\sparks\shoot0087.png" />
+    <Resource Include="Content\sparks\shoot0088.png" />
+    <Resource Include="Content\sparks\shoot0089.png" />
+    <Resource Include="Content\sparks\shoot0090.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="db.xml" />
+    <Resource Include="Content\Clipboard-2.png" />
+    <Resource Include="Content\icon_in-game.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Helper\HelperSL.csproj">
+      <Project>{443B377E-8155-43E3-821D-429BFB595770}</Project>
+      <Name>HelperSL</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v3.0\Microsoft.Silverlight.CSharp.targets" Condition="" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{A1591282-1198-4647-A2B1-27E5FF5F6F3B}">
+        <SilverlightProjectProperties />
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Import Project="SubsetFontSilverlight.targets" />
+</Project>
