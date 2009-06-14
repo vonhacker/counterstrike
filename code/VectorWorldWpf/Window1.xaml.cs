@@ -14,12 +14,12 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using VectorWorld;
+using FarseerGames.FarseerPhysics.Mathematics;
+using System.Diagnostics;
 
 namespace VectorWorldWpf
 {
-    /// <summary>
-    /// Interaction logic for Window1.xaml
-    /// </summary>
+
     public partial class Window1 : Window
     {
         public Window1()
@@ -50,76 +50,45 @@ namespace VectorWorldWpf
             _x = 0;
             _y = 0;
         }
-        double minDistance = 15;
-        public Point lastDot { get { return new Point(_x, _y); } set { _x = value.X; _y = value.Y; } }
-        public Point Dot = new Point();
+        
+        public Point pos { get { return new Point(_x, _y); } set { _x = value.X; _y = value.Y; } }
+        public Point oldpos = new Point();
         public void Update()
         {
-            Dot = lastDot;
+            oldpos = pos;
             int s = 5;
-            if (Keyboard.IsKeyDown(Key.A)) Dot.X -= s;
-            if (Keyboard.IsKeyDown(Key.D)) Dot.X += s;
-            if (Keyboard.IsKeyDown(Key.W)) Dot.Y -= s;
-            if (Keyboard.IsKeyDown(Key.S)) Dot.Y += s;
+            if (Keyboard.IsKeyDown(Key.A)) _x -= s;
+            if (Keyboard.IsKeyDown(Key.D)) _x += s;
+            if (Keyboard.IsKeyDown(Key.W)) _y -= s;
+            if (Keyboard.IsKeyDown(Key.S)) _y += s;
+            pos =Vector2D.Fazika(pos, oldpos, 15, walls.ToList());
+            //Vector2D way = new Vector2D(oldpos, pos);
 
-            Vector2D way = new Vector2D(lastDot, Dot);
-
-            Point newDot;
-            Point newDotResult = new Point();
-            int countCross = 0;
-            // Находим стены пересекающиеся с новым положением и предположительные точки
-            foreach (Vector2D v in walls)
-                if (checkCrossWalls(v, lastDot, Dot, out newDot))
-                {
-                    countCross++;
-                    newDotResult.X += newDot.X;
-                    newDotResult.Y += newDot.Y;
-                }
-            if (countCross == 0) lastDot = Dot;
-            else if (countCross == 1) lastDot = newDotResult;
-            else
-            {
-                newDotResult.X /= (double)countCross;
-                newDotResult.Y /= (double)countCross;
-                lastDot = newDotResult;
-            }
+            //Point newDot;            
+            //Point newDotResult = new Point();
+            //int countCross = 0;
+            //// Находим стены пересекающиеся с новым положением и предположительные точки
+            //foreach (Vector2D v in walls)
+            //    if (Vector2D.checkCrossWalls(v, oldpos, pos, out newDot))
+            //    {
+            //        countCross++;
+            //        newDotResult.X += newDot.X;
+            //        newDotResult.Y += newDot.Y;
+            //    }
+            
+            //if (countCross == 1) pos = newDotResult;
+            //else if (countCross == 2)
+            //{
+            //    newDotResult.X /= (double)countCross;
+            //    newDotResult.Y /= (double)countCross;
+            //    pos = newDotResult;
+            //    if (walls.Any(a => Calculator.DistanceBetweenPointAndLineSegment(pos, a.dot1, a.dot2) < 15))
+            //        pos = oldpos;
+                
+            //}
+            
         }
-        private bool checkCrossWalls(Vector2D wall, Point lastDot, Point Dot, out Point newDot)
-        {
-            Vector2D way = new Vector2D(lastDot, Dot);
-            Point cross;
-            bool isCross = wall.cross(way, out cross);
-            double distance = wall.distance(way.dot2);
-            if (isCross || Math.Abs(distance) < minDistance)
-            {
-                Vector2D n;
-                if (isCross)
-                    n = new Vector2D(Dot, distance < 0 ? -wall.normal() : wall.normal());
-                else
-                    n = new Vector2D(Dot, distance < 0 ? wall.normal() : -wall.normal());
-                if (wall.cross(n, out cross, false))
-                {
-                    n = new Vector2D(cross, n);
-                    n.length = minDistance + 1.5f;
-                    newDot = n.dot2;
-                    return true;
-                } else if (Math.Sqrt(Math.Pow(wall.dot1.X - Dot.X, 2.0f) + Math.Pow(wall.dot1.Y - Dot.Y, 2.0f)) < minDistance)
-                {
-                    n = new Vector2D(wall.dot1, Dot);
-                    n.length = minDistance + 1.5f;
-                    newDot = n.dot2;
-                    return true;
-                } else if (Math.Sqrt(Math.Pow(wall.dot2.X - Dot.X, 2.0f) + Math.Pow(wall.dot2.Y - Dot.Y, 2.0f)) < minDistance)
-                {
-                    n = new Vector2D(wall.dot2, Dot);
-                    n.length = minDistance + 1.5f;
-                    newDot = n.dot2;
-                    return true;
-                }
-            }
-            newDot = Dot;
-            return false;
-        }
+        
 
         public double _x { get { return _Ellipse.GetX(); } set { _Ellipse.SetX(value); } }
         public double _y { get { return _Ellipse.GetY(); } set { _Ellipse.SetY(value); } }

@@ -82,14 +82,6 @@
     <Compile Include="Controls\Controls.cs" />
     <Compile Include="Controls\GameObj.cs" />
     <Compile Include="Controls\Maps.cs" />
-    <Compile Include="Controls\Mathematics\BilinearInterpolator.cs" />
-    <Compile Include="Controls\Mathematics\Calculator.cs" />
-    <Compile Include="Controls\Mathematics\CircularInterpolator.cs" />
-    <Compile Include="Controls\Mathematics\ConvertUnits.cs" />
-    <Compile Include="Controls\Mathematics\MathHelper.cs" />
-    <Compile Include="Controls\Mathematics\Matrix.cs" />
-    <Compile Include="Controls\Mathematics\Vector2.cs" />
-    <Compile Include="Controls\Mathematics\Vector3.cs" />
     <Compile Include="Controls\Player.cs" />
     <Compile Include="EscMenu.xaml.cs">
       <DependentUpon>EscMenu.xaml</DependentUpon>
@@ -154,6 +146,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AppManifest.xml" />
+    <None Include="SubsetFontSilverlight.targets" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Content\CS_logo.png" />

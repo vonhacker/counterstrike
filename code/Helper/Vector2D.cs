@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using doru.Vectors;
 
 namespace VectorWorld
 {
-    class Vector2D
+    public class Vector2D
     {
         public double A, B, X, Y;
         public Point dot1 { get { return new Point(X, Y); } }
@@ -62,5 +63,78 @@ namespace VectorWorld
                 B = value * kB;
             }
         }
+        public static bool checkCrossWalls(Vector2D wall, Point lastDot, Point Dot, out Point newDot, double minDistance)
+        {
+            wall = new Vector2D(
+                new Point(wall.dot1.X + .01, wall.dot1.Y + .01),
+                new Point(wall.dot2.X, wall.dot2.Y));
+            
+            Vector2D way = new Vector2D(lastDot, Dot);
+            Point cross;
+            bool isCross = wall.cross(way, out cross);
+            double distance = wall.distance(way.dot2);
+            if (isCross || Math.Abs(distance) < minDistance)
+            {
+                Vector2D n;
+                if (isCross)
+                    n = new Vector2D(Dot, distance < 0 ? -wall.normal() : wall.normal());
+                else
+                    n = new Vector2D(Dot, distance < 0 ? wall.normal() : -wall.normal());
+                if (wall.cross(n, out cross, false))
+                {
+                    n = new Vector2D(cross, n);
+                    n.length = minDistance + 1.5f;
+                    newDot = n.dot2;
+                    return true;
+                } else if (Math.Sqrt(Math.Pow(wall.dot1.X - Dot.X, 2.0f) + Math.Pow(wall.dot1.Y - Dot.Y, 2.0f)) < minDistance)
+                {
+                    n = new Vector2D(wall.dot1, Dot);
+                    n.length = minDistance + 1.5f;
+                    newDot = n.dot2;
+                    return true;
+                } else if (Math.Sqrt(Math.Pow(wall.dot2.X - Dot.X, 2.0f) + Math.Pow(wall.dot2.Y - Dot.Y, 2.0f)) < minDistance)
+                {
+                    n = new Vector2D(wall.dot2, Dot);
+                    n.length = minDistance + 1.5f;
+                    newDot = n.dot2;
+                    return true;
+                }
+            }
+            newDot = Dot;
+            return false;
+        }
+        public static Point Fazika(Point pos, Point oldpos, double dist, List<Vector2D> walls)
+        {
+
+            Vector2D way = new Vector2D(oldpos, pos);
+
+            Point newDot;
+            Point newDotResult = new Point();
+            int countCross = 0;
+            // Находим стены пересекающиеся с новым положением и предположительные точки
+
+
+            foreach (Vector2D v in walls)
+            {
+                if (Vector2D.checkCrossWalls(v, oldpos, pos, out newDot, dist))
+                {
+                    countCross++;
+                    newDotResult.X += newDot.X;
+                    newDotResult.Y += newDot.Y;
+                }
+                if (doru.Vectors.Calculator.DistanceBetweenVectorAndLineSegment((Vector)pos, (Vector)v.dot1, (Vector)v.dot2) < dist/2)
+                    return oldpos;
+            }
+            if (countCross == 1) return newDotResult;
+            else if (countCross == 2)
+            {
+                newDotResult.X /= (double)countCross;
+                newDotResult.Y /= (double)countCross;
+                pos = newDotResult;
+
+            }
+            return pos;
+        }
     }
+
 }

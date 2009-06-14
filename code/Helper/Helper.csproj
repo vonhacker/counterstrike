@@ -66,6 +66,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helper.cs" />
+    <Compile Include="Mathematics\BilinearInterpolator.cs" />
+    <Compile Include="Mathematics\Calculator.cs" />
+    <Compile Include="Mathematics\CircularInterpolator.cs" />
+    <Compile Include="Mathematics\ConvertUnits.cs" />
+    <Compile Include="Mathematics\MathHelper.cs" />
+    <Compile Include="Mathematics\Matrix.cs" />
+    <Compile Include="Mathematics\Vector2.cs" />
+    <Compile Include="Mathematics\Vector3.cs" />
     <Compile Include="NotifyPropertyChangedExt2.cs" />
     <Compile Include="Resource1.Designer.cs">
       <DependentUpon>Resource1.resx</DependentUpon>
@@ -75,6 +83,7 @@
     <Compile Include="Tcp.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Vector2D.cs" />
     <Compile Include="Wpf.cs" />
   </ItemGroup>
   <ItemGroup>

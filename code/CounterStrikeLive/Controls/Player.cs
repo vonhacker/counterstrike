@@ -93,28 +93,30 @@ namespace CounterStrikeLive
 
         protected void UpdateCollisions()
         {
-            Line2 wall = _Map.CCollision(_Position, 25);
-            if (wall != null)
-            {
-                _Position = _OldPosition;
-                //float a= Calculator.DegreesToRadians(90);
+            _Position = VectorWorld.Vector2D.Fazika(_Position, _OldPosition,15,_Map.walls);
+            //Line2 wall = _Map.CCollision(_Position, 25);
+            //if (wall != null)
+            //{
+            //    _Position = _OldPosition;
+            //    //float a= Calculator.DegreesToRadians(90);
 
-                // Vector2 _Vectora = wall._cpoint - _Position;
+            //    // Vector2 _Vectora = wall._cpoint - _Position;
 
-                // Vector2 _Vectorb = new Vector2(0, (_Position - _OldPosition).Length());                
+            //    // Vector2 _Vectorb = new Vector2(0, (_Position - _OldPosition).Length());                
 
-                // float rads = Calculator.VectorToRadians(_Vectora);
-                // float rads2 = Calculator.VectorToRadians(wall._p2 - wall._p1)+1.57f;
+            //    // float rads = Calculator.VectorToRadians(_Vectora);
+            //    // float rads2 = Calculator.VectorToRadians(wall._p2 - wall._p1)+1.57f;
 
-                // Calculator.RotateVector(ref _Vectorb, rads2);
-                // if (Math.Abs(rads-rads2) <1.57f)
-                // {
-                //     _Vectorb = Vector2.Multiply(_Vectorb, -1);
-                // }
+            //    // Calculator.RotateVector(ref _Vectorb, rads2);
+            //    // if (Math.Abs(rads-rads2) <1.57f)
+            //    // {
+            //    //     _Vectorb = Vector2.Multiply(_Vectorb, -1);
+            //    // }
 
-                // _Position -=_Vectorb;
-            }
+            //    // _Position -=_Vectorb;
+            //}
         }
+
         public Vector2? PlayerCollide()
         {
             foreach (Player _Player in _Game._Players)

@@ -30,6 +30,7 @@ using System.IO.Compression;
 using System.Windows.Controls;
 using System.ComponentModel;
 using System.Web;
+
 #endif
 
 
@@ -50,7 +51,14 @@ namespace doru
 
         public struct Vector
         {
-            
+            public static implicit operator Vector(Point _Vector2)
+            {
+                return new Vector(_Vector2.X, _Vector2.Y);
+            }
+            public static implicit operator Point(Vector _Vector2)
+            {
+                return new Point(_Vector2.X, _Vector2.Y);
+            }
             public double X;
             public double Y;
             public Vector(double x, double y) { X = x; Y = y; }
@@ -310,11 +318,39 @@ namespace doru
                 result = (value1.X * value2.X) + (value1.Y * value2.Y);
             }
         }
-        
-        
+
+        //public class Calculator
+        //{
+
+        //    public static float DistanceBetweenPointAndLineSegment(Vector point, Vector lineEndPoint1, Vector lineEndPoint2, out Vector pointOnLine)
+        //    {
+        //        Vector v = Vector.Subtract(lineEndPoint2, lineEndPoint1);
+        //        Vector w = Vector.Subtract(point, lineEndPoint1);
+
+        //        float c1 = Vector.Dot(w, v);
+        //        if (c1 <= 0)
+        //        {
+        //            pointOnLine = lineEndPoint1;
+        //            return DistanceBetweenPointAndPoint(point, lineEndPoint1);
+        //        }
+
+        //        float c2 = Vector.Dot(v, v);
+
+        //        if (c2 <= c1)
+        //        {
+        //            pointOnLine = lineEndPoint2;
+        //            return DistanceBetweenPointAndPoint(point, lineEndPoint2);
+        //        }
+
+        //        float b = c1 / c2;
+        //        pointOnLine = Vector.Add(lineEndPoint1, Vector.Multiply(v, b));
+        //        return DistanceBetweenPointAndPoint(point, pointOnLine);
+        //    }
+        //}
 
         public static class Calculator
         {
+
             public static double Length(this Vector p)
             {
                 double num = (p.X * p.X) + (p.Y * p.Y);
@@ -377,7 +413,11 @@ namespace doru
                 Vector v = Vector.Subtract(Vector1, Vector);
                 return v.Length();
             }
-
+            public static double DistanceBetweenVectorAndLineSegment(Vector Vector, Vector lineEndVector1, Vector lineEndVector)
+            {
+                Vector VectorOnLine;
+                return DistanceBetweenVectorAndLineSegment(Vector, lineEndVector1, lineEndVector, out VectorOnLine);
+            }
             public static double DistanceBetweenVectorAndLineSegment(Vector Vector, Vector lineEndVector1, Vector lineEndVector, out Vector VectorOnLine)
             {
                 Vector v = Vector.Subtract(lineEndVector, lineEndVector1);

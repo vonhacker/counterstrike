@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Windows.Media.Imaging;
 using System.Linq;
 using FarseerGames.FarseerPhysics.Mathematics;
+using VectorWorld;
 
 namespace CounterStrikeLive
 {
@@ -81,8 +82,12 @@ namespace CounterStrikeLive
             return null;
         }
 
+        
+
+        
         public List<LV> Collision(Vector2 pos2, Vector2 pos1, out Line2 _wall)
         {
+            
             _wall = null;
             List<LV> _HitPoints = new List<LV>();
             foreach(MapDatabase.Polygon _Polygon in _Polygons)
@@ -123,6 +128,7 @@ namespace CounterStrikeLive
             Point _Point = _StartPoints[Random.Next(_StartPoints.Count)];
             return _Point;
         }
+        public List<Vector2D> walls = new List<Vector2D>();
         public void LoadMap(MapDatabase _MapDatabase)
         {
             this._MapDatabase = _MapDatabase;
@@ -142,12 +148,12 @@ namespace CounterStrikeLive
                 }
                 foreach(MapDatabase.Polygon _dPolygon in _Layer._Polygons)
                 {
-                    if(_dPolygon._Color != Colors.Black)
+                    if (_dPolygon._Color != Colors.Black)
                     {
-                        if(_dPolygon._Points.First() == _dPolygon._Points.Last())
+                        if (_dPolygon._Points.First() == _dPolygon._Points.Last())
                         {
                             Polygon _Polygon = new Polygon();
-                            foreach(Point _Point in _dPolygon._Points)
+                            foreach (Point _Point in _dPolygon._Points)
                             {
                                 _Polygon.Points.Add(_Point);
                             }
@@ -155,21 +161,31 @@ namespace CounterStrikeLive
                             _Polygon.Fill = new SolidColorBrush(_dPolygon._Color);
 
                             _Canvas.Children.Add(_Polygon);
-                        }
-                        else
+                        } else
                         {
                             Polyline _Polygon = new Polyline();
                             _Polygon.Stroke = new SolidColorBrush(_dPolygon._Color);
                             _Polygon.StrokeThickness = 3;
-                            foreach(Point _Point in _dPolygon._Points)
+                            foreach (Point _Point in _dPolygon._Points)
                             {
                                 _Polygon.Points.Add(_Point);
                             }
 
                             _Canvas.Children.Add(_Polygon);
                         }
+                    } else
+                    {
+                        Point? p1 = null;
+                        foreach (Point p2 in _dPolygon._Points)
+                        {
+                            
+                            if (p1 != null)
+                                walls.Add(new Vector2D(p1.Value, p2));
+                            p1 = p2;
+                        }
+                        _Polygons.Add(_dPolygon);
+
                     }
-                    else _Polygons.Add(_dPolygon);
                 }
             }
             _Canvas.Children.Add(_Canvas1);
