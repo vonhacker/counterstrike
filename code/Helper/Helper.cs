@@ -1733,7 +1733,12 @@ namespace doru
             try
             {
                 using (FileStream fs1 = File.Open(path, FileMode.Open))
-                    return (T)x.Deserialize(fs1);
+                {
+                    T t2 = (T)x.Deserialize(fs1);
+                    if (t2 == null) throw new Exception();
+                    return t2;
+                }
+
             }
             catch
             {
