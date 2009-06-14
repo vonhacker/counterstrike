@@ -33,10 +33,10 @@ namespace CounterStrikeLive.Server
     }
     
 
-    public class Server
+    public class GameServer
     {
-        public static Server _This;
-        public Server()
+        public static GameServer _This;
+        public GameServer()
         {
             _This = this;
         }
@@ -145,7 +145,7 @@ namespace CounterStrikeLive.Server
             public bool _isJoined;
             public static Settings Settings { get { return Settings.Default; } }
             public int _PingTime;
-            private double _PingElapsed;
+            private double? _PingElapsed;
             private Listener _Listener;
             private Sender _Sender;
             public Client[] _Clients = null;
@@ -165,7 +165,7 @@ namespace CounterStrikeLive.Server
 
                 _id = _Clients.PutToNextFreePlace(this);
                 Console.WriteLine("Client Conneted:" + _id);
-                Send(new byte[] { (byte)Server._Serverid, (byte)PacketType.playerid, (byte)_id });
+                Send(new byte[] { (byte)GameServer._Serverid, (byte)PacketType.playerid, (byte)_id });
 
                 if (_ClientList.Count() == 0)
                 {
@@ -173,7 +173,7 @@ namespace CounterStrikeLive.Server
                 } else
                     Send(PacketType.map, _Server._Map.ToBytes());        
             }
-            public Server _Server;
+            public GameServer _Server;
 
 
 
@@ -204,11 +204,12 @@ namespace CounterStrikeLive.Server
                 if(_Sender._Socket.Connected)
                     _Sender.Send(_buffer);
             }
-
             public void Close()
+            { Close("Client Disconected"); }
+            public void Close(string s)
             {
                 _Clients[_id] = null;
-                Console.WriteLine("Client Disconected");
+                this.Trace(s);
                 var _Data = new[] { (byte)PacketType.PlayerLeaved };
                 SendToAll(_Data);
                 _Listener._Socket.Close();
@@ -230,7 +231,6 @@ namespace CounterStrikeLive.Server
                         }
                         break;
                     case PacketType.Join:
-
                         Debug.WriteLine("Sended Player id:" + _id);
                         _isJoined = true;
                         SendJoin();
@@ -266,7 +266,7 @@ namespace CounterStrikeLive.Server
                         {
                             _PingTime = (int)_PingElapsed;
                             SendToAll(PacketType.pinginfo, _id, true, false, BitConverter.GetBytes((Int16)_PingElapsed));
-
+                            _PingElapsed = null;
                             _Server._Timer4.AddMethod(1000, Ping);
                         }
                         break;
@@ -319,11 +319,19 @@ namespace CounterStrikeLive.Server
             public void Ping()
             {
                 _PingElapsed = 0;
-                Send(new byte[] { Server._Serverid, (byte)PacketType.ping });
+                Send(new byte[] { GameServer._Serverid, (byte)PacketType.ping });
+            }
+            public override string ToString()
+            {
+                return "Client" + _id;
             }
             public void Update()
             {
-                _PingElapsed += _Server._Timer4._TimeElapsed;
+                if (_PingElapsed != null)
+                {
+                    _PingElapsed += _Server._Timer4._TimeElapsed;
+                    if (_PingElapsed > _Config._MaxLatency) Close("Kicked To High Latency");
+                }
                 List<byte[]> _messages = _Listener.GetMessages();
                 foreach (byte[] _data in _messages)
                     onReceive(_data);

@@ -587,12 +587,11 @@ namespace CounterStrikeLive
             Loading1.Text = "Connected";
             Loading1.Value = 30;
             this.Cursor = Cursors.None;
-            
+
             _Sender._Socket = _Listener._Socket = _Socket;
-            if(_Config.GenerateClientLag)
-                _Sender._NetworkStream = _Listener._NetworkStream = new LagStream(_Socket);
-            else
-                _Sender._NetworkStream = _Listener._NetworkStream = new NetworkStream(_Socket);
+
+            _Sender._NetworkStream = _Listener._NetworkStream = _Config.GenerateClientLag ? new LagStream(_Socket) {  interval= 2100 } : new NetworkStream(_Socket);
+            
             _Listener.StartAsync("listener");
             _Storyboard.Begin();
             _Storyboard.Completed += new EventHandler(Update);
@@ -983,7 +982,7 @@ namespace CounterStrikeLive
 
             if (_Listener._Connected == false)
             {
-                throw new Exception("You Have Been Disconnected!");
+                throw new Exception("Connection with server Have Been Lost!");
             }
 
             if (_GameState != GameState.mapdownload)

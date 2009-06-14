@@ -17,5 +17,8 @@
     <Setting Name="_ServerList" Type="System.String" Scope="User">
       <Value Profile="(Default)">http://igorlevochkin.ig.funpic.org/cs/serv.php</Value>
     </Setting>
+    <Setting Name="_ResetConfig" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

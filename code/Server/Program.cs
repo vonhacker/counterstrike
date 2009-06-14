@@ -30,9 +30,12 @@ namespace CounterStrikeLive.Server
         public Program()
         {
             "started".Trace();
-            Config _Config  = Config._XmlSerializer.DeserealizeOrCreate<Config>(Settings.Default._ClientBin + "Config.xml", new Config());
+            if (Settings._ResetConfig)
+                Config._XmlSerializer.Serialize(Settings._ClientBin + "Config.xml",new Config());
+            else
+                Config._XmlSerializer.DeserealizeOrCreate<Config>(Settings._ClientBin + "Config.xml", new Config());
 
-            Server _Server = new Server();
+            GameServer _Server = new GameServer();
 
             _Server.StartAsync();            
 

@@ -82,5 +82,17 @@ namespace CounterStrikeLive.Server.Properties {
                 this["_ServerList"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool _ResetConfig {
+            get {
+                return ((bool)(this["_ResetConfig"]));
+            }
+            set {
+                this["_ResetConfig"] = value;
+            }
+        }
     }
 }

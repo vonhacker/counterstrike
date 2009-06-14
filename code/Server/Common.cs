@@ -43,7 +43,7 @@ namespace CounterStrikeLive.Service
         pong = 98,
         ping = 99,
         /// <summary>
-        /// CounterStrikeLive.CounterStrikeLive.Server->client player Ping [[ping - int16]]
+        /// CounterStrikeLive.CounterStrikeLive.GameServer->client player Ping [[ping - int16]]
         /// </summary>
         pinginfo = 100,
         /// <summary>
@@ -95,6 +95,7 @@ namespace CounterStrikeLive.Service
         public bool GenerateWebServerLag = false;
         public static Config _This;
         public int _WebPort = 5300;
+        public int _MaxLatency = 2000;
         public int _GamePort = 4530;
         public string _WebAllowedIps = ".*";
         public string _WebRedirect = "http://dorumon.no-ip.org";
@@ -107,11 +108,7 @@ namespace CounterStrikeLive.Service
             _This = this;
             
         }
-        public List<MapInfo> _Maps = new List<MapInfo>() {
-            new MapInfo{ MapName = "estate.zip"},            
-            new MapInfo{ MapName = "nuke.zip"},
-            new MapInfo{ MapName = "italy.zip"}
-        };    
+        public List<MapInfo> _Maps = new List<MapInfo>();
     }
     
     

@@ -15,7 +15,7 @@ namespace CounterStrikeLive.Server
     public class PhpSender
     {
         Settings _Settings { get { return Settings.Default; } }
-        Server _Server = Server._This;
+        GameServer _Server = GameServer._This;
         Config _Config = Config._This;
         Uri _Uri;
         public void StartAsync()
