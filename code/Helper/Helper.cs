@@ -1725,7 +1725,7 @@ namespace doru
         {
             return s.Split(new[] { s2 }, StringSplitOptions.RemoveEmptyEntries);
         }
-        [Obsolete("DeserealizeOrSerialize")]
+        
         public static T DeserealizeOrCreate<T>(this XmlSerializer x, string path, T t)
         {
             if (t == null) throw new NullReferenceException("omg");
@@ -1741,6 +1741,7 @@ namespace doru
                 return t;
             }
         }
+        [Obsolete("DeserealizeOrCreate")]
         public static T DeserealizeOrSerialize<T>(this XmlSerializer x, string path, T t)
         {
             if (t == null)
