@@ -107,15 +107,15 @@ namespace CounterStrikeLive.Service
             _This = this;
             
         }
-        public List<Map> _Maps = new List<Map>() {
-            new Map{ MapName = "estate.zip"},            
-            new Map{ MapName = "nuke.zip"},
-            new Map{ MapName = "italy.zip"}
+        public List<MapInfo> _Maps = new List<MapInfo>() {
+            new MapInfo{ MapName = "estate.zip"},            
+            new MapInfo{ MapName = "nuke.zip"},
+            new MapInfo{ MapName = "italy.zip"}
         };    
     }
     
     
-    public class Map
+    public class MapInfo
     {
         public string MapName{get;set;}
         public string MapDescription{get;set;}

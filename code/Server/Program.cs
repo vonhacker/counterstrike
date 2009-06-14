@@ -12,7 +12,7 @@ using System.Xml.Serialization;
 using System.Collections.Specialized;
 using CounterStrikeLive.Server.Properties;
 using doru;
-using GameServer;
+
 using CounterStrikeLive.Service;
 
 namespace CounterStrikeLive.Server
@@ -32,7 +32,7 @@ namespace CounterStrikeLive.Server
             "started".Trace();
             Config _Config  = Config._XmlSerializer.DeserealizeOrCreate<Config>(Settings.Default._ClientBin + "Config.xml", new Config());
 
-            GameServer.Server _Server = new GameServer.Server();
+            Server _Server = new Server();
 
             _Server.StartAsync();            
 
@@ -41,6 +41,9 @@ namespace CounterStrikeLive.Server
 
             WebServer _WebServer = new WebServer();
             _WebServer.StartAsync();
+
+            PhpSender _PhpSender = new PhpSender();
+            _PhpSender.StartAsync();
             Thread.Sleep(-1);
         }
     }

@@ -12,10 +12,10 @@
 	Width="400" Height="300">
 	<basics:ChildWindow.Resources>
 		<DataTemplate x:Key="DataTemplate1">
-			<Grid Width="227">
-				<TextBlock Margin="111,36,8,37" Text="{Binding MapName}" TextWrapping="Wrap" Foreground="#FFFFBF00" Height="18"/>
-				<Border HorizontalAlignment="Left" Width="100" BorderBrush="#FF000000" BorderThickness="1,1,1,1" CornerRadius="3,3,3,3">
-					<Image Source="{Binding ImageSource}" />
+			<Grid Width="140" Height="39">
+				<TextBlock Margin="38,8,0,13" Text="{Binding MapName}" TextWrapping="Wrap" Foreground="#FFFFBF00"/>
+				<Border HorizontalAlignment="Left" Width="38" BorderBrush="#FF000000" BorderThickness="1,1,1,1" CornerRadius="3,3,3,3">
+					<Image Source="{Binding ImageSource}" VerticalAlignment="Top" Height="37" />
 				</Border>
 			</Grid>
 		</DataTemplate>
@@ -29,6 +29,9 @@
 		</Grid.RowDefinitions>
 
 		<Button x:Name="OKButton" Content="OK" Click="OKButton_Click" Width="83" Height="31" HorizontalAlignment="Right" Style="{StaticResource ButtonStyle2}" VerticalAlignment="Bottom" />
-		<ListBox Name="ListBox1" Margin="8,27,40,48" Style="{StaticResource ListBoxStyle1}" ItemTemplate="{StaticResource DataTemplate1}"/>
+		<ListBox Name="ListBox1" Margin="8,27,0,48" Style="{StaticResource ListBoxStyle1}" ItemTemplate="{StaticResource DataTemplate1}" Width="115" HorizontalAlignment="Left"/>
+		<Border BorderBrush="{x:Null}" BorderThickness="1,1,1,1" Margin="140,27,24,48" Background="#28000000">
+			<Image Name="_Image" Stretch="UniformToFill"/>
+		</Border>
 	</Grid>
 </local:ChildWindow>

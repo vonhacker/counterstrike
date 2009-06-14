@@ -652,7 +652,7 @@ namespace CounterStrikeLive
                                 if (MapSelect._This != null) MapSelect._This.Close();
                                 _GameState = GameState.mapdownload;
                                 string _Map = _MemoryStream.ReadStringToEnd();
-                                Trace.WriteLine("Map name Received:" + _Map);
+                                Trace.WriteLine("MapInfo name Received:" + _Map);
                                 LoadResources(_Map);
                                 //LoadGame(App.GetResourceStream(new Uri(_Map, UriKind.Relative)).Stream);
                             }
@@ -691,7 +691,7 @@ namespace CounterStrikeLive
                         case PacketType.voteMap:
                             {
                                 string s =_MemoryStream.ReadStringToEnd();
-                                _Chat.Text += _SharedClient._Nick + " Voted Map " + s;
+                                _Chat.Text += _SharedClient._Nick + " Voted MapInfo " + s;
                             }
                             break;
                         case PacketType.addPoint:
@@ -782,7 +782,7 @@ namespace CounterStrikeLive
         {
             Trace.Assert(!resloaded);
             resloaded = true;
-            Loading1.Text = "Map Name Received";
+            Loading1.Text = "MapInfo Name Received";
             WebClient _WebClient = new WebClient();
             _WebClient.OpenReadAsync(new Uri(_Map, UriKind.Relative));
             _WebClient.OpenReadCompleted += new OpenReadCompletedEventHandler(WebClient_OpenReadCompleted);
@@ -794,7 +794,7 @@ namespace CounterStrikeLive
         }
         void WebClient_OpenReadCompleted(object sender, OpenReadCompletedEventArgs e)
         {
-            Loading1.Text = "Executing Map";
+            Loading1.Text = "Executing MapInfo";
             "loading map".Trace();
             ZipInputStream _ZipInputStream = new ZipInputStream(e.Result);
             while (true)

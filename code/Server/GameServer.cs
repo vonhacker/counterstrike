@@ -18,7 +18,7 @@ using CounterStrikeLive.Service;
 using doru.Tcp;
 
 
-namespace GameServer
+namespace CounterStrikeLive.Server
 {
     public static class Debug
     {
@@ -35,13 +35,17 @@ namespace GameServer
 
     public class Server
     {
-        
+        public static Server _This;
+        public Server()
+        {
+            _This = this;
+        }
 
         public List<string> _Console { get { return Logging._console; } }
         Config _Config = Config._This;
         public string _Map;
         public int _WebPort { get { return _Config._WebPort; } }
-        private int _Port { get { return _Config._GamePort; } }
+        public int _Port { get { return _Config._GamePort; } }
         public string _ServerName { get { return Settings.Default._ServerName; } }
 
         public const byte _Serverid = 254;
@@ -61,7 +65,7 @@ namespace GameServer
             _ClientWait._Port = _Port;
             _ClientWait.StartAsync();                        
 
-            new Thread(SendHttp).Start();
+            
             while (true)
             {
                 Update();
@@ -124,36 +128,7 @@ namespace GameServer
         TimerA _Timer4 = new TimerA();
         public int clientcount;
         public int id = Helper._Random.Next(99999);
-        void SendHttp(object _object)
-        {
-
-            while (true)
-            {
-                try
-                {
-                    string post = @"POST /cs/serv.php HTTP/1.1
-Host: dorumon.no-ip.org
-Content-Type: application/x-www-form-urlencoded
-Content-Length: _length_
-
-name={0}&map={1}&version={2}&port={3}&players={4}&id={5}";
-                    post = String.Format(post, _ServerName, _Map, Assembly.GetExecutingAssembly().GetName().Version,
-                        _Port.ToString(), clientcount.ToString(), id);
-                    int len = post.IndexOf("\r\n\r\n") + 4;
-                    if (len == 0) Debugger.Break();
-                    Http.Length(ref post);
-                    TcpClient _TcpClient = new TcpClient("dorumon.no-ip.org", 80);
-                    Socket _Socket = _TcpClient.Client;
-                    _TcpClient.Client.Send(post);
-                    string s = _Socket.Receive().ToStr(); ;
-                    //Http.ReadHttp(_Socket.Client).Save();
-                    Thread.Sleep(200);
-                    _TcpClient.Close();
-                }
-                catch (SocketException) { }
-                Thread.Sleep(10000);
-            }
-        }
+        
 
 
         

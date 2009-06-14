@@ -35,7 +35,7 @@ namespace CounterStrikeLive
             {
 
                 Menu._This._Sender.Send(PacketType.voteMap, _MapSelect.Name.ToBytes());
-                Menu._This._Chat.Text += Game._This._LocalClient._Nick + " Voted Map " + _MapSelect.Name;
+                Menu._This._Chat.Text += Game._This._LocalClient._Nick + " Voted MapInfo " + _MapSelect.Name;
             };
         }
 

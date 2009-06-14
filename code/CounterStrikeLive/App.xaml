@@ -1155,9 +1155,7 @@
     							</vsm:VisualStateGroup>
     						</vsm:VisualStateManager.VisualStateGroups>
     						<Border Background="#35000000" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="2">
-    							<ScrollViewer x:Name="ScrollViewer" BorderBrush="Transparent" BorderThickness="0" Padding="{TemplateBinding Padding}">
-    								<ItemsPresenter/>
-    							</ScrollViewer>
+    							<ItemsPresenter Margin="0,0,2,2" d:LayoutOverrides="Width, Height"/>
     						</Border>
     						<Border x:Name="ValidationErrorElement" Visibility="Collapsed" BorderBrush="#FFDB000C" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="2">
     							<ToolTipService.ToolTip>

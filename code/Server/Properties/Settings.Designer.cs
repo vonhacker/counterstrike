@@ -49,18 +49,6 @@ namespace CounterStrikeLive.Server.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("85.157.182.183")]
-        public string _chatboxip {
-            get {
-                return ((string)(this["_chatboxip"]));
-            }
-            set {
-                this["_chatboxip"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Cs Live Server")]
         public string _ServerName {
             get {
@@ -80,6 +68,18 @@ namespace CounterStrikeLive.Server.Properties {
             }
             set {
                 this["_ClientBin"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://igorlevochkin.ig.funpic.org/cs/serv.php")]
+        public string _ServerList {
+            get {
+                return ((string)(this["_ServerList"]));
+            }
+            set {
+                this["_ServerList"] = value;
             }
         }
     }
