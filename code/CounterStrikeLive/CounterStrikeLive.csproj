@@ -483,6 +483,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="db.xml" />
+    <Content Include="SubsetFontTask.dll" />
     <Resource Include="Content\Clipboard-2.png" />
     <Resource Include="Content\icon_in-game.png" />
   </ItemGroup>
