@@ -28,7 +28,7 @@
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 
-		<Button x:Name="OKButton" Content="OK" Click="OKButton_Click" Width="83" Height="31" HorizontalAlignment="Right" Style="{StaticResource ButtonStyle2}" VerticalAlignment="Bottom" />
+		<local:Button x:Name="OKButton" Content="OK" Click="OKButton_Click" Width="83" Height="31" HorizontalAlignment="Right" Style="{StaticResource ButtonStyle2}" VerticalAlignment="Bottom" />
 		<ListBox Name="ListBox1" Margin="8,27,0,48" Style="{StaticResource ListBoxStyle1}" ItemTemplate="{StaticResource DataTemplate1}" Width="115" HorizontalAlignment="Left"/>
 		<Border BorderBrush="{x:Null}" BorderThickness="1,1,1,1" Margin="140,27,24,48" Background="#28000000">
 			<Image Name="_Image" Stretch="UniformToFill"/>

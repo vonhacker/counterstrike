@@ -1194,7 +1194,11 @@ namespace doru
             }
             return;
         }
-
+        public static string Random(params string[] ss)
+        {
+            return ss[_Random.Next(ss.Length)];
+        }
+        
         public static string Randomstr(int size)
         {
             char[] chars = new char[size];
@@ -1421,6 +1425,10 @@ namespace doru
 
 
 
+
+
+
+        public static string _ContentFolder = "";
     }
 
     
@@ -1428,17 +1436,15 @@ namespace doru
     
     public static class Extensions
     {
-        
 
+        
+        
         public static void MoveTo<T>(this List<T> a, List<T> b, T t)
         {
             a.Remove(t);
             b.Add(t);
         }
-        public static double Pow(this double a, double b)
-        {
-            return Math.Pow(a, b);
-        }
+        
         public static double Pow(this double a)
         {
             return Math.Pow(a, 2);
@@ -1546,6 +1552,11 @@ namespace doru
         
 #else
         #region
+        [DebuggerStepThrough]
+        public static void SetSource(this MediaElement mm,string s )
+        {
+            mm.SetSource(Application.GetResourceStream(new Uri(Helper._ContentFolder+s,UriKind.Relative)).Stream);
+        }
         public static void Send(this Socket _Socket, byte[] buffer) { Send(_Socket, buffer, 0, buffer.Length); }
         public static void Send(this Socket _Socket, byte[] buffer, int offset, int count)
         {

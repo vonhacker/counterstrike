@@ -481,6 +481,16 @@
     <Resource Include="Content\sparks\shoot0090.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\ak47-1.mp3" />
+    <Content Include="Content\ak47_reload.mp3" />
+    <Content Include="Content\buttonclick.mp3" />
+    <Content Include="Content\buttonrollover.mp3" />
+    <Content Include="Content\concrete1.mp3" />
+    <Content Include="Content\concrete2.mp3" />
+    <Content Include="Content\concrete3.mp3" />
+    <Content Include="Content\concrete4.mp3" />
+    <Content Include="Content\ric_conc-1.mp3" />
+    <Content Include="Content\ric_conc-2.mp3" />
     <Content Include="db.xml" />
     <Resource Include="Content\Clipboard-2.png" />
     <Resource Include="Content\icon_in-game.png" />

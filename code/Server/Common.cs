@@ -13,6 +13,7 @@ namespace CounterStrikeLive.Service
     /// </summary>
     public enum PacketType : byte
     {        
+        Reloading = 15,
         voteMap=14,
         Join = 13,
         MapSelected = 12,
@@ -94,8 +95,9 @@ namespace CounterStrikeLive.Service
         public bool GenerateServerLag = false;
         public bool GenerateWebServerLag = false;
         public static Config _This;
-        public int _WebPort = 5300;
-        public int _MaxLatency = 2000;
+        public int _WebPort = 5300;        
+        public int? _MaxLatency = null;
+        public string _ContentFolder = "Content/";
         public int _GamePort = 4530;
         public string _WebAllowedIps = ".*";
         public string _WebRedirect = "http://dorumon.no-ip.org";
@@ -106,6 +108,7 @@ namespace CounterStrikeLive.Service
         {
             //if (_This != null) throw new Exception("Config can have only one Copy");
             _This = this;
+            Helper._ContentFolder = "Content/";
             
         }
         public MapInfo[] _Maps = new MapInfo[]

@@ -9,13 +9,59 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using FarseerGames.FarseerPhysics.Mathematics;
+using doru;
+using CounterStrikeLive.Service;
 
 namespace CounterStrikeLive
 {
     public class GameObj
-    {
-        public bool _VisibleToAll;
+    {        
 
+        public bool _VisibleToAll;
+        Menu _Menu = Menu._This;
+        public void PlaySound(string s)
+        {
+            PlaySound(s, 5000);
+        }
+        Config _Config = Config._This;
+        public void PlaySound(string s, double distance)
+        {
+            //if (_Game._LocalPlayer == this) return;
+
+            double volume = GetVolume(distance);
+
+            if (volume != 0)
+            {
+                MediaElement _MediaElement = new MediaElement();
+                _Menu._GameCanvas.Children.Add(_MediaElement);
+                _MediaElement.SetSource(s);                
+                _MediaElement.MediaEnded += delegate { _Menu._GameCanvas.Children.Remove(_MediaElement); };
+                _MediaElement.Volume = volume;
+            }
+        }
+
+        public double GetVolume(double distance)
+        {
+            double x, y, x2, y2;
+
+            if (_Game._LocalPlayer == null)
+            {
+                x = _Game._FreeViewPos.X;
+                y = _Game._FreeViewPos.Y;
+            } else
+            {
+                x = _Game._LocalPlayer._Position.X;
+                y = _Game._LocalPlayer._Position.Y;
+            }
+            x2 = position.X;
+            y2 = position.Y;
+
+            double len = Math.Sqrt((x - x2).Pow() + (y - y2).Pow());
+            double volume = Math.Max(0, 1 - len / distance) * _LocalDatabase.Volume;
+            return volume;
+        }
+        LocalDatabase _LocalDatabase = LocalDatabase._This;
+        
         public Vector2 position;
         public Vector2 _Position { get { return position; } set { if (value.X == float.NaN) throw new Exception("Break"); position = value; } }
         public Map _Map { get { return _Game._Map; } }

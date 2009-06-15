@@ -54,6 +54,7 @@ namespace CounterStrikeLive
         ExplosionA _ExplosionA;
         public override void Load()
         {
+            _Menu._GameCanvas.Children.Add(_MediaElement);
             LoadNickName();
             _Canvas.Children.Add(_TextBlock);
             _ExplosionA = new ExplosionA();
@@ -162,6 +163,7 @@ namespace CounterStrikeLive
             {
                 UpdateCollisions();
                 _AnimatedBitmap = _dbPlayer._PlayerRun;
+                PlayWalk();
             }
             else _AnimatedBitmap = _dbPlayer._PlayerStay;
             foreach (Explosion _Explosion in _Explosions2)
@@ -171,13 +173,28 @@ namespace CounterStrikeLive
             _OldPosition = _Position;
         }
 
+        MediaElement _MediaElement = new MediaElement();
+        Menu _Menu = Menu._This;
+        int soundid=0;
+        private void PlayWalk()
+        {
+            //if (_LocalPlayer == this) return;
+            if (_MediaElement.CurrentState == MediaElementState.Paused || _MediaElement.CurrentState == MediaElementState.Closed)
+            {
+                soundid++;
+                _MediaElement.SetSource("concrete" + ((soundid % 4) + 1) + ".mp3");
+                _MediaElement.Volume = GetVolume(2000);
+                _MediaElement.Play();
+                
+            }
+        }
+
         public Vector2 _MoveVector;
         protected virtual void UpdateKeys()
         {
             _MoveVector = new Vector2();
             if (_Keys.Contains(Key.Left) || _Keys.Contains(Key.A))
             {
-
                 _MoveVector.X -= 1;
             }
             if (_Keys.Contains(Key.Right) || _Keys.Contains(Key.D))
@@ -204,8 +221,14 @@ namespace CounterStrikeLive
 
         public Database _Database { get { return Menu._Database; } }
         public LocalPlayer _LocalPlayer { get { return _Game._LocalPlayer; } }
+
+        public void ReloadSound()
+        {
+            PlaySound("ak47_reload.mp3");
+        }
         public void ShootAnimation()
         {
+            PlaySound("ak47-1.mp3");
             _ExplosionA._isPlaying = true;
         }
     }

@@ -14,6 +14,28 @@ using doru;
 
 namespace CounterStrikeLive
 {
+    public class Button : System.Windows.Controls.Button
+    {
+        Menu _Menu = Menu._This;
+        protected override void OnClick()
+        {
+            PlaySound("buttonclick.mp3");
+            base.OnClick();
+        }
+
+        private void PlaySound(string s)
+        {
+            MediaElement _MediaElement = new MediaElement();
+            _MediaElement.SetSource(s);
+            _Menu._GameCanvas.Children.Add(_MediaElement);
+            _MediaElement.MediaEnded += delegate { _Menu._GameCanvas.Children.Remove(_MediaElement); };
+        }
+        protected override void OnMouseEnter(MouseEventArgs e)
+        {
+            PlaySound("buttonrollover.mp3");
+            base.OnMouseEnter(e);
+        }
+    }
     public class ChildWindow : System.Windows.Controls.ChildWindow
     {
         public static ChildWindow _This;
@@ -100,11 +122,9 @@ namespace CounterStrikeLive
             if (!_VisibleToAll) this._Visibility = Visibility.Collapsed;
 
             _Canvas2.RenderTransform = _RotateTransform;
-
             _Image = _AnimatedBitmap.GetImage();
             _Canvas2.Children.Add(_Image);
-            _Canvas.Children.Add(_Canvas2);
-
+            _Canvas.Children.Add(_Canvas2);            
             UpdateTranslations();
             Add();
         }

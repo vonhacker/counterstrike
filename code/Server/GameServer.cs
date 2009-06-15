@@ -330,7 +330,7 @@ namespace CounterStrikeLive.Server
                 if (_PingElapsed != null)
                 {
                     _PingElapsed += _Server._Timer4._TimeElapsed;
-                    if (_PingElapsed > _Config._MaxLatency) Close("Kicked To High Latency");
+                    if (_Config._MaxLatency != null && _PingElapsed > _Config._MaxLatency) Close("Kicked To High Latency");
                 }
                 List<byte[]> _messages = _Listener.GetMessages();
                 foreach (byte[] _data in _messages)

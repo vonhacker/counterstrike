@@ -90,6 +90,12 @@ namespace CounterStrikeLive
     //}
     public class LocalDatabase
     {
+        public static LocalDatabase _This;
+        public LocalDatabase()
+        {
+            _This = this;
+        }
+        public double Volume = .5;
         public int _Points;
         public int _Deaths;
         public string _Nick;
@@ -670,6 +676,7 @@ namespace CounterStrikeLive
                     if (_LocalClient._id == null) throw new Exception();
                     if (SenderID == _LocalClient._id && _PacketType != PacketType.pinginfo) throw new Exception();
                     SharedClient _SharedClient = _Clients[SenderID];
+                    //Player _Player = _SharedClient!= null ? _SharedClient._Player : null; 
                     if (_PacketType != PacketType.PlayerJoined && _Clients[SenderID] == null) return;
                     switch (_PacketType)
                     {
@@ -699,6 +706,9 @@ namespace CounterStrikeLive
                                 _KillerClient._Points++;
                                 ShowKilledMessage(_KillerClient, _SharedClient);
                             }
+                            break;
+                        case PacketType.Reloading:
+                            _SharedClient._Player.ReloadSound();
                             break;
                         case PacketType.shoot: goto case PacketType.firstshoot;
                         case PacketType.firstshoot:
@@ -952,7 +962,11 @@ namespace CounterStrikeLive
         double _ChatTextElapsed;
         void ClearTextBlock(ref double _Elapsed, TextBlock _TextBlock)
         {
-            if (_Elapsed > 5000)
+            ClearTextBlock(ref _Elapsed, _TextBlock, 5000);
+        }
+        void ClearTextBlock(ref double _Elapsed, TextBlock _TextBlock,int delay)
+        {
+            if (_Elapsed > delay)
             {
                 _Elapsed = 0;
                 int i = _TextBlock.Text.IndexOf('\n') + 1;
@@ -970,7 +984,7 @@ namespace CounterStrikeLive
             ClearTextBlock(ref _KillTextElapsed, _KillText);
             ClearTextBlock(ref _ChatTextElapsed, _Chat);
 
-            ClearTextBlock(ref _CenterTextTimeElapsed, _CenterText);
+            ClearTextBlock(ref _CenterTextTimeElapsed, _CenterText,2000);
 
             _Storyboard.Begin();
 
@@ -1152,6 +1166,8 @@ namespace CounterStrikeLive
 
             if ((_Key == Key.PageUp || _Key == Key.R) && _TotalPatrons != 0 && _LocalPlayer != null)
             {
+                _Sender.Send(PacketType.Reloading);
+                _LocalPlayer.ReloadSound();
                 _LocalPlayer._isReloading = true;
                 _TotalPatrons -= 30;
                 WriteCenterText("Reloading");
@@ -1432,6 +1448,7 @@ namespace CounterStrikeLive
                     _ShootTimeElapsed += Menu._TimerA._TimeElapsed;
                     if (_ShootTimeElapsed > _ShootInterval)
                     {
+                        
                         _ShootTimeElapsed = 0;
                         _Patrons--;
                         float _d = 2;
@@ -1481,7 +1498,7 @@ namespace CounterStrikeLive
                     {
                         _FreeViewPos.Y -= 30;
                     }
-                    _TranslateTransform.X = -_FreeViewPos.X*_Scale + _Menu._Width / 2;
+                    _TranslateTransform.X = -_FreeViewPos.X * _Scale + _Menu._Width / 2;
                     _TranslateTransform.Y = -_FreeViewPos.Y * _Scale + _Menu._Height / 2;
                 }
                 else if (_Players.Count - 1 < _SpeciateId)
@@ -1516,8 +1533,9 @@ namespace CounterStrikeLive
         int _SpeciateId = 0;
         bool _friendlyfire=false;
         public void Shoot(float _x, float _y, float _Angle, Player _ShootingPlayer, bool firstshoot)
-        {
+        {            
             _ShootingPlayer.ShootAnimation();
+            
             Vector2 _MaxShootPoint = new Vector2(0, -5000);
             Vector2 _PlayerPos = new Vector2(_x, _y);
             Calculator.RotateVector(ref _MaxShootPoint, Calculator.DegreesToRadians(_Angle));
@@ -1527,18 +1545,21 @@ namespace CounterStrikeLive
 
             if (_Collisions.Count > 0)
             {
+
+
                 Vector2 _VectorHoleRotation = new Vector2(0, -10);
                 Calculator.RotateVector(ref _VectorHoleRotation, Calculator.DegreesToRadians(_Angle));
 
                 Vector2 _CollisionPos;
                 _CollisionPos = _Collisions.First()._Vector2;
+                
                 Explosion _SparkExplosion = new Explosion();
                 _SparkExplosion._VisibleToAll = true;
                 _SparkExplosion._AnimatedBitmap = Menu._Database._Sparks.Random();
                 _SparkExplosion._Position = _CollisionPos;
                 _SparkExplosion._Game = this;
                 _SparkExplosion.Load();
-
+                _SparkExplosion.PlaySound(Helper.Random("ric_conc-1.mp3", "ric_conc-2.mp3"),1000);
 
                 for (int i = 0, Power = 0; i < _Collisions.Count && Power < 3; i++, Power++)
                 {
