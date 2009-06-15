@@ -57,7 +57,6 @@
   <ItemGroup>
     <Content Include="ClientBin\CounterStrikeLive.xap" />
     <Content Include="ClientBin\default.png" />
-    <Content Include="ClientBin\Maps.xml" />
     <Content Include="CounterStrikeLiveTestPage.aspx" />
     <Content Include="CounterStrikeLiveTestPage.html" />
     <Content Include="Default.html" />

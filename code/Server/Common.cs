@@ -108,7 +108,12 @@ namespace CounterStrikeLive.Service
             _This = this;
             
         }
-        public List<MapInfo> _Maps = new List<MapInfo>();
+        public MapInfo[] _Maps = new MapInfo[]
+            {
+                new MapInfo{ MapName = "estate.zip"},
+                new MapInfo{ MapName = "italy.zip"},
+                new MapInfo{ MapName = "nuke.zip"}
+            };
     }
     
     
