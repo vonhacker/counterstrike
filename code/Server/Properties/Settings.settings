@@ -20,5 +20,8 @@
     <Setting Name="_ResetConfig" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="_Content" Type="System.String" Scope="User">
+      <Value Profile="(Default)">CounterStrikeLive/Content/</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

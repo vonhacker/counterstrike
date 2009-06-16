@@ -287,7 +287,7 @@
 			</Border.Effect>
 			<Grid>
 				<TextBlock Height="23" HorizontalAlignment="Left" Margin="32,8,0,0" VerticalAlignment="Top" Width="90" FontSize="12" Foreground="#FFFFFFFF" TextWrapping="Wrap"><Run Text="Loading"/><Run Text="..."/></TextBlock>
-				<Image Height="20" HorizontalAlignment="Left" Margin="8,8,0,0" VerticalAlignment="Top" Width="20" RenderTransformOrigin="0.4,0.45" Source="Content/Clipboard-2.png" Stretch="Fill"/>
+				<Image Height="20" HorizontalAlignment="Left" Margin="8,8,0,0" VerticalAlignment="Top" Width="20" RenderTransformOrigin="0.4,0.45" Source="Resources/Clipboard-2.png" Stretch="Fill"/>
 				<TextBlock x:Name="TextBlock1" Margin="18,32,36,0" VerticalAlignment="Top" Foreground="#FF8F8F8F" Text="TextBlock" TextWrapping="Wrap"/>
 				<ProgressBar Name="ProgressBar1" Height="27" Margin="25,52,29,0" Style="{StaticResource ProgressBarStyle1}" VerticalAlignment="Top"/>
 				<TextBox x:Name="TextBox1" Height="58" Margin="25,0,29,28" Style="{StaticResource TextBoxStyle2}" VerticalAlignment="Bottom" Text="ssTextBox" TextWrapping="Wrap" Foreground="#FFFFFFFF" IsReadOnly="True" IsHitTestVisible="False"/>

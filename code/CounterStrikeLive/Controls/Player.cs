@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using FarseerGames.FarseerPhysics.Mathematics;
 using System.Windows.Media.Imaging;
 using doru;
+using CounterStrikeLive.Service;
 
 namespace CounterStrikeLive
 {
@@ -61,12 +62,23 @@ namespace CounterStrikeLive
             _ExplosionA._PaternCanvas = _Canvas2;
             _ExplosionA._Explosions = _Explosions2;
             _ExplosionA._AnimatedBitmap = Menu._Database._Gun;
-            _ExplosionA.Load();
-            _AnimatedBitmap = _dbPlayer._PlayerStay;
-            base.Load();
+            _ExplosionA.Load();                                    
+            //_AnimatedBitmap = _dbPlayer._PlayerStay;
+            nwLoad();
+            _Image.SetX(-_phoenix_run[0]._BitmapImage.PixelWidth / 2);
+            _Image.SetY(-_phoenix_run[0]._BitmapImage.PixelHeight / 2);
 
         }
-
+        //public Image GetImage()
+        //{
+        //    Image _Image = new Image();
+        //    Canvas.SetLeft(_Image, -_Width / 2 + _x);
+        //    Canvas.SetTop(_Image, -_Height / 2 + _y);
+        //    _Image.Width = _Width;
+        //    _Image.Height = _Height;
+        //    _Image.Source = _BitmapImages[0];
+        //    return _Image;
+        //}
         private void LoadNickName()
         {
             _ScaleTransform.ScaleX = _ScaleTransform.ScaleY = 1 / _Game._Scale;
@@ -136,13 +148,16 @@ namespace CounterStrikeLive
             }
             return null;
         }
-
+        
+        public List<FolderList> _phoenix_run = FolderList._This.Find("phoenix_run").fls;
         public override void Update()
         {
+            
+            
             _frame += 30 * (float)Menu._TimerA._SecodsElapsed;
-            if (_frame >= _AnimatedBitmap._BitmapImages.Count) _frame = 0;
+            if (_frame >= _phoenix_run.Count) _frame = 0;
 
-            BitmapImage _BitmapImage = _AnimatedBitmap._BitmapImages[(int)_frame];
+            BitmapImage _BitmapImage = _phoenix_run[(int)_frame]._BitmapImage;
             try
             {
                 _Image.Source = _BitmapImage;
@@ -177,8 +192,7 @@ namespace CounterStrikeLive
         Menu _Menu = Menu._This;
         int soundid=0;
         private void PlayWalk()
-        {
-            //if (_LocalPlayer == this) return;
+        {            
             if (_MediaElement.CurrentState == MediaElementState.Paused || _MediaElement.CurrentState == MediaElementState.Closed)
             {
                 soundid++;

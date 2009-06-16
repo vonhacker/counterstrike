@@ -1432,7 +1432,7 @@ namespace doru
     }
 
     
-    //[DebuggerStepThrough] 
+    
     
     public static class Extensions
     {
@@ -1479,6 +1479,19 @@ namespace doru
 
         }
 #if(!SILVERLIGHT)
+        public static void Upload(this Socket _Socket, MemoryStream _MemoryStream, Action<double> Progress)
+        {
+            int bfzie = 50, i = 0;
+            while (true)
+            {
+                byte[] bb = _MemoryStream.ReadBlock(1024 * bfzie);
+                if (bb.Length == 0) break;
+                _Socket.Send(bb);                
+                i += bfzie;
+                if (Progress != null) Progress(i);
+            }
+            while (_Socket.Poll(1000, SelectMode.SelectWrite) == false) ;
+        }
         public static byte[] Receive(this Socket _Socket)
         {
 
@@ -2940,6 +2953,8 @@ namespace doru
             _NetworkStream.ReadTimeout = 10000;
             return ReadHttp(_NetworkStream);
         }
+        
+        public static Action<double> Progress;
         public static byte[] ReadHttp(Stream _Stream)
         {
             byte[] _headerbytes;

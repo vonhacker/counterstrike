@@ -80,10 +80,16 @@
     <None Include="Properties\AppManifest.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ak47-1.mp3">
-    </Content>
-    <Content Include="ak47-1.wav">
-    </Content>
+    <Resource Include="ak47-1.mp3" />
+    <Resource Include="ak47-1.wav" />
+    <Content Include="1.jpg" />
+    <Content Include="TextFile1.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Helper\HelperSL.csproj">
+      <Project>{443B377E-8155-43E3-821D-429BFB595770}</Project>
+      <Name>HelperSL</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v3.0\Microsoft.Silverlight.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -94,5 +94,17 @@ namespace CounterStrikeLive.Server.Properties {
                 this["_ResetConfig"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("CounterStrikeLive/Content/")]
+        public string _Content {
+            get {
+                return ((string)(this["_Content"]));
+            }
+            set {
+                this["_Content"] = value;
+            }
+        }
     }
 }

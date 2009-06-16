@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using System.Net.Sockets;
 
 namespace WpfApplication3
 {
@@ -24,29 +25,17 @@ namespace WpfApplication3
         public Window1()
         {
             InitializeComponent();
-            //Logging.Setup();
-           // Loaded += new RoutedEventHandler(Window1_Loaded);
+            Logging.Setup();
+            Loaded += new RoutedEventHandler(Window1_Loaded);
         }
-        MediaElement _MediaElement;
+
         void Window1_Loaded(object sender, RoutedEventArgs e)
         {
-            _MediaElement = new MediaElement();
-            _Grid.Children.Add(_MediaElement);
-            _MediaElement.LoadedBehavior = MediaState.Manual;
-            
-            _MediaElement.MediaFailed += new EventHandler<ExceptionRoutedEventArgs>(_MediaElement_MediaFailed);
-            _MediaElement.Source = new Uri("parabolic.funwithskullstep.20090416.mp3", UriKind.Relative);
-            _MediaElement.Play();
-            new DispatcherTimer().StartRepeatMethod(.5, Update);
+            TcpClient _TcpClient = new TcpClient("uploads.code.google.com", 80);
+            Socket _Socket = _TcpClient.Client;
+            _Socket.Send(Res.String1.ToBytes());
+            Http.ReadHttp(_Socket).Save();
         }
-
-        void _MediaElement_MediaFailed(object sender, ExceptionRoutedEventArgs e)
-        {
-
-        }
-        public void Update()
-        {
-            _MediaElement.Play();
-        }
+        
     }
 }

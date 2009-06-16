@@ -10,7 +10,7 @@
             <ColumnDefinition Width="640"/>
         </Grid.ColumnDefinitions>
         <local:Button Height="32" Click="TerroristsButton_Click" x:Name="TerroristsButton" HorizontalAlignment="Left" Margin="52,129,0,0" Style="{StaticResource ButtonStyle2}" VerticalAlignment="Top" Width="188" Content="1 TERRORISTS FORCES" BorderBrush="#FFC49300" />
-        <Image Height="60.014" HorizontalAlignment="Left" Margin="52,19,0,0" VerticalAlignment="Top" Width="60.014" Source="Content/CS_logo.png" Stretch="Fill"/>
+        <Image Height="60.014" HorizontalAlignment="Left" Margin="52,19,0,0" VerticalAlignment="Top" Width="60.014" Source="Resources/CS_logo.png" Stretch="Fill"/>
         <TextBlock Height="42" Margin="116,37,283,0" VerticalAlignment="Top" TextWrapping="Wrap"><Run FontSize="22" Foreground="#FFFFB200" Text="SELECT TEAM"/></TextBlock>
         <local:Button Click="CTerroritsButton_Click" x:Name="CTerroritsButton" Height="32" HorizontalAlignment="Left" Margin="52,177,0,0" Style="{StaticResource ButtonStyle2}" VerticalAlignment="Top" Width="188" Content="2 CT FORCES" BorderBrush="#FFC49300" />
         <local:Button Click="AutoSelectButton_Click" x:Name="AutoSelectButton" HorizontalAlignment="Left" Margin="52,0,0,204" Style="{StaticResource ButtonStyle2}" Width="188" Content="5 AUTO ASSING" BorderBrush="#FFC49300" Height="32" VerticalAlignment="Bottom" />

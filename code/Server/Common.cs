@@ -1,10 +1,15 @@
-﻿using System;
+﻿using System.Linq;
+using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using doru.Tcp;
 using doru;
+using System.IO;
+using System.Windows;
+using System.Diagnostics;
+using System.Collections;
 
 namespace CounterStrikeLive.Service
 {
@@ -12,7 +17,8 @@ namespace CounterStrikeLive.Service
     /// Protocol Headers    
     /// </summary>
     public enum PacketType : byte
-    {        
+    {
+        ServerIsFull = 16,
         Reloading = 15,
         voteMap=14,
         Join = 13,
@@ -91,7 +97,8 @@ namespace CounterStrikeLive.Service
     public class Config
     {
         
-        public bool GenerateClientLag = false;        
+        public bool GenerateClientLag = false;
+        public int _MaxPlayers = 10;
         public bool GenerateServerLag = false;
         public bool GenerateWebServerLag = false;
         public static Config _This;
@@ -108,7 +115,7 @@ namespace CounterStrikeLive.Service
         {
             //if (_This != null) throw new Exception("Config can have only one Copy");
             _This = this;
-            Helper._ContentFolder = "Content/";
+            Helper._ContentFolder = _ContentFolder;
             
         }
         public MapInfo[] _Maps = new MapInfo[]
@@ -118,7 +125,77 @@ namespace CounterStrikeLive.Service
                 new MapInfo{ MapName = "nuke.zip"}
             };
     }
-    
+    [XmlRoot]
+    public class FolderList 
+    {
+        public static XmlSerializer _XmlSerializer = new XmlSerializer(typeof(FolderList));
+        public FolderList()
+        {
+            
+        }
+        [XmlAttribute]
+        public string FileName = "Content";
+        [XmlIgnore]
+        public string path;
+        [XmlIgnore]
+        public Stream _Stream;
+        [XmlIgnore]
+        public BitmapImage _BitmapImage;
+        
+        public static Dictionary<string, FolderList> keys = new Dictionary<string, FolderList>();
+        public List<FolderList> fls= new List<FolderList>();
+        public bool _isfile;
+        public static FolderList _This;
+        public void Load()
+        {
+            Trace.Assert(!loaded);
+            loaded = true;
+            _This = this;
+            Load("");
+        }
+        bool loaded;
+        private void Load(string root)
+        {            
+            path = root;
+            keys.Add(FileName, this);
+            if (_isfile)
+            {
+                _Stream = Application.GetResourceStream(new Uri(path + FileName, UriKind.Relative)).Stream;
+                if (FileName.EndsWith(".png"))
+                {
+                    _BitmapImage = new BitmapImage();
+                    _BitmapImage.SetSource(_Stream);
+                }
+            }
+            foreach (FolderList fl in fls)            
+                fl.Load(path + FileName + "/");                            
+        }
+        public FolderList Find(string s)
+        {
+            Trace.Assert(loaded);
+            return keys[s];
+        }
+        
+        //public FolderList GetFolder(string s)
+        //{
+        //    if (FileName == s) return this;
+        //    foreach (FolderList fl in fls)
+        //    {                
+        //        if (fl.FileName.StartsWith(s))
+        //            return fl.GetFolder(s.Substring(fl.FileName.Length) + 1);
+        //    }
+        //    throw new Exception("folder not exists");
+
+        //}
+        public override string ToString()
+        {
+            return FileName+ " ("+ fls.Count+")";
+        }
+
+        
+
+
+    }
     
     public class MapInfo
     {

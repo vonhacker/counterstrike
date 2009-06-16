@@ -10,13 +10,14 @@ using System.Windows.Media.Imaging;
 
 namespace CounterStrikeLive
 {
+    
 	public class Database
 	{
 		public interface ILoad
 		{
 			void Load();
 		}
-		public Sound _ShootSound;
+		
 		public List<AnimatedBitmap> _Sparks = new List<AnimatedBitmap>();
 		public List<AnimatedBitmap> _Blood = new List<AnimatedBitmap>();
 		[XmlIgnore]
@@ -35,46 +36,7 @@ namespace CounterStrikeLive
 			public AnimatedBitmap _PlayerDie;
 			public AnimatedBitmap _PlayerStay;
 		}
-		public class Sound : ILoad
-		{
-			[XmlIgnore]
-			Stream _Stream;
-			public string _Path;
-			public Sound()
-			{
-				if (!Database._ILoads.Contains(this))
-					Database._ILoads.Add(this);
-			}
-			public void Load()
-			{
-				WebClient _WebClient = new WebClient();
-				_WebClient.OpenReadAsync(new Uri(_Path, UriKind.Relative));
-				_WebClient.OpenReadCompleted += new OpenReadCompletedEventHandler(WebClientOpenReadCompleted);
-			}
-
-			void WebClientOpenReadCompleted(object sender, OpenReadCompletedEventArgs e)
-			{
-				_Stream = e.Result;
-			}
-			public void Play(Vector2 v1, Vector2 v2)
-			{
-				if (_Stream != null)
-				{
-					float dist = Vector2.Distance(v1, v2);
-					float a = 1000;
-					float dist1 = (a - dist) / a;
-					if (dist1 > 0)
-					{
-						MediaElement _MediaElement = new MediaElement();
-						_MediaElement.Volume = dist1;
-						_MediaElement.Source = new Uri(_Path, UriKind.Relative);
-					}
-
-				}
-			}
-
-
-		}
+		
 		public class AnimatedBitmap : ILoad
 		{
 			public float _Width;
@@ -105,9 +67,9 @@ namespace CounterStrikeLive
 				if (_Loaded) throw new Exception("Break");
 				_Loaded = true;
 				foreach (string _path in _Bitmaps)
-				{					
-					BitmapImage _BitmapImage = new BitmapImage(new Uri(_path,UriKind.Relative));                                        
-
+				{
+                    BitmapImage _BitmapImage = new BitmapImage();
+                    _BitmapImage.SetSource(App.GetResourceStream(new Uri(_path, UriKind.Relative)).Stream);                                                            
 					_BitmapImages.Add(_BitmapImage);
 				}
 			}			

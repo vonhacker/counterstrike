@@ -26,15 +26,37 @@ namespace CounterStrikeLive.Server
             Logging.Setup(args.Length > 0 ? args[0] : "../../../");                        
             new Program();
         }
-        
+
+
+        public FolderList UpdateContentXml(string dir, FolderList _FolderList)
+        {
+            foreach (string f in Directory.GetDirectories(dir, "*", SearchOption.TopDirectoryOnly))
+                if (!f.EndsWith(".svn"))
+                    _FolderList.fls.Add(UpdateContentXml(f, new FolderList { FileName = f.Substring(dir.Length).Trim('/', '\\') }));            
+            foreach (string f in Directory.GetFiles(dir, "*", SearchOption.TopDirectoryOnly))
+                if (!f.EndsWith("Thumbs.db"))
+                    _FolderList.fls.Add(new FolderList() { FileName = f.Substring(dir.Length).Trim('/', '\\'), _isfile = true });            
+            
+            return _FolderList;
+        }
+        Settings _Settings = Settings.Default;
+        Config _Config;
         public Program()
         {
+
             "started".Trace();
             if (Settings._ResetConfig)
                 Config._XmlSerializer.Serialize(Settings._ClientBin + "Config.xml",new Config());
             else
                 Config._XmlSerializer.DeserealizeOrCreate<Config>(Settings._ClientBin + "Config.xml", new Config());
-
+            _Config = Config._This;
+            
+            if (Debugger.IsAttached)
+            {
+                FolderList _FolderList = UpdateContentXml(_Settings._Content, new FolderList());
+                //_FolderList.Load();
+                File.WriteAllBytes(_Settings._Content + "Content.xml", FolderList._XmlSerializer.Serialize(_FolderList));                
+            }
             GameServer _Server = new GameServer();
 
             _Server.StartAsync();            
@@ -47,7 +69,9 @@ namespace CounterStrikeLive.Server
 
             PhpSender _PhpSender = new PhpSender();
             _PhpSender.StartAsync();
-            Thread.Sleep(-1);
+
+            
+            
         }
     }
 

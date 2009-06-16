@@ -26,8 +26,8 @@ namespace CounterStrikeLive
         private void PlaySound(string s)
         {
             MediaElement _MediaElement = new MediaElement();
-            _MediaElement.SetSource(s);
             _Menu._GameCanvas.Children.Add(_MediaElement);
+            _MediaElement.SetSource(s);            
             _MediaElement.MediaEnded += delegate { _Menu._GameCanvas.Children.Remove(_MediaElement); };
         }
         protected override void OnMouseEnter(MouseEventArgs e)
@@ -120,11 +120,20 @@ namespace CounterStrikeLive
         public virtual void Load()
         {
             if (!_VisibleToAll) this._Visibility = Visibility.Collapsed;
-
             _Canvas2.RenderTransform = _RotateTransform;
             _Image = _AnimatedBitmap.GetImage();
             _Canvas2.Children.Add(_Image);
             _Canvas.Children.Add(_Canvas2);            
+            UpdateTranslations();
+            Add();
+        }
+        public virtual void nwLoad()
+        {
+            if (!_VisibleToAll) this._Visibility = Visibility.Collapsed;
+            _Canvas2.RenderTransform = _RotateTransform;
+            _Image = new Image();
+            _Canvas2.Children.Add(_Image);
+            _Canvas.Children.Add(_Canvas2);
             UpdateTranslations();
             Add();
         }

@@ -70,24 +70,7 @@ namespace CounterStrikeLive
             return (float)(p+ _Random.NextDouble()*_d);
         }
     }
-    /// <summary>
-    /// extended Trace
-    /// </summary>
-    //public static class Trace
-    //{
-    //    public static int id = 99;
-    //    public static void WriteLine(object obj)
-    //    {            
-            
-    //        WriteLine(obj.ToString());
-    //    }
-    //    public static void WriteLine(string obj)
-    //    {
-    //        //if (!Debugger.IsAttached)            
-    //        Menu._This.Dispatcher.BeginInvoke(new Action<object>(Menu._This.WriteLine), (object)("Client" + id + ": " + obj));
-    //        Debug.WriteLine("Client" + id + ": " + obj);
-    //    }
-    //}
+    
     public class LocalDatabase
     {
         public static LocalDatabase _This;
@@ -504,6 +487,8 @@ namespace CounterStrikeLive
         Config _Config;
         void PageLoaded(object sender, RoutedEventArgs e)
         {
+            
+
             Loading1.Text = "Loading Config";
             
             version.Text = Assembly.GetExecutingAssembly().FullName;
@@ -552,7 +537,12 @@ namespace CounterStrikeLive
         }
         public void LoadDb()
         {
-            
+            Loading1.Text = "Loading Content";
+            Loading1.Value = 10;
+            FolderList _FolderList =
+                (FolderList)FolderList._XmlSerializer.Deserialize(
+                App.GetResourceStream(new Uri(_Config._ContentFolder + "Content.xml", UriKind.Relative)).Stream);
+            _FolderList.Load();
             Loading1.Text = "Loading Database";
             Loading1.Value = 20;
             App.Current.Exit += new EventHandler(Current_Exit);
@@ -560,7 +550,7 @@ namespace CounterStrikeLive
             
             Content_Resized(null, null);
 
-            Stream _Stream = App.GetResourceStream(new Uri("db.xml", UriKind.Relative)).Stream;
+            Stream _Stream = App.GetResourceStream(new Uri("Content/db.xml", UriKind.Relative)).Stream;
             XmlSerializer _XmlSerializer = new XmlSerializer(typeof(Database));
             _Database = (Database)_XmlSerializer.Deserialize(_Stream);
 
@@ -651,6 +641,10 @@ namespace CounterStrikeLive
                                     _Sender.Send(PacketType.MapSelected, _MapSelect.MapName.ToBytes());
                                 };
                             }
+                            break;
+                        case PacketType.ServerIsFull:
+                            Loading1.Text = "Server Is Full";
+                            new ChildWindow().Content = "Server Is Full";
                             break;
                         case PacketType.map:
                             {
@@ -1288,8 +1282,20 @@ namespace CounterStrikeLive
         public SharedClient _LocalClient { get { return _Menu._LocalClient; } }
 
         public MyObs<SharedClient> _Clients { get { return _Menu._Clients; } }
+
+        public static void PlaySound(string s)
+        {
+            MediaElement m = new MediaElement();
+            Menu._This._GameCanvas.Children.Add(m);
+            m.SetSource(s);
+            m.Play();
+            m.MediaEnded += delegate { Menu._This._GameCanvas.Children.Remove(m); };
+        }
+
         protected void CreateLocalPlayerReset()
         {
+            PlaySound("jingle.mp3");
+
             _ScoreBoard.Hide();
             _Patrons = 30;
             _TotalPatrons = 90;
@@ -1370,6 +1376,7 @@ namespace CounterStrikeLive
         public void Die(Player _Player)
         {
             Explosion _Explosion = new Explosion();
+            _Player.PlaySound("death1.mp3");
             _Explosion._AnimatedBitmap = _Player._dbPlayer._PlayerDie;
             _Explosion._Position = _Player._Position;
             _Explosion._Angle = _Player._Angle;
@@ -1589,14 +1596,17 @@ namespace CounterStrikeLive
                                 _BloodExplosion._AnimatedBitmap = Menu._Database._Blood.Random();
                                 _BloodExplosion._Game = this;
                                 _BloodExplosion._Angle = _ShootingPlayer._Angle + 180;
+                                _BloodExplosion.PlaySound(Helper.Random("damage1.mp3", "damage2.mp3", "damage3.mp3"));
                                 _BloodExplosion.Load();
                                 if (_EnemyPlayer is LocalPlayer) /////////////shootLocalplayer
                                 {
                                     LocalPlayer _LocalPlayer = (LocalPlayer)_EnemyPlayer;
                                     int damage;
                                     if (dist < 8 && firstshoot)
+                                    {
                                         damage = 110;
-                                    else damage = 10;                                    
+                                        _LocalPlayer.PlaySound("headshot1.mp3");
+                                    } else damage = 10;                                    
                                     float life = ((LocalPlayer)_LocalPlayer)._Life -= damage;
 
                                     if (life < 0) LocalPlayerDead(_ShootingPlayer);

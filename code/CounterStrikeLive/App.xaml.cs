@@ -42,7 +42,11 @@ namespace CounterStrikeLive
         {
             if(!Debugger.IsAttached)
                 MessageBox.Show(e.ExceptionObject.ToString(), "Fatal Error (press ctrl+c to copy)", MessageBoxButton.OK);
-            if (Thread.CurrentThread.ThreadState == ThreadState.Background) Debugger.Break(); // see callstack
+            if (Thread.CurrentThread.ThreadState == ThreadState.Background)
+            {
+                Debugger.Break(); 
+                MessageBox.Show(e.ExceptionObject.ToString(), "Fatal Error (press ctrl+c to copy)", MessageBoxButton.OK);
+            }
         }
         
     }

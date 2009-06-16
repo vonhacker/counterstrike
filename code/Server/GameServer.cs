@@ -80,6 +80,7 @@ namespace CounterStrikeLive.Server
         private void Update()
         {
             List<Socket> _TCPClients = _ClientWait.GetClients();
+            
             foreach (Socket _TcpClient in _TCPClients)
             {
                 CreateNewClient(_TcpClient);
@@ -162,8 +163,13 @@ namespace CounterStrikeLive.Server
 
                 _Sender._NetworkStream = _Listener._NetworkStream = _Config.GenerateServerLag ? new LagStream(_Socket) : new NetworkStream(_Socket);
                 _Listener.StartAsync("client");
-
+                if (_ClientListFull.Count() >= _Config._MaxPlayers)
+                {
+                    Send(PacketType.ServerIsFull);                    
+                    return;
+                }
                 _id = _Clients.PutToNextFreePlace(this);
+                
                 Console.WriteLine("Client Conneted:" + _id);
                 Send(new byte[] { (byte)GameServer._Serverid, (byte)PacketType.playerid, (byte)_id });
 
