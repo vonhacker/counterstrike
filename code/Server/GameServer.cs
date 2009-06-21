@@ -271,7 +271,8 @@ namespace CounterStrikeLive.Server
                     case PacketType.pong:
                         {
                             _PingTime = (int)_PingElapsed;
-                            SendToAll(PacketType.pinginfo, _id, true, false, BitConverter.GetBytes((Int16)_PingElapsed));
+							if(_PingElapsed<Int16.MaxValue)							
+                            	SendToAll(PacketType.pinginfo, _id, true, false, BitConverter.GetBytes((Int16)_PingElapsed));							
                             _PingElapsed = null;
                             _Server._Timer4.AddMethod(1000, Ping);
                         }

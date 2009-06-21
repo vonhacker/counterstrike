@@ -1436,7 +1436,11 @@ namespace doru
     
     public static class Extensions
     {
-
+		public static void Center(this UIElement ui, BitmapImage _Image)
+		{
+			ui.SetX(-_Image.PixelWidth / 2);
+			ui.SetY(-_Image.PixelHeight / 2);
+		}
         
         
         public static void MoveTo<T>(this List<T> a, List<T> b, T t)
@@ -1849,9 +1853,9 @@ namespace doru
                     sb.Append(o).Append(' ');
 
 #if(SILVERLIGHT)
-            doru.Trace.WriteLine("Silverlight: "+(string)s +": "+ sb);
+            doru.Trace.WriteLine("Silverlight: "+s.ToString() +": "+ sb);
 #else
-            System.Diagnostics.Trace.WriteLine(Assembly.GetEntryAssembly().GetName().Name+": "+(string)s + ": " + sb);
+			System.Diagnostics.Trace.WriteLine(Assembly.GetEntryAssembly().GetName().Name+": "+s.ToString() + ": " + sb);
 #endif
             return t;
         }
@@ -3476,8 +3480,8 @@ namespace doru
             for (int i = _List.Count - 1; i >= 0; i--)
             {
                 CA _CA = _List[i];
-                _CA._Time -= _TimeElapsed;
-                if (_CA._Time < 0)
+                _CA._Miliseconds -= _TimeElapsed;
+                if (_CA._Miliseconds < 0)
                 {
                     _List.Remove(_CA);
                     _CA._Action();
@@ -3497,16 +3501,16 @@ namespace doru
                 return false;
         }
 
-        public void AddMethod(double time, Action _Action)
+        public void AddMethod(double _Miliseconds, Action _Action)
         {
             if (_List.FirstOrDefault(a => a._Action == _Action) == null)
-                _List.Add(new CA { _Action = _Action, _Time = time });
+                _List.Add(new CA { _Action = _Action, _Miliseconds = _Miliseconds });
         }
 
         List<CA> _List = new List<CA>();
         class CA
         {
-            public double _Time;
+            public double _Miliseconds;
             public Action _Action;
         }
     }

@@ -19,7 +19,8 @@ namespace CounterStrikeLive
         
         public EscMenu()
         {            
-            InitializeComponent();            
+            InitializeComponent();
+			_ZoomText.Text = _Game._Scale.ToString();
         }
 
     
@@ -68,6 +69,20 @@ namespace CounterStrikeLive
             new EnterNick();
             this.DialogResult = true;
         }
+		Game _Game = Game._This;
+		private void ZoomOut_Click(object sender, RoutedEventArgs e)
+		{
+			_Game.ZoomOut();
+			_ZoomText.Text = _Game._Scale.ToString();
+		}
+		
+		private void ZoomIn_Click(object sender, RoutedEventArgs e)
+		{
+			_Game.ZoomIn();
+			_ZoomText.Text = _Game._Scale.ToString();
+		}
+
+		
     }
 }
 

@@ -1,8 +1,11 @@
-﻿<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(MSBuildToolsVersion)' == '3.5'">
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{52D58643-014A-4299-B07B-F8B810316168}</ProjectGuid>
     <ProjectTypeGuids>{A1591282-1198-4647-A2B1-27E5FF5F6F3B};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
@@ -10,7 +13,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CounterStrikeLive</RootNamespace>
     <AssemblyName>CounterStrikeLive</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.0</TargetFrameworkVersion>
     <SilverlightApplication>true</SilverlightApplication>
     <SupportedCultures>
     </SupportedCultures>
@@ -28,6 +31,23 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
+    <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
+    <PublishUrl>http://localhost/CounterStrikeLive/</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -39,6 +59,7 @@
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -49,6 +70,7 @@
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="SharpZipLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
@@ -80,7 +102,6 @@
     </Compile>
     <Compile Include="Database.cs" />
     <Compile Include="Controls\Controls.cs" />
-    <Compile Include="Controls\GameObj.cs" />
     <Compile Include="Controls\Maps.cs" />
     <Compile Include="Controls\Player.cs" />
     <Compile Include="EscMenu.xaml.cs">
@@ -110,38 +131,56 @@
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Page Include="ChatBox.xaml">
       <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="EscMenu.xaml">
       <Generator>MSBuild:MarkupCompilePass1</Generator>
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Loading.xaml">
       <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="MapSelect.xaml">
       <Generator>MSBuild:MarkupCompilePass1</Generator>
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Page.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="EnterNick.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="ScoreBoard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="TeamSelect.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -151,35 +190,167 @@
     <Resource Include="Resources\CS_logo.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\arctic\arunhlmv 2008-10-20 23-16-15-50.png" />
-    <Content Include="Content\arctic\arunhlmv 2008-10-20 23-16-15-96.png" />
-    <Content Include="Content\arctic\arunhlmv 2008-10-20 23-16-16-34.png" />
-    <Content Include="Content\arctic\arunhlmv 2008-10-20 23-16-16-75.png" />
-    <Content Include="Content\arctic\arunhlmv 2008-10-20 23-16-17-12.png" />
-    <Content Include="Content\arctic\arunhlmv 2008-10-20 23-16-17-48.png" />
-    <Content Include="Content\arctic\arunhlmv 2008-10-20 23-16-17-82.png" />
-    <Content Include="Content\arctic\arunhlmv 2008-10-20 23-16-18-14.png" />
-    <Content Include="Content\arctic\arunhlmv 2008-10-20 23-16-18-50.png" />
-    <Content Include="Content\arctic\arunhlmv 2008-10-20 23-16-18-85.png" />
-    <Content Include="Content\arctic\arunhlmv 2008-10-20 23-16-19-23.png" />
-    <Content Include="Content\arctic\arunhlmv 2008-10-20 23-16-19-53.png" />
-    <Content Include="Content\arctic\arunhlmv 2008-10-20 23-16-19-85.png" />
-    <Content Include="Content\arctic\arunhlmv 2008-10-20 23-16-20-20.png" />
-    <Content Include="Content\arctic\arunhlmv 2008-10-20 23-16-20-53.png" />
-    <Content Include="Content\arctic\arunhlmv 2008-10-20 23-16-20-85.png" />
-    <Content Include="Content\arctic\arunhlmv 2008-10-20 23-16-21-21.png" />
-    <Content Include="Content\arctic\arunhlmv 2008-10-20 23-16-21-59.png" />
-    <Content Include="Content\arctic\arunhlmv 2008-10-20 23-16-21-95.png" />
-    <Content Include="Content\arctic\arunhlmv 2008-10-20 23-16-22-34.png" />
-    <Content Include="Content\arctic\arunhlmv 2008-10-20 23-16-22-78.png" />
-    <Content Include="Content\arctic\arunhlmv 2008-10-20 23-16-23-17.png" />
-    <Content Include="Content\arctic\arunhlmv 2008-10-20 23-16-23-56.png" />
-    <Content Include="Content\arctic\arunhlmv 2008-10-20 23-16-23-95.png" />
-    <Content Include="Content\arctic\arunhlmv 2008-10-20 23-16-24-32.png" />
-    <Content Include="Content\arctic\arunhlmv 2008-10-20 23-16-24-68.png" />
-    <Content Include="Content\arctic\arunhlmv 2008-10-20 23-16-25-04.png" />
-    <Content Include="Content\arctic\arunhlmv 2008-10-20 23-16-25-43.png" />
-    <Content Include="Content\arctic\arunhlmv 2008-10-20 23-16-25-81.png" />
+    <Content Include="Content\ak47_run\ak47_run0025.png" />
+    <Content Include="Content\ak47_run\ak47_run0026.png" />
+    <Content Include="Content\ak47_run\ak47_run0027.png" />
+    <Content Include="Content\ak47_run\ak47_run0028.png" />
+    <Content Include="Content\ak47_run\ak47_run0029.png" />
+    <Content Include="Content\ak47_run\ak47_run0030.png" />
+    <Content Include="Content\ak47_run\ak47_run0031.png" />
+    <Content Include="Content\ak47_run\ak47_run0032.png" />
+    <Content Include="Content\ak47_run_back\ak47_back0000.png" />
+    <Content Include="Content\ak47_run_back\ak47_back0001.png" />
+    <Content Include="Content\ak47_run_back\ak47_back0002.png" />
+    <Content Include="Content\ak47_run_back\ak47_back0003.png" />
+    <Content Include="Content\ak47_run_back\ak47_back0004.png" />
+    <Content Include="Content\ak47_run_back\ak47_back0005.png" />
+    <Content Include="Content\ak47_run_back\ak47_back0006.png" />
+    <Content Include="Content\ak47_run_back\ak47_back0007.png" />
+    <Content Include="Content\ak47_run_back\ak47_back0008.png" />
+    <Content Include="Content\ak47_run_back\ak47_back0009.png" />
+    <Content Include="Content\ak47_run_back\ak47_back0010.png" />
+    <Content Include="Content\ak47_run_back\ak47_back0011.png" />
+    <Content Include="Content\ak47_run_back\ak47_back0012.png" />
+    <Content Include="Content\ak47_run_back\ak47_back0013.png" />
+    <Content Include="Content\ak47_run_back\ak47_back0014.png" />
+    <Content Include="Content\ak47_run_back\ak47_back0015.png" />
+    <Content Include="Content\ak47_run_back\ak47_back0016.png" />
+    <Content Include="Content\ak47_run_back\ak47_back0017.png" />
+    <Content Include="Content\ak47_run_back\ak47_back0018.png" />
+    <Content Include="Content\ak47_run_back\ak47_back0019.png" />
+    <Content Include="Content\ak47_run_back\ak47_back0020.png" />
+    <Content Include="Content\ak47_dead\ak47_dead0000.png" />
+    <Content Include="Content\ak47_dead\ak47_dead0001.png" />
+    <Content Include="Content\ak47_dead\ak47_dead0002.png" />
+    <Content Include="Content\ak47_dead\ak47_dead0003.png" />
+    <Content Include="Content\ak47_dead\ak47_dead0004.png" />
+    <Content Include="Content\ak47_dead\ak47_dead0005.png" />
+    <Content Include="Content\ak47_dead\ak47_dead0006.png" />
+    <Content Include="Content\ak47_dead\ak47_dead0007.png" />
+    <Content Include="Content\ak47_dead\ak47_dead0008.png" />
+    <Content Include="Content\ak47_dead\ak47_dead0009.png" />
+    <Content Include="Content\ak47_dead\ak47_dead0010.png" />
+    <Content Include="Content\ak47_dead\ak47_dead0011.png" />
+    <Content Include="Content\ak47_dead\ak47_dead0012.png" />
+    <Content Include="Content\ak47_dead\ak47_dead0013.png" />
+    <Content Include="Content\ak47_dead\ak47_dead0014.png" />
+    <Content Include="Content\ak47_dead\ak47_dead0015.png" />
+    <Content Include="Content\ak47_dead\ak47_dead0016.png" />
+    <Content Include="Content\ak47_dead\ak47_dead0017.png" />
+    <Content Include="Content\ak47_dead\ak47_dead0018.png" />
+    <Content Include="Content\ak47_dead\ak47_dead0019.png" />
+    <Content Include="Content\ak47_dead\ak47_dead0020.png" />
+    <Content Include="Content\ak47_dead\ak47_dead0021.png" />
+    <Content Include="Content\ak47_dead\ak47_dead0022.png" />
+    <Content Include="Content\ak47_dead\ak47_dead0023.png" />
+    <Content Include="Content\ak47_dead\ak47_dead0024.png" />
+    <Content Include="Content\ak47_dead\ak47_dead0025.png" />
+    <Content Include="Content\ak47_dead\ak47_dead0026.png" />
+    <Content Include="Content\ak47_dead\ak47_dead0027.png" />
+    <Content Include="Content\ak47_dead\ak47_dead0028.png" />
+    <Content Include="Content\ak47_dead\ak47_dead0029.png" />
+    <Content Include="Content\ak47_dead\ak47_dead0030.png" />
+    <Content Include="Content\ak47_dead\ak47_dead0031.png" />
+    <Content Include="Content\ak47_dead\ak47_dead0032.png" />
+    <Content Include="Content\ak47_reload\m4_reload0000.png" />
+    <Content Include="Content\ak47_reload\m4_reload0001.png" />
+    <Content Include="Content\ak47_reload\m4_reload0002.png" />
+    <Content Include="Content\ak47_reload\m4_reload0003.png" />
+    <Content Include="Content\ak47_reload\m4_reload0004.png" />
+    <Content Include="Content\ak47_reload\m4_reload0005.png" />
+    <Content Include="Content\ak47_reload\m4_reload0006.png" />
+    <Content Include="Content\ak47_reload\m4_reload0007.png" />
+    <Content Include="Content\ak47_reload\m4_reload0008.png" />
+    <Content Include="Content\ak47_reload\m4_reload0009.png" />
+    <Content Include="Content\ak47_reload\m4_reload0010.png" />
+    <Content Include="Content\ak47_reload\m4_reload0011.png" />
+    <Content Include="Content\ak47_reload\m4_reload0012.png" />
+    <Content Include="Content\ak47_reload\m4_reload0013.png" />
+    <Content Include="Content\ak47_reload\m4_reload0014.png" />
+    <Content Include="Content\ak47_reload\m4_reload0015.png" />
+    <Content Include="Content\ak47_reload\m4_reload0016.png" />
+    <Content Include="Content\ak47_reload\m4_reload0017.png" />
+    <Content Include="Content\ak47_reload\m4_reload0018.png" />
+    <Content Include="Content\ak47_reload\m4_reload0019.png" />
+    <Content Include="Content\ak47_reload\m4_reload0020.png" />
+    <Content Include="Content\ak47_reload\m4_reload0021.png" />
+    <Content Include="Content\ak47_reload\m4_reload0022.png" />
+    <Content Include="Content\ak47_reload\m4_reload0023.png" />
+    <Content Include="Content\ak47_reload\m4_reload0024.png" />
+    <Content Include="Content\ak47_reload\m4_reload0025.png" />
+    <Content Include="Content\ak47_reload\m4_reload0026.png" />
+    <Content Include="Content\ak47_reload\m4_reload0027.png" />
+    <Content Include="Content\ak47_reload\m4_reload0028.png" />
+    <Content Include="Content\ak47_reload\m4_reload0029.png" />
+    <Content Include="Content\ak47_reload\m4_reload0030.png" />
+    <Content Include="Content\ak47_reload\m4_reload0031.png" />
+    <Content Include="Content\ak47_reload\m4_reload0032.png" />
+    <Content Include="Content\ak47_run_left\ak47_run_left0000.png" />
+    <Content Include="Content\ak47_run_left\ak47_run_left0001.png" />
+    <Content Include="Content\ak47_run_left\ak47_run_left0002.png" />
+    <Content Include="Content\ak47_run_left\ak47_run_left0003.png" />
+    <Content Include="Content\ak47_run_left\ak47_run_left0004.png" />
+    <Content Include="Content\ak47_run_left\ak47_run_left0005.png" />
+    <Content Include="Content\ak47_run_left\ak47_run_left0006.png" />
+    <Content Include="Content\ak47_run_left\ak47_run_left0007.png" />
+    <Content Include="Content\ak47_run_left\ak47_run_left0008.png" />
+    <Content Include="Content\ak47_run_left\ak47_run_left0009.png" />
+    <Content Include="Content\ak47_run_left\ak47_run_left0010.png" />
+    <Content Include="Content\ak47_run_left\ak47_run_left0011.png" />
+    <Content Include="Content\ak47_run_left\ak47_run_left0012.png" />
+    <Content Include="Content\ak47_run_left\ak47_run_left0013.png" />
+    <Content Include="Content\ak47_run_left\ak47_run_left0014.png" />
+    <Content Include="Content\ak47_run_left\ak47_run_left0015.png" />
+    <Content Include="Content\ak47_run_right\ak47_run_right0000.png" />
+    <Content Include="Content\ak47_run_right\ak47_run_right0001.png" />
+    <Content Include="Content\ak47_run_right\ak47_run_right0002.png" />
+    <Content Include="Content\ak47_run_right\ak47_run_right0003.png" />
+    <Content Include="Content\ak47_run_right\ak47_run_right0004.png" />
+    <Content Include="Content\ak47_run_right\ak47_run_right0005.png" />
+    <Content Include="Content\ak47_run_right\ak47_run_right0006.png" />
+    <Content Include="Content\ak47_run_right\ak47_run_right0007.png" />
+    <Content Include="Content\ak47_run_right\ak47_run_right0008.png" />
+    <Content Include="Content\ak47_run_right\ak47_run_right0009.png" />
+    <Content Include="Content\ak47_run_right\ak47_run_right0010.png" />
+    <Content Include="Content\ak47_run_right\ak47_run_right0011.png" />
+    <Content Include="Content\ak47_run_right\ak47_run_right0012.png" />
+    <Content Include="Content\ak47_run_right\ak47_run_right0013.png" />
+    <Content Include="Content\ak47_run_right\ak47_run_right0014.png" />
+    <Content Include="Content\ak47_run_right\ak47_run_right0015.png" />
+    <Content Include="Content\ak47_Shoot.png" />
+    <Content Include="Content\ak47_stay\ak47_stay0000.png" />
+    <Content Include="Content\ak47_stay\ak47_stay0001.png" />
+    <Content Include="Content\ak47_stay\ak47_stay0002.png" />
+    <Content Include="Content\ak47_stay\ak47_stay0003.png" />
+    <Content Include="Content\ak47_stay\ak47_stay0004.png" />
+    <Content Include="Content\ak47_stay\ak47_stay0005.png" />
+    <Content Include="Content\ak47_stay\ak47_stay0006.png" />
+    <Content Include="Content\ak47_stay\ak47_stay0007.png" />
+    <Content Include="Content\ak47_stay\ak47_stay0008.png" />
+    <Content Include="Content\ak47_stay\ak47_stay0009.png" />
+    <Content Include="Content\ak47_stay\ak47_stay0010.png" />
+    <Content Include="Content\ak47_stay\ak47_stay0011.png" />
+    <Content Include="Content\ak47_stay\ak47_stay0012.png" />
+    <Content Include="Content\ak47_stay\ak47_stay0013.png" />
+    <Content Include="Content\ak47_stay\ak47_stay0014.png" />
+    <Content Include="Content\ak47_stay\ak47_stay0015.png" />
+    <Content Include="Content\ak47_stay\ak47_stay0016.png" />
+    <Content Include="Content\ak47_stay\ak47_stay0017.png" />
+    <Content Include="Content\ak47_stay\ak47_stay0018.png" />
+    <Content Include="Content\ak47_stay\ak47_stay0019.png" />
+    <Content Include="Content\ak47_stay\ak47_stay0020.png" />
+    <Content Include="Content\ak47_stay\ak47_stay0021.png" />
+    <Content Include="Content\ak47_stay\ak47_stay0022.png" />
+    <Content Include="Content\ak47_stay\ak47_stay0023.png" />
+    <Content Include="Content\ak47_stay\ak47_stay0024.png" />
+    <Content Include="Content\ak47_stay\ak47_stay0025.png" />
+    <Content Include="Content\ak47_stay\ak47_stay0026.png" />
+    <Content Include="Content\ak47_stay\ak47_stay0027.png" />
+    <Content Include="Content\ak47_stay\ak47_stay0028.png" />
+    <Content Include="Content\ak47_stay\ak47_stay0029.png" />
+    <Content Include="Content\ak47_stay\ak47_stay0030.png" />
+    <Content Include="Content\ak47_stay\ak47_stay0031.png" />
+    <Content Include="Content\ak47_stay\ak47_stay0032.png" />
     <Content Include="Content\blood\blood0001.png" />
     <Content Include="Content\blood\blood0002.png" />
     <Content Include="Content\blood\blood0003.png" />
@@ -264,131 +435,335 @@
     <Content Include="Content\blood\blood0082.png" />
     <Content Include="Content\blood\blood0083.png" />
     <Content Include="Content\blood\blood0084.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-24-57.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-25-58.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-26-30.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-26-82.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-27-25.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-27-72.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-28-05.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-28-38.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-28-68.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-29-02.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-29-35.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-29-71.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-30-00.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-30-28.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-30-60.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-30-89.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-31-21.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-31-55.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-31-85.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-32-13.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-32-42.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-32-72.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-33-02.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-33-32.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-33-63.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-33-91.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-34-21.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-34-47.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-34-75.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-35-05.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-35-31.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-35-63.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-35-89.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-36-20.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-36-49.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-36-83.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-37-13.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-37-42.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-37-75.png" />
-    <Content Include="Content\cterrdie\ahlmv 2008-10-27 12-50-38-09.png" />
-    <Content Include="Content\cterr\ahlmv 2008-10-27 12-30-46-98.png" />
-    <Content Include="Content\cterr\ahlmv 2008-10-27 12-30-53-24.png" />
-    <Content Include="Content\cterr\ahlmv 2008-10-27 12-30-55-01.png" />
-    <Content Include="Content\cterr\ahlmv 2008-10-27 12-30-55-88.png" />
-    <Content Include="Content\cterr\ahlmv 2008-10-27 12-30-56-68.png" />
-    <Content Include="Content\cterr\ahlmv 2008-10-27 12-30-57-57.png" />
-    <Content Include="Content\cterr\ahlmv 2008-10-27 12-30-58-47.png" />
-    <Content Include="Content\cterr\ahlmv 2008-10-27 12-30-59-27.png" />
-    <Content Include="Content\cterr\ahlmv 2008-10-27 12-31-00-13.png" />
-    <Content Include="Content\cterr\ahlmv 2008-10-27 12-31-00-91.png" />
-    <Content Include="Content\cterr\ahlmv 2008-10-27 12-31-01-69.png" />
-    <Content Include="Content\cterr\ahlmv 2008-10-27 12-31-02-41.png" />
-    <Content Include="Content\cterr\ahlmv 2008-10-27 12-31-03-11.png" />
-    <Content Include="Content\cterr\ahlmv 2008-10-27 12-31-03-63.png" />
-    <Content Include="Content\cterr\ahlmv 2008-10-27 12-31-04-29.png" />
-    <Content Include="Content\cterr\ahlmv 2008-10-27 12-31-04-97.png" />
-    <Content Include="Content\cterr\ahlmv 2008-10-27 12-31-05-43.png" />
-    <Content Include="Content\cterr\ahlmv 2008-10-27 12-31-05-93.png" />
-    <Content Include="Content\cterr\ahlmv 2008-10-27 12-31-06-44.png" />
-    <Content Include="Content\cterr\ahlmv 2008-10-27 12-31-06-82.png" />
-    <Content Include="Content\cterr\ahlmv 2008-10-27 12-31-07-21.png" />
-    <Content Include="Content\cterr\ahlmv 2008-10-27 12-31-07-57.png" />
-    <Content Include="Content\cterr\ahlmv 2008-10-27 12-31-08-11.png" />
-    <Content Include="Content\cterr\ahlmv 2008-10-27 12-31-08-49.png" />
-    <Content Include="Content\cterr\ahlmv 2008-10-27 12-31-08-83.png" />
-    <Content Include="Content\cterr\ahlmv 2008-10-27 12-31-09-28.png" />
-    <Content Include="Content\cterr\ahlmv 2008-10-27 12-31-09-71.png" />
-    <Content Include="Content\cterr\ahlmv 2008-10-27 12-31-10-13.png" />
-    <Content Include="Content\cterr\ahlmv 2008-10-27 12-31-10-46.png" />
-    <Content Include="Content\cterr\ahlmv 2008-10-27 12-31-10-88.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-12-98.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-13-89.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-14-34.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-14-78.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-15-21.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-15-64.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-15-96.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-16-28.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-16-59.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-16-90.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-17-20.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-17-51.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-17-82.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-18-10.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-18-40.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-18-70.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-18-98.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-19-25.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-19-53.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-19-79.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-20-06.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-20-35.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-20-64.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-20-96.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-21-23.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-21-54.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-21-81.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-22-12.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-22-37.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-22-65.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-23-01.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-23-32.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-23-67.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-23-95.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-24-28.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-24-60.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-24-90.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-25-25.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-25-56.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-25-89.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-26-23.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-26-60.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-26-95.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-27-25.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-27-60.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-27-90.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-28-23.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-28-54.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-28-87.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-29-20.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-29-51.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-29-84.png" />
-    <Content Include="Content\die\ahlmv 2008-10-21 01-28-30-21.png" />
-    <Content Include="Content\gun\gun0001.png" />
-    <Content Include="Content\gun\gun0002.png" />
+    <Content Include="Content\gsg9_dead\gsg9_dead0000.png" />
+    <Content Include="Content\gsg9_dead\gsg9_dead0001.png" />
+    <Content Include="Content\gsg9_dead\gsg9_dead0002.png" />
+    <Content Include="Content\gsg9_dead\gsg9_dead0003.png" />
+    <Content Include="Content\gsg9_dead\gsg9_dead0004.png" />
+    <Content Include="Content\gsg9_dead\gsg9_dead0005.png" />
+    <Content Include="Content\gsg9_dead\gsg9_dead0006.png" />
+    <Content Include="Content\gsg9_dead\gsg9_dead0007.png" />
+    <Content Include="Content\gsg9_dead\gsg9_dead0008.png" />
+    <Content Include="Content\gsg9_dead\gsg9_dead0009.png" />
+    <Content Include="Content\gsg9_dead\gsg9_dead0010.png" />
+    <Content Include="Content\gsg9_dead\gsg9_dead0011.png" />
+    <Content Include="Content\gsg9_dead\gsg9_dead0012.png" />
+    <Content Include="Content\gsg9_dead\gsg9_dead0013.png" />
+    <Content Include="Content\gsg9_dead\gsg9_dead0014.png" />
+    <Content Include="Content\gsg9_dead\gsg9_dead0015.png" />
+    <Content Include="Content\gsg9_dead\gsg9_dead0016.png" />
+    <Content Include="Content\gsg9_dead\gsg9_dead0017.png" />
+    <Content Include="Content\gsg9_dead\gsg9_dead0018.png" />
+    <Content Include="Content\gsg9_dead\gsg9_dead0019.png" />
+    <Content Include="Content\gsg9_dead\gsg9_dead0020.png" />
+    <Content Include="Content\gsg9_dead\gsg9_dead0021.png" />
+    <Content Include="Content\gsg9_dead\gsg9_dead0022.png" />
+    <Content Include="Content\gsg9_dead\gsg9_dead0023.png" />
+    <Content Include="Content\gsg9_dead\gsg9_dead0024.png" />
+    <Content Include="Content\gsg9_dead\gsg9_dead0025.png" />
+    <Content Include="Content\gsg9_dead\gsg9_dead0026.png" />
+    <Content Include="Content\gsg9_dead\gsg9_dead0027.png" />
+    <Content Include="Content\gsg9_dead\gsg9_dead0028.png" />
+    <Content Include="Content\gsg9_dead\gsg9_dead0029.png" />
+    <Content Include="Content\gsg9_dead\gsg9_dead0030.png" />
+    <Content Include="Content\gsg9_dead\gsg9_dead0031.png" />
+    <Content Include="Content\gsg9_dead\gsg9_dead0032.png" />
+    <Content Include="Content\gsg9_reload\gsg9_reload0000.png" />
+    <Content Include="Content\gsg9_reload\gsg9_reload0001.png" />
+    <Content Include="Content\gsg9_reload\gsg9_reload0002.png" />
+    <Content Include="Content\gsg9_reload\gsg9_reload0003.png" />
+    <Content Include="Content\gsg9_reload\gsg9_reload0004.png" />
+    <Content Include="Content\gsg9_reload\gsg9_reload0005.png" />
+    <Content Include="Content\gsg9_reload\gsg9_reload0006.png" />
+    <Content Include="Content\gsg9_reload\gsg9_reload0007.png" />
+    <Content Include="Content\gsg9_reload\gsg9_reload0008.png" />
+    <Content Include="Content\gsg9_reload\gsg9_reload0009.png" />
+    <Content Include="Content\gsg9_reload\gsg9_reload0010.png" />
+    <Content Include="Content\gsg9_reload\gsg9_reload0011.png" />
+    <Content Include="Content\gsg9_reload\gsg9_reload0012.png" />
+    <Content Include="Content\gsg9_reload\gsg9_reload0013.png" />
+    <Content Include="Content\gsg9_reload\gsg9_reload0014.png" />
+    <Content Include="Content\gsg9_reload\gsg9_reload0015.png" />
+    <Content Include="Content\gsg9_reload\gsg9_reload0016.png" />
+    <Content Include="Content\gsg9_reload\gsg9_reload0017.png" />
+    <Content Include="Content\gsg9_reload\gsg9_reload0018.png" />
+    <Content Include="Content\gsg9_reload\gsg9_reload0019.png" />
+    <Content Include="Content\gsg9_reload\gsg9_reload0020.png" />
+    <Content Include="Content\gsg9_reload\gsg9_reload0021.png" />
+    <Content Include="Content\gsg9_reload\gsg9_reload0022.png" />
+    <Content Include="Content\gsg9_reload\gsg9_reload0023.png" />
+    <Content Include="Content\gsg9_reload\gsg9_reload0024.png" />
+    <Content Include="Content\gsg9_reload\gsg9_reload0025.png" />
+    <Content Include="Content\gsg9_reload\gsg9_reload0026.png" />
+    <Content Include="Content\gsg9_reload\gsg9_reload0027.png" />
+    <Content Include="Content\gsg9_reload\gsg9_reload0028.png" />
+    <Content Include="Content\gsg9_reload\gsg9_reload0029.png" />
+    <Content Include="Content\gsg9_reload\gsg9_reload0030.png" />
+    <Content Include="Content\gsg9_reload\gsg9_reload0031.png" />
+    <Content Include="Content\gsg9_reload\gsg9_reload0032.png" />
+    <Content Include="Content\gsg9_run\gsg9_run0000.png" />
+    <Content Include="Content\gsg9_run\gsg9_run0001.png" />
+    <Content Include="Content\gsg9_run\gsg9_run0002.png" />
+    <Content Include="Content\gsg9_run\gsg9_run0003.png" />
+    <Content Include="Content\gsg9_run\gsg9_run0004.png" />
+    <Content Include="Content\gsg9_run\gsg9_run0005.png" />
+    <Content Include="Content\gsg9_run\gsg9_run0006.png" />
+    <Content Include="Content\gsg9_run\gsg9_run0007.png" />
+    <Content Include="Content\gsg9_run\gsg9_run0008.png" />
+    <Content Include="Content\gsg9_run\gsg9_run0009.png" />
+    <Content Include="Content\gsg9_run\gsg9_run0010.png" />
+    <Content Include="Content\gsg9_run\gsg9_run0011.png" />
+    <Content Include="Content\gsg9_run\gsg9_run0012.png" />
+    <Content Include="Content\gsg9_run\gsg9_run0013.png" />
+    <Content Include="Content\gsg9_run\gsg9_run0014.png" />
+    <Content Include="Content\gsg9_run\gsg9_run0015.png" />
+    <Content Include="Content\gsg9_run\gsg9_run0016.png" />
+    <Content Include="Content\gsg9_run\gsg9_run0017.png" />
+    <Content Include="Content\gsg9_run\gsg9_run0018.png" />
+    <Content Include="Content\gsg9_run\gsg9_run0019.png" />
+    <Content Include="Content\gsg9_run\gsg9_run0020.png" />
+    <Content Include="Content\gsg9_run\gsg9_run0021.png" />
+    <Content Include="Content\gsg9_run\gsg9_run0022.png" />
+    <Content Include="Content\gsg9_run\gsg9_run0023.png" />
+    <Content Include="Content\gsg9_run\gsg9_run0024.png" />
+    <Content Include="Content\gsg9_run_back\gsg9_run_back0000.png" />
+    <Content Include="Content\gsg9_run_back\gsg9_run_back0001.png" />
+    <Content Include="Content\gsg9_run_back\gsg9_run_back0002.png" />
+    <Content Include="Content\gsg9_run_back\gsg9_run_back0003.png" />
+    <Content Include="Content\gsg9_run_back\gsg9_run_back0004.png" />
+    <Content Include="Content\gsg9_run_back\gsg9_run_back0005.png" />
+    <Content Include="Content\gsg9_run_back\gsg9_run_back0006.png" />
+    <Content Include="Content\gsg9_run_back\gsg9_run_back0007.png" />
+    <Content Include="Content\gsg9_run_back\gsg9_run_back0008.png" />
+    <Content Include="Content\gsg9_run_back\gsg9_run_back0009.png" />
+    <Content Include="Content\gsg9_run_back\gsg9_run_back0010.png" />
+    <Content Include="Content\gsg9_run_back\gsg9_run_back0011.png" />
+    <Content Include="Content\gsg9_run_back\gsg9_run_back0012.png" />
+    <Content Include="Content\gsg9_run_back\gsg9_run_back0013.png" />
+    <Content Include="Content\gsg9_run_back\gsg9_run_back0014.png" />
+    <Content Include="Content\gsg9_run_back\gsg9_run_back0015.png" />
+    <Content Include="Content\gsg9_run_back\gsg9_run_back0016.png" />
+    <Content Include="Content\gsg9_run_back\gsg9_run_back0017.png" />
+    <Content Include="Content\gsg9_run_back\gsg9_run_back0018.png" />
+    <Content Include="Content\gsg9_run_back\gsg9_run_back0019.png" />
+    <Content Include="Content\gsg9_run_back\gsg9_run_back0020.png" />
+    <Content Include="Content\gsg9_run_left\gsg9_run_left0000.png" />
+    <Content Include="Content\gsg9_run_left\gsg9_run_left0001.png" />
+    <Content Include="Content\gsg9_run_left\gsg9_run_left0002.png" />
+    <Content Include="Content\gsg9_run_left\gsg9_run_left0003.png" />
+    <Content Include="Content\gsg9_run_left\gsg9_run_left0004.png" />
+    <Content Include="Content\gsg9_run_left\gsg9_run_left0005.png" />
+    <Content Include="Content\gsg9_run_left\gsg9_run_left0006.png" />
+    <Content Include="Content\gsg9_run_left\gsg9_run_left0007.png" />
+    <Content Include="Content\gsg9_run_left\gsg9_run_left0008.png" />
+    <Content Include="Content\gsg9_run_left\gsg9_run_left0009.png" />
+    <Content Include="Content\gsg9_run_left\gsg9_run_left0010.png" />
+    <Content Include="Content\gsg9_run_left\gsg9_run_left0011.png" />
+    <Content Include="Content\gsg9_run_left\gsg9_run_left0012.png" />
+    <Content Include="Content\gsg9_run_left\gsg9_run_left0013.png" />
+    <Content Include="Content\gsg9_run_left\gsg9_run_left0014.png" />
+    <Content Include="Content\gsg9_run_left\gsg9_run_left0015.png" />
+    <Content Include="Content\gsg9_run_right\gsg9_run_right0000.png" />
+    <Content Include="Content\gsg9_run_right\gsg9_run_right0001.png" />
+    <Content Include="Content\gsg9_run_right\gsg9_run_right0002.png" />
+    <Content Include="Content\gsg9_run_right\gsg9_run_right0003.png" />
+    <Content Include="Content\gsg9_run_right\gsg9_run_right0004.png" />
+    <Content Include="Content\gsg9_run_right\gsg9_run_right0005.png" />
+    <Content Include="Content\gsg9_run_right\gsg9_run_right0006.png" />
+    <Content Include="Content\gsg9_run_right\gsg9_run_right0007.png" />
+    <Content Include="Content\gsg9_run_right\gsg9_run_right0008.png" />
+    <Content Include="Content\gsg9_run_right\gsg9_run_right0009.png" />
+    <Content Include="Content\gsg9_run_right\gsg9_run_right0010.png" />
+    <Content Include="Content\gsg9_run_right\gsg9_run_right0011.png" />
+    <Content Include="Content\gsg9_run_right\gsg9_run_right0012.png" />
+    <Content Include="Content\gsg9_run_right\gsg9_run_right0013.png" />
+    <Content Include="Content\gsg9_run_right\gsg9_run_right0014.png" />
+    <Content Include="Content\gsg9_run_right\gsg9_run_right0015.png" />
+    <Content Include="Content\gsg9_stay\gsg9_stay0000.png" />
+    <Content Include="Content\gsg9_stay\gsg9_stay0001.png" />
+    <Content Include="Content\gsg9_stay\gsg9_stay0002.png" />
+    <Content Include="Content\gsg9_stay\gsg9_stay0003.png" />
+    <Content Include="Content\gsg9_stay\gsg9_stay0004.png" />
+    <Content Include="Content\gsg9_stay\gsg9_stay0005.png" />
+    <Content Include="Content\gsg9_stay\gsg9_stay0006.png" />
+    <Content Include="Content\gsg9_stay\gsg9_stay0007.png" />
+    <Content Include="Content\gsg9_stay\gsg9_stay0008.png" />
+    <Content Include="Content\gsg9_stay\gsg9_stay0009.png" />
+    <Content Include="Content\gsg9_stay\gsg9_stay0010.png" />
+    <Content Include="Content\gsg9_stay\gsg9_stay0011.png" />
+    <Content Include="Content\gsg9_stay\gsg9_stay0012.png" />
+    <Content Include="Content\gsg9_stay\gsg9_stay0013.png" />
+    <Content Include="Content\gsg9_stay\gsg9_stay0014.png" />
+    <Content Include="Content\gsg9_stay\gsg9_stay0015.png" />
+    <Content Include="Content\gsg9_stay\gsg9_stay0016.png" />
+    <Content Include="Content\gsg9_stay\gsg9_stay0017.png" />
+    <Content Include="Content\gsg9_stay\gsg9_stay0018.png" />
+    <Content Include="Content\gsg9_stay\gsg9_stay0019.png" />
+    <Content Include="Content\gsg9_stay\gsg9_stay0020.png" />
+    <Content Include="Content\gsg9_stay\gsg9_stay0021.png" />
+    <Content Include="Content\gsg9_stay\gsg9_stay0022.png" />
+    <Content Include="Content\gsg9_stay\gsg9_stay0023.png" />
+    <Content Include="Content\gsg9_stay\gsg9_stay0024.png" />
+    <Content Include="Content\gsg9_stay\gsg9_stay0025.png" />
+    <Content Include="Content\gsg9_stay\gsg9_stay0026.png" />
+    <Content Include="Content\gsg9_stay\gsg9_stay0027.png" />
+    <Content Include="Content\gsg9_stay\gsg9_stay0028.png" />
+    <Content Include="Content\gsg9_stay\gsg9_stay0029.png" />
+    <Content Include="Content\gsg9_stay\gsg9_stay0030.png" />
+    <Content Include="Content\gsg9_stay\gsg9_stay0031.png" />
+    <Content Include="Content\gsg9_stay\gsg9_stay0032.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0000.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0001.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0002.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0003.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0004.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0005.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0006.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0007.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0008.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0009.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0010.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0011.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0012.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0013.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0014.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0015.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0016.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0017.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0018.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0019.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0020.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0021.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0022.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0023.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0024.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0025.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0026.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0027.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0028.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0029.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0030.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0031.png" />
+    <Content Include="Content\phoenix_dead\phoenix_dead0032.png" />
+    <Content Include="Content\phoenix_reload\phoenix_reload0000.png" />
+    <Content Include="Content\phoenix_reload\phoenix_reload0001.png" />
+    <Content Include="Content\phoenix_reload\phoenix_reload0002.png" />
+    <Content Include="Content\phoenix_reload\phoenix_reload0003.png" />
+    <Content Include="Content\phoenix_reload\phoenix_reload0004.png" />
+    <Content Include="Content\phoenix_reload\phoenix_reload0005.png" />
+    <Content Include="Content\phoenix_reload\phoenix_reload0006.png" />
+    <Content Include="Content\phoenix_reload\phoenix_reload0007.png" />
+    <Content Include="Content\phoenix_reload\phoenix_reload0008.png" />
+    <Content Include="Content\phoenix_reload\phoenix_reload0009.png" />
+    <Content Include="Content\phoenix_reload\phoenix_reload0010.png" />
+    <Content Include="Content\phoenix_reload\phoenix_reload0011.png" />
+    <Content Include="Content\phoenix_reload\phoenix_reload0012.png" />
+    <Content Include="Content\phoenix_reload\phoenix_reload0013.png" />
+    <Content Include="Content\phoenix_reload\phoenix_reload0014.png" />
+    <Content Include="Content\phoenix_reload\phoenix_reload0015.png" />
+    <Content Include="Content\phoenix_reload\phoenix_reload0016.png" />
+    <Content Include="Content\phoenix_reload\phoenix_reload0017.png" />
+    <Content Include="Content\phoenix_reload\phoenix_reload0018.png" />
+    <Content Include="Content\phoenix_reload\phoenix_reload0019.png" />
+    <Content Include="Content\phoenix_reload\phoenix_reload0020.png" />
+    <Content Include="Content\phoenix_reload\phoenix_reload0021.png" />
+    <Content Include="Content\phoenix_reload\phoenix_reload0022.png" />
+    <Content Include="Content\phoenix_reload\phoenix_reload0023.png" />
+    <Content Include="Content\phoenix_reload\phoenix_reload0024.png" />
+    <Content Include="Content\phoenix_reload\phoenix_reload0025.png" />
+    <Content Include="Content\phoenix_reload\phoenix_reload0026.png" />
+    <Content Include="Content\phoenix_reload\phoenix_reload0027.png" />
+    <Content Include="Content\phoenix_reload\phoenix_reload0028.png" />
+    <Content Include="Content\phoenix_reload\phoenix_reload0029.png" />
+    <Content Include="Content\phoenix_reload\phoenix_reload0030.png" />
+    <Content Include="Content\phoenix_reload\phoenix_reload0031.png" />
+    <Content Include="Content\phoenix_reload\phoenix_reload0032.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0000.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0001.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0002.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0003.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0004.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0005.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0006.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0007.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0008.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0009.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0010.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0011.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0012.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0013.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0014.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0015.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0016.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0017.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0018.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0019.png" />
+    <Content Include="Content\phoenix_run_back\phoenix_run_back0020.png" />
+    <Content Include="Content\phoenix_run_left\phoenix_run_left0000.png" />
+    <Content Include="Content\phoenix_run_left\phoenix_run_left0001.png" />
+    <Content Include="Content\phoenix_run_left\phoenix_run_left0002.png" />
+    <Content Include="Content\phoenix_run_left\phoenix_run_left0003.png" />
+    <Content Include="Content\phoenix_run_left\phoenix_run_left0004.png" />
+    <Content Include="Content\phoenix_run_left\phoenix_run_left0005.png" />
+    <Content Include="Content\phoenix_run_left\phoenix_run_left0006.png" />
+    <Content Include="Content\phoenix_run_left\phoenix_run_left0007.png" />
+    <Content Include="Content\phoenix_run_left\phoenix_run_left0008.png" />
+    <Content Include="Content\phoenix_run_left\phoenix_run_left0009.png" />
+    <Content Include="Content\phoenix_run_left\phoenix_run_left0010.png" />
+    <Content Include="Content\phoenix_run_left\phoenix_run_left0011.png" />
+    <Content Include="Content\phoenix_run_left\phoenix_run_left0012.png" />
+    <Content Include="Content\phoenix_run_left\phoenix_run_left0013.png" />
+    <Content Include="Content\phoenix_run_left\phoenix_run_left0014.png" />
+    <Content Include="Content\phoenix_run_left\phoenix_run_left0015.png" />
+    <Content Include="Content\phoenix_run_right\phoenix_run_right0000.png" />
+    <Content Include="Content\phoenix_run_right\phoenix_run_right0001.png" />
+    <Content Include="Content\phoenix_run_right\phoenix_run_right0002.png" />
+    <Content Include="Content\phoenix_run_right\phoenix_run_right0003.png" />
+    <Content Include="Content\phoenix_run_right\phoenix_run_right0004.png" />
+    <Content Include="Content\phoenix_run_right\phoenix_run_right0005.png" />
+    <Content Include="Content\phoenix_run_right\phoenix_run_right0006.png" />
+    <Content Include="Content\phoenix_run_right\phoenix_run_right0007.png" />
+    <Content Include="Content\phoenix_run_right\phoenix_run_right0008.png" />
+    <Content Include="Content\phoenix_run_right\phoenix_run_right0009.png" />
+    <Content Include="Content\phoenix_run_right\phoenix_run_right0010.png" />
+    <Content Include="Content\phoenix_run_right\phoenix_run_right0011.png" />
+    <Content Include="Content\phoenix_run_right\phoenix_run_right0012.png" />
+    <Content Include="Content\phoenix_run_right\phoenix_run_right0013.png" />
+    <Content Include="Content\phoenix_run_right\phoenix_run_right0014.png" />
+    <Content Include="Content\phoenix_run_right\phoenix_run_right0015.png" />
+    <Content Include="Content\phoenix_stay\phoenix_stay0000.png" />
+    <Content Include="Content\phoenix_stay\phoenix_stay0001.png" />
+    <Content Include="Content\phoenix_stay\phoenix_stay0002.png" />
+    <Content Include="Content\phoenix_stay\phoenix_stay0003.png" />
+    <Content Include="Content\phoenix_stay\phoenix_stay0004.png" />
+    <Content Include="Content\phoenix_stay\phoenix_stay0005.png" />
+    <Content Include="Content\phoenix_stay\phoenix_stay0006.png" />
+    <Content Include="Content\phoenix_stay\phoenix_stay0007.png" />
+    <Content Include="Content\phoenix_stay\phoenix_stay0008.png" />
+    <Content Include="Content\phoenix_stay\phoenix_stay0009.png" />
+    <Content Include="Content\phoenix_stay\phoenix_stay0010.png" />
+    <Content Include="Content\phoenix_stay\phoenix_stay0011.png" />
+    <Content Include="Content\phoenix_stay\phoenix_stay0012.png" />
+    <Content Include="Content\phoenix_stay\phoenix_stay0013.png" />
+    <Content Include="Content\phoenix_stay\phoenix_stay0014.png" />
+    <Content Include="Content\phoenix_stay\phoenix_stay0015.png" />
+    <Content Include="Content\phoenix_stay\phoenix_stay0016.png" />
+    <Content Include="Content\phoenix_stay\phoenix_stay0017.png" />
+    <Content Include="Content\phoenix_stay\phoenix_stay0018.png" />
+    <Content Include="Content\phoenix_stay\phoenix_stay0019.png" />
+    <Content Include="Content\phoenix_stay\phoenix_stay0020.png" />
+    <Content Include="Content\phoenix_stay\phoenix_stay0021.png" />
+    <Content Include="Content\phoenix_stay\phoenix_stay0022.png" />
+    <Content Include="Content\phoenix_stay\phoenix_stay0023.png" />
+    <Content Include="Content\phoenix_stay\phoenix_stay0024.png" />
+    <Content Include="Content\phoenix_stay\phoenix_stay0025.png" />
+    <Content Include="Content\phoenix_stay\phoenix_stay0026.png" />
+    <Content Include="Content\phoenix_stay\phoenix_stay0027.png" />
+    <Content Include="Content\phoenix_stay\phoenix_stay0028.png" />
+    <Content Include="Content\phoenix_stay\phoenix_stay0029.png" />
+    <Content Include="Content\phoenix_stay\phoenix_stay0030.png" />
+    <Content Include="Content\phoenix_stay\phoenix_stay0031.png" />
+    <Content Include="Content\phoenix_stay\phoenix_stay0032.png" />
     <Content Include="Content\sparks\shoot0001.png" />
     <Content Include="Content\sparks\shoot0002.png" />
     <Content Include="Content\sparks\shoot0003.png" />
@@ -553,12 +928,24 @@
     <Resource Include="Resources\icon_in-game.png" />
   </ItemGroup>
   <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Helper\HelperSL.csproj">
       <Project>{443B377E-8155-43E3-821D-429BFB595770}</Project>
       <Name>HelperSL</Name>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v3.0\Microsoft.Silverlight.CSharp.targets" Condition="" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

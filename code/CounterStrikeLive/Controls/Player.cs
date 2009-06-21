@@ -16,7 +16,7 @@ using CounterStrikeLive.Service;
 
 namespace CounterStrikeLive
 {
-    public class Player : Explosion
+    public class Player : GameObjA
     {
         TextBlock _TextBlock = new TextBlock();
 
@@ -34,8 +34,8 @@ namespace CounterStrikeLive
 
         public SharedClient _Client;
         public enum Team { spectator = 2, terr = 3, cterr = 4 };
-        public Database.PlayerType _PlayerType { get { return _dbPlayer._PlayerType; } }
-        public Database.Player _dbPlayer;
+        
+        
         List<Point> _Points = new List<Point>();
         public float _V = 350f;
 
@@ -51,33 +51,49 @@ namespace CounterStrikeLive
         }
 
         ScaleTransform _ScaleTransform = new ScaleTransform();
-        public List<Explosion> _Explosions2 = new List<Explosion>();
-        ExplosionA _ExplosionA;
+        public List<Animation> _Explosions2 = new List<Animation>();
+
+        //public Canvas _Canvas2 = new Canvas();
         public override void Load()
         {
+
             _Menu._GameCanvas.Children.Add(_MediaElement);
             LoadNickName();
             _Canvas.Children.Add(_TextBlock);
-            _ExplosionA = new ExplosionA();
-            _ExplosionA._PaternCanvas = _Canvas2;
-            _ExplosionA._Explosions = _Explosions2;
-            _ExplosionA._AnimatedBitmap = Menu._Database._Gun;
-            _ExplosionA.Load();                                    
-            //_AnimatedBitmap = _dbPlayer._PlayerStay;
-            nwLoad();
-            _Image.SetX(-_phoenix_run[0]._BitmapImage.PixelWidth / 2);
-            _Image.SetY(-_phoenix_run[0]._BitmapImage.PixelHeight / 2);
+	     	if(_Team ==  Team.cterr) _PlaeyerModel = Model.gsg9;            
+            if (!_VisibleToAll) this._Visibility = Visibility.Collapsed;
+            _Canvas2.RenderTransform = _RotateTransform;
+            _PlayerImage = new Image();
+			_GunImage = new Image();
+			_Canvas2.Children.Add(_GunFire);
+			
+			_Canvas2.Children.Add(_GunImage);
+            _Canvas2.Children.Add(_PlayerImage);
+            _Canvas.Children.Add(_Canvas2);
+            UpdateTranslations();
+            Add();
 
+            _PlayerImage.SetX(-GetPl().PixelWidth / 2);
+            _PlayerImage.SetY(-GetPl().PixelHeight / 2);
+			_GunImage.SetX(-GetPl().PixelWidth / 2);
+			_GunImage.SetY(-GetPl().PixelHeight / 2);
+			_GunFire.SetX(-GetPl().PixelWidth / 2);
+			_GunFire.SetY(-GetPl().PixelHeight / 2);
         }
+		
+        Image _PlayerImage;
+		Image _GunImage;
+		Image _GunFire = new Image() { Source = FolderList.Find("ak47_Shoot.png")._BitmapImage, Visibility = Visibility.Collapsed };
+
         //public Image GetImage()
         //{
-        //    Image _Image = new Image();
-        //    Canvas.SetLeft(_Image, -_Width / 2 + _x);
-        //    Canvas.SetTop(_Image, -_Height / 2 + _y);
-        //    _Image.Width = _Width;
-        //    _Image.Height = _Height;
-        //    _Image.Source = _BitmapImages[0];
-        //    return _Image;
+        //    Image _PlayerImage = new Image();
+        //    Canvas.SetLeft(_PlayerImage, -_Width / 2 + _x);
+        //    Canvas.SetTop(_PlayerImage, -_Height / 2 + _y);
+        //    _PlayerImage.Width = _Width;
+        //    _PlayerImage.Height = _Height;
+        //    _PlayerImage.Source = _BitmapImages[0];
+        //    return _PlayerImage;
         //}
         private void LoadNickName()
         {
@@ -106,7 +122,7 @@ namespace CounterStrikeLive
 
         protected void UpdateCollisions()
         {
-            _Position = VectorWorld.Vector2D.Fazika(_Position, _OldPosition,15,_Map.walls);
+            _Position = VectorWorld.Vector2D.Fazika(_Position, _OldPosition, 15, _Map.walls);
             //Line2 wall = _Map.CCollision(_Position, 25);
             //if (wall != null)
             //{
@@ -148,64 +164,88 @@ namespace CounterStrikeLive
             }
             return null;
         }
-        
-        public List<FolderList> _phoenix_run = FolderList._This.Find("phoenix_run").fls;
-        public override void Update()
-        {
-            
-            
-            _frame += 30 * (float)Menu._TimerA._SecodsElapsed;
-            if (_frame >= _phoenix_run.Count) _frame = 0;
+        FolderList _FolderList = FolderList._This;
 
-            BitmapImage _BitmapImage = _phoenix_run[(int)_frame]._BitmapImage;
-            try
-            {
-                _Image.Source = _BitmapImage;
-            }
-            catch { }
+        public float _pframe;
+		public enum State { _run, _run_back, _run_left, _run_right, _stay, _reload }
+        public enum Model { phoenix, ak47, gsg9 }
+        public State _State = State._stay;
+		public Model _PlaeyerModel = Model.phoenix;
+		public Model _GunModel = Model.ak47;
+		public override void Update()
+		{
+			
+			_PlayerImage.Source = GetPl();
+			_GunImage.Source = GetGun();
 
-            UpdateKeys();
-
-            UpdateTranslations();
+			if (!_isReloading) UpdateKeys();
+			
+			UpdateTranslations();
 
             Vector2? _PlayerCollide = PlayerCollide();
             if (_PlayerCollide != null)
             {
                 _Position = _OldPosition;
                 _Position += _PlayerCollide.Value;
-            }
-            if (_OldPosition != default(Vector2) && _OldPosition != _Position)
-            {
-                UpdateCollisions();
-                _AnimatedBitmap = _dbPlayer._PlayerRun;
-                PlayWalk();
-            }
-            else _AnimatedBitmap = _dbPlayer._PlayerStay;
-            foreach (Explosion _Explosion in _Explosions2)
-            {
-                _Explosion.Update();
+			}
+			if (_isReloading) _State = State._reload;
+			else
+				if (_OldPosition != default(Vector2) && _OldPosition != _Position)
+				{
+					UpdateCollisions();
+					float dir = Calculator.VectorToRadians(_Position - _OldPosition) * Calculator.DegreesToRadiansRatio;
+					float dir2 = CorrectAngle(dir - _Angle);
+					_State = State._run;
+					if (dir2 > 45 && dir2 < 135) _State = State._run_right;
+					if (dir2 < 315 && dir2 > 225) _State = State._run_left;
+					if (dir2 > 135 && dir2 < 225) _State = State._run_back;
+					PlayWalk();
+
+				} else _State = State._stay;
+			foreach (Animation _Explosion in _Explosions2)
+			{
+				_Explosion.Update();
             }
             _OldPosition = _Position;
         }
+        private BitmapImage GetPl() {
+
+			List<FolderList> nm = FolderList.Find(_PlaeyerModel + "" + _State).fls;
+			_pframe += 30 * (float)Menu._TimerA._SecodsElapsed;
+			if (_pframe >= nm.Count) _pframe = 0;
+			BitmapImage _BitmapImage = nm[(int)_pframe]._BitmapImage;
+			return _BitmapImage;
+		}
+		float _gframe;
+        private BitmapImage GetGun() 
+		{
+			List<FolderList> nm = FolderList.Find(_GunModel+ "" + _State).fls;
+			_gframe += 30 * (float)Menu._TimerA._SecodsElapsed;
+			if (_pframe >= nm.Count) _pframe = 0;
+			BitmapImage _BitmapImage = nm[(int)_pframe]._BitmapImage;
+			return _BitmapImage;
+		}
+        
 
         MediaElement _MediaElement = new MediaElement();
         Menu _Menu = Menu._This;
-        int soundid=0;
+        int _soundid = 0;
         private void PlayWalk()
-        {            
+        {
             if (_MediaElement.CurrentState == MediaElementState.Paused || _MediaElement.CurrentState == MediaElementState.Closed)
             {
-                soundid++;
-                _MediaElement.SetSource("concrete" + ((soundid % 4) + 1) + ".mp3");
+                _soundid++;
+                _MediaElement.SetSource("concrete" + ((_soundid % 4) + 1) + ".mp3");
                 _MediaElement.Volume = GetVolume(2000);
                 _MediaElement.Play();
-                
+
             }
         }
 
         public Vector2 _MoveVector;
         protected virtual void UpdateKeys()
         {
+			
             _MoveVector = new Vector2();
             if (_Keys.Contains(Key.Left) || _Keys.Contains(Key.A))
             {
@@ -243,12 +283,14 @@ namespace CounterStrikeLive
         public void ShootAnimation()
         {
             PlaySound("ak47-1.mp3");
-            _ExplosionA._isPlaying = true;
+			_GunFire.Visibility = Visibility.Visible;
+			Menu._TimerA.AddMethod(50, delegate { _GunFire.Visibility = Visibility.Collapsed; });
         }
+		public bool _isReloading { get { return _Client._IsReloading; } set { _Client._IsReloading=value; } }
     }
     public class LocalPlayer : Player
     {
-        public bool _isReloading;
+        
         public override void Load()
         {
             base.Load();

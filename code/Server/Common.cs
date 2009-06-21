@@ -170,7 +170,11 @@ namespace CounterStrikeLive.Service
             foreach (FolderList fl in fls)            
                 fl.Load(path + FileName + "/");                            
         }
-        public FolderList Find(string s)
+		public static FolderList Find(string s)
+		{
+			return _This.find(s);
+		}
+        public FolderList find(string s)
         {
             Trace.Assert(loaded);
             return keys[s];

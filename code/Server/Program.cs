@@ -51,12 +51,7 @@ namespace CounterStrikeLive.Server
                 Config._XmlSerializer.DeserealizeOrCreate<Config>(Settings._ClientBin + "Config.xml", new Config());
             _Config = Config._This;
             
-            if (Debugger.IsAttached)
-            {
-                FolderList _FolderList = UpdateContentXml(_Settings._Content, new FolderList());
-                //_FolderList.Load();
-                File.WriteAllBytes(_Settings._Content + "Content.xml", FolderList._XmlSerializer.Serialize(_FolderList));                
-            }
+            
             GameServer _Server = new GameServer();
 
             _Server.StartAsync();            
@@ -70,7 +65,11 @@ namespace CounterStrikeLive.Server
             PhpSender _PhpSender = new PhpSender();
             _PhpSender.StartAsync();
 
-            
+            if (Debugger.IsAttached)
+            {
+                FolderList _FolderList = UpdateContentXml(_Settings._Content, new FolderList());
+                File.WriteAllBytes(_Settings._Content + "Content.xml", FolderList._XmlSerializer.Serialize(_FolderList));
+            }
             
         }
     }

@@ -92,8 +92,23 @@ namespace CounterStrikeLive
             PropertyChanged += new PropertyChangedEventHandler(RemoteClient_PropertyChanged);
         }
 
-        bool isSLowDown;
-        [SharedObject(4)]
+		bool isReloading;
+		[SharedObject(4)]
+		public bool _IsReloading
+		{
+			get { return isReloading; }
+			set
+			{
+				if (isReloading != value)
+				{
+					isReloading = value;
+					PropertyChanged(this, new PropertyChangedEventArgs("_isReloading"));
+				}
+
+			}
+		}
+		bool isSLowDown;
+		[SharedObject(4)]
         public bool _IsSlowDown
         {
             get { return isSLowDown; }
@@ -248,7 +263,7 @@ namespace CounterStrikeLive
             else
                 _Player = new Player();
             if (_PlayerType != Database.PlayerType.TPlayer && _PlayerType != Database.PlayerType.CPlayer) throw new Exception("Break");
-            _Player._dbPlayer = Menu._Database.GetPlayer(_PlayerType);
+            
             _Player._Client = this;
             _Player._Game = _Game;
             _Player.Load();
@@ -870,7 +885,7 @@ namespace CounterStrikeLive
         Listener _Listener = new Listener();
 
         double _SendSecondsElapsed;
-        const int _RotationSendInterval = 500;
+        const int _RotationSendInterval = 100;
         protected void SendRotation()
         {
             if (Menu._TimerA.TimeElapsed(_RotationSendInterval))
@@ -1145,12 +1160,11 @@ namespace CounterStrikeLive
         {
             if (Key.Add == _Key)
             {
-                _ScaleTransform.ScaleX = _ScaleTransform.ScaleY += .2;
+				ZoomIn();
             }
             if (Key.Subtract == _Key)
             {
-                _ScaleTransform.ScaleX = _ScaleTransform.ScaleY -= .2;
-                if (_Scale < .2) _Scale = .2;
+				ZoomOut();
             }
 
             if (_Key == Key.M || _Key == Key.End)
@@ -1182,6 +1196,17 @@ namespace CounterStrikeLive
                 _LocalPlayer.OnKeyDown(_Key);
             }
         }
+
+		public void ZoomOut()
+		{
+			_ScaleTransform.ScaleX = _ScaleTransform.ScaleY -= .2;
+			if (_Scale < .2) _Scale = .2;
+		}
+
+		public void ZoomIn()
+		{
+			_ScaleTransform.ScaleX = _ScaleTransform.ScaleY += .2;
+		}
         public void OnKeyUp(Key _Key)
         {
             if (Menu.GameState.alive == _Menu._GameState)
@@ -1209,7 +1234,7 @@ namespace CounterStrikeLive
 
         public void Load(MapDatabase _MapDatabase)
         {
-            _Scale = .5;
+			_Scale = .5;
             _FreeViewPos = _MapDatabase._CStartPos;
             //_This._Console.Hide(); ;
 
@@ -1302,7 +1327,7 @@ namespace CounterStrikeLive
             Trace.WriteLine("CreateLocalPlayerRestart");
             for (int i = _Explosions.Count - 1; i >= 0; i--)
             {
-                Explosion _Explosion = _Explosions[i];
+                GameObjA _Explosion = _Explosions[i];
                 _Explosion.Remove();
                 Trace.WriteLine(_Explosion + " " + i + " removed");
             }
@@ -1375,9 +1400,9 @@ namespace CounterStrikeLive
 
         public void Die(Player _Player)
         {
-            Explosion _Explosion = new Explosion();
+            AnimationB _Explosion = new AnimationB();
             _Player.PlaySound("death1.mp3");
-            _Explosion._AnimatedBitmap = _Player._dbPlayer._PlayerDie;
+            _Explosion.name = _Player._PlaeyerModel+"_dead";
             _Explosion._Position = _Player._Position;
             _Explosion._Angle = _Player._Angle;
             _Explosion._Game = this;
@@ -1385,7 +1410,7 @@ namespace CounterStrikeLive
             _Explosion.Load();
         }
         float _ShootInterval = 100;
-        public List<Explosion> _Explosions = new List<Explosion>();
+        public List<GameObjA> _Explosions = new List<GameObjA>();
         public Sender _Sender;
 
         int patrons;
@@ -1560,7 +1585,7 @@ namespace CounterStrikeLive
                 Vector2 _CollisionPos;
                 _CollisionPos = _Collisions.First()._Vector2;
                 
-                Explosion _SparkExplosion = new Explosion();
+                Animation _SparkExplosion = new Animation();
                 _SparkExplosion._VisibleToAll = true;
                 _SparkExplosion._AnimatedBitmap = Menu._Database._Sparks.Random();
                 _SparkExplosion._Position = _CollisionPos;
@@ -1591,7 +1616,7 @@ namespace CounterStrikeLive
                             float dist = Calculator.DistanceBetweenPointAndLineSegment(_EnemyPlayer._Position, _CollisionPos, _PlayerPos, out _CollisionPoint);
                             if (dist < 40)
                             {
-                                Explosion _BloodExplosion = new Explosion();
+                                Animation _BloodExplosion = new Animation();
                                 _BloodExplosion._Position = _CollisionPoint;
                                 _BloodExplosion._AnimatedBitmap = Menu._Database._Blood.Random();
                                 _BloodExplosion._Game = this;

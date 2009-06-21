@@ -20,5 +20,10 @@
 		<local:Button x:Name="show_scoreboard" Click="show_scoreboard_Click" Height="33" Margin="31,0,0,90" Style="{StaticResource ButtonStyle2}" VerticalAlignment="Bottom" Content="show scoreboard" Width="140" HorizontalAlignment="Left"/>
 		<local:Button x:Name="text_message" Click="text_message_Click" Margin="31,99,0,128" Style="{StaticResource ButtonStyle2}" Content="text message" HorizontalAlignment="Left" Width="140"/>
 		<local:Button x:Name="Change_Nick" Click="Change_Nick_Click"  Margin="31,62,0,0" Style="{StaticResource ButtonStyle2}" Content="Change Nick" HorizontalAlignment="Left" Width="140" VerticalAlignment="Top" Height="33"/>
+		<TextBlock Height="13" HorizontalAlignment="Right" Margin="0,0,129,53" VerticalAlignment="Bottom" Width="61" Text="Resolution:" TextWrapping="Wrap" Foreground="#FFEAFF00"/>
+		<Border Height="60" Margin="185,0,29,26" VerticalAlignment="Bottom" Background="#27000000"/>
+		<local:Button Name="ZoomOut" Click="ZoomOut_Click" Height="36" HorizontalAlignment="Right" Margin="0,0,97,41" VerticalAlignment="Bottom" Width="28" Content="&lt;" Style="{StaticResource ButtonStyle2}"/>
+		<local:Button Name="ZoomIn" Click="ZoomIn_Click"  Height="36" HorizontalAlignment="Right" Margin="0,0,40,41" Style="{StaticResource ButtonStyle2}" VerticalAlignment="Bottom" Width="28" Content="&gt;"/>
+		<TextBlock Name="_ZoomText" Height="13" HorizontalAlignment="Right" Margin="0,0,72,53" VerticalAlignment="Bottom" Width="25" Text=".5" TextWrapping="Wrap" Foreground="#FFEAFF00" TextAlignment="Center"/>
 	</Grid>
 </local:ChildWindow>
