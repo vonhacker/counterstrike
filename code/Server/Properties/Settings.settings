@@ -15,10 +15,7 @@
       <Value Profile="(Default)">CounterStrikeLiveWeb/ClientBin/</Value>
     </Setting>
     <Setting Name="_ServerList" Type="System.String" Scope="User">
-      <Value Profile="(Default)">http://igorlevochkin.ig.funpic.org/cs/serv.php</Value>
-    </Setting>
-    <Setting Name="_ResetConfig" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">http://dorumon.no-ip.org/cs/serv.php</Value>
     </Setting>
     <Setting Name="_Content" Type="System.String" Scope="User">
       <Value Profile="(Default)">CounterStrikeLive/Content/</Value>

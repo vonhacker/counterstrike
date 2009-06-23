@@ -29,6 +29,7 @@ using ICSharpCode.SharpZipLib.Zip;
 using doru;
 using doru.Tcp;
 using CounterStrikeLive.Service;
+using LevelEditor4;
 
 [assembly: AssemblyVersionAttribute("3.0.*")]
 namespace CounterStrikeLive
@@ -87,6 +88,7 @@ namespace CounterStrikeLive
     {
         public SharedClient()
         {
+            
             _Properties = (from p in GetType().GetProperties() where (p.GetCustomAttributes(true).FirstOrDefault(a => a is SharedObjectAttribute) != null) select p).ToList();
             if (_Properties.Count == 0) throw new Exception("Break");
             PropertyChanged += new PropertyChangedEventHandler(RemoteClient_PropertyChanged);
@@ -259,8 +261,12 @@ namespace CounterStrikeLive
         private void CreatePlayer()
         {
             if (_Local)
-                _Player = new LocalPlayer();
-            else
+            {
+                if (_Bot)
+                    _Player = new BotPlayer();
+                else
+                    _Player = new LocalPlayer();
+            } else
                 _Player = new Player();
             if (_PlayerType != Database.PlayerType.TPlayer && _PlayerType != Database.PlayerType.CPlayer) throw new Exception("Break");
             
@@ -412,6 +418,7 @@ namespace CounterStrikeLive
 
         }
         public bool _Local = false;
+        public bool _Bot;
     }
     public class MyObs<T> : IEnumerable<T>, INotifyCollectionChanged
     {
@@ -641,23 +648,27 @@ namespace CounterStrikeLive
                                 _LocalClient._Menu = this;
                                 _LocalClient._Local = true;
                                 _LocalClient.Add();
-                                _LocalClient.SendAll(null);
-                                Trace.WriteLine("ID Received:" + id);                                
-                            }                        
-                            break;
-                        case PacketType.SelectMap:
-                            {
+								_LocalClient.SendAll(null);
+								Trace.WriteLine("ID Received:" + id);
+							}
+							break;
+						case PacketType.SelectMap:
+							{
+								if (_Config._AutoSelect)								
+									_Sender.Send(PacketType.MapSelected, "estate.zip".ToBytes());
+								else
+								{
+									MapSelect _MapSelect = new MapSelect();
 
-                                MapSelect _MapSelect = new MapSelect();
-                                
-                                _MapSelect.Success+= delegate
-                                {
-                                    _MapSelect.Trace("Closed");
-                                    _Sender.Send(PacketType.MapSelected, _MapSelect.MapName.ToBytes());
-                                };
-                            }
-                            break;
-                        case PacketType.ServerIsFull:
+									_MapSelect.Success += delegate
+									{
+										_MapSelect.Trace("Closed");
+										_Sender.Send(PacketType.MapSelected, _MapSelect.MapName.ToBytes());
+									};
+								}
+							}
+							break;
+						case PacketType.ServerIsFull:
                             Loading1.Text = "Server Is Full";
                             new ChildWindow().Content = "Server Is Full";
                             break;
@@ -668,7 +679,7 @@ namespace CounterStrikeLive
                                 string _Map = _MemoryStream.ReadStringToEnd();
                                 Trace.WriteLine("MapInfo name Received:" + _Map);
                                 LoadResources(_Map);
-                                //LoadGame(App.GetResourceStream(new Uri(_Map, UriKind.Relative)).Stream);
+                                //LoadGame(App.GetResourceStream(new Uri(_Stream, UriKind.Relative)).Stream);
                             }
                             break;
                         case PacketType.ping:
@@ -1053,12 +1064,12 @@ namespace CounterStrikeLive
         
         public SharedClient _LocalClient;
 
-        protected void LoadGame(Stream _Map)
+        protected void LoadGame(Stream _Stream)
         {
             Loading1.Text = "Loading Game";            
             if (_Game != null) _Game.Dispose();
             XmlSerializer _XmlSerializer = new XmlSerializer(typeof(MapDatabase));
-            MapDatabase _MapDatabase = (MapDatabase)_XmlSerializer.Deserialize(_Map);
+            MapDatabase _MapDatabase = (MapDatabase)_XmlSerializer.Deserialize(_Stream);
             _Game = new Game();
             _Game._Menu = this;
             _Game._Sender = _Sender;
@@ -1079,14 +1090,7 @@ namespace CounterStrikeLive
             _KillText.Text += "\n" + text;
         }
     }
-    //public static class Arrays1
-    //{
-    //    public static TSource Random<TSource>(this List<TSource> source)
-    //    {
-    //        Random
-    //        return source[Random.Next(source.Count)];
-    //    }        
-    //}
+
     public interface ClientListItem
     {
         Player.Team _Team { get; }
@@ -1218,8 +1222,7 @@ namespace CounterStrikeLive
                     _BinaryWriter.Write((byte)_Key);
                     _BinaryWriter.Write((Int16)_LocalPlayer._x);
                     _BinaryWriter.Write((Int16)_LocalPlayer._y);
-                    _Sender.Send(_MemoryStream.ToArray());
-                    //_This.Provider.SendMessage(_MemoryStream.ToArray());
+                    _Sender.Send(_MemoryStream.ToArray());            
                 }
                 _LocalPlayer.OnKeyUp(_Key);
             }
@@ -1231,14 +1234,17 @@ namespace CounterStrikeLive
         TranslateTransform _TranslateTransform = new TranslateTransform();
         
         public Point _FreeViewPos;
-
+		Config _Config = Config._This;
         public void Load(MapDatabase _MapDatabase)
         {
 			_Scale = .5;
             _FreeViewPos = _MapDatabase._CStartPos;
-            //_This._Console.Hide(); ;
+            
+			if (_Config._AutoSelect)
+				CTerroritsButtonClick();
+			else
+            	new TeamSelect();
 
-            new TeamSelect();
 
             _Menu._GameState = Menu.GameState.teamSelect;
 
@@ -1319,8 +1325,9 @@ namespace CounterStrikeLive
 
         protected void CreateLocalPlayerReset()
         {
+            
             PlaySound("jingle.mp3");
-
+            
             _ScoreBoard.Hide();
             _Patrons = 30;
             _TotalPatrons = 90;

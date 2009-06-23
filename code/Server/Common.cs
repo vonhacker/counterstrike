@@ -94,9 +94,9 @@ namespace CounterStrikeLive.Service
         /// </summary>
         sendTo = 27,
     }
-    public class Config
+    public class Config 
     {
-        
+		public bool _AutoSelect { get { return this.Get<bool>("AutoSelect",true) && Debugger.IsAttached; } set { this.Set("AutoSelect", value); } }
         public bool GenerateClientLag = false;
         public int _MaxPlayers = 10;
         public bool GenerateServerLag = false;

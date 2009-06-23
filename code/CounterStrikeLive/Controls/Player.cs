@@ -122,28 +122,7 @@ namespace CounterStrikeLive
 
         protected void UpdateCollisions()
         {
-            _Position = VectorWorld.Vector2D.Fazika(_Position, _OldPosition, 15, _Map.walls);
-            //Line2 wall = _Map.CCollision(_Position, 25);
-            //if (wall != null)
-            //{
-            //    _Position = _OldPosition;
-            //    //float a= Calculator.DegreesToRadians(90);
-
-            //    // Vector2 _Vectora = wall._cpoint - _Position;
-
-            //    // Vector2 _Vectorb = new Vector2(0, (_Position - _OldPosition).Length());                
-
-            //    // float rads = Calculator.VectorToRadians(_Vectora);
-            //    // float rads2 = Calculator.VectorToRadians(wall._p2 - wall._p1)+1.57f;
-
-            //    // Calculator.RotateVector(ref _Vectorb, rads2);
-            //    // if (Math.Abs(rads-rads2) <1.57f)
-            //    // {
-            //    //     _Vectorb = Vector2.Multiply(_Vectorb, -1);
-            //    // }
-
-            //    // _Position -=_Vectorb;
-            //}
+            _Position = doru.VectorWorld.Vector2D.Fazika(_Position, _OldPosition, 15, _Map.walls);            
         }
 
         public Vector2? PlayerCollide()
@@ -288,7 +267,15 @@ namespace CounterStrikeLive
         }
 		public bool _isReloading { get { return _Client._IsReloading; } set { _Client._IsReloading=value; } }
     }
-    public class LocalPlayer : Player
+	public class BotPlayer : Player
+	{
+		public static BotPlayer _This;
+		public BotPlayer()
+		{
+			_This = this;
+		}
+	}
+	public class LocalPlayer : Player
     {
         
         public override void Load()

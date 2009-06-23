@@ -1,0 +1,31 @@
+﻿<Window x:Class="LevelEditor4.BotsEditor"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="BotsEditor" WindowState="Maximized" Height="768" Width="1024">
+    <Grid>
+    	<Grid.RowDefinitions>
+    		<RowDefinition Height="*"/>
+    	</Grid.RowDefinitions>
+        <Canvas>
+            <Canvas Name="_RootCanvas">
+                <Canvas Name="_Canvas0"/>
+                <Canvas Name="_CanvasDraw"/>
+                <Canvas Name="_CanvasThumbs"/>
+            </Canvas>
+        </Canvas>
+        <TextBlock Name="_TextBlock" Width="103" Height="15" Text="TextBlock" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+        
+        <Menu VerticalAlignment="Top"  Height="25">
+            <MenuItem Header="_File">
+                <MenuItem Name="MenuItemSave" Header="_Save" Click="MenuItemSave_Click"  />
+            </MenuItem>
+            <MenuItem Header="_Tools">
+                <MenuItem Name="MenuItemSelect" Header="_Select" Click="MenuItemSelect_Click"  />
+                <MenuItem Name="MenuItemBrush" Header="_Brush"  Click="MenuItemBrush_Click" />
+                <MenuItem Name="MenuItemCtp" Header="Selected As _CTSP" Click="MenuItemCtp_Click"  />
+                <MenuItem Name="MenuItemTp" Header="Selected As _TSP" Click="MenuItemTp_Click" />
+            </MenuItem>
+            <Slider x:Name="SliderThickness" ValueChanged="SliderThickness_ValueChanged" Width="182" HorizontalAlignment="Left" VerticalAlignment="Top" Value="1"/>
+        </Menu>
+    </Grid>
+</Window>

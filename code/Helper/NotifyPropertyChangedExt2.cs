@@ -21,16 +21,21 @@ namespace doru
             if (!_Vars.ContainsKey(kk)) _Vars.Add(kk, _This);
             _Vars[kk] = o;
         }
-
-        public static T Get<T>(this object _This, string s2)
+		public static T Get<T>(this object _This, string s2)
+		{
+			return Get<T>(_This, s2, null);
+		}
+        public static T Get<T>(this object _This, string s2, object _def)
         {
             KK kk = new KK { obj = _This, prop = s2 };
 
             if (_Vars.ContainsKey(kk))
                 return (T)_Vars[kk];
             else
-            {
+            {				
                 T t;
+				if (_def != null) t = (T)_def;
+				else
                 try
                 {
                     t = Activator.CreateInstance<T>();

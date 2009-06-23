@@ -5,7 +5,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>10.0.20506</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{443B377E-8155-43E3-821D-429BFB595770}</ProjectGuid>
     <ProjectTypeGuids>{A1591282-1198-4647-A2B1-27E5FF5F6F3B};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
@@ -63,7 +63,10 @@
     <Reference Include="System.Xml.Serialization, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Arrays.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="Helper.cs" />
+    <Compile Include="Helper1.cs" />
     <Compile Include="Mathematics\BilinearInterpolator.cs" />
     <Compile Include="Mathematics\Calculator.cs" />
     <Compile Include="Mathematics\CircularInterpolator.cs" />
@@ -73,13 +76,17 @@
     <Compile Include="Mathematics\Vector2.cs" />
     <Compile Include="Mathematics\Vector3.cs" />
     <Compile Include="NotifyPropertyChangedExt2.cs" />
+    <Compile Include="Physics.cs" />
+    <Compile Include="PhysicsSl.cs" />
     <Compile Include="Resource1.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource1.resx</DependentUpon>
     </Compile>
+    <Compile Include="Serelization.cs" />
+    <Compile Include="_Sl.cs" />
+    <Compile Include="Stream.cs" />
     <Compile Include="Tcp.cs" />
-    <Compile Include="Vector2D.cs" />
     <Compile Include="Wpf.cs" />
   </ItemGroup>
   <ItemGroup>

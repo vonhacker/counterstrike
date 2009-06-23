@@ -776,10 +776,6 @@
       </fls>
       <_isfile>false</_isfile>
     </FolderList>
-    <FolderList FileName="arctic">
-      <fls />
-      <_isfile>false</_isfile>
-    </FolderList>
     <FolderList FileName="blood">
       <fls>
         <FolderList FileName="blood0001.png">
@@ -1119,18 +1115,6 @@
           <_isfile>true</_isfile>
         </FolderList>
       </fls>
-      <_isfile>false</_isfile>
-    </FolderList>
-    <FolderList FileName="cterr">
-      <fls />
-      <_isfile>false</_isfile>
-    </FolderList>
-    <FolderList FileName="cterrdie">
-      <fls />
-      <_isfile>false</_isfile>
-    </FolderList>
-    <FolderList FileName="die">
-      <fls />
       <_isfile>false</_isfile>
     </FolderList>
     <FolderList FileName="gsg9_dead">
@@ -1874,10 +1858,6 @@
           <_isfile>true</_isfile>
         </FolderList>
       </fls>
-      <_isfile>false</_isfile>
-    </FolderList>
-    <FolderList FileName="gun">
-      <fls />
       <_isfile>false</_isfile>
     </FolderList>
     <FolderList FileName="phoenix_dead">

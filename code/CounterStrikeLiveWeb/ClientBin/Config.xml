@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<Config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <GenerateClientLag>false</GenerateClientLag>
+  <_MaxPlayers>10</_MaxPlayers>
+  <GenerateServerLag>false</GenerateServerLag>
+  <GenerateWebServerLag>false</GenerateWebServerLag>
+  <_WebPort>5300</_WebPort>
+  <_MaxLatency xsi:nil="true" />
+  <_ContentFolder>Content/</_ContentFolder>
+  <_GamePort>4530</_GamePort>
+  <_WebAllowedIps>.*</_WebAllowedIps>
+  <_WebRedirect>http://dorumon.no-ip.org</_WebRedirect>
+  <_WebRoot>./</_WebRoot>
+  <_WebDefaultPage>./CounterStrikeLiveWeb/CounterStrikeLiveTestPage.html</_WebDefaultPage>
+  <_Maps>
+    <MapInfo>
+      <Icon>default.png</Icon>
+      <MapName>estate.zip</MapName>
+    </MapInfo>
+    <MapInfo>
+      <Icon>default.png</Icon>
+      <MapName>italy.zip</MapName>
+    </MapInfo>
+    <MapInfo>
+      <Icon>default.png</Icon>
+      <MapName>nuke.zip</MapName>
+    </MapInfo>
+  </_Maps>
+  <_AutoSelect>true</_AutoSelect>
+</Config>

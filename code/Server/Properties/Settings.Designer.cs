@@ -73,25 +73,13 @@ namespace CounterStrikeLive.Server.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://igorlevochkin.ig.funpic.org/cs/serv.php")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://dorumon.no-ip.org/cs/serv.php")]
         public string _ServerList {
             get {
                 return ((string)(this["_ServerList"]));
             }
             set {
                 this["_ServerList"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool _ResetConfig {
-            get {
-                return ((bool)(this["_ResetConfig"]));
-            }
-            set {
-                this["_ResetConfig"] = value;
             }
         }
         

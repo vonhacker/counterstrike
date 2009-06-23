@@ -45,7 +45,7 @@ namespace CounterStrikeLive.Server
         {
 
             "started".Trace();
-            if (Settings._ResetConfig)
+            if (Debugger.IsAttached)
                 Config._XmlSerializer.Serialize(Settings._ClientBin + "Config.xml",new Config());
             else
                 Config._XmlSerializer.DeserealizeOrCreate<Config>(Settings._ClientBin + "Config.xml", new Config());

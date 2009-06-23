@@ -12,44 +12,20 @@ using System.Collections.Generic;
 using System.Windows.Media.Imaging;
 using System.Linq;
 using FarseerGames.FarseerPhysics.Mathematics;
-using VectorWorld;
+using doru.VectorWorld;
+using doru;
+using LevelEditor4;
 
 namespace CounterStrikeLive
-{
-
-    public class MapDatabase
-    {
-        public float _Scale;
-        public Point _TStartPos;
-        public Point _CStartPos;
-        public List<Point> _StartPositions = new List<Point>();
-        public class Image
-        {
-            public double Width;
-            public double Height;
-            public double X;
-            public double Y;
-            public string Path;
-        }
-        public List<Layer> _Layers = new List<Layer>();
-        public class Layer
-        {
-            public List<Image> _Images = new List<Image>();
-            public List<Polygon> _Polygons = new List<Polygon>();
-        }
-        public class Polygon
-        {
-            public Color _Color;
-            public List<Point> _Points = new List<Point>();
-        }
-    }
+{    
     public class Map
     {
-        public class LV
+        public static Map _This;
+        public Map()
         {
-            public Vector2 _Vector2;
-            public Line2 _Line2;
+            _This = this;
         }
+        
         public Point GetPos(Player.Team _Team)
         {
             if(_Team == Player.Team.cterr)
@@ -80,10 +56,7 @@ namespace CounterStrikeLive
                 }
             }
             return null;
-        }
-
-        
-
+        }        
         
         public List<LV> Collision(Vector2 pos2, Vector2 pos1, out Line2 _wall)
         {
@@ -121,16 +94,17 @@ namespace CounterStrikeLive
         }
 
         MapDatabase _MapDatabase;
-
-        public Point GetStartPosition()
-        {
-            if(_StartPoints.Count == 0) throw new Exception("Break");
-            Point _Point = _StartPoints[Random.Next(_StartPoints.Count)];
-            return _Point;
-        }
+        
         public List<Vector2D> walls = new List<Vector2D>();
+        Menu _Menu = Menu._This;
+        Botbase _Botbase;
         public void LoadMap(MapDatabase _MapDatabase)
         {
+            _Botbase = (Botbase)new Deserializer().Deserialize(Menu._Resources["bots.raw"]);
+            foreach (TreePoint tp in _Botbase._TreePoints)
+                foreach (TreePoint tp2 in tp._Way)
+                    tp2._Way.Add(tp);
+            
             this._MapDatabase = _MapDatabase;
             foreach(MapDatabase.Layer _Layer in _MapDatabase._Layers)
             {
@@ -192,9 +166,12 @@ namespace CounterStrikeLive
         }
         public Canvas _Canvas1 = new Canvas();
         public Canvas _Canvas = new Canvas();
-        List<MapDatabase.Polygon> _Polygons = new List<MapDatabase.Polygon>();
-        public List<Point> _StartPoints { get { return _MapDatabase._StartPositions; } set { _MapDatabase._StartPositions = value; } }
-
+        List<MapDatabase.Polygon> _Polygons = new List<MapDatabase.Polygon>();        
+        public class LV
+        {
+            public Vector2 _Vector2;
+            public Line2 _Line2;
+        }
     }
 
 }

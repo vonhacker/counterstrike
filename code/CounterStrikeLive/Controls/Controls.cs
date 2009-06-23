@@ -67,7 +67,7 @@ namespace CounterStrikeLive
         
     }
     public class GameObj
-    {
+    {		
         public bool _VisibleToAll;
         Menu _Menu = Menu._This;
         LocalDatabase _LocalDatabase = LocalDatabase._This;
@@ -150,6 +150,7 @@ namespace CounterStrikeLive
         public RotateTransform _RotateTransform = new RotateTransform();
         protected void UpdateTranslations()
         {
+			
             Canvas.SetLeft(_Canvas, _x);
             Canvas.SetTop(_Canvas, _y);
             _RotateTransform.Angle = _Angle;

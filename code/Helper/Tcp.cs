@@ -21,16 +21,9 @@ using System.Collections.Specialized;
 using System.IO.IsolatedStorage;
 using System.Windows.Media.Imaging;
 using ICSharpCode.SharpZipLib.Zip;
-#if(SILVERLIGHT)
 using System.Windows.Controls;
 using System.ComponentModel;
-#else
-using System.Windows.Forms;
-using System.IO.Compression;
-using System.Windows.Controls;
-using System.ComponentModel;
-using System.Web;
-#endif
+
 
 namespace doru
 {
@@ -197,94 +190,6 @@ namespace doru
 
         }
 
-#if(SILVERLIGHT)
-                public class NetworkStream : MemoryStream
-                {
-                    public static bool Loaded;
-                    public override string ToString()
-                    {
-                        return base.ToString() + " " + Length + " " + _Socket.Connected;
-                    }
-                    public Socket _Socket;
-                    public NetworkStream(Socket s)
-                    {
-                        if (Loaded) throw new Exception("only one NetworkStream can be created");
-                        Loaded = true;
-                        _Socket = s;
-                        StartReceive();
-                    }
 
-                    private void StartReceive()
-                    {
-                        SocketAsyncEventArgs _SocketAsyncEventArgs = new SocketAsyncEventArgs();
-                        _SocketAsyncEventArgs.Completed += new EventHandler<SocketAsyncEventArgs>(SocketAsyncEventArgs_Completed);
-                        _SocketAsyncEventArgs.SetBuffer(new byte[1024], 0, 1024);
-                        _Socket.ReceiveAsync(_SocketAsyncEventArgs);
-                    }
-
-                    void SocketAsyncEventArgs_Completed(object sender, SocketAsyncEventArgs e)
-                    {
-                        long pos = Position;
-                        Seek(0, SeekOrigin.End);
-                        base.Write(e.Buffer, 0, e.BytesTransferred);
-                        Position = pos;
-                        StartReceive();
-                    }
-                    public override int Read(byte[] buffer, int offset, int count)
-                    {
-                        while (Position == Length) Thread.Sleep(2);
-                        //if (Position == Length) return 0;
-                        //else
-                        return base.Read(buffer, offset, count);
-                    }
-                    public override int ReadByte()
-                    {
-                        while (Position == Length) Thread.Sleep(2);
-                        return base.ReadByte();
-                    }
-                    public override void Write(byte[] buffer, int offset, int count)
-                    {
-                        _Socket.Send(buffer,offset,count);
-                    }
-                }
-
-#else
-
-        //[DebuggerStepThrough]
-        public class ClientWait
-        {
-            public int _Port;
-            private List<Socket> _Sockets = new List<Socket>();
-
-
-            public void StartAsync()
-            {
-                new Thread(Start).StartBackground("ClientWait");
-            }
-            private void Start()
-            {
-                TcpListener _TcpListener = new TcpListener(IPAddress.Any, _Port);
-                _TcpListener.Start();
-                while (true)
-                {
-                    Socket _Socket = _TcpListener.AcceptSocket();
-                    lock ("clientwait")
-                        _Sockets.Add(_Socket);
-                    Thread.Sleep(10);
-                }
-            }
-
-
-            public List<Socket> GetClients()
-            {
-                lock ("clientwait")
-                {
-                    List<Socket> _Return = _Sockets;
-                    _Sockets = new List<Socket>();
-                    return _Return;
-                }
-            }
-        }
-#endif
     }
 }
