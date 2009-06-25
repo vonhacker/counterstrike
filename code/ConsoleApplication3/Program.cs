@@ -36,18 +36,9 @@ namespace ConsoleApplication3
         }
         public Program()
         {
-            var a=Type.GetType(typeof(List<TestClass>).ToString());
-             //var tp =Type.GetType(new List<string>().GetType().FullName);
-            TestClass _TestClass = new TestClass();
-            _TestClass.list.Add("sadsad");
-            _TestClass.list.Add(3);
-            _TestClass.list.Add(_TestClass);
-            _TestClass.list.Add(new TestClass() { _TestClass = new TestClass { _TestClass = _TestClass } });
+            object sa = new object();
+            int a = GC.GetGeneration(this);
 
-            Serializer _Serializer = new Serializer();
-            MemoryStream ms = _Serializer.Serialize(_TestClass);
-            TestClass _TestClass1 = (TestClass)new Deserializer().Deserialize(ms);
-            Debugger.Break();
         }
         
     }

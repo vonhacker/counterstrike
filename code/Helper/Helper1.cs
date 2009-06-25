@@ -450,5 +450,12 @@ namespace doru
 
 
         public static string _ContentFolder = "";
+
+        public static void Switch<T>(ref T t,ref T t2)
+        {
+            T temp = t2;
+            t2 = t;
+            t = temp;
+        }
     }                
 }

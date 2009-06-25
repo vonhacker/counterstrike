@@ -34,13 +34,14 @@ namespace doru
         //[DebuggerStepThrough]
         public class Sender
         {
+            static bool _Dissabled { get { return Listener._Dissabled; } }
             public int PacketCheck;//= new Random().Next();
             public Socket _Socket;
             public NetworkStream _NetworkStream;
             
             public void Send(byte[] _Buffer)
             {
-                
+                if (_Dissabled) return;
                 PacketCheck++;
                 if (PacketCheck > 255) PacketCheck = 0;
                 Trace.Assert(_Socket.Connected);
@@ -77,17 +78,24 @@ namespace doru
         //[DebuggerStepThrough]
         public class Listener
         {
+            public static bool _Dissabled;
+
             public int PacketCheck;
             public NetworkStream _NetworkStream;
             
             public Socket _Socket;
             public bool _Connected
             {
-                get { return _Socket.Connected; }
+                get
+                {
+                    if (_Dissabled) return true;
+                    return _Socket.Connected;
+                }
             }
             private List<byte[]> _Messages = new List<byte[]>();
             public List<byte[]> GetMessages()
             {
+                if (_Dissabled) return _Messages;
                 // Trace.Assert(_Connected);
                 lock ("Get")
                 {
@@ -102,11 +110,12 @@ namespace doru
             MemoryStream _MemoryStream = new MemoryStream();
             public void StartAsync(string s)
             {
+                if (_Dissabled) return;
                 Trace.Assert(_Socket != null && _NetworkStream != null);
                 new Thread(Start).StartBackground(s);
             }
             private void Start()
-            {
+            {                
                 try
                 {
                     while (true)

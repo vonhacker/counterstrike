@@ -40,10 +40,14 @@ namespace CounterStrikeLive
         void MapSelect_Loaded(object sender, RoutedEventArgs e)
         {
             
-            ListBox1.ItemsSource = Config._This._Maps;
-            ListBox1.SelectionChanged += new SelectionChangedEventHandler(ListBox1_SelectionChanged);
-            //Common._XmlSerializer.Deserialize(
-            //ListBox1.DataContext
+                ListBox1.ItemsSource = Config._This._Maps;
+                ListBox1.SelectionChanged += new SelectionChangedEventHandler(ListBox1_SelectionChanged);
+                if (Config._This._AutoSelect)
+                {
+                    ListBox1.SelectedIndex = 0;
+                    this.DialogResult = true;
+                }
+            
         }
 
         void ListBox1_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -54,7 +58,7 @@ namespace CounterStrikeLive
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
             if (ListBox1.SelectedItem == null)
-                ListBox1.SelectedIndex = 1;
+                ListBox1.SelectedIndex = 0;
             
             this.DialogResult = true;
         }

@@ -158,6 +158,20 @@ namespace doru
         public double _TimeElapsed = 0;
         public double _SecodsElapsed { get { return _TimeElapsed / 1000; } }
         public double _oldTime { get { return time - _TimeElapsed; } }
+
+        Dictionary<Object, double> _Dict = new Dictionary<object, double>();
+        public bool TimeElapsed(double _Milisecconds, object _BindTo)
+        {
+            if (!_Dict.ContainsKey(_BindTo)) _Dict.Add(_BindTo, 0);
+            _Dict[_BindTo] += _TimeElapsed;
+            if (_Dict[_BindTo] > _Milisecconds)
+            {
+                _Dict[_BindTo] = time % _Milisecconds;
+                return true;
+            }
+            return false;
+            
+        }
         public bool TimeElapsed(double _Milisecconds)
         {
             if (_TimeElapsed > _Milisecconds) return true;

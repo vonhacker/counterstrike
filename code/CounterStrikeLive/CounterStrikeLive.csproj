@@ -110,6 +110,8 @@
     <Compile Include="ChatBox.xaml.cs">
       <DependentUpon>ChatBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Bot.cs" />
+    <Compile Include="Controls\GameObj.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="Controls\Controls.cs" />
     <Compile Include="Controls\Maps.cs" />
@@ -117,15 +119,17 @@
     <Compile Include="EscMenu.xaml.cs">
       <DependentUpon>EscMenu.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Game.cs" />
+    <Compile Include="GameTypeSelect.xaml.cs">
+      <DependentUpon>GameTypeSelect.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Loading.xaml.cs">
       <DependentUpon>Loading.xaml</DependentUpon>
     </Compile>
     <Compile Include="MapSelect.xaml.cs">
       <DependentUpon>MapSelect.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Page.xaml.cs">
-      <DependentUpon>Page.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="Menu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EnterNick.xaml.cs">
       <DependentUpon>EnterNick.xaml</DependentUpon>
@@ -154,6 +158,10 @@
       <Generator>MSBuild:MarkupCompilePass1</Generator>
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GameTypeSelect.xaml">
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Loading.xaml">

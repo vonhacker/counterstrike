@@ -198,7 +198,7 @@ namespace FarseerGames.FarseerPhysics.Mathematics {
         /// </summary>
         /// <param name="start"></param>
         /// <param name="end"></param>
-        /// <param name="t">Value between 0.0f and 1.0f.</param>
+        /// <param name="key">Value between 0.0f and 1.0f.</param>
         /// <returns></returns>
         public static Vector2 LinearBezierCurve(Vector2 start, Vector2 end, float t)
         {
@@ -211,7 +211,7 @@ namespace FarseerGames.FarseerPhysics.Mathematics {
         /// <param name="start"></param>
         /// <param name="curve"></param>
         /// <param name="end"></param>
-        /// <param name="t">Value between 0.0f and 1.0f.</param>
+        /// <param name="key">Value between 0.0f and 1.0f.</param>
         /// <returns></returns>
         public static Vector2 QuadraticBezierCurve(Vector2 start, Vector2 curve, Vector2 end, float t)
         {

@@ -97,14 +97,16 @@ namespace CounterStrikeLive
         
         public List<Vector2D> walls = new List<Vector2D>();
         Menu _Menu = Menu._This;
-        Botbase _Botbase;
+        public Botbase _Botbase;
         public void LoadMap(MapDatabase _MapDatabase)
         {
-            _Botbase = (Botbase)new Deserializer().Deserialize(Menu._Resources["bots.raw"]);
-            foreach (TreePoint tp in _Botbase._TreePoints)
-                foreach (TreePoint tp2 in tp._Way)
-                    tp2._Way.Add(tp);
-            
+            if (Menu._SinglePlayer)
+            {
+                _Botbase = (Botbase)new Deserializer().Deserialize(Menu._Resources["bots.raw"]);
+                foreach (TreePoint tp in _Botbase._TreePoints)
+                    foreach (TreePoint tp2 in tp._Way)
+                        tp2._Way.Add(tp);
+            }
             this._MapDatabase = _MapDatabase;
             foreach(MapDatabase.Layer _Layer in _MapDatabase._Layers)
             {

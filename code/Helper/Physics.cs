@@ -292,7 +292,7 @@ namespace doru
 			/// </summary>
 			/// <param name="start"></param>
 			/// <param name="end"></param>
-			/// <param name="t">Value between 0.0f and 1.0f.</param>
+			/// <param name="key">Value between 0.0f and 1.0f.</param>
 			/// <returns></returns>
 			public static Vector LinearBezierCurve(Vector start, Vector end, double t)
 			{
@@ -305,7 +305,7 @@ namespace doru
 			/// <param name="start"></param>
 			/// <param name="curve"></param>
 			/// <param name="end"></param>
-			/// <param name="t">Value between 0.0f and 1.0f.</param>
+			/// <param name="key">Value between 0.0f and 1.0f.</param>
 			/// <returns></returns>
 			public static Vector QuadraticBezierCurve(Vector start, Vector curve, Vector end, double t)
 			{

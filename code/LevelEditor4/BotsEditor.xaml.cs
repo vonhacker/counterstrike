@@ -115,11 +115,16 @@ namespace LevelEditor4
             }
             if (Mouse.RightButton == MouseButtonState.Pressed)
             {
+                
                 TreePoint p2 =_Thumb.Get<TreePoint>("Point");
-                foreach (TreePoint p in _TreePoints)
-                    p._Way.Remove(p2);
-                _TreePoints.Remove(p2);
-                _CanvasThumbs.Children.Remove(_Thumb);
+                if (!_Botbase._CStartPos.Remove(p2) && !_Botbase._TStartPos.Remove(p2))
+                {
+                    foreach (TreePoint p in _TreePoints)
+                        p._Way.Remove(p2);
+                    _TreePoints.Remove(p2);
+
+                    _CanvasThumbs.Children.Remove(_Thumb);
+                }
             }
         }
 

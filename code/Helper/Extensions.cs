@@ -301,15 +301,15 @@ namespace doru
         }
 
 
-        public static T Random<T>(this IList<T> list, T t2)
+        public static T Random<T>(this IList<T> list, T except)
         {
             T t;
-            while ((t = list[_Random.Next(list.Count - 1)]).Equals(t2)) ;
+            while ((t = list[_Random.Next(list.Count)]).Equals(except)) ;
             return t;
         }
         public static T Random<T>(this IList<T> list)
         {
-            return list[_Random.Next(list.Count - 1)];
+            return list[_Random.Next(list.Count)];
         }
         public static string Random(this string[] _Tags)
         {
@@ -540,6 +540,11 @@ namespace doru
         }
         private static Random _Random = new Random();
 
+        public static void AddOrCreate<T,T2>(this Dictionary<T,T2> _Vars, T key, T2 o)
+        {
+            if (!_Vars.ContainsKey(key)) _Vars.Add(key, o);
+            else _Vars[key] = o;
+        }
         public static int IndexOf2(this byte[] source, string pattern)
         {
             return IndexOf2(source, Encoding.Default.GetBytes(pattern));
@@ -560,42 +565,7 @@ namespace doru
             return -1;
         }
     }
-    [Obsolete]
-    public static class NotifyPropertyChangedExt
-    {
 
-        private static Dictionary<string, DependencyProperty> _Vars = new Dictionary<string, DependencyProperty>();
-        public static void Set<T>(this DependencyObject _This, string s2, T o)
-        {
-            string s = _This.GetHashCode() + s2;
-            if (!_Vars.ContainsKey(s)) _This.Create(s, o);
-            _This.SetValue(_Vars[s], o);
-        }
-        private static void Create<T>(this DependencyObject _This, string s2, T o)
-        {
-            string s = s2;
-            DependencyProperty dp = DependencyProperty.Register(s, typeof(T), _This.GetType(), new PropertyMetadata(o));
-            _Vars.Add(s, dp);
-        }
-
-        public static T Get<T>(this DependencyObject _This, string s2)
-        {
-            string s = _This.GetHashCode() + s2;
-            if (_Vars.ContainsKey(s))
-                return (T)_This.GetValue(_Vars[s]);
-            else
-            {
-                T t = default(T); ;
-                //try
-                //{
-                //    t = Activator.CreateInstance<T>();
-                //} catch { t = default(T); }
-                _This.Create(s, t);
-                return t;
-            }
-        }
-
-    }
     [Obsolete("use NotifyPropertyChangedExt")]
     public class NotifyPropertyChanged : DependencyObject, INotifyPropertyChanged
     {

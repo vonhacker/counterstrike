@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,15 +14,32 @@ using FarseerGames.FarseerPhysics.Mathematics;
 using System.Windows.Media.Imaging;
 using doru;
 using CounterStrikeLive.Service;
+using System.ComponentModel;
+using doru.Tcp;
+using System.Reflection;
+using System.IO;
+using CounterStrikeLive.Controls;
+using LevelEditor4;
 
 namespace CounterStrikeLive
 {
+    public static class Ext
+    {
+        public static Vector2 ToVector(this TreePoint tp)
+        { return new Vector2((float)tp._x, (float)tp._y); }
+        public static Vector2 Normalize2(this Vector2 v)
+        {
+            v.Normalize();
+            return v;
+        }
+    }
     public class Player : GameObjA
     {
+        public double _slowdowntimeelapsed;
         TextBlock _TextBlock = new TextBlock();
-
+        public float _Life { get { return _Client._Life; } set { _Client._Life = value; } }
         public Team _Team { get { return _Client._Team; } }
-        public override void CheckVisibility(LocalPlayer _LocalPlayer)
+        public override void CheckVisibility(Player _LocalPlayer)
         {
             if (_LocalPlayer != null && _LocalPlayer._Team != this._Team)
                 base.CheckVisibility(_LocalPlayer);
@@ -37,7 +55,7 @@ namespace CounterStrikeLive
         
         
         List<Point> _Points = new List<Point>();
-        public float _V = 350f;
+        public const float _speed = 350f;
 
         public List<Key> _Keys = new List<Key>();
         public virtual void OnKeyDown(Key _Key)
@@ -153,7 +171,7 @@ namespace CounterStrikeLive
 		public Model _GunModel = Model.ak47;
 		public override void Update()
 		{
-			
+            if (_OldPosition == default(Vector2)) _OldPosition = _Position;
 			_PlayerImage.Source = GetPl();
 			_GunImage.Source = GetGun();
 
@@ -173,7 +191,7 @@ namespace CounterStrikeLive
 				{
 					UpdateCollisions();
 					float dir = Calculator.VectorToRadians(_Position - _OldPosition) * Calculator.DegreesToRadiansRatio;
-					float dir2 = CorrectAngle(dir - _Angle);
+					float dir2 = Cangl(dir - _Angle);
 					_State = State._run;
 					if (dir2 > 45 && dir2 < 135) _State = State._run_right;
 					if (dir2 < 315 && dir2 > 225) _State = State._run_left;
@@ -246,12 +264,12 @@ namespace CounterStrikeLive
             if (_MoveVector != default(Vector2))
             {
                 _MoveVector.Normalize();
-                _MoveVector = Vector2.Multiply(_MoveVector, _V * (float)Menu._TimerA._SecodsElapsed);
-                if (_IsSlowDown) _MoveVector = Vector2.Multiply(_MoveVector, .5f);
+                _MoveVector = Vector2.Multiply(_MoveVector, _speed * (float)Menu._TimerA._SecodsElapsed);
+                if (_IsSlowDown) _MoveVector = Vector2.Multiply(_MoveVector, _slowdownspeed);
                 _Position += _MoveVector;
             }
         }
-
+        public const float _slowdownspeed = .5f;
         public Database _Database { get { return Menu._Database; } }
         public LocalPlayer _LocalPlayer { get { return _Game._LocalPlayer; } }
 
@@ -267,14 +285,7 @@ namespace CounterStrikeLive
         }
 		public bool _isReloading { get { return _Client._IsReloading; } set { _Client._IsReloading=value; } }
     }
-	public class BotPlayer : Player
-	{
-		public static BotPlayer _This;
-		public BotPlayer()
-		{
-			_This = this;
-		}
-	}
+	
 	public class LocalPlayer : Player
     {
         
@@ -291,8 +302,8 @@ namespace CounterStrikeLive
             }
             base.UpdateKeys();
         }
-        public float _Life { get { return _Client._Life; } set { _Client._Life = value; } }
-        public double _slowdowntimeelapsed;
+        
+        
         public override void Update()
         {
             if (_IsSlowDown)
@@ -306,5 +317,350 @@ namespace CounterStrikeLive
             }
             base.Update();
         }
+    }
+    public class LocalDatabase
+    {
+        public static LocalDatabase _This;
+        public LocalDatabase()
+        {
+            _This = this;
+        }
+        public double Volume = .5;
+        public int _Points;
+        public int _Deaths;
+        public string _Nick;
+    }
+    public class SharedClient : INotifyPropertyChanged, ClientListItem
+    {
+        public SharedClient()
+        {
+
+            _Properties = (from p in GetType().GetProperties() where (p.GetCustomAttributes(true).FirstOrDefault(a => a is SharedObjectAttribute) != null) select p).ToList();
+            if (_Properties.Count == 0) throw new Exception("Break");
+            PropertyChanged += new PropertyChangedEventHandler(RemoteClient_PropertyChanged);
+        }
+
+        bool isReloading;
+        [SharedObject(4)]
+        public bool _IsReloading
+        {
+            get { return isReloading; }
+            set
+            {
+                if (isReloading != value)
+                {
+                    isReloading = value;
+                    PropertyChanged(this, new PropertyChangedEventArgs("_isReloading"));
+                }
+
+            }
+        }
+        bool isSLowDown;
+        [SharedObject(4)]
+        public bool _IsSlowDown
+        {
+            get { return isSLowDown; }
+            set
+            {
+                if (isSLowDown != value)
+                {
+                    isSLowDown = value;
+                    PropertyChanged(this, new PropertyChangedEventArgs("_IsSlowDown"));
+                }
+
+            }
+        }
+
+        float life;
+        [SharedObject(3)]
+        public float _Life
+        {
+            get { return life; }
+            set
+            {
+                float lifechange = value - life;
+                life = value;
+                PropertyChanged(this, new PropertyChangedEventArgs("_Life"));
+                if (_Player != null)
+                    _Game.ShowDamage(_Player._Position, lifechange);
+            }
+        }
+        [SharedObject(3)]
+        public int _Deaths
+        {
+            get { return _LocalDatabase._Deaths; }
+            set
+            {
+                _LocalDatabase._Deaths = value;
+                PropertyChanged(this, new PropertyChangedEventArgs("_Deaths"));
+            }
+        }
+
+        public Sender _Sender { get { return _Menu._Sender; } }
+        public static MemberInfo GetMember(int id, Type type)
+        {
+            MemberInfo[] _MemberInfos = type.GetMembers();
+            return _MemberInfos[id];
+        }
+        public static int? GetMemberId(string name, Type type)
+        {
+            MemberInfo[] _MemberInfos = type.GetMembers();
+            for (int i = _MemberInfos.Count() - 1; i >= 0; i--)
+            {
+                MemberInfo _MemberInfo = _MemberInfos[i];
+                if (_MemberInfo.Name == name) return i;
+            }
+            return null;
+        }
+        [SharedObjectAttribute(1)]
+        public float? _StartPosX
+        {
+            get
+            {
+                if (_Player == null) return null;
+                return _Player._x;
+            }
+            set
+            {
+                _Player._x = value.Value;
+                PropertyChanged(this, new PropertyChangedEventArgs("_StartPosX"));
+            }
+        }
+        [SharedObjectAttribute(1)]
+        public float? _StartPosY
+        {
+            get
+            {
+                if (_Player == null) return null;
+                return _Player._y;
+            }
+            set
+            {
+                _Player._y = value.Value;
+                PropertyChanged(this, new PropertyChangedEventArgs("_StartPosY"));
+            }
+        }
+        public class SharedObjectAttribute : Attribute
+        {
+            public int _Priority;
+            public SharedObjectAttribute(int _Priority)
+            {
+                this._Priority = _Priority;
+            }
+        }
+        Player.Team team = Player.Team.spectator;
+        [SharedObjectAttribute(-1)]
+        public Player.Team _Team
+        {
+            get { return team; }
+            set
+            {
+                if (team == value) return;
+                team = value;
+                PropertyChanged(this, new PropertyChangedEventArgs("_Team"));
+            }
+        }
+        public enum PlayerState { dead, alive, removed };
+
+        private Database.PlayerType playerType = Database.PlayerType.unknown;
+        [SharedObjectAttribute(-3)]
+        public Database.PlayerType _PlayerType
+        {
+            get { return playerType; }
+            set
+            {
+                if (playerType == value) return;
+                playerType = value;
+                PropertyChanged(this, new PropertyChangedEventArgs("_PlayerType"));
+            }
+        }
+        PlayerState playerState;
+        [SharedObjectAttribute(0)]
+        public PlayerState _PlayerState
+        {
+            get
+            {
+                return playerState;
+            }
+            set
+            {
+                if (value == playerState) return;
+                playerState = value;
+                PropertyChanged(this, new PropertyChangedEventArgs("_PlayerState"));
+                if (playerState == PlayerState.alive)
+                {
+                    CreatePlayer();
+                } else if (playerState == PlayerState.dead)
+                {
+                    _Game.Die(_Player);
+                    _Player.Remove();
+                } else if (playerState == PlayerState.removed)
+                {
+                    if (_Player != null)
+                        _Player.Remove();
+                }
+            }
+        }
+
+        private void CreatePlayer()
+        {
+            Trace.Assert(!(_Local && _Bot));
+            if (_Local)
+                _Player = new LocalPlayer();
+            else if (_Bot)
+                _Player = new BotPlayer();
+            else
+                _Player = new Player();
+            if (_PlayerType != Database.PlayerType.TPlayer && _PlayerType != Database.PlayerType.CPlayer) throw new Exception("Break");
+
+            _Player._Client = this;
+            _Player._Game = _Game;
+            _Player.Load();
+        }
+        public Game _Game { get { return _Menu._Game; } }
+        protected float ping;
+        //[SharedObjectAttribute(1)]
+        public float _ping
+        {
+            get { return ping; }
+            set
+            {
+                ping = value;
+                if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("_ping"));
+            }
+        }
+
+
+        public MyObs<SharedClient> _RemoteClients { get { return _Menu._Clients; } }
+        private int? id;
+        public int? _id
+        {
+            get { return id; }
+            set
+            {
+                id = value;
+                if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("_id"));
+            }
+        }
+        public LocalDatabase _LocalDatabase = new LocalDatabase();
+
+        [SharedObjectAttribute(-2)]
+        public string _Nick
+        {
+            get { return _LocalDatabase._Nick; }
+            set
+            {
+                _LocalDatabase._Nick = value;
+                _Menu.WriteKillText(value + " Joined");
+                if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("_Nick"));
+            }
+        }
+        [SharedObjectAttribute(1)]
+        public int _Points
+        {
+            get { return _LocalDatabase._Points; }
+            set
+            {
+                _LocalDatabase._Points = value;
+                if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("_Points"));
+            }
+        }
+
+
+        public void Add()
+        {
+            _RemoteClients[_id.Value] = this;
+        }
+        public void Remove()
+        {
+            _RemoteClients[_id.Value] = null;
+            if (_Player != null) _Player.Remove();
+        }
+        public Player _Player { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public Menu _Menu;
+        void RemoteClient_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (_Local)
+            {
+                Send(null, e.PropertyName);
+            }
+        }
+        List<PropertyInfo> _Properties;
+        public void Send(int? _SendTo, string _PropertyName)
+        {
+            PropertyInfo _PropertyInfo = GetType().GetProperty(_PropertyName);
+            int i = _Properties.IndexOf(_PropertyInfo);
+            if (i != -1)
+            {
+                object value = _PropertyInfo.GetValue(this, null);
+                if (value != null)
+                {
+                    using (BinaryWriter _BinaryWriter = new BinaryWriter(new MemoryStream()))
+                    {
+                        if (_SendTo != null)
+                        {
+                            _BinaryWriter.Write((byte)PacketType.sendTo);
+                            _BinaryWriter.Write((byte)_SendTo);
+                        }
+                        _BinaryWriter.Write((byte)PacketType.sharedObject);
+                        _BinaryWriter.Write((byte)i);
+                        if (value is int) _BinaryWriter.Write((Int16)(int)value);
+                        else if (value is string) _BinaryWriter.Write((string)value);
+                        else if (value is Enum) _BinaryWriter.Write(value.ToString());
+                        else if (value is float) _BinaryWriter.Write((float)value);
+                        else if (value is byte) _BinaryWriter.Write((byte)value);
+                        //else if (value is float?) _BinaryWriter.Write(((float?)value).Value);
+                        else if (value is bool) _BinaryWriter.Write((bool)value);
+                        else throw new Exception("Shared Send Unkown value");
+                        _Menu._Sender.Send(((MemoryStream)_BinaryWriter.BaseStream).ToArray());
+                        //_This.Provider.SendMessage(((MemoryStream)_BinaryWriter.BaseStream).ToArray());
+                    }
+                }
+            }
+        }
+        public void SendAll(int? _SendTo)
+        {
+            if (!_Local) throw new Exception("Break");
+
+            Trace.WriteLine("Sending All Sharedobjects To " + _SendTo ?? "all");
+            List<PropertyInfo> _PropertyInfos = (from p in GetType().GetProperties()
+                                                 from a in p.GetCustomAttributes(true)
+                                                 where a is SharedObjectAttribute
+                                                 orderby ((SharedObjectAttribute)a)._Priority
+                                                 select p).ToList();
+            foreach (PropertyInfo _PropertyInfo in _PropertyInfos)
+                Send(_SendTo, _PropertyInfo.Name);
+
+        }
+        public void onReceive(BinaryReader _BinaryReader)
+        {
+            if (_Local) throw new Exception("Break");
+
+            int id = _BinaryReader.ReadByte();
+            PropertyInfo _PropertyInfo = _Properties[id];
+            if (_PropertyInfo.GetCustomAttributes(true).FirstOrDefault(a => a is SharedObjectAttribute) == null)
+                throw new Exception("Break");
+            Type type = _PropertyInfo.PropertyType;
+            if (type.IsAssignableFrom(typeof(int)))
+                _PropertyInfo.SetValue(this, _BinaryReader.ReadInt16(), null);
+            else if (type.IsAssignableFrom(typeof(string)))
+                _PropertyInfo.SetValue(this, _BinaryReader.ReadString(), null);
+            else if (type.BaseType == typeof(Enum))
+                _PropertyInfo.SetValue(this, Enum.Parse(type, _BinaryReader.ReadString(), false), null);
+            else if (type.IsAssignableFrom(typeof(float)))
+                _PropertyInfo.SetValue(this, _BinaryReader.ReadSingle(), null);
+            else if (type.IsAssignableFrom(typeof(bool)))
+                _PropertyInfo.SetValue(this, _BinaryReader.ReadBoolean(), null);
+            else throw new Exception("Break");
+
+            //if (_PropertyInfo.Name != "_ping")
+            Trace.WriteLine("shared value received " + _PropertyInfo.Name + ": " + _PropertyInfo.GetValue(this, null).ToString());
+
+        }
+        public bool _Local = false;
+        public bool _Bot;
     }
 }

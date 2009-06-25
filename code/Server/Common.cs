@@ -58,11 +58,11 @@ namespace CounterStrikeLive.Service
         /// </summary>
         addPoint = 66,
         /// <summary>
-        /// client->client extra damage shoot (head shoot) [byte - player angle]
+        /// client->client extra damage shoot (head shoot) [byte - player _dir]
         /// </summary>
         firstshoot = 45,
         /// <summary>
-        /// client->client shoot [byte - player angle]
+        /// client->client shoot [byte - player _dir]
         /// </summary>
         shoot = 46,
         /// <summary>
@@ -96,7 +96,7 @@ namespace CounterStrikeLive.Service
     }
     public class Config 
     {
-		public bool _AutoSelect { get { return this.Get<bool>("AutoSelect",true) && Debugger.IsAttached; } set { this.Set("AutoSelect", value); } }
+        public bool _AutoSelect { get { return this.Get<bool>("AutoSelect", true) && Debugger.IsAttached; } set { this.Set("AutoSelect", value); } }
         public bool GenerateClientLag = false;
         public int _MaxPlayers = 10;
         public bool GenerateServerLag = false;

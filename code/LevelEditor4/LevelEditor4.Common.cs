@@ -38,6 +38,11 @@ namespace LevelEditor4
     public enum State { arrow_l, cross, pen_i }
     public class Botbase
     {
+        public static Botbase _This;
+        public Botbase()
+        {
+            _This = this;
+        }
         public static XmlSerializer _XmlSerializer = new XmlSerializer(typeof(Botbase));
         [SZ]
         public List<TreePoint> _TreePoints = new List<TreePoint>();
@@ -61,5 +66,7 @@ namespace LevelEditor4
         public double _y;
         [SZ]
         public double _Thickness;
+        public float _xf { get { return (float)_x; } }
+        public float _yf { get { return (float)_y; } }
     }
 }
