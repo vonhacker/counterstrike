@@ -26,9 +26,10 @@ using System.ComponentModel;
 
 namespace doru
 {
-    public static class Helper
+    public partial class Helper : H { }
+    public partial class H
     {
-        public static DebugState _TraceState { get { return (DebugState)int.Parse(Resource1._TraceLevel); } }
+        
 
         public static void ShowMessageBox(string s)
         {
@@ -269,20 +270,7 @@ namespace doru
 		}
 
 		
-		public static DispatcherTimer StartRepeatMethod(this DispatcherTimer ds, double secconds, Action d)
-		{
-			ds.Interval = TimeSpan.FromSeconds(secconds);
-			ds.Tick += delegate { d(); };
-            ds.Start();
-            return ds;
-        }
-        public static DispatcherTimer StartCallMethod(this DispatcherTimer ds, double secconds, Delegate d, params object[] os)
-        {
-            ds.Interval = TimeSpan.FromSeconds(secconds);
-            ds.Tick += delegate { ds.Stop(); d.DynamicInvoke(os); };
-            ds.Start();
-            return ds;
-        }
+		
         public static SocketAsyncEventArgs Connect(string ip, Dispatcher Dispatcher, OnConnected _OnConnected)
         {
             string[] ss = ip.Split(":");
@@ -456,6 +444,15 @@ namespace doru
             T temp = t2;
             t2 = t;
             t = temp;
+        }
+        public delegate T TryDelegate<T>();
+        
+        public static T Try<T>(TryDelegate<T> p, T p_2)
+        {
+            try
+            {
+                return p();
+            } catch { return p_2; }
         }
     }                
 }

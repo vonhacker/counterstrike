@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 #if (XNA)
-using Microsoft.Xna.Framework; 
+using Microsoft.WindowsMobile.DirectX; 
 #endif
 
 namespace FarseerGames.FarseerPhysics.Mathematics {

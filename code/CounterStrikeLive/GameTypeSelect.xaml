@@ -13,11 +13,12 @@
 		<Grid.RowDefinitions>
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
-		<Button Click="SinglePlayer_Click" x:Name="SinglePlayer" Height="36" Margin="93,57,92,0" VerticalAlignment="Top" Content="SinglePlayer" Style="{StaticResource ButtonStyle2}"/>
-		<Button Click="Multiplayer_Click" x:Name="Multiplayer" Height="36" Margin="93,0,92,59" Style="{StaticResource ButtonStyle2}" VerticalAlignment="Bottom" Content="Multiplayer"/>
-		<TextBox x:Name="ct_bots" Height="25" HorizontalAlignment="Left" Margin="150,0,0,30" VerticalAlignment="Bottom" Width="20" Text="4" TextWrapping="Wrap" Style="{StaticResource TextBoxStyle1}" Foreground="#FFFFFD00"/>
-		<TextBlock Height="22" Margin="96,0,0,30" VerticalAlignment="Bottom" Text="ct_bots:" TextWrapping="Wrap" Foreground="#FFFFF100" Width="50" HorizontalAlignment="Left"/>
-		<TextBox x:Name="t_bots" Height="25" HorizontalAlignment="Right" Margin="0,0,101,30" Style="{StaticResource TextBoxStyle1}" VerticalAlignment="Bottom" Width="20" Foreground="#FFFFFD00" Text="4" TextWrapping="Wrap"/>
-		<TextBlock Height="22" Margin="174,0,125,30" VerticalAlignment="Bottom" Foreground="#FFFFF100" Text="t_bots:" TextWrapping="Wrap"/>
+		<local:Button Click="SinglePlayer_Click" x:Name="SinglePlayer" Height="36" Margin="90,25,95,0" VerticalAlignment="Top" Content="SinglePlayer" Style="{StaticResource ButtonStyle2}"/>
+		<local:Button Click="Multiplayer_Click" x:Name="Multiplayer" Margin="90,65,95,91" Style="{StaticResource ButtonStyle2}" Content="Multiplayer"/>
+		<TextBox x:Name="ct_bots" Height="25" HorizontalAlignment="Left" Margin="123,0,0,62" VerticalAlignment="Bottom" Width="35" Text="4" TextWrapping="Wrap" Style="{StaticResource TextBoxStyle1}" Foreground="#FFFFFD00" Background="#FF000000"/>
+		<TextBlock Height="22" Margin="69,0,0,62" VerticalAlignment="Bottom" Text="ct_bots:" TextWrapping="Wrap" Foreground="#FFFFF100" Width="50" HorizontalAlignment="Left"/>
+		<TextBox x:Name="t_bots" Height="25" HorizontalAlignment="Right" Margin="0,0,85,62" Style="{StaticResource TextBoxStyle1}" VerticalAlignment="Bottom" Width="39" Foreground="#FFFFFD00" Text="4" TextWrapping="Wrap" Background="#FF000000"/>
+		<TextBlock Height="22" Margin="171,0,128,62" VerticalAlignment="Bottom" Foreground="#FFFFF100" Text="t_bots:" TextWrapping="Wrap"/>
+		<local:Button Click="Credits_Click" x:Name="Credits" Margin="90,0,95,22" Style="{StaticResource ButtonStyle2}" Content="Credits" VerticalAlignment="Bottom" Height="36"/>
 	</Grid>
 </local:ChildWindow>

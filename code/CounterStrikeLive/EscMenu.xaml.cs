@@ -16,11 +16,19 @@ namespace CounterStrikeLive
 {
     public partial class EscMenu : ChildWindow
     {
-        
+
+        public static new EscMenu _This;
         public EscMenu()
-        {            
+        {
+            _This = this;
             InitializeComponent();
 			_ZoomText.Text = _Game._Scale.ToString();
+            Loaded += new RoutedEventHandler(EscMenu_Loaded);
+        }
+
+        void EscMenu_Loaded(object sender, RoutedEventArgs e)
+        {
+            Volume.Value = LocalDatabase._This._Volume;
         }
 
     
@@ -70,6 +78,7 @@ namespace CounterStrikeLive
             this.DialogResult = true;
         }
 		Game _Game = Game._This;
+        
 		private void ZoomOut_Click(object sender, RoutedEventArgs e)
 		{
 			_Game.ZoomOut();
@@ -81,6 +90,38 @@ namespace CounterStrikeLive
 			_Game.ZoomIn();
 			_ZoomText.Text = _Game._Scale.ToString();
 		}
+
+        
+
+        
+
+        private void Hard_Bots_Click(object sender, RoutedEventArgs e)
+        {
+            Easy_Bots.IsChecked = !Hard_Bots.IsChecked;
+            
+        }
+
+        private void Easy_Bots_Click(object sender, RoutedEventArgs e)
+        {
+            Hard_Bots.IsChecked = !Easy_Bots.IsChecked;
+            
+        }
+
+        private void Mute_Click(object sender, RoutedEventArgs e)
+        {
+            if (Mute.IsChecked ?? false) Volume.Value = 0;
+            else Volume.Value = .5;
+
+        }
+
+        private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if(Volume!=null)
+                LocalDatabase._This._Volume = Volume.Value;
+        }
+        
+        
+
 
 		
     }

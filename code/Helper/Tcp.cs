@@ -48,10 +48,10 @@ namespace doru
                 Trace.Assert(_Buffer.Length > 0);
                 byte[] bytes;
                 if (_Buffer.Length < 255)
-                    bytes = Helper.JoinBytes(42, 42, (byte)PacketCheck, (byte)_Buffer.Length, _Buffer);
+                    bytes = H.JoinBytes(42, 42, (byte)PacketCheck, (byte)_Buffer.Length, _Buffer);
                 else
                 {
-                    bytes = Helper.JoinBytes(42, 42, (byte)PacketCheck, (byte)255, BitConverter.GetBytes((UInt16)_Buffer.Length), _Buffer);
+                    bytes = H.JoinBytes(42, 42, (byte)PacketCheck, (byte)255, BitConverter.GetBytes((UInt16)_Buffer.Length), _Buffer);
                     Trace.Assert(_Buffer.Length < UInt16.MaxValue);
                 }
                 _NetworkStream.Write(bytes);

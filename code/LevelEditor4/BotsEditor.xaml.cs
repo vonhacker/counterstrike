@@ -55,7 +55,18 @@ namespace LevelEditor4
 			Dispatcher.StartUpdate(Update);
             MouseDown += new MouseButtonEventHandler(BotsEditor_MouseDown);            
             KeyDown += new KeyEventHandler(BotsEditor_KeyDown);
+            _Canvas0.MouseWheel += new MouseWheelEventHandler(MouseWheel2);
 		}
+
+        
+        void MouseWheel2(object sender, MouseWheelEventArgs e)
+        {
+            e.Delta.Trace();
+            _ScaleTransform.CenterX = -_x + ActualWidth / 2;
+            _ScaleTransform.CenterY = -_y + ActualHeight / 2;
+            _ScaleTransform.ScaleY = _ScaleTransform.ScaleX *= 1f+ ((float)e.Delta / 200f);
+            
+        }
         
         new void StateChanged()
         {

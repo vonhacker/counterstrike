@@ -54,9 +54,9 @@ namespace CounterStrikeLive.Server
             
             GameServer _Server = new GameServer();
 
-            _Server.StartAsync();            
+            _Server.StartAsync();
 
-            PolicyServer ps = new PolicyServer { policyFile = "Server/PolicyFile.xml" };
+            PolicyServer ps = new PolicyServer { policyFile = "Server/PolicyFile.xml", _PolicyPort = _Config._PoliyPort };
             ps.StartAsync();
 
             WebServer _WebServer = new WebServer();

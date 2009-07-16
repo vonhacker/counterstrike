@@ -28,9 +28,18 @@ using System.ComponentModel;
 
 namespace doru
 {
-    public enum DebugState : int { Tcp = 13 }
-    
 
+
+    public enum DebugState : int { Tcp = 13 }
+    public partial class H
+    {
+        public static DebugState _TraceState { get { return (DebugState)int.Parse(Resource1._TraceLevel); } }
+        [DebuggerStepThrough]
+        public static void Assert(bool p)
+        {
+            if (!p) Debugger.Break();
+        }
+    }
     
     //[DebuggerStepThrough]
     public class ExceptionC : Exception
@@ -78,122 +87,9 @@ namespace doru
 
 
     //[DebuggerStepThrough]
-    [Obsolete("use TimerA")]
-    public static class STimer
-    {
-        public static void AddMethod(double _Time, Action _Action)
-        {
-
-            _Timer.AddMethod(_Time, _Action);
-        }
-
-        static TimerA _Timer = new TimerA();
-        public static double _TimeElapsed { get { return _Timer._TimeElapsed; } }
-        public static void Update()
-        {
-            _Timer.Update();
-        }
-        public static double _SecodsElapsed { get { return _Timer._TimeElapsed / 1000; } }
-        public static bool TimeElapsed(int _Milisecconds)
-        {
-            return _Timer.TimeElapsed(_Milisecconds);
-        }
-
-        public static double? GetFps()
-        {
-            return _Timer.GetFps();
-        }
-    }
-    [Obsolete("use TimerA")]
-    //[DebuggerStepThrough]
     public class Timer2 : TimerA { }
     //[DebuggerStepThrough]
-    public class TimerA
-    {
-        DateTime _DateTime = DateTime.Now;
-        double oldtime;
-
-        int fpstimes;
-        double totalfps;
-        public double GetFps()
-        {
-            if (fpstimes > 0)
-            {
-                double fps = (totalfps / fpstimes);
-                fpstimes = 0;
-                totalfps = 0;
-                if (fps == double.PositiveInfinity) return 0;
-                return fps;
-            }
-            else return 0;
-        }
-        double time;
-        public void Update()
-        {
-            while ((DateTime.Now - _DateTime).TotalMilliseconds - oldtime == 0) Thread.Sleep(1);
-
-            time = (DateTime.Now - _DateTime).TotalMilliseconds;
-            _TimeElapsed = time - oldtime;
-            oldtime = time;
-            fpstimes++;
-            totalfps += 1000 / _TimeElapsed;
-
-            UpdateActions();
-        }
-
-        private void UpdateActions()
-        {
-            for (int i = _List.Count - 1; i >= 0; i--)
-            {
-                CA _CA = _List[i];
-                _CA._Miliseconds -= _TimeElapsed;
-                if (_CA._Miliseconds < 0)
-                {
-                    _List.Remove(_CA);
-                    _CA._Action();
-                }
-            }
-        }
-
-        public double _TimeElapsed = 0;
-        public double _SecodsElapsed { get { return _TimeElapsed / 1000; } }
-        public double _oldTime { get { return time - _TimeElapsed; } }
-
-        Dictionary<Object, double> _Dict = new Dictionary<object, double>();
-        public bool TimeElapsed(double _Milisecconds, object _BindTo)
-        {
-            if (!_Dict.ContainsKey(_BindTo)) _Dict.Add(_BindTo, 0);
-            _Dict[_BindTo] += _TimeElapsed;
-            if (_Dict[_BindTo] > _Milisecconds)
-            {
-                _Dict[_BindTo] = time % _Milisecconds;
-                return true;
-            }
-            return false;
-            
-        }
-        public bool TimeElapsed(double _Milisecconds)
-        {
-            if (_TimeElapsed > _Milisecconds) return true;
-            if (time % _Milisecconds < _oldTime % _Milisecconds)
-                return true;
-            else
-                return false;
-        }
-
-        public void AddMethod(double _Miliseconds, Action _Action)
-        {
-            if (_List.FirstOrDefault(a => a._Action == _Action) == null)
-                _List.Add(new CA { _Action = _Action, _Miliseconds = _Miliseconds });
-        }
-
-        List<CA> _List = new List<CA>();
-        class CA
-        {
-            public double _Miliseconds;
-            public Action _Action;
-        }
-    }
+    
 
 
     //first byte is length, if length is more than 254 then first byte is 255 second is uint16 packet length 

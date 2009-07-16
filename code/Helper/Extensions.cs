@@ -28,8 +28,53 @@ using System.ComponentModel;
 using System.Windows.Media;
 namespace doru
 {
+
+
     public static class Extensions
     {
+
+
+        public static T Trace<T>(this T t)
+        {
+            return Trace(t, "");
+        }
+        public static T Trace<T>(this T t, object s)
+        {
+            return Trace<T>(t, s, 0);
+        }
+        public static T Trace<T>(this T t, object s, DebugState _traceLevel)
+        {
+            StringBuilder sb;
+            if (t == null) sb = new StringBuilder("null");
+            else sb = new StringBuilder(t.ToString());
+            if (_traceLevel != H._TraceState) return t;
+            if (t is IEnumerable && !(t is string))
+                foreach (object o in (IEnumerable)t)
+                    sb.Append(o).Append(' ');
+
+#if(SILVERLIGHT)
+            doru.Trace.WriteLine("Silverlight: "+s.ToString() +": "+ sb);
+#else
+            System.Diagnostics.Trace.WriteLine(Assembly.GetEntryAssembly().GetName().Name + ": " + s.ToString() + ": " + sb);
+#endif
+            return t;
+        }
+
+        public static DispatcherTimer StartRepeatMethod(this DispatcherTimer ds, double secconds, Action d)
+        {
+            ds.Interval = TimeSpan.FromSeconds(secconds);
+            ds.Tick += delegate { d(); };
+            ds.Start();
+            return ds;
+        }
+        public static DispatcherTimer StartCallMethod(this DispatcherTimer ds, double secconds, Delegate d, params object[] os)
+        {
+            ds.Interval = TimeSpan.FromSeconds(secconds);
+            ds.Tick += delegate { ds.Stop(); d.DynamicInvoke(os); };
+            ds.Start();
+            return ds;
+        }
+
         public static T Add<T>(this System.Windows.Controls.Panel _This, T _ui) where T: UIElement
         {
             _This.Children.Add(_ui);
@@ -70,6 +115,18 @@ namespace doru
 			Canvas.SetLeft(fw, x);
 			Canvas.SetTop(fw, y);
 		}
+        public static T Center<T>(this T ui) where T : FrameworkElement
+        {
+            TransformGroup t = new TransformGroup();
+            t.Children.Add(new TranslateTransform { X = -ui.Width / 2, Y = -ui.Height / 2 });
+            ui.RenderTransform = t;
+            return ui;
+        }
+        public static T AddTo<T>(this T fw, Panel p) where T : UIElement
+        {
+            p.Children.Add(fw);
+            return fw;
+        }
         public static T SetX<T>(this T fw,double x) where T: UIElement
         {
             Canvas.SetLeft(fw,x);
@@ -92,8 +149,13 @@ namespace doru
         {
             return Canvas.GetTop(fw);
         }
+        public static string ReplaceAndSkip(this string s,string s2, string s3)
+        {
+            return s.Split(new[] { s2 }, StringSplitOptions.RemoveEmptyEntries).Join(s3);
+        }
         public static string Replace(this string s, params string[] ss)
         {
+            
             for (int i = 0; i < ss.Length; i++)
             {
                 s = s.Replace(ss[i], ss[++i]);
@@ -109,26 +171,7 @@ namespace doru
             return s.Split(new[] { s2 }, StringSplitOptions.RemoveEmptyEntries);
         }
         
-        public static T DeserealizeOrCreate<T>(this XmlSerializer x, string path, T t)
-        {
-            if (t == null) throw new NullReferenceException("omg");
-
-            try
-            {
-                using (FileStream fs1 = File.Open(path, FileMode.Open))
-                {
-                    T t2 = (T)x.Deserialize(fs1);
-                    if (t2 == null) throw new Exception();
-                    return t2;
-                }
-
-            }
-            catch
-            {
-                using (FileStream fs = File.Create(path)) x.Serialize(fs, t);
-                return t;
-            }
-        }
+        
         [Obsolete("DeserealizeOrCreate")]
         public static T DeserealizeOrSerialize<T>(this XmlSerializer x, string path, T t)
         {
@@ -189,31 +232,7 @@ namespace doru
                 if (!list.Contains(t)) return false;
             return true;
         }
-        public static T Trace<T>(this T t)
-        {
-            return Trace(t, "");
-        }
-        public static T Trace<T>(this T t, object s)
-        {
-            return Trace<T>(t, s, 0);
-        }
-        public static T Trace<T>(this T t, object s, DebugState _traceLevel)
-        {
-            StringBuilder sb;
-            if (t == null) sb = new StringBuilder("null");
-            else sb = new StringBuilder(t.ToString());
-            if (_traceLevel != Helper._TraceState) return t;
-            if (t is IEnumerable && !(t is string))
-                foreach (object o in (IEnumerable)t)
-                    sb.Append(o).Append(' ');
-
-#if(SILVERLIGHT)
-            doru.Trace.WriteLine("Silverlight: "+s.ToString() +": "+ sb);
-#else
-			System.Diagnostics.Trace.WriteLine(Assembly.GetEntryAssembly().GetName().Name+": "+s.ToString() + ": " + sb);
-#endif
-            return t;
-        }
+        
 
         public static string Join<T>(this IEnumerable<T> list, string text)
         {
@@ -303,6 +322,8 @@ namespace doru
 
         public static T Random<T>(this IList<T> list, T except)
         {
+            if (list.All(a => a.Equals(except))) return except;
+            if (list.Count == 1) return list.First();
             T t;
             while ((t = list[_Random.Next(list.Count)]).Equals(except)) ;
             return t;
@@ -560,7 +581,7 @@ namespace doru
             for (int i = startpos; i < source.Length; i++)
             {
                 if (source.Length - i < pattern.Length) return -1;
-                if (Helper.Compare(source, pattern, i)) return i;
+                if (H.Compare(source, pattern, i)) return i;
             }
             return -1;
         }

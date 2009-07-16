@@ -67,14 +67,6 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="Helper1.cs" />
-    <Compile Include="Mathematics\BilinearInterpolator.cs" />
-    <Compile Include="Mathematics\Calculator.cs" />
-    <Compile Include="Mathematics\CircularInterpolator.cs" />
-    <Compile Include="Mathematics\ConvertUnits.cs" />
-    <Compile Include="Mathematics\MathHelper.cs" />
-    <Compile Include="Mathematics\Matrix.cs" />
-    <Compile Include="Mathematics\Vector2.cs" />
-    <Compile Include="Mathematics\Vector3.cs" />
     <Compile Include="NotifyPropertyChangedExt2.cs" />
     <Compile Include="Physics.cs" />
     <Compile Include="PhysicsSl.cs" />
@@ -84,6 +76,7 @@
       <DependentUpon>Resource1.resx</DependentUpon>
     </Compile>
     <Compile Include="Serelization.cs" />
+    <Compile Include="TimerA.cs" />
     <Compile Include="_Sl.cs" />
     <Compile Include="Stream.cs" />
     <Compile Include="Tcp.cs" />

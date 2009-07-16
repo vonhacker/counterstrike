@@ -96,7 +96,7 @@ namespace CounterStrikeLive.Service
     }
     public class Config 
     {
-        public bool _AutoSelect { get { return this.Get<bool>("AutoSelect", true) && Debugger.IsAttached; } set { this.Set("AutoSelect", value); } }
+        public bool _AutoSelect { get { return this.Get<bool>("AutoSelect", false) && Debugger.IsAttached; } set { this.Set("AutoSelect", value); } }
         public bool GenerateClientLag = false;
         public int _MaxPlayers = 10;
         public bool GenerateServerLag = false;
@@ -106,6 +106,8 @@ namespace CounterStrikeLive.Service
         public int? _MaxLatency = null;
         public string _ContentFolder = "Content/";
         public int _GamePort = 4530;
+        public bool _ShowObjectsBehingYou = true;
+        public int _PoliyPort = 943;
         public string _WebAllowedIps = ".*";
         public string _WebRedirect = "http://dorumon.no-ip.org";
         public string _WebRoot = @"./";     

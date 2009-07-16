@@ -88,7 +88,7 @@ namespace doru
 		private Socket m_listener;
 		private byte[] m_policy;
 		public string policyFile;
-		public int _PolicyPort { get { return 943; } }
+        public int _PolicyPort = 943;
 		public void StartAsync()
 		{
 			Console.WriteLine("PolicyServer Started");
@@ -261,19 +261,22 @@ namespace doru
     //[DebuggerStepThrough]
     public static class Http
     {
-
+        public static string Boundary()
+        {
+            return "--"+H.Randomstr(8);
+        }
         public static string Length(string _bytes)
         {
-            Helper.Replace(ref _bytes, "_length_", (_bytes.Length - 4 - _bytes.IndexOf("\r\n\r\n")).ToString(), 1);
+            H.Replace(ref _bytes, "_length_", (_bytes.Length - 4 - _bytes.IndexOf("\r\n\r\n")).ToString(), 1);
             return _bytes;
         }
         public static void Length(ref string _bytes)
         {
-            Helper.Replace(ref _bytes, "_length_", (_bytes.Length - 4 - _bytes.IndexOf("\r\n\r\n")).ToString(), 1);
+            H.Replace(ref _bytes, "_length_", (_bytes.Length - 4 - _bytes.IndexOf("\r\n\r\n")).ToString(), 1);
         }
         public static void Length(ref byte[] _bytes)
         {
-            Helper.Replace(ref _bytes, "_length_".ToBytes(), (_bytes.Length - 4 - _bytes.IndexOf2("\r\n\r\n")).ToString().ToBytes(), 1);
+            H.Replace(ref _bytes, "_length_".ToBytes(), (_bytes.Length - 4 - _bytes.IndexOf2("\r\n\r\n")).ToString().ToBytes(), 1);
         }
         public static byte[] ReadHttp(Socket _Socket)
         {
@@ -345,7 +348,7 @@ namespace doru
                 int length = int.Parse(Encoding.Default.GetString(_bytes), System.Globalization.NumberStyles.HexNumber);
                 if (length == 0) break;
                 _MemoryStream.Write(_Stream.Read(length), 0, length);
-                if (!Helper.Compare(_Stream.Read(2), _rn)) throw new ExceptionA("ReadChunk: cant find Chunk");
+                if (!H.Compare(_Stream.Read(2), _rn)) throw new ExceptionA("ReadChunk: cant find Chunk");
             }
             return _MemoryStream.ToArray();
         }

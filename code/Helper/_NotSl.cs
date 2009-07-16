@@ -27,18 +27,60 @@ using System.Windows.Controls;
 using System.ComponentModel;
 using System.Web;
 using System.Windows.Media;
+using Microsoft.Win32;
 
 namespace doru
 {
+    public static class Shell
+    {
+        public static void Register(string fileType, string menuText)
+        {
+            Register(fileType, menuText, menuText, string.Format("\"{0}\" \"%L\"", System.Windows.Forms.Application.ExecutablePath));
+        }
+        public static void Register(string fileType, string shellKeyName, string menuText, string menuCommand)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(fileType) && !string.IsNullOrEmpty(shellKeyName) && !string.IsNullOrEmpty(menuText) && !string.IsNullOrEmpty(menuCommand));
+            string regPath = string.Format(@"{0}\shell\{1}", fileType, shellKeyName);
+            using (RegistryKey key = Registry.ClassesRoot.CreateSubKey(regPath))
+                key.SetValue(null, menuText);
+            using (RegistryKey key = Registry.ClassesRoot.CreateSubKey(string.Format(@"{0}\command", regPath)))
+                key.SetValue(null, menuCommand);
+        }
+        public static void Unregister(string fileType, string shellKeyName)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(fileType) && !string.IsNullOrEmpty(shellKeyName));
+            string regPath = string.Format(@"{0}\shell\{1}", fileType, shellKeyName);
+            Registry.ClassesRoot.DeleteSubKeyTree(regPath);
+        }
+    }
+
 	public static class Extensions3
 	{
-        public static T Center<T>(this T ui) where T : FrameworkElement
+        public static T DeserealizeOrCreate<T>(this XmlSerializer x, string path, T t)
         {
 
-            TransformGroup t = new TransformGroup();
-            t.Children.Add(new TranslateTransform(-ui.Width / 2, -ui.Height / 2));
-            ui.RenderTransform = t;
-            return ui;
+            if (t == null) throw new NullReferenceException("omg");
+
+            try
+            {
+                using (FileStream fs1 = File.Open(path, FileMode.Open))
+                {
+                    T t2 = (T)x.Deserialize(fs1);
+                    if (t2 == null) throw new Exception();
+                    return t2;
+                }
+
+            } catch
+            {
+                using (FileStream fs = File.Create(path)) x.Serialize(fs, t);
+                return t;
+            }
+        }
+        
+        
+        public static void UploadAsync(this Socket _Socket, MemoryStream _MemoryStream, Action<double> Progress)
+        {
+            new Thread(delegate() { Upload(_Socket, _MemoryStream, Progress); }).StartBackground("UPLOAD ASYNC");
         }
         public static void Upload(this Socket _Socket, MemoryStream _MemoryStream, Action<double> Progress)
         {
@@ -49,7 +91,7 @@ namespace doru
                 if (bb.Length == 0) break;
                 _Socket.Send(bb);                
                 i += bfzie;
-                if (Progress != null) Progress(i);
+                if (Progress != null) Progress(i * 1024);
             }
             while (_Socket.Poll(1000, SelectMode.SelectWrite) == false) ;
         }
@@ -111,6 +153,11 @@ namespace doru
             System.Diagnostics.Trace.WriteLine(Path.GetFullPath(path) + ":" + comment);
             return s;
         }
+        public static string Send(this Socket _Socket, string s,params object[] s2)
+        {
+            _Socket.Send(Encoding.Default.GetBytes(String.Format(s,s2)));
+            return s;
+        }
         public static string Send(this Socket _Socket, string s)
         {
             _Socket.Send(Encoding.Default.GetBytes(s));
@@ -123,10 +170,13 @@ namespace doru
             if (count == 0) throw new ExceptionA();
             return Encoding.Default.GetString(_buffer.Substr(count));
         }
+
+
+        public static int updateInterval = 10;
 		public static void StartUpdate(this Dispatcher ds, Action d)
 		{
 			d();
-			Thread.Sleep(10);
+			Thread.Sleep(updateInterval);
 			ds.BeginInvoke(new Action<Dispatcher, Action>(StartUpdate), DispatcherPriority.SystemIdle, ds, d);
 		}
 	}
@@ -534,6 +584,7 @@ namespace doru
                 Directory.SetCurrentDirectory(Assembly.GetEntryAssembly().Location + "../../" + s);
             } catch { Directory.SetCurrentDirectory(@"D:\Documents and Settings\doru\My Documents\code\STDSTUDIO2\"); }
             if (Directory.Exists("./logs/")) Directory.Delete("logs", true);
+            Directory.CreateDirectory("./logs/");
             Trace.Listeners.Add(new TextWriterTraceListener("log.txt"));
             if (Console.LargestWindowHeight != 0)
             {

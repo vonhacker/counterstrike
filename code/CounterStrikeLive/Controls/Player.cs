@@ -68,7 +68,7 @@ namespace CounterStrikeLive
 
         }
 
-        ScaleTransform _ScaleTransform = new ScaleTransform();
+        //ScaleTransform _ScaleTransform = new ScaleTransform();
         public List<Animation> _Explosions2 = new List<Animation>();
 
         //public Canvas _Canvas2 = new Canvas();
@@ -115,13 +115,14 @@ namespace CounterStrikeLive
         //}
         private void LoadNickName()
         {
-            _ScaleTransform.ScaleX = _ScaleTransform.ScaleY = 1 / _Game._Scale;
+            //_ScaleTransform.ScaleX = _ScaleTransform.ScaleY = 1 / _Game._Scale;
             _TextBlock.TextAlignment = TextAlignment.Center;
-            _TextBlock.RenderTransform = _ScaleTransform;
+            //_TextBlock.RenderTransform = _ScaleTransform;
             _TextBlock.Width = 500;
+            _TextBlock.FontSize = 16;
             _TextBlock.Foreground = new SolidColorBrush(Colors.Yellow);
             Canvas.SetTop(_TextBlock, -100);
-            Canvas.SetLeft(_TextBlock, -500);
+            Canvas.SetLeft(_TextBlock, -250);
             _TextBlock.Text = _Nick;
         }
 
@@ -143,23 +144,26 @@ namespace CounterStrikeLive
             _Position = doru.VectorWorld.Vector2D.Fazika(_Position, _OldPosition, 15, _Map.walls);            
         }
 
-        public Vector2? PlayerCollide()
+        public Vector2 PlayerCollide()
         {
             foreach (Player _Player in _Game._Players)
             {
-                if (_Player != this)
+                if (_Player!= this)
                 {
                     float _distance = Calculator.DistanceBetweenPointAndPoint(this._Position, _Player._Position);
                     if (_distance < 100)
                     {
                         Vector2 _Vector2 = _Player._Position - _Position;
                         _Vector2.Normalize();
-                        _Vector2 = Vector2.Multiply(_Vector2, -1);
-                        return _Vector2;
+                        _Vector2 = Vector2.Multiply(_Vector2, -5f);
+                        if(_Player._Team != _Team)
+                            return _OldPosition + _Vector2;
+                        else
+                            return _Position + _Vector2;
                     }
                 }
             }
-            return null;
+            return _Position;
         }
         FolderList _FolderList = FolderList._This;
 
@@ -179,12 +183,8 @@ namespace CounterStrikeLive
 			
 			UpdateTranslations();
 
-            Vector2? _PlayerCollide = PlayerCollide();
-            if (_PlayerCollide != null)
-            {
-                _Position = _OldPosition;
-                _Position += _PlayerCollide.Value;
-			}
+            _Position = PlayerCollide();
+            
 			if (_isReloading) _State = State._reload;
 			else
 				if (_OldPosition != default(Vector2) && _OldPosition != _Position)
@@ -279,6 +279,8 @@ namespace CounterStrikeLive
         }
         public void ShootAnimation()
         {
+            
+            
             PlaySound("ak47-1.mp3");
 			_GunFire.Visibility = Visibility.Visible;
 			Menu._TimerA.AddMethod(50, delegate { _GunFire.Visibility = Visibility.Collapsed; });
@@ -325,7 +327,7 @@ namespace CounterStrikeLive
         {
             _This = this;
         }
-        public double Volume = .5;
+        public double _Volume = .5;
         public int _Points;
         public int _Deaths;
         public string _Nick;

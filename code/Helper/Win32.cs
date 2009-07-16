@@ -26,10 +26,13 @@ using System.IO.Compression;
 using System.Windows.Controls;
 using System.ComponentModel;
 using System.Web;
+using Microsoft.Win32;
 namespace doru
 {
 	public static class Win32
 	{
+
+        
 
 		private const int WH_KEYBOARD_LL = 13;
 		private const int WM_KEYDOWN = 0x0100;

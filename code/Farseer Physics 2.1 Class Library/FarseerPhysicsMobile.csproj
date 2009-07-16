@@ -1,0 +1,142 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{767C5503-C25F-4FAF-870C-4B442F154ED0}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>FarseerPhysics</RootNamespace>
+    <AssemblyName>FarseerPhysicsMobile</AssemblyName>
+    <ProjectTypeGuids>{4D628B5B-2FBC-4AA6-8C16-197242AEB884};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <PlatformFamilyName>PocketPC</PlatformFamilyName>
+    <PlatformID>b2c48bd2-963d-4549-9169-1fa021dce484</PlatformID>
+    <OSVersion>5.2</OSVersion>
+    <DeployDirSuffix>FarseerPhysics</DeployDirSuffix>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <NativePlatformName>Windows Mobile 6 Professional SDK</NativePlatformName>
+    <FormFactorID>
+    </FormFactorID>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;$(PlatformFamilyName)</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <FileAlignment>512</FileAlignment>
+    <WarningLevel>4</WarningLevel>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;$(PlatformFamilyName)</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <FileAlignment>512</FileAlignment>
+    <WarningLevel>4</WarningLevel>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Collisions\AABB.cs" />
+    <Compile Include="Collisions\BruteForceCollider.cs" />
+    <Compile Include="Collisions\Contact.cs" />
+    <Compile Include="Collisions\ContactId.cs" />
+    <Compile Include="Collisions\ContactList.cs" />
+    <Compile Include="Collisions\DistanceGrid.cs" />
+    <Compile Include="Collisions\Feature.cs" />
+    <Compile Include="Collisions\Geom.cs" />
+    <Compile Include="Collisions\GeomList.cs" />
+    <Compile Include="Collisions\LineIntersectInfo.cs" />
+    <Compile Include="Collisions\RayTester.cs" />
+    <Compile Include="Collisions\SAT.cs" />
+    <Compile Include="Collisions\SelectiveSweepCollider.cs" />
+    <Compile Include="Collisions\SpatialHashCollider.cs" />
+    <Compile Include="Collisions\SweepAndPruneCollider.cs" />
+    <Compile Include="Collisions\Vertices.cs" />
+    <Compile Include="Controllers\AABBFluidContainer.cs" />
+    <Compile Include="Controllers\Controller.cs" />
+    <Compile Include="Controllers\ControllerList.cs" />
+    <Compile Include="Controllers\FluidDragController.cs" />
+    <Compile Include="Controllers\GravityController.cs" />
+    <Compile Include="Controllers\InactivityController.cs" />
+    <Compile Include="Controllers\ScalingController.cs" />
+    <Compile Include="Controllers\WaveController.cs" />
+    <Compile Include="Dynamics\Arbiter.cs" />
+    <Compile Include="Dynamics\ArbiterList.cs" />
+    <Compile Include="Dynamics\Body.cs" />
+    <Compile Include="Dynamics\BodyList.cs" />
+    <Compile Include="Dynamics\Curve.cs" />
+    <Compile Include="Dynamics\Joints\AngleJoint.cs" />
+    <Compile Include="Dynamics\Joints\AngleLimitJoint.cs" />
+    <Compile Include="Dynamics\Joints\FixedAngleJoint.cs" />
+    <Compile Include="Dynamics\Joints\FixedAngleLimitJoint.cs" />
+    <Compile Include="Dynamics\Joints\FixedRevoluteJoint.cs" />
+    <Compile Include="Dynamics\Joints\Joint.cs" />
+    <Compile Include="Dynamics\Joints\JointList.cs" />
+    <Compile Include="Dynamics\Joints\PinJoint.cs" />
+    <Compile Include="Dynamics\Joints\RevoluteJoint.cs" />
+    <Compile Include="Dynamics\Joints\SliderJoint.cs" />
+    <Compile Include="Dynamics\Joints\WeldJoint.cs" />
+    <Compile Include="Dynamics\Path.cs" />
+    <Compile Include="Dynamics\Springs\AngleSpring.cs" />
+    <Compile Include="Dynamics\Springs\FixedAngleSpring.cs" />
+    <Compile Include="Dynamics\Springs\FixedLinearSpring.cs" />
+    <Compile Include="Dynamics\Springs\LinearSpring.cs" />
+    <Compile Include="Dynamics\Springs\Spring.cs" />
+    <Compile Include="Dynamics\Springs\SpringList.cs" />
+    <Compile Include="Enums.cs" />
+    <Compile Include="Factories\BodyFactory.cs" />
+    <Compile Include="Factories\ComplexFactory.cs" />
+    <Compile Include="Factories\ControllerFactory.cs" />
+    <Compile Include="Factories\GeomFactory.cs" />
+    <Compile Include="Factories\JointFactory.cs" />
+    <Compile Include="Factories\SpringFactory.cs" />
+    <Compile Include="GenericList.cs" />
+    <Compile Include="Interfaces\IBroadPhaseCollider.cs" />
+    <Compile Include="Interfaces\IFluidContainer.cs" />
+    <Compile Include="Interfaces\IIsDisposable.cs" />
+    <Compile Include="Interfaces\INarrowPhaseCollider.cs" />
+    <Compile Include="Mathematics\BilinearInterpolator.cs" />
+    <Compile Include="Mathematics\Calculator.cs" />
+    <Compile Include="Mathematics\CircularInterpolator.cs" />
+    <Compile Include="Mathematics\ConvertUnits.cs" />
+    <Compile Include="Mathematics\MathHelper.cs" />
+    <Compile Include="Mathematics\Matrix.cs" />
+    <Compile Include="Mathematics\Vector2.cs" />
+    <Compile Include="Mathematics\Vector3.cs" />
+    <Compile Include="PhysicsSimulator.cs" />
+    <Compile Include="Pool.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}">
+        <HostingProcess disable="1" />
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

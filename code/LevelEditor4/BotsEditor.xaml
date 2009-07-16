@@ -7,7 +7,10 @@
     		<RowDefinition Height="*"/>
     	</Grid.RowDefinitions>
         <Canvas>
-            <Canvas Name="_RootCanvas">
+            <Canvas Name="_RootCanvas" Background="White">
+                <Canvas.RenderTransform>                    
+                        <ScaleTransform x:Name="_ScaleTransform"></ScaleTransform>                    
+                </Canvas.RenderTransform>
                 <Canvas Name="_Canvas0"/>
                 <Canvas Name="_CanvasDraw"/>
                 <Canvas Name="_CanvasThumbs"/>

@@ -51,7 +51,7 @@ namespace CounterStrikeLive.Controls
         {
 
             _oldtp = _Team == Team.terr ? _Botbase._TStartPos.Random() : _Botbase._CStartPos.Random();
-            _Position = _oldtp.ToVector() + new Vector2(Random.Next(-100, 200), Random.Next(-100, 200));            
+            _Position = _oldtp.ToVector() + new Vector2(Random.Next(-100, 100), Random.Next(-100, 100));            
             _nwtp = _oldtp._Way.Random();
             base.Load();
         }
@@ -59,10 +59,12 @@ namespace CounterStrikeLive.Controls
         {
             return a > 180 ? a - 360 : a;
         }
-        public const int obs = 90;
+        public const int obs = 50;
         public float? _nextAngle;
-        public Vector2 _Offset = new Vector2(Random.Next(-1, 2), Random.Next(-1, 2));
+        public bool _EasyBots { get { return _Game._EasyBots; } }
+        public Vector2 _Offset = new Vector2(Random.Next(-1, 1), Random.Next(-1, 1));
         public new Vector2 _Position { get { return base._Position + _Offset; } set { base._Position = value - _Offset; } }
+        bool _isShooting;
         public override void Update()
         {
             if (_IsSlowDown)
@@ -79,11 +81,11 @@ namespace CounterStrikeLive.Controls
             double len = v.Length();
             float _dir = (float)(Calculator.VectorToRadians(v) / Math.PI * 180);
 
-            if (_nextAngle == null) _nextAngle = Cangl(_dir + Random.Next(-obs, obs * 2));
-            bool isshooting = ShootCheck();
+            if (_nextAngle == null) _nextAngle = Cangl(_dir + Random.Next(-obs, obs));
+            _isShooting = ShootCheck();
             var a = _Angle;
-            var b = _nextAngle.Value;            
-            _Angle += CRA(Cangl(b - a))/(isshooting?10:30);
+            var b = _nextAngle.Value;
+            _Angle += CRA(Cangl(b - a)) / (_isShooting ? 5 : 30);
 
             if (Math.Abs(b - a) < 10) _nextAngle = null;
 
@@ -114,44 +116,59 @@ namespace CounterStrikeLive.Controls
 
             base.Update();
         }
-        
+        public double _shottimeelapsed;
         private bool ShootCheck()
         {
-
+            _shottimeelapsed += _TimerA._TimeElapsed;
             foreach (Player p in _Game._Players)
             {
-                if (p._Team != _Team)//&& Calculator.DistanceBetweenPointAndPoint(p._Position, _Position) < 1500
-                    if (CheckVisibility2(p))
-                    {
-                        
-                        _nextAngle = (float)(Calculator.VectorToRadians(p._Position - _Position) / Math.PI * 180) + Random.Next(-7, 7);
-                        if (_TimerA.TimeElapsed(_Game._ShootInterval * 1.5,this))                                                    
-                            _Game.Shoot(_x, _y, _Angle, this, false);
 
-                        float a =Calculator.DistanceBetweenPointAndLineSegment(p._Position, _Position, _nwtp.ToVector());
-                        float b = Calculator.DistanceBetweenPointAndLineSegment(p._Position, _Position, _oldtp.ToVector());
-                        if (b<a)
-                        {
-                            Helper.Switch(ref _nwtp,ref _oldtp);
-                        }
-                        return true;
+
+                if (p._Team != _Team && CheckVisibility2(p))
+                {
+                    _nextAngle = (float)(Calculator.VectorToRadians(p._Position - _Position) / Math.PI * 180);
+
+
+                    if (_shottimeelapsed > _Game._ShootInterval * 1.5)
+                    {
+                        _shottimeelapsed = 0;
+                        _TimerA.AddMethod(_EasyBots ? 1000 : 500, Shoot);
                     }
+
+                    float a = Calculator.DistanceBetweenPointAndLineSegment(p._Position, _Position, _nwtp.ToVector());
+                    float b = Calculator.DistanceBetweenPointAndLineSegment(p._Position, _Position, _oldtp.ToVector());
+                    if (b < a)
+                    {
+                        Helper.Switch(ref _nwtp, ref _oldtp);
+                    }
+                    return true;
+                }
+
             }
             return false;
+        }
+
+        private void Shoot()
+        {
+            float ra = _EasyBots ? 8 : 5;
+            if(_Client._PlayerState == SharedClient.PlayerState.alive)
+                _Game.Shoot(_x, _y, _Angle + Random.Next(-ra, ra), this, false);
         }
         TimerA _TimerA = Menu._TimerA;
         public bool CheckVisibility2(Player p)
         {
-            float a1 = Animation.Cangl(Calculator.VectorToRadians(this._Position - p._Position) * Calculator.DegreesToRadiansRatio);
-            float a2 = Animation.Cangl(a1 - p._Angle + 45);
-            if (Math.Abs(a2) < 90)
+            
+            if (_EasyBots && (_Position - p._Position).Length() > 3000) return false;
+            //float a1 = Animation.Cangl(Calculator.VectorToRadians(this._Position - p._Position) * Calculator.DegreesToRadiansRatio);
+            //float a2 = Animation.Cangl(a1 - p._Angle + 45);
+            //if (Math.Abs(a2) < 90)
             {
                 Line2 wall;
                 if (_Map.Collision(this._Position, p._Position, out wall).Count != 0)
                 {
                     return false;
                 } else return true;
-            } else return false;
+            }// else return false;
         }
     }
 }

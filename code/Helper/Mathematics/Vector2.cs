@@ -1,6 +1,6 @@
 ﻿#if (!XNA)
 using System;
-using System.Windows;
+using System.Drawing;
 
 namespace FarseerGames.FarseerPhysics.Mathematics
 {
@@ -63,7 +63,7 @@ namespace FarseerGames.FarseerPhysics.Mathematics
         }
         public static implicit operator Point(Vector2 _Vector2)
         {
-            return new Point(_Vector2.X, _Vector2.Y);
+            return new Point((int)_Vector2.X, (int)_Vector2.Y);
         }
         public float X;
         public float Y;

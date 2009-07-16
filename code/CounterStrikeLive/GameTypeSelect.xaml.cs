@@ -15,8 +15,10 @@ namespace CounterStrikeLive
 {
     public partial class GameTypeSelect : ChildWindow
     {
+        public static new GameTypeSelect _This; 
         public GameTypeSelect()
         {
+            _This = this;
             InitializeComponent();
             Loaded += new RoutedEventHandler(GameTypeSelect_Loaded);
         }
@@ -43,6 +45,11 @@ namespace CounterStrikeLive
         }
         public int _ctBotsCount { get { try { return int.Parse(ct_bots.Text.Trim()); } catch { return 4; } } }
         public int _tBotsCount { get { try { return int.Parse(t_bots.Text.Trim()); } catch { return 4; } } }
+
+        private void Credits_Click(object sender, RoutedEventArgs e)
+        {
+            new Credits().Success += delegate { new GameTypeSelect().Success = Success; };
+        }
         
                 
     }

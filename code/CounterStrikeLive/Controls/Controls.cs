@@ -53,12 +53,11 @@ namespace CounterStrikeLive
 
         internal static int Next(int p, int _dist)
         {
-            return _Random.Next(p, _dist);
+            return (int)Math.Round(p + _Random.NextDouble() * (_dist - p));
         }
-        //[Obsolete("error not min and max")]
         internal static float Next(float p, float _dist)
-        {            
-            return (float)(p + _Random.NextDouble() * _dist);
+        {
+            return (float)(p + _Random.NextDouble() * (_dist - p));
         }
     }
     public class Button : System.Windows.Controls.Button
@@ -101,7 +100,7 @@ namespace CounterStrikeLive
         {
             if (e.Key == Key.Escape) this.Close();
         }
-        public event Action Success;
+        public Action Success;
         protected override void OnClosed(EventArgs e)
         {
             if (_This == null) return;

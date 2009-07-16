@@ -93,16 +93,19 @@
     </Compile>
     <Compile Include="Helper1.cs" />
     <None Include="_Include.cs" />
-    <Compile Include="Mathematics\BilinearInterpolator.cs" />
-    <Compile Include="Mathematics\Calculator.cs" />
-    <Compile Include="Mathematics\CircularInterpolator.cs" />
-    <Compile Include="Mathematics\ConvertUnits.cs" />
-    <Compile Include="Mathematics\MathHelper.cs" />
-    <Compile Include="Mathematics\Matrix.cs" />
-    <Compile Include="Mathematics\Vector2.cs" />
-    <Compile Include="Mathematics\Vector3.cs" />
+    <Compile Include="Math.cs" />
+    <None Include="Mathematics\BilinearInterpolator.cs" />
+    <None Include="Mathematics\Calculator.cs" />
+    <None Include="Mathematics\CircularInterpolator.cs" />
+    <None Include="Mathematics\ConvertUnits.cs" />
+    <None Include="Mathematics\MathHelper.cs" />
+    <None Include="Mathematics\Matrix.cs" />
+    <None Include="Mathematics\Vector2.cs" />
+    <None Include="Mathematics\Vector3.cs" />
+    <Compile Include="MobileNotSl.cs" />
     <Compile Include="NotifyPropertyChangedExt2.cs" />
     <Compile Include="Serelization.cs" />
+    <Compile Include="TimerA.cs" />
     <Compile Include="WebServer.cs" />
     <Compile Include="Win32.cs" />
     <Compile Include="_NotSl.cs" />
@@ -119,12 +122,14 @@
     <Compile Include="Wpf.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="dlls\AdvanceMath.dll" />
     <Content Include="dlls\ContinuousLinq.dll" />
     <Content Include="dlls\ICSharpCode.SharpZipLib.dll" />
     <Content Include="dlls\ikpMP3.dll" />
     <Content Include="dlls\irrKlang.NET2.0.dll" />
     <Content Include="dlls\ManagedWinapi.dll" />
     <Content Include="dlls\ManagedWinapiNativeHelper.dll" />
+    <Content Include="dlls\Physics2DDotNet.dll" />
     <Content Include="dlls\SharpZipLib.dll" />
     <Content Include="dlls\WPFToolkit.Design.dll" />
     <Content Include="dlls\WPFToolkit.dll" />

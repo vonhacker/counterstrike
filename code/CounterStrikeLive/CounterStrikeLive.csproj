@@ -112,6 +112,9 @@
     </Compile>
     <Compile Include="Controls\Bot.cs" />
     <Compile Include="Controls\GameObj.cs" />
+    <Compile Include="Credits.xaml.cs">
+      <DependentUpon>Credits.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Database.cs" />
     <Compile Include="Controls\Controls.cs" />
     <Compile Include="Controls\Maps.cs" />
@@ -152,6 +155,10 @@
       <Generator>MSBuild:MarkupCompilePass1</Generator>
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Credits.xaml">
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="EscMenu.xaml">
@@ -942,6 +949,7 @@
     <Content Include="Content\phoenix_run\phoenix_run0024.png" />
     <Content Include="Content\ric_conc-1.mp3" />
     <Content Include="Content\ric_conc-2.mp3" />
+    <Resource Include="1245939388_audio-volume-high.png" />
     <Resource Include="Resources\Clipboard-2.png" />
     <Resource Include="Resources\icon_in-game.png" />
   </ItemGroup>

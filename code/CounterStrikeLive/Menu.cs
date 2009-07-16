@@ -135,10 +135,10 @@ namespace CounterStrikeLive
         }
         public void LoadDb()
         {
-            GameTypeSelect _GameTypeSelect = new GameTypeSelect(); _GameTypeSelect.Success += delegate
+            new GameTypeSelect().Success += delegate
             {
-                _tbotcount = Math.Min(_GameTypeSelect._tBotsCount, 15);
-                _ctbotcount = Math.Min(_GameTypeSelect._ctBotsCount,15);
+                _tbotcount = Math.Min(GameTypeSelect._This._tBotsCount, 10);
+                _ctbotcount = Math.Min(GameTypeSelect._This._ctBotsCount, 10);
                 Loading1.Text = "Loading Content";
                 Loading1.Value = 10;
                 FolderList _FolderList =
@@ -193,6 +193,11 @@ namespace CounterStrikeLive
             {
                 
                 CreateLocalCLient(0);
+                if (_Config._AutoSelect)
+                {
+                    _ctbotcount = 2;
+                    _tbotcount = 4;
+                }
                 int i;
                 for (i = 1; i < 1 + _ctbotcount; ++i)
                 {
@@ -602,7 +607,7 @@ namespace CounterStrikeLive
 
             if (e.Key == Key.Escape)
             {
-                if (EscMenu._This == null)
+                if (ChildWindow._This == null)
                     new EscMenu();
             }
 

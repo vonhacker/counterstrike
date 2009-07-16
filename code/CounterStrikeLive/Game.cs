@@ -41,6 +41,14 @@ namespace CounterStrikeLive
         {
             _This = this;
         }
+        public bool _EasyBots
+        {
+            get
+            {
+                if (null==EscMenu._This) return true;
+                return EscMenu._This.Easy_Bots.IsChecked ?? false;
+            }
+        }
         public static Game _This;
         public bool _IsEverthingVisible;
         public List<AnimDamage> _AnimDamages = new List<AnimDamage>();
@@ -76,7 +84,7 @@ namespace CounterStrikeLive
                 _TotalPatrons -= 30;
                 WriteCenterText("Reloading");
 
-                Menu._TimerA.AddMethod(1500, delegate { _Patrons = 30; if (_LocalPlayer != null) _LocalPlayer._isReloading = false; });
+                Menu._TimerA.AddMethod(1500, delegate { _Patrons = 30; if (_LocalClient != null) _LocalClient._IsReloading = false; });
             }
 
             if ((_Key == Key.PageDown || _Key == Key.Space) && _GameState != Menu.GameState.alive)
@@ -259,11 +267,11 @@ namespace CounterStrikeLive
 
                 Point _Point = _Map.GetPos(_LocalClient._Team);
                 int _dist = 100;
-                do
-                {
-                    _LocalClient._StartPosX = (int)_Point.X + (Random.Next(-_dist, _dist*2));
-                    _LocalClient._StartPosY = (int)_Point.Y + (Random.Next(-_dist, _dist*2));
-                } while (_LocalPlayer.PlayerCollide() != null);
+                //do
+                //{
+                _LocalClient._StartPosX = (int)_Point.X + (Random.Next(-_dist, _dist));
+                _LocalClient._StartPosY = (int)_Point.Y + (Random.Next(-_dist, _dist));
+                //} while (_LocalPlayer.PlayerCollide() != null);
                 _LocalPlayer._Life = 100;
             }
         }
@@ -325,7 +333,7 @@ namespace CounterStrikeLive
             _Explosion._Remove = false;
             _Explosion.Load();
         }
-        public float _ShootInterval = 100;
+        public readonly double _ShootInterval = 100;
         public List<GameObjA> _Explosions = new List<GameObjA>();
         public Sender _Sender;
 
@@ -401,7 +409,7 @@ namespace CounterStrikeLive
                         _Patrons--;
                         float _d = 2;
                         _d = _d * (_Cursor.Scale * _Cursor.Scale);
-                        float _Angle = _LocalPlayer._Angle + (float)Random.Next(-_d, _d*2);
+                        float _Angle = _LocalPlayer._Angle + (float)Random.Next(-_d, _d);
 
                         _Angle = Player.Cangl(_Angle);
                         using (MemoryStream _MemoryStream = new MemoryStream())

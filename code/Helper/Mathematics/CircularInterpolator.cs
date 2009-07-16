@@ -4,7 +4,7 @@ using System.Text;
 using System.Diagnostics;
 
 #if (XNA)
-using Microsoft.Xna.Framework; 
+using Microsoft.WindowsMobile.DirectX; 
 #endif
 
 namespace FarseerGames.FarseerPhysics.Mathematics {

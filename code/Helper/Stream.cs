@@ -202,7 +202,7 @@ namespace doru
         public static void WriteString(this Stream s, string _str)
         {
             byte[] bs = _str.ToBytes();
-            s.Write(Helper.JoinBytes(new[] { (byte)bs.Length }, bs));
+            s.Write(H.JoinBytes(new[] { (byte)bs.Length }, bs));
         }
         
     }

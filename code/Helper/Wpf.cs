@@ -5,13 +5,20 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Shapes;
+using System.Windows.Media;
 
 
 namespace doru
 {
     public static class WpfExtensions
     {
-        
+        public static Polygon Default(this Polygon nw)
+        {
+            nw.Fill = new SolidColorBrush(Colors.Red);
+            nw.StrokeThickness = 2;
+            nw.Stroke = new SolidColorBrush(Colors.Black);
+            return nw;
+        }
         public static Line SetPoints(this Line _line,Point a , Point b)
         {
             _line.X1 = a.X; _line.X2 = b.X;

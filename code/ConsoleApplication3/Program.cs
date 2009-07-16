@@ -6,40 +6,43 @@ using System.Text;
 using System.IO;
 using System.Diagnostics;
 using System.Xml.Serialization;
+using System.Net.Sockets;
+using System.Reflection;
+using System.Windows;
+using YouTubeUploader.Properties;
+using System.Configuration;
 
 namespace ConsoleApplication3
 {
-    public class TestClass
-    {     
-        
-        
-        [SZ]
-        public int a;
-        [SZ]
-        public List<object> list = new List<object>();
-        [SZ]
-        public TestClass _TestClass;
-        public TestClass()
-        {
-            
-        }
-        public override string ToString()
-        {
-            return a+"";
-        }
-    }
+    public class intlist : List<int> { }
     class Program
     {
+        static string[] args { get { return Environment.GetCommandLineArgs(); } }
         static void Main(string[] args)
-        {
-            new Program();            
+        {            
+            new Program();
         }
-        public Program()
+        public IEnumerable<char> ToCharList(string s)
         {
-            object sa = new object();
-            int a = GC.GetGeneration(this);
+            foreach (char q in s)
+                yield return q;
+        }
+        public List<string> strs = new List<string>() {"a","b","c" };
 
+        public Program()        
+        {
+            var a= strs.Cast<string>();
+            strs.Remove("a");
+            var b=a.ToArray();
+            //IEnumerable<char> test = ;
+            
+            //Settings.Default.Setting = 2;
+            //Settings.Default.Save();
+            
+            Console.WriteLine(Settings.Default.Setting);
+            Console.ReadLine();
         }
-        
+  
+
     }
 }

@@ -170,11 +170,11 @@ namespace doru
             else if (type.GetInterface("IList",false) != null)
             {
                 object l = Activator.CreateInstance(type);
-
+                
                 int count = ms.ReadInt32();
 
                 for (int i = 0; i < count; i++)
-                    l.GetType().GetMethod("Add").Invoke(l, new object[] { ReadValue() });
+                    l.GetType().GetMethod("Add").Invoke(l, new object[] { ReadValue() }); 
 
                 return l;
             } else if (type.Assembly != Assembly.GetCallingAssembly()) throw new Exception("not our type");

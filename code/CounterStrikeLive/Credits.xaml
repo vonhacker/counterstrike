@@ -1,0 +1,27 @@
+﻿<local:ChildWindow
+    xmlns:local="clr-namespace:CounterStrikeLive"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	xmlns:basics="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls"
+	x:Class="CounterStrikeLive.Credits"
+	Title="Credits" Style="{StaticResource ChildWindowStyle1}" Height="320" Width="513">
+
+    <Grid>
+        <Grid x:Name="LayoutRoot" Background="#FF3E3E3E" Margin="63,32,74,134">
+            <Grid.Effect>
+                <DropShadowEffect BlurRadius="-12"/>
+            </Grid.Effect>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <TextBlock Margin="4,13,9,0" VerticalAlignment="Top" TextWrapping="Wrap"><Run Text="Game Crea"/><Run Text="ted by "/><Run Foreground="#FFFFFFFF" Text="F"/><Run Foreground="#FFFF0000" Text="r"/><Run Foreground="#FFFFFFFF" Text="I"/><Run Foreground="#FFFF0000" Text="u"/><Run Foreground="#FFFFFFFF" Text="N"/><Run Foreground="#FFFF0000" Text="s"/><Run Foreground="#FFFF0000" Text=" "/><Run Text="("/><Run Text="http://dorumonstr.blogspot.com/)"/></TextBlock>
+            <TextBlock Margin="37,33,171,0" Text="Graphics by FioDeGol" TextWrapping="Wrap" VerticalAlignment="Top" Height="22"/>
+            <TextBlock Height="20" Margin="54,0,61,35" VerticalAlignment="Bottom" TextWrapping="Wrap"><Run Text="Physics by Камень"/><Run Text=" "/><Run Text="("/><Run Text="http://petka.info"/><Run Text=")"/></TextBlock>
+            <TextBlock Margin="71,0,108,6" Text="BugFixes by Infinity" TextWrapping="Wrap" VerticalAlignment="Bottom" Height="25"/>
+        </Grid>
+        <local:Button Click="Button_Click" x:Name="Back" Height="33" Margin="207,0,221,62" VerticalAlignment="Bottom" Content="Back" Style="{StaticResource ButtonStyle2}"/>
+    </Grid>
+</local:ChildWindow>

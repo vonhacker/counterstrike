@@ -16,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Collections;
 using System.Collections.Specialized;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace CounterStrikeLive.Controls
 {
@@ -27,6 +28,7 @@ namespace CounterStrikeLive.Controls
         Menu _Menu = Menu._This;
         LocalDatabase _LocalDatabase = LocalDatabase._This;
         Config _Config = Config._This;
+
         public void PlaySound(string s, double distance)
         {
             
@@ -36,11 +38,23 @@ namespace CounterStrikeLive.Controls
 
             if (volume != 0)
             {
+                //this.Trace(s);
+                //if (_MediaElement != null && (string)_MediaElement.Tag == s && _MediaElement.Position.TotalMilliseconds ==0)
+                //{
+
+                //    this.Trace("Already Playing");
+                //    _MediaElement.Stop();
+                //    //return;
+                //}
                 MediaElement _MediaElement = new MediaElement();
+                
                 _Menu._GameCanvas.Children.Add(_MediaElement);
                 _MediaElement.SetSource(s);
+                _MediaElement.Tag = s;
+                
+                _MediaElement.MediaFailed += delegate { _Menu._GameCanvas.Children.Remove(_MediaElement); };
                 _MediaElement.MediaEnded += delegate { _Menu._GameCanvas.Children.Remove(_MediaElement); };
-                _MediaElement.Volume = volume;
+                _MediaElement.Volume = volume;                
             }
         }
         public void PlaySound(string s)
@@ -64,7 +78,7 @@ namespace CounterStrikeLive.Controls
             y2 = position.Y;
 
             double len = Math.Sqrt((x - x2).Pow() + (y - y2).Pow());
-            double volume = Math.Max(0, 1 - len / distance) * _LocalDatabase.Volume;
+            double volume = Math.Max(0, 1 - len / distance) * _LocalDatabase._Volume;
             return volume;
         }
 
@@ -84,7 +98,7 @@ namespace CounterStrikeLive.Controls
             {
                 float a1 = Animation.Cangl(Calculator.VectorToRadians(this._Position - _LocalPlayer._Position) * Calculator.DegreesToRadiansRatio);
                 float a2 = Animation.Cangl(a1 - _LocalPlayer._Angle + 45);
-                if (Math.Abs(a2) < 90)
+                if (_Config._ShowObjectsBehingYou || Math.Abs(a2) < 90)
                 {
                     Line2 wall;
                     if (_Map.Collision(this._Position, _LocalPlayer._Position, out wall).Count != 0)
