@@ -36,6 +36,7 @@ namespace BallGame
         static Form1 _Form1 { get { return Form1._This; } }
         public void Load()
         {
+            
             //Debugger.Break();
             new Camera();
             LoadXml();
@@ -67,7 +68,7 @@ namespace BallGame
         internal void Draw()
         {
             if (loaded)
-                _Dx.Draw();
+                _Dx.Draw(_CurCam._Pos.X,_CurCam._Pos.Y);
 
         }
         public PhysicsSimulator _ps = new PhysicsSimulator(new Vector2(0,20));

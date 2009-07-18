@@ -25,8 +25,8 @@ namespace BallGame
         public static Form1 _This ;
         public static Assembly _Assembly = Assembly.GetCallingAssembly();
         public Form1()
-        {            
-            
+        {
+            this.WindowState = FormWindowState.Maximized;
             _This = this;
             InitializeComponent();
             Load += new EventHandler(Form1_Load);
@@ -61,9 +61,11 @@ namespace BallGame
         bool loaded { get { return Game.loaded; } }
         void Form1_Load(object sender, EventArgs e)
         {
+            
             _Game = new Game();
             _Game.Load();
         }
+
 
         protected override void OnPaint(PaintEventArgs e)
         {
