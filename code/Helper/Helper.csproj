@@ -58,6 +58,15 @@
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.5.452, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL" />
     <Reference Include="ManagedWinapi, Version=0.3.0.0, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.DirectX, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Reference Include="Microsoft.DirectX.AudioVideoPlayback, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Reference Include="Microsoft.DirectX.Diagnostics, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Reference Include="Microsoft.DirectX.Direct3D, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Reference Include="Microsoft.DirectX.Direct3DX, Version=1.0.2911.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Reference Include="Microsoft.DirectX.DirectDraw, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Reference Include="Microsoft.DirectX.DirectInput, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Reference Include="Microsoft.DirectX.DirectPlay, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Reference Include="Microsoft.DirectX.DirectSound, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
     <Reference Include="PresentationCore">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -88,6 +97,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Arrays.cs" />
+    <Compile Include="DXHelper.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Helper.cs">
     </Compile>
@@ -102,10 +112,17 @@
     <None Include="Mathematics\Matrix.cs" />
     <None Include="Mathematics\Vector2.cs" />
     <None Include="Mathematics\Vector3.cs" />
+    <Compile Include="MobileHelper.cs" />
     <Compile Include="MobileNotSl.cs" />
     <Compile Include="NotifyPropertyChangedExt2.cs" />
     <Compile Include="Serelization.cs" />
     <Compile Include="TimerA.cs" />
+    <Compile Include="Triangulation\AnalyticGeometryException.cs" />
+    <Compile Include="Triangulation\CLine.cs" />
+    <Compile Include="Triangulation\CPoint2D.cs" />
+    <Compile Include="Triangulation\CPolygon.cs" />
+    <Compile Include="Triangulation\CPolygonShape.cs" />
+    <Compile Include="Triangulation\Definition.cs" />
     <Compile Include="WebServer.cs" />
     <Compile Include="Win32.cs" />
     <Compile Include="_NotSl.cs" />
@@ -155,6 +172,12 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Farseer Physics 2.1 Class Library\FarseerPhysics.csproj">
+      <Project>{95B40504-C1C2-4FCD-98B3-B63AD35D6336}</Project>
+      <Name>FarseerPhysics</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

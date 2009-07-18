@@ -1,8 +1,9 @@
 ﻿#if (!XNA)
 using System;
-using System.Drawing;
+using System.Windows;
 
-namespace FarseerGames.FarseerPhysics.Mathematics
+
+namespace doru.Mathematics
 {
 
     public class Line2

@@ -8,8 +8,8 @@ using Microsoft.WindowsMobile.DirectX;
 
 
 
-namespace FarseerGames.FarseerPhysics.Mathematics {
-    public static class Calculator {
+namespace doru.Mathematics {
+    public static class DCalculator {
         public const float TwoPi = 6.28318531f;
         public const float DegreesToRadiansRatio = 57.29577957855f;
         public const float RadiansToDegreesRatio = 1f / 57.29577957855f;
@@ -247,8 +247,8 @@ namespace FarseerGames.FarseerPhysics.Mathematics {
                                                 float t, ref float radians)
         {
             return CubicBezierCurve(start,
-                                    Calculator.RadiansToVector(startPointDirection) * startPointLength,
-                                    Calculator.RadiansToVector(endPointDirection) * endPointLength,
+                                    DCalculator.RadiansToVector(startPointDirection) * startPointLength,
+                                    DCalculator.RadiansToVector(endPointDirection) * endPointLength,
                                     end,
                                     t,
                                     ref radians);

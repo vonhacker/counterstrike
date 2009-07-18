@@ -1,7 +1,7 @@
 ﻿#if (!XNA)
 using System;
 
-namespace FarseerGames.FarseerPhysics.Mathematics
+namespace doru.Mathematics
 {
     public struct Vector3
     {

@@ -9,7 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Collections.Generic;
-using FarseerGames.FarseerPhysics.Mathematics;
+using doru.Mathematics;
 using doru;
 using CounterStrikeLive.Service;
 using System.Windows.Media.Imaging;
@@ -96,7 +96,7 @@ namespace CounterStrikeLive.Controls
         {
             if (_LocalPlayer != null && this != _LocalPlayer && !_VisibleToAll && !_Game._IsEverthingVisible)
             {
-                float a1 = Animation.Cangl(Calculator.VectorToRadians(this._Position - _LocalPlayer._Position) * Calculator.DegreesToRadiansRatio);
+                float a1 = Animation.Cangl(DCalculator.VectorToRadians(this._Position - _LocalPlayer._Position) * DCalculator.DegreesToRadiansRatio);
                 float a2 = Animation.Cangl(a1 - _LocalPlayer._Angle + 45);
                 if (_Config._ShowObjectsBehingYou || Math.Abs(a2) < 90)
                 {

@@ -7,7 +7,7 @@ using System.Diagnostics;
 using Microsoft.WindowsMobile.DirectX; 
 #endif
 
-namespace FarseerGames.FarseerPhysics.Mathematics {
+namespace doru.Mathematics {
     /// <summary>
     /// Encapsulates the logic to do bilinear interpolation
     /// .V1    .V4

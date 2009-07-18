@@ -1,7 +1,13 @@
 using System;
+#if PocketPC
 using Microsoft.WindowsMobile.DirectX.Direct3D;
-using System.Drawing;
 using Microsoft.WindowsMobile.DirectX;
+#else
+using Microsoft.DirectX;
+using Microsoft.DirectX.Direct3D;
+#endif
+using System.Drawing;
+
 
 namespace GeometryUtility
 {
@@ -12,6 +18,7 @@ namespace GeometryUtility
 	//A point in Coordinate System
     public static class EXT
     {
+        
         public static CustomVertex.TransformedColored ToVertex(CPoint2D cp)
         {
             return new CustomVertex.TransformedColored((float)cp.X, (float)cp.Y, .5f, 1, Color.Green.ToArgb());

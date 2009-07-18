@@ -9,7 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Collections.Generic;
-using FarseerGames.FarseerPhysics.Mathematics;
+using doru.Mathematics;
 using doru;
 using CounterStrikeLive.Service;
 using System.Windows.Media.Imaging;

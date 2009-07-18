@@ -1,6 +1,12 @@
 using System;
 using GeometryUtility;
+#if PocketPC
 using Microsoft.WindowsMobile.DirectX;
+using Microsoft.WindowsMobile.DirectX.Direct3D;
+#else
+using Microsoft.DirectX;
+using Microsoft.DirectX.Direct3D;
+#endif
 using System.Collections.Generic;
 using System.Collections;
 

@@ -10,7 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Collections.Generic;
-using FarseerGames.FarseerPhysics.Mathematics;
+using doru.Mathematics;
 using System.Windows.Media.Imaging;
 using doru;
 using CounterStrikeLive.Service;
@@ -69,7 +69,7 @@ namespace CounterStrikeLive.Controls
         {
             if (_IsSlowDown)
             {
-                _slowdowntimeelapsed += Menu._TimerA._TimeElapsed;
+                _slowdowntimeelapsed += Menu._TimerA._MilisecondsElapsed;
                 if (_slowdowntimeelapsed > 1000)
                 {
                     _IsSlowDown = false;
@@ -79,7 +79,7 @@ namespace CounterStrikeLive.Controls
 
             Vector2 v = _nwtp.ToVector() - _Position;
             double len = v.Length();
-            float _dir = (float)(Calculator.VectorToRadians(v) / Math.PI * 180);
+            float _dir = (float)(DCalculator.VectorToRadians(v) / Math.PI * 180);
 
             if (_nextAngle == null) _nextAngle = Cangl(_dir + Random.Next(-obs, obs));
             _isShooting = ShootCheck();
@@ -104,7 +104,7 @@ namespace CounterStrikeLive.Controls
                 _nwtp = _nwtp._Way.Random(value);
                 //List<TreePoint> nbp= new List<TreePoint>();//_notbackpoints 
                 //foreach (TreePoint p in _nwtp._Way)
-                //    if (Math.Abs((Calculator.VectorToRadians(p.ToVector() - _nwtp.ToVector()) / Math.PI * 180) - _dir) < 120)
+                //    if (Math.Abs((DCalculator.VectorToRadians(p.ToVector() - _nwtp.ToVector()) / Math.PI * 180) - _dir) < 120)
                 //        nbp.Add(p);
                 //if (nbp.Count == 0)
                 //    _nwtp = _nwtp._Way.Random(value);
@@ -119,14 +119,14 @@ namespace CounterStrikeLive.Controls
         public double _shottimeelapsed;
         private bool ShootCheck()
         {
-            _shottimeelapsed += _TimerA._TimeElapsed;
+            _shottimeelapsed += _TimerA._MilisecondsElapsed;
             foreach (Player p in _Game._Players)
             {
 
 
                 if (p._Team != _Team && CheckVisibility2(p))
                 {
-                    _nextAngle = (float)(Calculator.VectorToRadians(p._Position - _Position) / Math.PI * 180);
+                    _nextAngle = (float)(DCalculator.VectorToRadians(p._Position - _Position) / Math.PI * 180);
 
 
                     if (_shottimeelapsed > _Game._ShootInterval * 1.5)
@@ -135,8 +135,8 @@ namespace CounterStrikeLive.Controls
                         _TimerA.AddMethod(_EasyBots ? 1000 : 500, Shoot);
                     }
 
-                    float a = Calculator.DistanceBetweenPointAndLineSegment(p._Position, _Position, _nwtp.ToVector());
-                    float b = Calculator.DistanceBetweenPointAndLineSegment(p._Position, _Position, _oldtp.ToVector());
+                    float a = DCalculator.DistanceBetweenPointAndLineSegment(p._Position, _Position, _nwtp.ToVector());
+                    float b = DCalculator.DistanceBetweenPointAndLineSegment(p._Position, _Position, _oldtp.ToVector());
                     if (b < a)
                     {
                         Helper.Switch(ref _nwtp, ref _oldtp);
@@ -159,7 +159,7 @@ namespace CounterStrikeLive.Controls
         {
             
             if (_EasyBots && (_Position - p._Position).Length() > 3000) return false;
-            //float a1 = Animation.Cangl(Calculator.VectorToRadians(this._Position - p._Position) * Calculator.DegreesToRadiansRatio);
+            //float a1 = Animation.Cangl(DCalculator.VectorToRadians(this._Position - p._Position) * DCalculator.DegreesToRadiansRatio);
             //float a2 = Animation.Cangl(a1 - p._Angle + 45);
             //if (Math.Abs(a2) < 90)
             {

@@ -1,7 +1,7 @@
 ﻿#if (!XNA)
 using System;
 
-namespace FarseerGames.FarseerPhysics.Mathematics
+namespace doru.Mathematics
 {
     public struct Matrix2
     {
@@ -28,13 +28,13 @@ namespace FarseerGames.FarseerPhysics.Mathematics
         }
         public void Rotate(float _Radians)
         {
-            //_Angle=Calculator.DegreesToRadians(_Angle);
+            //_Angle=DCalculator.DegreesToRadians(_Angle);
             Matrix2 _Matrix2 = CreateRotationZ(_Radians);
             Matrix2.Multiply(ref this,ref _Matrix2, out this);
             //Matrix2 _Matrix2 = new Matrix2();
-            //_Angle=Calculator.DegreesToRadians(_Angle);
-            //_Matrix2.M22 = _Matrix2.M11 = Calculator.Cos(_Angle);
-            //_Matrix2.M12 = Calculator.Sin(_Angle);
+            //_Angle=DCalculator.DegreesToRadians(_Angle);
+            //_Matrix2.M22 = _Matrix2.M11 = DCalculator.Cos(_Angle);
+            //_Matrix2.M12 = DCalculator.Sin(_Angle);
             //_Matrix2.M21 = -M12;
             //this = this + _Matrix2;
         }

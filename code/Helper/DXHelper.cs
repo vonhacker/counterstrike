@@ -2,7 +2,16 @@
 
 using System.Collections.Generic;
 using System.Text;
+
+#if PocketPC
 using Microsoft.WindowsMobile.DirectX.Direct3D;
+using Matrix=Microsoft.WindowsMobile.DirectX.Matrix;
+using Vector3 = Microsoft.WindowsMobile.DirectX.Vector3;
+#else
+using Microsoft.DirectX.Direct3D;
+using Matrix = Microsoft.DirectX.Matrix;
+using Vector3 = Microsoft.DirectX.Vector3;
+#endif
 using System.Windows.Forms;
 using System.Drawing;
 using PolygonCuttingEar;
@@ -24,11 +33,11 @@ namespace doru
     public class Dx
     {
         
-        public static IEnumerable<CustomVertex.TransformedColored> ToVertex(IEnumerable<CPoint2D[]> polygons)
+        public static IEnumerable<CustomVertex.PositionColored> ToVertex(IEnumerable<CPoint2D[]> polygons)
         {
             foreach (CPoint2D[] polygon in polygons)
                 foreach (CPoint2D cp in polygon)
-                    yield return new CustomVertex.TransformedColored((float)cp.X, (float)cp.Y, .5f, 1, Color.Black.ToArgb());
+                    yield return new CustomVertex.PositionColored((float)cp.X, (float)cp.Y, 0,  Color.Black.ToArgb());
         }
 
         public static IEnumerable<CPoint2D> ToCpoints(IEnumerable<Vector2> points)
@@ -45,52 +54,75 @@ namespace doru
 
             _This = this;
         }
-        Device dev;
-        
+        Device device;
+        Form _Form;
         public void Load(Form form)
         {
-            
+            _Form = form;
             PresentParameters presentParams = new PresentParameters();
             presentParams.Windowed = true;
             presentParams.SwapEffect = SwapEffect.Discard;
-            dev = new Device(0, DeviceType.Default, form, CreateFlags.None, presentParams);
-            
+            //presentParams.AutoDepthStencilFormat = DepthFormat.D16;
+            //presentParams.EnableAutoDepthStencil = true;
+#if(PocketPC)
+            device = new Device(0, DeviceType.Default, form, CreateFlags.None, presentParams);
+#else
+            device = new Device(0, DeviceType.Hardware, form, CreateFlags.SoftwareVertexProcessing, presentParams);            
+            device.DeviceReset += delegate {  };
+#endif            
         }
 
         public IEnumerable<IPolygon> _Polygons;
 
 
-
-        public void Draw()
+        public void Draw(float x , float y)
         {
-            dev.Clear(ClearFlags.Target, Color.Blue, 1.0f, 0);
+            CameraPositioning(x,y);
+            device.Clear(ClearFlags.Target, Color.Blue, 1.0f, 0);
             try
             {
-                dev.BeginScene();
+                device.BeginScene();
             } catch { }            
             UpdateVertex();
-            dev.SetStreamSource(0, _vertexBuffer, 0);
-            dev.DrawPrimitives(PrimitiveType.TriangleList, 0, _trianglecount);
-            dev.EndScene();
-            dev.Present();
-        }
-        
-        private CustomVertex.TransformedColored[] GetOldVerts()
-        {
-            var verts = new CustomVertex.TransformedColored[3]
+            //int s = 10;
+            //array = new CustomVertex.PositionColored[3]{
+            //    new CustomVertex.PositionColored(s,0,0,Color.Red.ToArgb()),
+            //    new CustomVertex.PositionColored(s,s,0,Color.Red.ToArgb()),
+            //    new CustomVertex.PositionColored(0,s,0,Color.Red.ToArgb()),                                
+                
+            //};
+            //_trianglecount = 1;
+            
+            device.Transform.World = Matrix.Translation(x,y, 0);
+#if (!PocketPC)
+            device.VertexFormat = CustomVertex.PositionColored.Format;
+#endif
+            using (VertexBuffer _VertexBuffer = new VertexBuffer(typeof(CustomVertex.PositionColored), array.Length, device, Usage.None, CustomVertex.PositionColored.Format, vertexBufferPool))
             {
-                new CustomVertex.TransformedColored(32,0,0,1,System.Drawing.Color.Red.ToArgb()),
-                new CustomVertex.TransformedColored(32,32,0,1,System.Drawing.Color.Red.ToArgb()),
-                new CustomVertex.TransformedColored(0,32,0,1,System.Drawing.Color.Red.ToArgb()),                
-            };                        
-            return verts;
+                _VertexBuffer.SetData(array, 0, LockFlags.None);
+                device.SetStreamSource(0, _VertexBuffer, 0);
+                device.DrawPrimitives(PrimitiveType.TriangleList, 0, _trianglecount);
+                device.EndScene();
+                device.Present();
+            }
         }
-
+        private void CameraPositioning(float x , float y)
+        {
+            device.Transform.Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4,  1, 1f, 15000f);
+            device.Transform.View = Matrix.LookAtLH(new Vector3(0, 0, 2000), new Vector3(0, 0, 0), new Vector3(0, -1, 0));
+            //device.Transform.View = Matrix.LookAtLH(new Vector3(0, 0, -1000), new Vector3(0, 0, 0), new Vector3(0, 1, 0));
+            device.RenderState.Lighting = false;
+            device.RenderState.CullMode = Cull.None;
+        }
+#if(PocketPC)
+        Pool vertexBufferPool = Pool.VideoMemory;
+#else
+        Pool vertexBufferPool = Pool.Default;
+#endif
         void UpdateVertex()
         {
-            
-            Pool vertexBufferPool = dev.DeviceCaps.SurfaceCaps.SupportsVidVertexBuffer ? Pool.VideoMemory : Pool.SystemMemory;
-            IEnumerable<CustomVertex.TransformedColored> vertex = new CustomVertex.TransformedColored[0];
+
+            IEnumerable<CustomVertex.PositionColored> vertex = new CustomVertex.PositionColored[0];
             _trianglecount = 0;
             foreach (IPolygon p in _Polygons)
             {
@@ -99,11 +131,12 @@ namespace doru
                 _trianglecount += cp.NumberOfPolygons;
                 vertex = H.Concat(vertex, ToVertex(cp.Polygons()));
             }
-            CustomVertex.TransformedColored[] array = H.ToArray(Reverence(vertex));
+            array = H.ToArray(vertex);
             Trace.Assert(array.Length > 0);
-            _vertexBuffer = new VertexBuffer(typeof(CustomVertex.TransformedColored), array.Length, dev, 0, CustomVertex.TransformedColored.Format, vertexBufferPool);
-            _vertexBuffer.SetData(array, 0, LockFlags.None);
+            
+            
         }
+        CustomVertex.PositionColored[] array;
         public IEnumerable<T> Reverence<T>(IEnumerable<T> t)
         {
             List<T> list = new List<T>(t);
@@ -111,7 +144,6 @@ namespace doru
             foreach (T i in list)            
                 yield return i;            
         }
-        VertexBuffer _vertexBuffer;
         public int _trianglecount;
 
     }

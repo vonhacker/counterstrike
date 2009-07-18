@@ -13,7 +13,7 @@ namespace doru
 {
     namespace Vectors
     {
-        public class Line2
+        public class DLine2
         {
             public Vector _p1; public Vector _p2; public Vector _cpoint;
         }

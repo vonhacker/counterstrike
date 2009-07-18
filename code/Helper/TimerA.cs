@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 
+
 namespace doru
 {
     public class TimerA
@@ -26,8 +27,11 @@ namespace doru
         int miliseconds;
         public void Update()
         {
-            miliseconds = Environment.TickCount - _Ticks;
-            _MilisecondsElapsed = miliseconds - oldtime;
+            while (miliseconds == oldtime)
+            {
+                miliseconds = Environment.TickCount - _Ticks;
+            };
+            _MilisecondsElapsed = miliseconds - oldtime ;
             oldtime = miliseconds;
             fpstimes++;
             totalfps += 1000 / _MilisecondsElapsed;

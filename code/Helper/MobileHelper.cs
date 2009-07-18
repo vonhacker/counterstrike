@@ -8,12 +8,20 @@ using System.Diagnostics;
 using System.Collections;
 using System.Net.Sockets;
 using System.Threading;
+using System.Drawing;
+using FarseerGames.FarseerPhysics.Mathematics;
 
 namespace doru
 {
-    public delegate void Action();
-    public class H
+#if(PocketPC)
+        public delegate void Action();
+#endif
+    public partial class H
     {
+        public static Point ToPoint(Vector2 v)
+        {
+            return new Point((int)v.X, (int)v.Y);
+        }
         public static Random r= new Random();
         public static T[] ToArray<T>(IEnumerable<T> t)
         {

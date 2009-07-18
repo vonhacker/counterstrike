@@ -6,7 +6,7 @@ using System.Text;
 using Microsoft.WindowsMobile.DirectX; 
 #endif
 
-namespace FarseerGames.FarseerPhysics.Mathematics {
+namespace doru.Mathematics {
     public class ConvertUnits {
         private static float _displayUnitsToSimUnitsRatio = 50;
         private static float _simUnitsToDisplayUnitsRatio = 1 / _displayUnitsToSimUnitsRatio;

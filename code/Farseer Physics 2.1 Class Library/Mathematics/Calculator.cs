@@ -85,20 +85,33 @@ namespace FarseerGames.FarseerPhysics.Mathematics
             return v.Length();
         }
 
-        public static float DistanceBetweenPointAndLineSegment(Vector2 point, Vector2 lineEndPoint1,
-                                                               Vector2 lineEndPoint2)
+        public static float DistanceBetweenPointAndLineSegment(Vector2 point, Vector2 lineEndPoint1, Vector2 lineEndPoint2)
+        {
+            Vector2 pointOnLine;
+            return DistanceBetweenPointAndLineSegment(point, lineEndPoint1, lineEndPoint2, out pointOnLine);
+        }
+        public static float DistanceBetweenPointAndLineSegment(Vector2 point, Vector2 lineEndPoint1, Vector2 lineEndPoint2, out Vector2 pointOnLine)
         {
             Vector2 v = Vector2.Subtract(lineEndPoint2, lineEndPoint1);
             Vector2 w = Vector2.Subtract(point, lineEndPoint1);
 
             float c1 = Vector2.Dot(w, v);
-            if (c1 <= 0) return DistanceBetweenPointAndPoint(point, lineEndPoint1);
+            if (c1 <= 0)
+            {
+                pointOnLine = lineEndPoint1;
+                return DistanceBetweenPointAndPoint(point, lineEndPoint1);
+            }
 
             float c2 = Vector2.Dot(v, v);
-            if (c2 <= c1) return DistanceBetweenPointAndPoint(point, lineEndPoint2);
 
-            float b = c1/c2;
-            Vector2 pointOnLine = Vector2.Add(lineEndPoint1, Vector2.Multiply(v, b));
+            if (c2 <= c1)
+            {
+                pointOnLine = lineEndPoint2;
+                return DistanceBetweenPointAndPoint(point, lineEndPoint2);
+            }
+
+            float b = c1 / c2;
+            pointOnLine = Vector2.Add(lineEndPoint1, Vector2.Multiply(v, b));
             return DistanceBetweenPointAndPoint(point, pointOnLine);
         }
 

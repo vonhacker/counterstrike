@@ -7,7 +7,7 @@ using System.Diagnostics;
 using Microsoft.WindowsMobile.DirectX; 
 #endif
 
-namespace FarseerGames.FarseerPhysics.Mathematics {
+namespace doru.Mathematics {
     /// <summary>
     /// Encapsulates the logic to do bilinear interpolation
     /// .V1    .V4
@@ -49,28 +49,28 @@ namespace FarseerGames.FarseerPhysics.Mathematics {
             
             //quadrant 1
             if (x>0 && y > 0) {
-                theta = Calculator.ATan2(y, x);
+                theta = DCalculator.ATan2(y, x);
                 lerpValue = theta * twoOverPi;
                 circleValue1 = MathHelper.Lerp(value1, value2, lerpValue);
                 circleValue2 = MathHelper.Lerp(value3, value4, lerpValue);
                 value = MathHelper.Lerp(circleValue1, circleValue2, (1 - d) * .5f);
             }
             if (x < 0 && y > 0) {
-                theta = Calculator.ATan2(y, x);
+                theta = DCalculator.ATan2(y, x);
                 lerpValue = (theta - MathHelper.PiOver2) * twoOverPi;
                 circleValue1 = MathHelper.Lerp(value2, value3, lerpValue);
                 circleValue2 = MathHelper.Lerp(value4, value1, lerpValue);
                 value = MathHelper.Lerp(circleValue1, circleValue2, (1 - d) * .5f);
             }
             if(x<0 && y <0){
-                theta = Calculator.ATan2(y, x) + MathHelper.TwoPi;
+                theta = DCalculator.ATan2(y, x) + MathHelper.TwoPi;
                 lerpValue = (theta-MathHelper.Pi) * twoOverPi;
                 circleValue1 = MathHelper.Lerp(value3, value4, lerpValue);
                 circleValue2 = MathHelper.Lerp(value1, value2, lerpValue);
                 value = MathHelper.Lerp(circleValue1, circleValue2, (1 - d) * .5f);
             }
             if (x > 0 && y < 0) {
-                theta = Calculator.ATan2(y, x) + MathHelper.TwoPi;
+                theta = DCalculator.ATan2(y, x) + MathHelper.TwoPi;
                 lerpValue = (theta - 3*MathHelper.PiOver2) * twoOverPi;
                 circleValue1 = MathHelper.Lerp(value4, value1, lerpValue);
                 circleValue2 = MathHelper.Lerp(value2, value3, lerpValue);

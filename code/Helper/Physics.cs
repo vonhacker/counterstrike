@@ -49,7 +49,7 @@ namespace doru
 			}
 		}
 
-		//public class Calculator
+		//public class DCalculator
 		//{
 
 		//    public static float DistanceBetweenPointAndLineSegment(Vector point, Vector lineEndPoint1, Vector lineEndPoint2, out Vector pointOnLine)

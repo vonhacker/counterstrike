@@ -11,10 +11,11 @@ using System.Windows.Shapes;
 using System.Collections.Generic;
 using System.Windows.Media.Imaging;
 using System.Linq;
-using FarseerGames.FarseerPhysics.Mathematics;
+using doru.Mathematics;
 using doru.VectorWorld;
 using doru;
 using LevelEditor4;
+using doru.Vectors;
 
 namespace CounterStrikeLive
 {    
@@ -35,7 +36,7 @@ namespace CounterStrikeLive
             return _MapDatabase._TStartPos;
         }
 
-        public Line2 CCollision(Vector2 pos1, float r)
+        public doru.Mathematics.Line2 CCollision(Vector2 pos1, float r)
         {
             foreach(MapDatabase.Polygon _Polygon in _Polygons)
             {
@@ -46,7 +47,7 @@ namespace CounterStrikeLive
                     if(_oldPoint != null)
                     {
                         Vector2 Temp;
-                        float dist = Calculator.DistanceBetweenPointAndLineSegment(pos1, _point, _oldPoint.Value, out Temp);
+                        float dist = DCalculator.DistanceBetweenPointAndLineSegment(pos1, _point, _oldPoint.Value, out Temp);
                         if(dist < r)
                         {
                             return new Line2 { _p1 = _oldPoint.Value, _p2 = _point, _cpoint = Temp };
@@ -58,7 +59,7 @@ namespace CounterStrikeLive
             return null;
         }        
         
-        public List<LV> Collision(Vector2 pos2, Vector2 pos1, out Line2 _wall)
+        public List<LV> Collision(Vector2 pos2, Vector2 pos1, out doru.Mathematics.Line2 _wall)
         {
             
             _wall = null;
@@ -172,7 +173,7 @@ namespace CounterStrikeLive
         public class LV
         {
             public Vector2 _Vector2;
-            public Line2 _Line2;
+            public doru.Mathematics.Line2 _Line2;
         }
     }
 

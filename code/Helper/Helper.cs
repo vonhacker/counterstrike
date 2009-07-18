@@ -34,11 +34,6 @@ namespace doru
     public partial class H
     {
         public static DebugState _TraceState { get { return (DebugState)int.Parse(Resource1._TraceLevel); } }
-        [DebuggerStepThrough]
-        public static void Assert(bool p)
-        {
-            if (!p) Debugger.Break();
-        }
     }
     
     //[DebuggerStepThrough]

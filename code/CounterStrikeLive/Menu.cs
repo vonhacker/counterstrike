@@ -10,7 +10,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.IO;
 using System.Xml.Serialization;
-using FarseerGames.FarseerPhysics.Mathematics;
+using doru.Mathematics;
 using System.Windows.Media;
 using System.Net.Sockets;
 using System.Windows.Browser;
@@ -94,7 +94,7 @@ namespace CounterStrikeLive
             ((Storyboard)Resources["DamageStoryboard"]).Begin();
             App.Current.Host.Content.Resized += new EventHandler(Content_Resized);
             App.Current.Host.Content.FullScreenChanged += new EventHandler(Content_FullScreenChanged);
-            if (App.Current.Host.Source.DnsSafeHost.Length == 0) throw new Exception("Break");
+            if (App.Current.Host.Source.DnsSafeHost.Length == 0) throw new Exception("could not find host");
             _ScoreBoard.Hide();
             _host = App.Current.Host.Source.DnsSafeHost;
             new Downloader().Download("Config.xml", delegate(Stream s)
@@ -631,7 +631,7 @@ namespace CounterStrikeLive
                 else _TextBlock.Text = "";
             }
             if (_TextBlock.Text.Length > 0)
-                _Elapsed += Menu._TimerA._TimeElapsed;
+                _Elapsed += Menu._TimerA._MilisecondsElapsed;
 
         }
 

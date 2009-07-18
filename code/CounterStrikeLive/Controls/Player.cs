@@ -10,7 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Collections.Generic;
-using FarseerGames.FarseerPhysics.Mathematics;
+using doru.Mathematics;
 using System.Windows.Media.Imaging;
 using doru;
 using CounterStrikeLive.Service;
@@ -150,7 +150,7 @@ namespace CounterStrikeLive
             {
                 if (_Player!= this)
                 {
-                    float _distance = Calculator.DistanceBetweenPointAndPoint(this._Position, _Player._Position);
+                    float _distance = DCalculator.DistanceBetweenPointAndPoint(this._Position, _Player._Position);
                     if (_distance < 100)
                     {
                         Vector2 _Vector2 = _Player._Position - _Position;
@@ -190,7 +190,7 @@ namespace CounterStrikeLive
 				if (_OldPosition != default(Vector2) && _OldPosition != _Position)
 				{
 					UpdateCollisions();
-					float dir = Calculator.VectorToRadians(_Position - _OldPosition) * Calculator.DegreesToRadiansRatio;
+					float dir = DCalculator.VectorToRadians(_Position - _OldPosition) * DCalculator.DegreesToRadiansRatio;
 					float dir2 = Cangl(dir - _Angle);
 					_State = State._run;
 					if (dir2 > 45 && dir2 < 135) _State = State._run_right;
@@ -310,7 +310,7 @@ namespace CounterStrikeLive
         {
             if (_IsSlowDown)
             {
-                _slowdowntimeelapsed += Menu._TimerA._TimeElapsed;
+                _slowdowntimeelapsed += Menu._TimerA._MilisecondsElapsed;
                 if (_slowdowntimeelapsed > 1000)
                 {
                     _IsSlowDown = false;

@@ -1,4 +1,4 @@
-﻿<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(MSBuildToolsVersion)' == '3.5'">
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
@@ -67,6 +67,14 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="Helper1.cs" />
+    <Compile Include="Mathematics\BilinearInterpolator.cs" />
+    <Compile Include="Mathematics\Calculator.cs" />
+    <Compile Include="Mathematics\CircularInterpolator.cs" />
+    <Compile Include="Mathematics\ConvertUnits.cs" />
+    <Compile Include="Mathematics\MathHelper.cs" />
+    <Compile Include="Mathematics\Matrix.cs" />
+    <Compile Include="Mathematics\Vector2.cs" />
+    <Compile Include="Mathematics\Vector3.cs" />
     <Compile Include="NotifyPropertyChangedExt2.cs" />
     <Compile Include="Physics.cs" />
     <Compile Include="PhysicsSl.cs" />

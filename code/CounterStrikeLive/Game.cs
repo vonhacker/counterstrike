@@ -10,7 +10,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.IO;
 using System.Xml.Serialization;
-using FarseerGames.FarseerPhysics.Mathematics;
+using doru.Mathematics;
 using System.Windows.Media;
 using System.Net.Sockets;
 using System.Windows.Browser;
@@ -397,11 +397,11 @@ namespace CounterStrikeLive
                 float _x = (float)(_Mouse.X - _LocalPlayer._x);
                 float _y = (float)(_Mouse.Y - _LocalPlayer._y);
                 Vector2 _Vector2 = new Vector2(_x, _y);
-                _LocalPlayer._Angle = (Calculator.VectorToRadians(_Vector2) / Calculator.RadiansToDegreesRatio);
+                _LocalPlayer._Angle = (DCalculator.VectorToRadians(_Vector2) / DCalculator.RadiansToDegreesRatio);
 
                 if (Menu._MouseLeftButtonDown && _Patrons != 0 && !_LocalPlayer._isReloading)
                 {
-                    _ShootTimeElapsed += Menu._TimerA._TimeElapsed;
+                    _ShootTimeElapsed += Menu._TimerA._MilisecondsElapsed;
                     if (_ShootTimeElapsed > _ShootInterval)
                     {
 
@@ -491,7 +491,7 @@ namespace CounterStrikeLive
 
             Vector2 _MaxShootPoint = new Vector2(0, -5000);
             Vector2 _PlayerPos = new Vector2(_x, _y);
-            Calculator.RotateVector(ref _MaxShootPoint, Calculator.DegreesToRadians(_Angle));
+            DCalculator.RotateVector(ref _MaxShootPoint, DCalculator.DegreesToRadians(_Angle));
             _MaxShootPoint += _PlayerPos;
             Line2 _Line2;
             List<Map.LV> _Collisions = _Map.Collision(_MaxShootPoint, _PlayerPos, out _Line2);
@@ -499,7 +499,7 @@ namespace CounterStrikeLive
             if (_Collisions.Count > 0)
             {
                 Vector2 _VectorHoleRotation = new Vector2(0, -10);
-                Calculator.RotateVector(ref _VectorHoleRotation, Calculator.DegreesToRadians(_Angle));
+                DCalculator.RotateVector(ref _VectorHoleRotation, DCalculator.DegreesToRadians(_Angle));
 
                 Vector2 _CollisionPos;
                 _CollisionPos = _Collisions.First()._Vector2;
@@ -532,7 +532,7 @@ namespace CounterStrikeLive
                         if (_ShootingPlayer != _EnemyPlayer)
                         {
                             Vector2 _CollisionPoint;
-                            float dist = Calculator.DistanceBetweenPointAndLineSegment(_EnemyPlayer._Position, _CollisionPos, _PlayerPos, out _CollisionPoint);
+                            float dist = DCalculator.DistanceBetweenPointAndLineSegment(_EnemyPlayer._Position, _CollisionPos, _PlayerPos, out _CollisionPoint);
                             if (dist < 40)
                             {
                                 Animation _BloodExplosion = new Animation();
@@ -568,7 +568,7 @@ namespace CounterStrikeLive
 
                                     if (_EnemyPlayer is LocalPlayer)
                                     {
-                                        _Menu._DamageRotation.Angle = Calculator.VectorToRadians(_ShootingPlayer._Position - _EnemyPlayer._Position) * Calculator.DegreesToRadiansRatio;
+                                        _Menu._DamageRotation.Angle = DCalculator.VectorToRadians(_ShootingPlayer._Position - _EnemyPlayer._Position) * DCalculator.DegreesToRadiansRatio;
                                         ((Storyboard)_Menu.Resources["DamageStoryboard"]).Begin();
                                     }
                                     _EnemyPlayer._IsSlowDown = true;
