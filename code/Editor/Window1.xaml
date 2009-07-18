@@ -1,0 +1,16 @@
+﻿<Window x:Class="Editor.Window1"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Window1" Height="300" Width="300" WindowState="Maximized">
+    <Grid>
+        <Canvas Background="White" Name="_Root">
+            <Canvas Name="_PolygonsCanvas"></Canvas>
+        </Canvas>
+        <Menu VerticalAlignment="Top" Height="20">
+        	<MenuItem Margin="0" Header="_File">
+        		<MenuItem Header="_Save" Click="Save_Click"  />
+            </MenuItem>
+            <MenuItem Name="_WallMenuItem" IsEnabled="False" Header="_Wall" IsCheckable="True" Unchecked="Wall_Unchecked" Checked="Wall_Checked"/>
+        </Menu>
+    </Grid>
+</Window>
