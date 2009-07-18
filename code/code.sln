@@ -111,6 +111,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "16Vertices", "Vertices\16Ve
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BallGameMobile", "BallGame\BallGameMobile.csproj", "{17B02620-623E-46CC-9228-FD078B0EC8EC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BallGameDesktop", "BallGame\BallGameDesktop.csproj", "{3C00D758-A568-4524-AE66-0DB0CADF5144}"
+EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True
@@ -605,6 +607,16 @@ Global
 		{17B02620-623E-46CC-9228-FD078B0EC8EC}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{17B02620-623E-46CC-9228-FD078B0EC8EC}.Release|Mixed Platforms.Deploy.0 = Release|Any CPU
 		{17B02620-623E-46CC-9228-FD078B0EC8EC}.Release|x86.ActiveCfg = Release|Any CPU
+		{3C00D758-A568-4524-AE66-0DB0CADF5144}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C00D758-A568-4524-AE66-0DB0CADF5144}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C00D758-A568-4524-AE66-0DB0CADF5144}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{3C00D758-A568-4524-AE66-0DB0CADF5144}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{3C00D758-A568-4524-AE66-0DB0CADF5144}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3C00D758-A568-4524-AE66-0DB0CADF5144}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C00D758-A568-4524-AE66-0DB0CADF5144}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C00D758-A568-4524-AE66-0DB0CADF5144}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{3C00D758-A568-4524-AE66-0DB0CADF5144}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{3C00D758-A568-4524-AE66-0DB0CADF5144}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
