@@ -32,8 +32,16 @@ namespace doru
 
     public static class Extensions
     {
+        public static double Length(this Point p)
+        {
+            return Math.Sqrt(p.X * p.X + p.Y * p.Y);
+        }
 
-
+        public static T AddOrSelect<T>(this IList<T> ie, T t)
+        {
+            if (!ie.Contains(t)) ie.Add(t);
+            return t;
+        }
         public static T Trace<T>(this T t)
         {
             return Trace(t, "");
@@ -143,7 +151,13 @@ namespace doru
         }
         public static double GetX(this UIElement fw)
         {
-            return Canvas.GetLeft(fw);
+            double a = Canvas.GetLeft(fw);
+            if (double.IsNaN(a))
+            {
+                "nan".Trace();
+                return 0;
+            }
+            return a;
         }
         public static double GetY(this UIElement fw)
         {
@@ -413,7 +427,11 @@ namespace doru
         {
             return String.Format("0x{0:x}", b);
         }
-
+        public static byte[] ToHexTrace(this byte[] _bytes)
+        {
+            _bytes.ToHex().Trace();
+            return _bytes;
+        }
         public static string ToHex(this byte[] _bytes)
         {
             StringBuilder sb = new StringBuilder();
@@ -441,6 +459,19 @@ namespace doru
             foreach (byte b in _bytes)
                 s += b + " ";
             return s;
+        }
+
+        public static uint ToUInt16(this byte[] bts)
+        {
+            return BitConverter.ToUInt16(bts, 0);
+        }
+        public static int ToInt(this byte[] bts)
+        {
+            return BitConverter.ToInt32(bts, 0);
+        }
+        public static int ToInt16(this byte[] bts)
+        {
+            return BitConverter.ToInt16(bts, 0);
         }
         public static string ToStr(this byte[] _Bytes)
         {

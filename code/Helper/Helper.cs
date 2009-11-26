@@ -36,6 +36,7 @@ namespace doru
         public static DebugState _TraceState { get { return (DebugState)int.Parse(Resource1._TraceLevel); } }
     }
     
+    
     //[DebuggerStepThrough]
     public class ExceptionC : Exception
     {

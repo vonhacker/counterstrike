@@ -67,7 +67,6 @@ namespace doru
         }        
         public void AddMethod(int _Miliseconds, Action _Action)
         {
-            //if (_List.FirstOrDefault(a => a._Action == _Action) == null)
             _List.Add(new CA { _Action = _Action, _Miliseconds = _Miliseconds });
         }
 

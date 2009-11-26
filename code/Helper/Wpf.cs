@@ -12,6 +12,19 @@ namespace doru
 {
     public static class WpfExtensions
     {
+        public static Ellipse Default(this Ellipse nw)
+        {
+            nw.StrokeThickness = 2;
+            nw.Fill = new SolidColorBrush(Colors.Red);
+            nw.Stroke = new SolidColorBrush(Colors.Black);
+            return nw;
+        }
+        public static Polyline Default(this Polyline nw)
+        {
+            nw.StrokeThickness = 2;
+            nw.Stroke = new SolidColorBrush(Colors.Black);
+            return nw;
+        }
         public static Polygon Default(this Polygon nw)
         {
             nw.Fill = new SolidColorBrush(Colors.Red);

@@ -56,6 +56,12 @@ namespace doru
 
 	public static class Extensions3
 	{
+        public static void Deserialize<T>(this XmlSerializer a, string s,ref T obj)
+        {
+            using (Stream ss = File.OpenRead(s))
+                obj=(T)a.Deserialize(ss);
+            
+        }
         public static T DeserealizeOrCreate<T>(this XmlSerializer x, string path, T t)
         {
 
@@ -172,7 +178,7 @@ namespace doru
         }
 
 
-        public static int updateInterval = 10;
+        public static int updateInterval = 20;
 		public static void StartUpdate(this Dispatcher ds, Action d)
 		{
 			d();
@@ -591,7 +597,8 @@ namespace doru
                 //new Thread(StartReadConsole).StartBackground();
                 Console.Title = Assembly.GetEntryAssembly().GetName().Name;
                 if (_RedirectOutPut)
-                    Trace.Listeners.Add(new TextWriterTraceListener(Console.OpenStandardOutput()));
+                    Trace.Listeners.Add(new ConsoleTraceListener(true));
+                    //Trace.Listeners.Add(new TextWriterTraceListener(Console.OpenStandardOutput()));
             }
             Trace.AutoFlush = true;
             Trace.WriteLine("Programm Started " + DateTime.Now);

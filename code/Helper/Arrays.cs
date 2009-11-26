@@ -34,6 +34,7 @@ namespace doru
 	{
         public BindableList()
         {
+            
 
         }
         

@@ -2,9 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-#if (XNA)
-using Microsoft.WindowsMobile.DirectX; 
-#endif
 
 namespace doru.Mathematics {
     public class ConvertUnits {

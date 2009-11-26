@@ -29,8 +29,16 @@ namespace doru
     public partial class Helper : H { }
     public partial class H
     {
-        
 
+        public static string GetLnk(string path)
+        {
+            if (!path.EndsWith(".lnk", true, null)) return null;
+            IWshRuntimeLibrary.IWshShell shell = new IWshRuntimeLibrary.WshShell();
+
+            IWshRuntimeLibrary.IWshShortcut shortcut = (IWshRuntimeLibrary.IWshShortcut)shell.CreateShortcut(path);
+            return shortcut.TargetPath;
+
+        }
         public static void ShowMessageBox(string s)
         {
             System.Windows.MessageBox.Show(s);

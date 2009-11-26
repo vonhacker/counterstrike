@@ -18,9 +18,27 @@ namespace doru
 #endif
     public partial class H
     {
+        public static void Trace(object o)
+        {
+            Debug.WriteLine(o);
+        }
+        
         public static Point ToPoint(Vector2 v)
         {
             return new Point((int)v.X, (int)v.Y);
+        }
+        public static IEnumerable<T> Add<T>(IEnumerable<T> tt,T t)
+        {
+            foreach (var a in tt)
+                yield return a;
+            yield return t;
+        }
+        
+        public static T First<T>(IEnumerable<T> tt)
+        {
+             var a=tt.GetEnumerator();
+             a.MoveNext();
+            return a.Current;
         }
         public static Random r= new Random();
         public static T[] ToArray<T>(IEnumerable<T> t)
@@ -132,9 +150,11 @@ namespace doru
             }
         }
 
-        public static void Trace(object p)
-        {
-            Debug.WriteLine(p);
-        }
+        
+
+        //public static void Trace(object p)
+        //{
+        //    Debug.WriteLine(p);
+        //}
     }
 }

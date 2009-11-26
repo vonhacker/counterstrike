@@ -126,6 +126,8 @@ namespace doru
 		bool fAttach);
 		[DllImport("user32.dll")]
 		static extern IntPtr GetFocus();
+        [DllImport("user32.dll")]
+        public static extern bool SetCursorPos(int X, int Y);
 		[DllImport("user32.dll")]
 		static extern int SendMessage(IntPtr hWnd, uint Msg, int wParam, StringBuilder lParam);
 		// second overload of SendMessage
