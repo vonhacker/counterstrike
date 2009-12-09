@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{637BB856-61E4-50F8-4ADD-F3FCE3F02F79}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Irrelevant</RootNamespace>
+    <AssemblyName>Irrelvant</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>Svn</SccProjectName>
+    <SccLocalPath>Svn</SccLocalPath>
+    <SccAuxPath>Svn</SccAuxPath>
+    <SccProvider>SubversionScc</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Temp\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Temp\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Core" />
+    <Reference Include="UnityEngine">
+      <HintPath>C:/Program Files/Unity/Editor/Data/lib/UnityEngine-Debug.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor">
+      <HintPath>C:/Program Files/Unity/Editor/Data/lib/UnityEditor.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Assets\Detonator\System\Detonator.cs" />
+    <Compile Include="Assets\Detonator\System\DetonatorBurstEmitter.cs" />
+    <Compile Include="Assets\Detonator\System\DetonatorCloudRing.cs" />
+    <Compile Include="Assets\Detonator\System\DetonatorFireball.cs" />
+    <Compile Include="Assets\Detonator\System\DetonatorForce.cs" />
+    <Compile Include="Assets\Detonator\System\DetonatorGlow.cs" />
+    <Compile Include="Assets\Detonator\System\DetonatorHeatwave.cs" />
+    <Compile Include="Assets\Detonator\System\DetonatorLight.cs" />
+    <Compile Include="Assets\Detonator\System\DetonatorShockwave.cs" />
+    <Compile Include="Assets\Detonator\System\DetonatorSmoke.cs" />
+    <Compile Include="Assets\Detonator\System\DetonatorSound.cs" />
+    <Compile Include="Assets\Detonator\System\DetonatorSparks.cs" />
+    <Compile Include="Assets\Detonator\System\DetonatorSpray.cs" />
+    <Compile Include="Assets\Detonator\TestScene\DetonatorTest.cs" />
+    <Compile Include="Assets\mygame\script\Base.cs" />
+    <Compile Include="Assets\mygame\script\blood.cs" />
+    <Compile Include="Assets\mygame\script\Cam.cs" />
+    <Compile Include="Assets\mygame\script\CameraFacingBillboard.cs" />
+    <Compile Include="Assets\mygame\script\ConnectGui.cs" />
+    <Compile Include="Assets\mygame\script\DebugConsole.cs" />
+    <Compile Include="Assets\mygame\script\Gun.cs" />
+    <Compile Include="Assets\mygame\script\init.cs" />
+    <Compile Include="Assets\mygame\script\LGUI.cs" />
+    <Compile Include="Assets\mygame\script\LockRotate.cs" />
+    <Compile Include="Assets\mygame\script\MClass.cs" />
+    <Compile Include="Assets\mygame\script\Patron.cs" />
+    <Compile Include="Assets\mygame\script\PL.cs" />
+    <Compile Include="Assets\mygame\script\PLView.cs" />
+    <Compile Include="Assets\mygame\script\Rig.cs" />
+    <Compile Include="Assets\mygame\script\SpawnPrefab.cs" />
+    <Compile Include="Assets\mygame\script\TimerA.cs" />
+    <None Include="Assets\Detonator\Resources\Detonator\Textures\HeatDistort.shader" />
+    <None Include="Assets\Detonator\Sample Supporting Emitters\Detonator Spray Helper.js" />
+    <None Include="Assets\Detonator\TestScene\DetonatorTest.js" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+	   Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
