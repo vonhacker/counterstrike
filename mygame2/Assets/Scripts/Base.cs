@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class Base : MonoBehaviour
 {
@@ -17,9 +18,11 @@ public class Base : MonoBehaviour
     protected virtual void OnDisconnectedFromServer() { }
     protected virtual void Awake() { }
     protected virtual void OnApplicationQuit(){}
-    protected virtual void OnPlayerDisconnected(NetworkPlayer player) { }    
+    protected virtual void OnPlayerDisconnected(NetworkPlayer player) { }
+    protected virtual void OnCollisionEnter(Collision collisionInfo) { }
+    protected virtual void OnNetworkInstantiate(NetworkMessageInfo info) { }
     public virtual void OnSetID() { }
-    public bool IsMine { get { return networkView.isMine; } }  
+    public bool isMine { get { return networkView.isMine; } }  
       
     public void RPC(Group group, RPCMode mode, string fc, params object[] obs)
     {
@@ -64,16 +67,12 @@ public class Base : MonoBehaviour
     {        
         return (T)Component.FindObjectOfType(typeof(T));
     }
-    public NetworkPlayer? OwnerID;
-
-    [RPC]
-    void SetID(NetworkPlayer player)
+    public NetworkPlayer? OwnerID
     {
-        foreach (Base a in GetComponentsInChildren(typeof(Base)))
-        {
-            a.OwnerID = player;
-            a.OnSetID();
-        }
-    }       
+        get { return _OwnerID; }
+        set { _OwnerID = value; pwnerID2 = value.HasValue ? value.Value.GetHashCode() : -2; }
+    }
+    NetworkPlayer? _OwnerID;
+    public int pwnerID2 = -2;        
     
 }
