@@ -20,21 +20,23 @@ public class Player : Base {
         
         if (Network.isServer && !isMine)
             foreach (Player p in Component.FindObjectsOfType(typeof(Player)))
-                p.SetScore(p.score);
+                p.RPCSetScore(p.score);
 
         if (isMine)
-        {
-            SetID(Network.player);
+        {            
+            RPCSetID(Network.player);
             foreach (GameObject a in GameObject.FindGameObjectsWithTag("Box"))
-                AssignID(int.Parse(a.name), Network.AllocateViewID());
+                RPCAssignID(int.Parse(a.name), Network.AllocateViewID());
+            RPCSpawn();
         }
+        
     }
     
     [RPC]
-    public void SetID(NetworkPlayer player)
+    public void RPCSetID(NetworkPlayer player)
     {
-        
-        CallBuffered(Group.Player, "SetID", player);
+
+        CallBuffered(Group.Player, "RPCSetID", player);
         foreach (Base a in GetComponentsInChildren(typeof(Base)))
         {
             a.OwnerID = player;
@@ -43,12 +45,13 @@ public class Player : Base {
     }
 
     [RPC]
-    public void SetLife(int NwLife)
+    public void RPCSetLife(int NwLife)
     {
-        CallLast(Group.Life, "SetLife", NwLife);
+        CallLast(Group.Life, "RPCSetLife", NwLife);
         if (isMine)
+        {                        
             blood.Hit(Mathf.Abs(NwLife - Life));
-                
+        }       
         if (NwLife < 0)
             Die();
         Life = NwLife;
@@ -57,14 +60,32 @@ public class Player : Base {
 
     TimerA _TimerA { get { return Find<FpsCounter>().timer; } }
     [RPC]
-    public void Spawn()
+    public void RPCSpawn()
     {
-        Call("Spawn");
+        Call("RPCSpawn");
         Show(true);
         rigidbody.velocity = Vector3.zero;
         rigidbody.angularVelocity = Vector3.zero;
         Life = 100;
         transform.position = SpawnPoint();
+    }
+    [RPC]
+    public void RPCSetScore(int i)
+    {
+        Call("RPCSetScore", i);
+        score = i;
+    }
+    [RPC]
+    public void RPCAssignID(int i, NetworkViewID id)
+    {
+        CallBuffered(Group.Rig, "RPCAssignID", i, id);
+        Trace.Log("Assign index:" + i + " id:" + id + " isMine:" + isMine);
+        GameObject g = GameObject.Find(i.ToString());
+        NetworkView nw = g.AddComponent<NetworkView>();
+        nw.group = (int)Group.Rig;
+        nw.observed = g.rigidbody;
+        nw.stateSynchronization = NetworkStateSynchronization.ReliableDeltaCompressed;
+        nw.viewID = id;
     }
 
     private void Show(bool value)
@@ -72,14 +93,13 @@ public class Player : Base {
         enabled = value;
         renderer.enabled = value;
     }
-    
 
     protected virtual void Die()
     {
         
         if (isMine)
         {
-            _TimerA.AddMethod(2000, Spawn);            
+            _TimerA.AddMethod(2000, RPCSpawn);            
         }
 
         Show(false);
@@ -88,15 +108,8 @@ public class Player : Base {
         {
             foreach(Player p in GameObject.FindObjectsOfType(typeof(Player)))
                 if(p.OwnerID == killedyby)
-                     SetScore(score + (killedyby == Network.player ? -1 : 1));            
+                     RPCSetScore(score + (killedyby == Network.player ? -1 : 1));            
         }
-    }
-    
-    [RPC]
-    public void SetScore(int i)
-    {
-        Call("SetScore", i);
-        score = i;
     }
             
     public Vector3 SpawnPoint()
@@ -104,21 +117,7 @@ public class Player : Base {
         return spawn.transform.GetChild(Random.Range(0, transform.childCount)).transform.position;
     }
 
-    
     public NetworkPlayer killedyby;
-    [RPC]
-    public void AssignID(int i, NetworkViewID id)
-    {
-        CallBuffered(Group.Rig, "AssignID",i, id);
-        Trace.Log("Assign index:" + i + " id:" + id + " isMine:" + isMine);
-        GameObject g = GameObject.Find(i.ToString());        
-        NetworkView nw = g.AddComponent<NetworkView>();
-        nw.group = (int)Group.Rig;
-        nw.observed = g.rigidbody;
-        nw.stateSynchronization = NetworkStateSynchronization.ReliableDeltaCompressed;
-        nw.viewID = id;
-    }
-
     
     public override void OnSetID()
     {
@@ -130,7 +129,9 @@ public class Player : Base {
             LocalFixedUpdate();
         
     }
-
+    protected override void Update()
+    {        
+    }
     protected override void OnCollisionEnter(Collision collisionInfo)
     {
         if (isMine)
@@ -138,7 +139,7 @@ public class Player : Base {
                 if (a.otherCollider.tag == "Box" && a.otherCollider.rigidbody.velocity.magnitude > 20)
                 {
                     killedyby = a.otherCollider.GetComponent<Base>().OwnerID.Value;
-                    SetLife(Life - (int)a.otherCollider.rigidbody.velocity.magnitude);
+                    RPCSetLife(Life - (int)a.otherCollider.rigidbody.velocity.magnitude);
                 }
 
     }

@@ -4,10 +4,18 @@ public class Box : Base
 {
     [RPC]
     void SetScopeTrue(NetworkMessageInfo info)
-    {        
+    {
+        Trace.LogError(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Set SCope By SErveR?" + (info.sender == Network.player));
         foreach (NetworkPlayer p in Network.connections)
             info.networkView.SetScope(p, true);
         SetOwner(info.networkView.owner);
+    }
+    [RPC]
+    void SetScopeFalse(NetworkMessageInfo info)
+    {
+
+        foreach (NetworkPlayer p in Network.connections)
+            info.networkView.SetScope(p, false);
     }
 
     [RPC]
@@ -27,13 +35,7 @@ public class Box : Base
                 nw.SetScope(player, false);
     }
 
-    [RPC]
-    void SetScopeFalse(NetworkMessageInfo info)
-    {
-        
-        foreach (NetworkPlayer p in Network.connections)
-            info.networkView.SetScope(p, false);
-    }
+    
 } 
 
 
