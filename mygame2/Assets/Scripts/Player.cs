@@ -7,11 +7,12 @@ public class Player : Base {
     Cam _cam { get { return Find<Cam>(); } }
     Blood blood { get { return Find<Blood>(); } }
     Spawn spawn { get { return Find<Spawn>(); } }
+    ConnectionGUI connectionGui { get { return Find<ConnectionGUI>(); } }
     public bool isdead { get { return !enabled; } }
     public float force = 400;
     public float angularvel = 600;
     public int Life;
-    public int Nick;
+    public string Nick;
     public int score;
     
 
@@ -23,7 +24,8 @@ public class Player : Base {
                 p.RPCSetScore(p.score);
 
         if (isMine)
-        {            
+        {
+            RPCSetNick(connectionGui.Nick);
             RPCSetID(Network.player);
             foreach (GameObject a in GameObject.FindGameObjectsWithTag("Box"))
                 RPCAssignID(int.Parse(a.name), Network.AllocateViewID());
@@ -31,7 +33,12 @@ public class Player : Base {
         }
         
     }
-    
+    [RPC]
+    void RPCSetNick(string nick)
+    {
+        CallLast(Group.Nick, "RPCSetNick", nick);
+        Nick = nick;
+    }
     [RPC]
     public void RPCSetID(NetworkPlayer player)
     {

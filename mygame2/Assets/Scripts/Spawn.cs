@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-public enum Group { PlView, Player, Default,Rig,Life,Spawn }    
+public enum Group { PlView, Player, Default,Rig,Life,Spawn,Nick }    
 public class Spawn : Base
 {
     public Transform _Player;
@@ -9,12 +9,7 @@ public class Spawn : Base
     {
         Network.Instantiate(_Player, Vector3.zero, Quaternion.identity, (int)Group.Player);
     }
-    protected override void Start()
-    {
-
-        
-        
-    }
+    
 
     protected override void OnPlayerDisconnected(NetworkPlayer player)
     {

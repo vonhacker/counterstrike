@@ -6,9 +6,10 @@ public class Gun : Base
     Weapon weapon;
     Quaternion q;
     public int gravdist = 20;
+    public float ShootPower = 5000f;
     public int grawforce = 20;
     public bool MouseDown1;
-    void SetMouseDown(bool b)
+    void LocalSetMouseDown(bool b)
     {
         if (MouseDown1 == b) return;
         MouseDown1 = b;
@@ -27,9 +28,10 @@ public class Gun : Base
 
     private void LocalUpdate()
     {
-        SetMouseDown(Input.GetMouseButton(1));
-
+        
+        LocalSetMouseDown(Input.GetMouseButton(1));
         LocalUpdatePowerGun();
+        if (Screen.lockCursor && Input.GetMouseButtonDown(0)) LocalReleaseGravitaty();
         if (MouseDown1 && weapon == Weapon.AntiGrawitaty)
             foreach (GameObject a in GameObject.FindGameObjectsWithTag("Box"))
                 a.rigidbody.AddExplosionForce(-grawforce, cur2.position, gravdist);
@@ -44,6 +46,13 @@ public class Gun : Base
             else
                 LocalSetEnabled(a, false);
         }
+    }
+    
+    void LocalReleaseGravitaty()
+    {
+        foreach (GameObject a in GameObject.FindGameObjectsWithTag("Box"))
+            if (Vector3.Distance(a.transform.position, cur2.position) < gravdist)
+                a.rigidbody.AddForce(transform.TransformDirection(Vector3.forward) * ShootPower);
     }
 
     private void LocalSetEnabled(GameObject a, bool value)

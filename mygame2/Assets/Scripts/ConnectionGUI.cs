@@ -4,7 +4,8 @@ using System.Diagnostics;
 using System.Threading;
 public class Trace : UnityEngine.Debug { }
 public class ConnectionGUI : Base
-{ 
+{
+    public string Nick { get { return PlayerPrefs.GetString("Nick"); } set { PlayerPrefs.SetString("Nick",value); } }
     const int port = 5300;
     public string ip { get { return PlayerPrefs.GetString("ip"); } set { PlayerPrefs.SetString("ip", value); } }
     private void InitServer()
@@ -26,6 +27,7 @@ public class ConnectionGUI : Base
 
             if (GUILayout.Button("Connect"))
                 Network.Connect(ip, port);
+            Nick = GUILayout.TextField(Nick);                
 
             if (GUILayout.Button("host"))
                 InitServer();
