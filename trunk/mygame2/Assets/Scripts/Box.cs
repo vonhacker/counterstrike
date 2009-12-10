@@ -5,7 +5,7 @@ public class Box : Base
     [RPC]
     void SetScopeTrue(NetworkMessageInfo info)
     {
-        Trace.LogError(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Set SCope By SErveR?" + (info.sender == Network.player));
+        if(!Network.isServer) Trace.LogError(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Set SCope By SErveR?" + Network.isServer + (info.sender == Network.player));
         foreach (NetworkPlayer p in Network.connections)
             info.networkView.SetScope(p, true);
         SetOwner(info.networkView.owner);
@@ -21,8 +21,8 @@ public class Box : Base
     [RPC]
     public void SetOwner(NetworkPlayer np)
     {
-        
-        CallLast(Group.Rig, "SetOwner", np);
+
+        CallLast(Group.SetOwner, "SetOwner", np);
         OwnerID = np;        
     }
 

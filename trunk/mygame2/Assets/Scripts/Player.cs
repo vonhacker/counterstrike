@@ -33,6 +33,20 @@ public class Player : Base {
         }
         
     }
+
+    [RPC]
+    public void RPCAssignID(int i, NetworkViewID id)
+    {
+        CallBuffered(Group.RPCAssignID, "RPCAssignID", i, id);
+        Trace.Log("Assign index:" + i + " id:" + id + " isMine:" + isMine);
+        GameObject g = GameObject.Find(i.ToString());
+        NetworkView nw = g.AddComponent<NetworkView>();
+        nw.group = (int)Group.RPCAssignID;
+        nw.observed = g.rigidbody;
+        nw.stateSynchronization = NetworkStateSynchronization.ReliableDeltaCompressed;
+        nw.viewID = id;
+    }
+
     [RPC]
     void RPCSetNick(string nick)
     {
@@ -82,18 +96,7 @@ public class Player : Base {
         Call("RPCSetScore", i);
         score = i;
     }
-    [RPC]
-    public void RPCAssignID(int i, NetworkViewID id)
-    {
-        CallBuffered(Group.Rig, "RPCAssignID", i, id);
-        Trace.Log("Assign index:" + i + " id:" + id + " isMine:" + isMine);
-        GameObject g = GameObject.Find(i.ToString());
-        NetworkView nw = g.AddComponent<NetworkView>();
-        nw.group = (int)Group.Rig;
-        nw.observed = g.rigidbody;
-        nw.stateSynchronization = NetworkStateSynchronization.ReliableDeltaCompressed;
-        nw.viewID = id;
-    }
+    
 
     private void Show(bool value)
     {
@@ -143,7 +146,7 @@ public class Player : Base {
     {
         if (isMine)
             foreach (ContactPoint a in collisionInfo.contacts)
-                if (a.otherCollider.tag == "Box" && a.otherCollider.rigidbody.velocity.magnitude > 20)
+                if (a.otherCollider.tag == "Box" && a.otherCollider.rigidbody.velocity.magnitude > 20 && enabled)
                 {
                     killedyby = a.otherCollider.GetComponent<Base>().OwnerID.Value;
                     RPCSetLife(Life - (int)a.otherCollider.rigidbody.velocity.magnitude);
