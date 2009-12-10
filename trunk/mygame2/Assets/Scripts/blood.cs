@@ -16,7 +16,7 @@ public class Blood : Base
     public float uron = 255f;
     public float repair = .4f;
     public void Hit(int hit)
-    {        
+    {         
         GUITexture[] gs = this.GetComponentsInChildren<GUITexture>();
         GUITexture g = gs[Random.Range(0, gs.Length - 1)];
         g.color += new Color(0, 0, 0, Mathf.Min(.7f, hit / uron));
