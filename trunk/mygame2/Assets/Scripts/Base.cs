@@ -7,6 +7,7 @@ public class Base : MonoBehaviour
     // Use this for initialization
     protected virtual void OnPlayerConnected(NetworkPlayer player) { }
     protected virtual void OnLevelWasLoaded(int level) { }
+    protected virtual void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info) { }
     protected virtual void Start() { }
     protected virtual void FixedUpdate() { }
     protected virtual void Update() { }

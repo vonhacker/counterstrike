@@ -13,7 +13,7 @@ public class Player : Base {
             foreach (GameObject a in GameObject.FindGameObjectsWithTag("Box"))
                 AssignID(int.Parse(a.name), Network.AllocateViewID());
     }
-    public Gun gun;
+    
     [RPC]
     public void AssignID(int i, NetworkViewID id)
     {
