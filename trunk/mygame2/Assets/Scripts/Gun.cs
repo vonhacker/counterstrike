@@ -18,9 +18,9 @@ public class Gun : Base
 
     protected override void Update()
     {
-        if (IsMine) q = Find<Cam>().transform.rotation;
+        if (isMine) q = Find<Cam>().transform.rotation;
         this.transform.rotation = q;
-        if (IsMine)
+        if (isMine)
             LocalUpdate();
 
     }
@@ -29,38 +29,39 @@ public class Gun : Base
     {
         SetMouseDown(Input.GetMouseButton(1));
 
-        UpdatePowerGun();
+        LocalUpdatePowerGun();
         if (MouseDown1 && weapon == Weapon.AntiGrawitaty)
             foreach (GameObject a in GameObject.FindGameObjectsWithTag("Box"))
                 a.rigidbody.AddExplosionForce(-grawforce, cur2.position, gravdist);
     }
-    private void UpdatePowerGun()
+    private void LocalUpdatePowerGun()
     {
         GameObject[] cts = GameObject.FindGameObjectsWithTag("Box");
         foreach(GameObject a in GameObject.FindGameObjectsWithTag("Box"))
         {            
             if (MouseDown1 && Vector3.Distance(a.transform.position, cur2.position) < gravdist)
-                SetEnabled(a, true);
+                LocalSetEnabled(a, true);
             else
-                SetEnabled(a, false);
+                LocalSetEnabled(a, false);
         }
     }
 
-    private void SetEnabled(GameObject a, bool value)
+    private void LocalSetEnabled(GameObject a, bool value)
     {
+
         foreach (NetworkView b in a.GetComponents<NetworkView>())
             if (b.isMine)
             {
                 if (b.enabled != value)
                 {
                     b.enabled = value;
-                    if (!Network.isServer)
+                    if (value)
                     {
-                        if (value)
-                            b.RPC("SetScopeTrue", RPCMode.Server);
-                        else
-                            b.RPC("SetScopeFalse", RPCMode.Server);
+                        a.GetComponent<Box>().SetOwner(Network.player);
+                        b.RPC("SetScopeTrue", RPCMode.Server);//server not included
                     }
+                    else
+                        b.RPC("SetScopeFalse", RPCMode.Server);//server not included
                 }
             }
     }

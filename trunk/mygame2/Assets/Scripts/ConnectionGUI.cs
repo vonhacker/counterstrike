@@ -5,8 +5,6 @@ using System.Threading;
 public class Trace : UnityEngine.Debug { }
 public class ConnectionGUI : Base
 { 
-    
-
     const int port = 5300;
     public string ip { get { return PlayerPrefs.GetString("ip"); } set { PlayerPrefs.SetString("ip", value); } }
     private void InitServer()
@@ -55,8 +53,4 @@ public class ConnectionGUI : Base
         if (enabled)
             Application.LoadLevel(Application.loadedLevel);
     }
-    
-    
-
-
 }

@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
-public enum Group { PlView, Player, Default,Rig }    
+public enum Group { PlView, Player, Default,Rig,Life,Spawn }    
 public class Spawn : Base
 {
     public Transform _Player;
 
     protected override void OnNetworkLoadedLevel()
     {
-        NetworkInstantiate(_Player, Vector3.zero, Quaternion.identity, Group.Player);        
+        Network.Instantiate(_Player, Vector3.zero, Quaternion.identity, (int)Group.Player);
     }
     protected override void Start()
     {
@@ -32,14 +32,7 @@ public class Spawn : Base
         nw.enabled = false;
         Component.Destroy(nw);
 
-    }
-
-    public void NetworkInstantiate(Object prefab, Vector3 position, Quaternion rotation, Group group)
-    {
-        Transform t = (Transform)Network.Instantiate(prefab, position, rotation, (int)group);
-        t.networkView.group = (int)group;
-        t.networkView.RPC("SetID", RPCMode.AllBuffered, Network.player);
-    }
+    }    
     
 }
   
