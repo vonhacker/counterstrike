@@ -12,7 +12,7 @@ public class Gun : Base
     {
         if (MouseDown1 == b) return;
         MouseDown1 = b;
-
+        
     }
     Transform cur2 { get { return transform.Find("cursor2").transform; } }
 
