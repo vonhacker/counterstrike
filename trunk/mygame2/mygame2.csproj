@@ -43,7 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Base.cs" />
-    <Compile Include="Assets\Scripts\lood.cs" />
+    <Compile Include="Assets\Scripts\Blood.cs" />
     <Compile Include="Assets\Scripts\Box.cs" />
     <Compile Include="Assets\Scripts\Cam.cs" />
     <Compile Include="Assets\Scripts\ConnectionGUI.cs" />
