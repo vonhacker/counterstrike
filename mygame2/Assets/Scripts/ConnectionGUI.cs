@@ -25,11 +25,11 @@ public class ConnectionGUI : Base
 
             ip = GUILayout.TextField(ip);
 
-            if (GUILayout.Button("Connect"))
+            if (GUILayout.Button("Connect") && Nick.Length > 0)
                 Network.Connect(ip, port);
-            Nick = GUILayout.TextField(Nick);                
+            Nick = GUILayout.TextField(Nick);
 
-            if (GUILayout.Button("host"))
+            if (GUILayout.Button("host") && Nick.Length > 0)
                 InitServer();
         }
     } 

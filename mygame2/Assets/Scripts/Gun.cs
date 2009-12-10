@@ -64,13 +64,14 @@ public class Gun : Base
                 if (b.enabled != value)
                 {
                     b.enabled = value;
-                    if (value)
-                    {
-                        a.GetComponent<Box>().SetOwner(Network.player);
-                        b.RPC("SetScopeTrue", RPCMode.Server);//server not included
-                    }
-                    else
-                        b.RPC("SetScopeFalse", RPCMode.Server);//server not included
+                    if (value) a.GetComponent<Box>().SetOwner(Network.player);
+                    if (!Network.isServer)
+                        if (value)
+                        {
+                            b.RPC("SetScopeTrue", RPCMode.Server);
+                        }
+                        else
+                            b.RPC("SetScopeFalse", RPCMode.Server);
                 }
             }
     }
