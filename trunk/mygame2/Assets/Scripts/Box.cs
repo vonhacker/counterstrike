@@ -2,55 +2,32 @@
 using System.Collections;
 public class Box : Base
 {
-    [RPC]
-    void SetScopeTrue(NetworkMessageInfo info)
+
+    Vector2 spawn;
+    protected override void Start()
     {
-        if(!Network.isServer) Trace.LogError(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Set SCope By SErveR?" + Network.isServer + (info.sender == Network.player));
-        foreach (NetworkPlayer p in Network.connections)
-            info.networkView.SetScope(p, true);        
+        spawn = this.transform.position;
+    }
+    
+    protected override void Update()
+    {
+        if (!GameObject.Find("Cube").collider.bounds.Contains(this.transform.position))
+        {
+            this.transform.rigidbody.velocity = Vector3.zero;
+            this.transform.position = spawn;
+        }
     }
     [RPC]
-    void SetScopeFalse(NetworkMessageInfo info)
+    void SetOwner(NetworkPlayer owner, NetworkMessageInfo a)
     {
-
-        foreach (NetworkPlayer p in Network.connections)
-            info.networkView.SetScope(p, false);
-    }
-
-    [RPC]
-    public void SetOwner(NetworkPlayer np)
-    {                
-
-        OwnerID = np;        
-    }
-
-
-
-    protected override void OnPlayerConnected(NetworkPlayer player)
-    {
-        foreach (NetworkView nw in this.GetComponents<NetworkView>())
-            if (!nw.isMine)
-                nw.SetScope(player, false);
+        foreach (NetworkView b in this.GetComponents<NetworkView>())
+            b.observed = null;
+        a.networkView.observed = this.rigidbody;
+        OwnerID = owner;
     }
 
     
 } 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

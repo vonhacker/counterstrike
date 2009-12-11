@@ -56,7 +56,7 @@ public class Base : MonoBehaviour
         }
     }
 
-    public T Find<T>(string s) where T : Component
+    public T Find<T>(string s) where T : Component 
     {
         GameObject g = GameObject.Find(s);
         if (g != null) return g.GetComponent<T>();
