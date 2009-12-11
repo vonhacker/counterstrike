@@ -74,7 +74,7 @@ public class Player : Base {
             blood.Hit(Mathf.Abs(NwLife - Life));
         }       
         if (NwLife < 0)
-            Die();
+            RPCDie();
         Life = NwLife;
 
     }
@@ -104,22 +104,22 @@ public class Player : Base {
         renderer.enabled = value;
     }
 
-    protected virtual void Die()
+    public void RPCDie()
     {
         
         if (isMine)
         {
-            _TimerA.AddMethod(2000, RPCSpawn);            
+            _TimerA.AddMethod(2000, RPCSpawn);
+            foreach (Player p in GameObject.FindObjectsOfType(typeof(Player)))
+                if (p.OwnerID == killedyby)
+                    if (p.isMine)
+                        RPCSetScore(score - 1);
+                    else
+                        p.RPCSetScore(score + 1);
+
         }
 
-        Show(false);
-        
-        if (isMine)
-        {
-            foreach(Player p in GameObject.FindObjectsOfType(typeof(Player)))
-                if(p.OwnerID == killedyby)
-                     RPCSetScore(score + (killedyby == Network.player ? -1 : 1));            
-        }
+        Show(false);                
     }
             
     public Vector3 SpawnPoint()
