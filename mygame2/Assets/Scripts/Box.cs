@@ -7,8 +7,7 @@ public class Box : Base
     {
         if(!Network.isServer) Trace.LogError(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Set SCope By SErveR?" + Network.isServer + (info.sender == Network.player));
         foreach (NetworkPlayer p in Network.connections)
-            info.networkView.SetScope(p, true);
-        SetOwner(info.networkView.owner);
+            info.networkView.SetScope(p, true);        
     }
     [RPC]
     void SetScopeFalse(NetworkMessageInfo info)
