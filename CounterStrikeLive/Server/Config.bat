@@ -1,1 +1,0 @@
-start notepad bin\Debug\Server.exe.config
