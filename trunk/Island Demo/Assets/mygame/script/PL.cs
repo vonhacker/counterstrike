@@ -113,7 +113,7 @@ public class PL : Base
 
     void OnCollisionEnter(Collision collisionInfo)
     {
-        if (isMine)
+        if (isMine && enabled)
             foreach (ContactPoint a in collisionInfo.contacts)
                 if (a.otherCollider.tag == "Rig" && a.otherCollider.rigidbody.velocity.magnitude > 20)
                 {
