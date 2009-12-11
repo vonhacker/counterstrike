@@ -7,7 +7,7 @@ using doru;
 
 public class FpsCounter : Base
 {
-    public TimerA timer= new TimerA();
+    public TimerA timer = new TimerA();
 
     protected override void Update()
     {
@@ -21,7 +21,7 @@ namespace doru
 {
     public class TimerA
     {
-        public delegate void Action();        
+        public delegate void Action();
         int _Ticks = Environment.TickCount;
         int oldtime;
 
@@ -36,21 +36,22 @@ namespace doru
                 totalfps = 0;
                 if (fps == double.PositiveInfinity) return 0;
                 return fps;
-            } else return 0;
+            }
+            else return 0;
         }
         int miliseconds;
         public void Update()
         {
-            while (miliseconds == oldtime)
+            miliseconds = Environment.TickCount - _Ticks;
+            _MilisecondsElapsed = miliseconds - oldtime;
+            if (_MilisecondsElapsed > 0)
             {
-                miliseconds = Environment.TickCount - _Ticks;
-            };
-            _MilisecondsElapsed = miliseconds - oldtime ;
-            oldtime = miliseconds;
-            fpstimes++;
-            totalfps += 1000 / _MilisecondsElapsed;
+                oldtime = miliseconds;
+                fpstimes++;
+                totalfps += 1000 / _MilisecondsElapsed;
 
-            UpdateActions();
+                UpdateActions();
+            }
         }
 
         private void UpdateActions()
@@ -78,7 +79,7 @@ namespace doru
                 return true;
             else
                 return false;
-        }        
+        }
         public void AddMethod(int _Miliseconds, Action _Action)
         {
             CA ca = new CA();
