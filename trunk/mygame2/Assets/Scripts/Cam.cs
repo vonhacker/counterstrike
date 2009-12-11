@@ -1,3 +1,4 @@
+//test
 using UnityEngine;
 using System.Collections;
 public class Cam : Base
