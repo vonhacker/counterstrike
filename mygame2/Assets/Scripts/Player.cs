@@ -19,9 +19,9 @@ public class Player : Base {
     protected override void Start()
     {
         
-        if (Network.isServer && !isMine)
-            foreach (Player p in Component.FindObjectsOfType(typeof(Player)))
-                p.RPCSetScore(p.score);
+        //if (Network.isServer && !isMine)
+        //    foreach (Player p in Component.FindObjectsOfType(typeof(Player)))
+                                
 
         if (isMine)
         {
@@ -33,7 +33,10 @@ public class Player : Base {
         }
         
     }
-
+    protected override void OnPlayerConnected(NetworkPlayer player)
+    {
+        networkView.RPC("RPCSetScore", player, score);        
+    }
     [RPC]
     public void RPCAssignID(int i, NetworkViewID id)
     {
@@ -42,7 +45,7 @@ public class Player : Base {
         GameObject g = GameObject.Find(i.ToString());
         NetworkView nw = g.AddComponent<NetworkView>();
         nw.group = (int)Group.RPCAssignID;
-        nw.observed = g.rigidbody;
+        nw.observed = null;
         nw.stateSynchronization = NetworkStateSynchronization.ReliableDeltaCompressed;
         nw.viewID = id;
     }
@@ -80,10 +83,11 @@ public class Player : Base {
     }
 
     TimerA _TimerA { get { return Find<FpsCounter>().timer; } }
+
     [RPC]
     public void RPCSpawn()
     {
-        Call("RPCSpawn");
+        CallLast(Group.Spawn,"RPCSpawn");
         Show(true);
         rigidbody.velocity = Vector3.zero;
         rigidbody.angularVelocity = Vector3.zero;
@@ -92,8 +96,7 @@ public class Player : Base {
     }
     [RPC]
     public void RPCSetScore(int i)
-    {
-        Call("RPCSetScore", i);
+    {        
         score = i;
     }
     
@@ -112,10 +115,12 @@ public class Player : Base {
             _TimerA.AddMethod(2000, RPCSpawn);
             foreach (Player p in GameObject.FindObjectsOfType(typeof(Player)))
                 if (p.OwnerID == killedyby)
+                {                    
                     if (p.isMine)
-                        RPCSetScore(score - 1);
+                        networkView.RPC("RPCSetScore", RPCMode.All, score - 1);                        
                     else
-                        p.RPCSetScore(score + 1);
+                        p.networkView.RPC("RPCSetScore", RPCMode.All, score + 1);                        
+                }
 
         }
 
@@ -126,7 +131,7 @@ public class Player : Base {
     {
         return spawn.transform.GetChild(Random.Range(0, transform.childCount)).transform.position;
     }
-
+    
     public NetworkPlayer killedyby;
     
     public override void OnSetID()
