@@ -19,9 +19,8 @@ public class Box : Base
 
     [RPC]
     public void SetOwner(NetworkPlayer np)
-    {
+    {                
 
-        CallLast(Group.SetOwner, "SetOwner", np);
         OwnerID = np;        
     }
 

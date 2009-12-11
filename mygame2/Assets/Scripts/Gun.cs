@@ -55,23 +55,25 @@ public class Gun : Base
                 a.rigidbody.AddForce(transform.TransformDirection(Vector3.forward) * ShootPower);
     }
 
-    private void LocalSetEnabled(GameObject a, bool value)
-    {
-
-        foreach (NetworkView b in a.GetComponents<NetworkView>())
-            if (b.isMine)
+    private void LocalSetEnabled(GameObject gameObject, bool value)
+    {       
+        foreach (NetworkView networkView in gameObject.GetComponents<NetworkView>())
+            if (networkView.isMine)
             {
-                if (b.enabled != value)
+                if (networkView.enabled != value)
                 {
-                    b.enabled = value;
-                    if (value) a.GetComponent<Box>().SetOwner(Network.player);
+                    networkView.enabled = value;
+                    if (value)
+                    {
+                        networkView.group = (int)Group.SetOwner;
+                        Network.RemoveRPCs(networkView.owner, (int)Group.SetOwner);
+                        networkView.RPC("SetOwner", RPCMode.AllBuffered, Network.player);
+                    }
                     if (!Network.isServer)
                         if (value)
-                        {
-                            b.RPC("SetScopeTrue", RPCMode.Server);
-                        }
+                            networkView.RPC("SetScopeTrue", RPCMode.Server);
                         else
-                            b.RPC("SetScopeFalse", RPCMode.Server);
+                            networkView.RPC("SetScopeFalse", RPCMode.Server);
                 }
             }
     }

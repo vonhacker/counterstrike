@@ -20,10 +20,11 @@ public class ScoreBoard : Base
             {
                 GUILayout.Space(20);
                 foreach (Player a in FindObjectsOfType(typeof(Player)))
-                    GUILayout.Label(a.networkView.isMine + ":" + a.OwnerID + "," + a.networkView.viewID.owner + "     Nick:" + a.Nick + " Score:" + a.score +
+                    GUILayout.Label("isMine:" + a.networkView.isMine + "  Owner:" + a.OwnerID.ToString() + "     Nick:" + a.Nick + " Score:" + a.score +
                         "     Life:" + a.Life + "    Ping:" + Network.GetLastPing(a.OwnerID.Value) +
                         "   IPAddress:" + a.OwnerID.Value.ipAddress + "port:" + a.OwnerID.Value.port);
                 GUILayout.Label("<<<<Debug>>>>");
+                
                 foreach (NetworkPlayer a in Network.connections)
                     GUILayout.Label(a.ipAddress + " " + a.port + " " + a);
                 
