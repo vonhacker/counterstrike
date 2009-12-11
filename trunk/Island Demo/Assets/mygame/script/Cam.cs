@@ -10,8 +10,8 @@ public class Cam : MonoBehaviour
     public float xSpeed = 120.0f;
     public float ySpeed = 120.0f;
 
-    public float yMinLimit = -20f;
-    public float yMaxLimit = 80f;
+    public float yMinLimit = -90f;
+    public float yMaxLimit = 90f;
 
     float x = 0.0f;
     float y = 0.0f;
