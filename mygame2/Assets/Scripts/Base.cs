@@ -12,6 +12,7 @@ public class Base : MonoBehaviour
     protected virtual void Start() { }
     protected virtual void FixedUpdate() { }
     protected virtual void Update() { }
+
     protected virtual void OnNetworkLoadedLevel() { }
     protected virtual void OnGUI() { }
     protected virtual void OnConnectedToServer() { }
