@@ -1,13 +1,15 @@
 using UnityEngine;
 using System.Collections;
 using doru;
-
+public enum Movement : int { Fly, Move }
 public class Player : Base {
-
+    public float flyForce = 300;
+    public float maxVelocityChange = 10.0f;
     Cam _cam { get { return Find<Cam>(); } }
     Blood blood { get { return Find<Blood>(); } }
     Spawn spawn { get { return Find<Spawn>(); } }
     ConnectionGUI connectionGui { get { return Find<ConnectionGUI>(); } }
+    TimerA _TimerA { get { return Find<FpsCounter>().timer; } }
     public bool isdead { get { return !enabled; } }
     public float force = 400;
     public float angularvel = 600;
@@ -19,10 +21,6 @@ public class Player : Base {
     protected override void Start()
     {
         
-        //if (Network.isServer && !isMine)
-        //    foreach (Player p in Component.FindObjectsOfType(typeof(Player)))
-                                
-
         if (isMine)
         {
             RPCSetNick(connectionGui.Nick);
@@ -37,6 +35,63 @@ public class Player : Base {
     {
         networkView.RPC("RPCSetScore", player, score);        
     }
+    public override void OnSetID()
+    {
+        if (isMine)
+            name = "LocalPlayer";
+        else
+            name = "RemotePlayer" + OwnerID;
+    }
+    protected override void FixedUpdate()
+    {
+        if (isMine)
+            LocalFixedUpdate();
+
+    }
+    protected override void Update()
+    {
+        if (isMine)
+            if (Input.GetKeyDown(KeyCode.F))
+                RPCSetMovement((int)(movement == Movement.Fly ? Movement.Move : Movement.Fly));
+    }
+    private void LocalFixedUpdate()
+    {
+        
+
+        if (movement == Movement.Move)
+            LocalMove();
+        else if (movement == Movement.Fly)
+            LocalFly();
+    }
+    private void LocalMove()
+    {
+        Vector3 moveDirection = Vector3.zero;
+        moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+        moveDirection = _cam.transform.TransformDirection(moveDirection);
+        moveDirection.y = 0;
+        moveDirection.Normalize();
+        this.rigidbody.AddTorque(new Vector3(moveDirection.z, 0, -moveDirection.x) * Time.deltaTime * angularvel);
+        this.rigidbody.AddForce(moveDirection * Time.deltaTime * force);
+    }
+    private void LocalFly()
+    {
+        Vector3 moveDirection = Vector3.zero;
+        moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+        moveDirection = _cam.transform.TransformDirection(moveDirection);
+        if (Input.GetKey(KeyCode.LeftControl))
+            moveDirection.y -= 1;
+        if (Input.GetKey(KeyCode.Space))
+            moveDirection.y += 1;
+        moveDirection.Normalize();
+        this.rigidbody.AddForce(moveDirection * Time.deltaTime * flyForce);
+        this.rigidbody.velocity = Clamp(this.rigidbody.velocity,maxVelocityChange);
+    }
+    
+    public Vector3 SpawnPoint()
+    {
+        return spawn.transform.GetChild(Random.Range(0, transform.childCount)).transform.position;
+    }
+
     [RPC]
     public void RPCAssignID(int i, NetworkViewID id)
     {
@@ -82,7 +137,7 @@ public class Player : Base {
 
     }
 
-    TimerA _TimerA { get { return Find<FpsCounter>().timer; } }
+    
 
     [RPC]
     public void RPCSpawn()
@@ -119,54 +174,45 @@ public class Player : Base {
                     if (p.isMine)
                         networkView.RPC("RPCSetScore", RPCMode.All, score - 1);                        
                     else
-                        p.networkView.RPC("RPCSetScore", RPCMode.All, score + 1);                        
+                        p.networkView.RPC("RPCSetScore", RPCMode.All, p.score + 1);                        
                 }
 
         }
 
         Show(false);                
     }
-            
-    public Vector3 SpawnPoint()
-    {
-        return spawn.transform.GetChild(Random.Range(0, transform.childCount)).transform.position;
-    }
     
     public NetworkPlayer killedyby;
     
-    public override void OnSetID()
-    {
-        if (!isMine) name += "Remote";        
-    }
-    protected override void FixedUpdate()
-    {
-        if(isMine) 
-            LocalFixedUpdate();
-        
-    }
-    protected override void Update()
-    {        
-    }
     protected override void OnCollisionEnter(Collision collisionInfo)
     {
         if (isMine)
             foreach (ContactPoint a in collisionInfo.contacts)
-                if (a.otherCollider.tag == "Box" && a.otherCollider.rigidbody.velocity.magnitude > 20 && enabled)
+                if (a.otherCollider.tag == "Box" && a.otherCollider.rigidbody.velocity.magnitude > 10 && enabled)
                 {
                     killedyby = a.otherCollider.GetComponent<Base>().OwnerID.Value;
-                    RPCSetLife(Life - (int)a.otherCollider.rigidbody.velocity.magnitude);
+                    RPCSetLife(Life - (int)a.otherCollider.rigidbody.velocity.sqrMagnitude);
                 }
 
     }
-    private void LocalFixedUpdate()
+    
+    
+    public static Vector3 Clamp(Vector3 velocityChange,float maxVelocityChange)
+    {
+        velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
+        velocityChange.z = Mathf.Clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
+        velocityChange.y = Mathf.Clamp(velocityChange.y, -maxVelocityChange, maxVelocityChange);
+        return velocityChange;
+    }
+
+    public Movement movement = Movement.Move;
+    [RPC]
+    void RPCSetMovement(int mode)
     {
         
-        Vector3 moveDirection = Vector3.zero;
-        moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-        moveDirection = _cam.transform.TransformDirection(moveDirection);
-        moveDirection.y = 0;
-        moveDirection.Normalize();
-        this.rigidbody.AddTorque(new Vector3(moveDirection.z, 0, -moveDirection.x) * Time.deltaTime * angularvel);
-        this.rigidbody.AddForce(moveDirection * Time.deltaTime * force);
+        CallLast(Group.SetMovement, "RPCSetMovement", mode);
+        movement = (Movement)mode;
+        this.rigidbody.useGravity = (movement == Movement.Fly ? false : true);
     }
+    
 }

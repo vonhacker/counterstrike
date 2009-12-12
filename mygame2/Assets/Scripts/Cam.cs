@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 public class Cam : Base
 {
-    public Player localplayer { get { return Find<Player>("Player(Clone)"); } }
+    public Player localplayer { get { return Find<Player>("LocalPlayer"); } }
 
     public float maxdistance = 5.0f;
     public float xSpeed = 120.0f;

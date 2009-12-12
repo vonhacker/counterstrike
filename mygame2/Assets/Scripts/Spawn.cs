@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-public enum Group { PlView, Player, Default, RPCAssignID, Life, Spawn, Nick, SetOwner }    
+public enum Group { PlView, Player, Default, RPCAssignID, Life, Spawn, Nick, SetOwner,SetMovement }    
 public class Spawn : Base
 {
     public Transform _Player;
