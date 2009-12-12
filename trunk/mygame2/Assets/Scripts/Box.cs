@@ -14,6 +14,7 @@ public class Box : Base
         if (!GameObject.Find("Cube").collider.bounds.Contains(this.transform.position))
         {
             this.transform.rigidbody.velocity = Vector3.zero;
+            this.transform.rigidbody.angularVelocity = Vector3.zero;
             this.transform.position = spawn;
         }
     }
