@@ -3,20 +3,28 @@ using System.Collections;
 public class Box : Base
 {
 
-    Vector2 spawn;
+    Vector3 spawn;
+    Quaternion rotation;
     protected override void Start()
     {
         spawn = this.transform.position;
+        rotation = this.transform.rotation;
     }
     
     protected override void Update()
     {
         if (!GameObject.Find("Cube").collider.bounds.Contains(this.transform.position))
         {
-            this.transform.rigidbody.velocity = Vector3.zero;
-            this.transform.rigidbody.angularVelocity = Vector3.zero;
-            this.transform.position = spawn;
+            Reset();
         }
+    }
+
+    public void Reset()
+    {
+        this.transform.rigidbody.velocity = Vector3.zero;
+        this.transform.rigidbody.angularVelocity = Vector3.zero;
+        this.transform.position = spawn;
+        this.transform.rotation = rotation;
     }
     [RPC]
     void SetOwner(NetworkPlayer owner, NetworkMessageInfo a)

@@ -50,9 +50,12 @@ public class Gun : Base
 
     private void UpdateBox(Box box)
     {        
+        //box.rigidbody.AddExplosionForce(-grawforce, cur2.position, gravdist, 0, ForceMode.Force); 
+        //box.rigidbody.velocity *= .9f;
+        
         Vector3 v = (cur2.position - box.transform.position);
         if (v.magnitude < gravdist)
-        {            
+        {
             box.rigidbody.velocity += (v.normalized * grawforce) / 50; //.AddExplosionForce(-grawforce, cur2.position, gravdist, 0, ForceMode.Force); 
             box.rigidbody.velocity *= .9f;
             if (v.magnitude < .3) box.transform.position = cur2.position;
@@ -60,11 +63,12 @@ public class Gun : Base
     }
     private void LocalUpdateOwners()
     {
+
         foreach (GameObject a in GameObject.FindGameObjectsWithTag("Box"))
             if (Input.GetMouseButtonDown(1) && Vector3.Distance(a.transform.position, cur2.position) < gravdist)
                 foreach (NetworkView b in a.GetComponents<NetworkView>())
                     if (b.isMine)
-                    {                        
+                    {                                   
                         b.RPC("SetOwner", RPCMode.All, Network.player);
                     }
     }

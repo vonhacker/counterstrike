@@ -19,9 +19,9 @@ public class Player : Base {
     
 
     protected override void Start()
-    {
-        
-        if (isMine)
+    { 
+        Trace.Log(">>>>>>>>>>>>>>>>>>>player Created" + networkView.owner);
+        if (isMine)            
         {
             RPCSetNick(connectionGui.Nick);
             RPCSetID(Network.player);
@@ -31,10 +31,7 @@ public class Player : Base {
         }
         
     }
-    protected override void OnPlayerConnected(NetworkPlayer player)
-    {
-        networkView.RPC("RPCSetScore", player, score);        
-    }
+
     public override void OnSetID()
     {
         if (isMine)
@@ -89,17 +86,17 @@ public class Player : Base {
     
     public Vector3 SpawnPoint()
     {
-        return spawn.transform.GetChild(Random.Range(0, transform.childCount)).transform.position;
+        return spawn.transform.GetChild(Random.Range(0, spawn.transform.childCount)).transform.position;
     }
 
     [RPC]
     public void RPCAssignID(int i, NetworkViewID id)
     {
         CallBuffered(Group.RPCAssignID, "RPCAssignID", i, id);
-        Trace.Log("Assign index:" + i + " id:" + id + " isMine:" + isMine);
         GameObject g = GameObject.Find(i.ToString());
+        g.GetComponent<Box>().Reset();        
         NetworkView nw = g.AddComponent<NetworkView>();
-        nw.group = (int)Group.RPCAssignID;
+        nw.group = (int)Group.RPCAssignID;        
         nw.observed = null;
         nw.stateSynchronization = NetworkStateSynchronization.ReliableDeltaCompressed;
         nw.viewID = id;
@@ -115,7 +112,7 @@ public class Player : Base {
     public void RPCSetID(NetworkPlayer player)
     {
 
-        CallBuffered(Group.Player, "RPCSetID", player);
+        CallBuffered(Group.RPCSetID, "RPCSetID", player);
         foreach (Base a in GetComponentsInChildren(typeof(Base)))
         {
             a.OwnerID = player;
