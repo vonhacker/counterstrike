@@ -15,10 +15,13 @@ public class ConnectionGUI : Base
         Network.InitializeServer(32, port);
         LoadLevel(0);
     }
-    
+    protected override void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape)) Screen.lockCursor = false;
+    }
     protected override void OnGUI()
     {        
-
+        
         if (GUILayout.Button("Active"))  
             Screen.lockCursor = true;
         if (Network.peerType == NetworkPeerType.Disconnected)

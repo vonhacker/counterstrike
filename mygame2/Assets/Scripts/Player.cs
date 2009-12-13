@@ -7,9 +7,10 @@ public class Player : Base {
     public float maxVelocityChange = 10.0f;
     Cam _cam { get { return Find<Cam>(); } }
     Blood blood { get { return Find<Blood>(); } }
-    Spawn spawn { get { return Find<Spawn>(); } }
+    public static Spawn spawn { get { return Find<Spawn>(); } }
     ConnectionGUI connectionGui { get { return Find<ConnectionGUI>(); } }
     TimerA _TimerA { get { return Find<FpsCounter>().timer; } }
+    GameObject boxes { get { return GameObject.Find("box"); } }
     public bool isdead { get { return !enabled; } }
     public float force = 400;
     public float angularvel = 600;
@@ -25,11 +26,26 @@ public class Player : Base {
         {
             RPCSetNick(connectionGui.Nick);
             RPCSetID(Network.player);
-            foreach (GameObject a in GameObject.FindGameObjectsWithTag("Box"))
-                RPCAssignID(int.Parse(a.name), Network.AllocateViewID());
+
+            Object[] gs = GameObject.FindObjectsOfType(typeof(Box));
+            for (int i = 0; i <  gs.Length; i++)
+                RPCAssignID(i, Network.AllocateViewID());
+                
             RPCSpawn();
         }
         
+    }
+    [RPC]
+    public void RPCAssignID(int i, NetworkViewID id)
+    {
+        Object[] gs = GameObject.FindObjectsOfType(typeof(Box));
+        CallBuffered(Group.RPCAssignID, "RPCAssignID", i, id);
+        GameObject g = ((Box)gs[i]).gameObject;        
+        NetworkView nw = g.AddComponent<NetworkView>();
+        nw.group = (int)Group.RPCAssignID;
+        nw.observed = null;
+        nw.stateSynchronization = NetworkStateSynchronization.ReliableDeltaCompressed;
+        nw.viewID = id;
     }
 
     public override void OnSetID()
@@ -84,23 +100,12 @@ public class Player : Base {
         this.rigidbody.velocity = Clamp(this.rigidbody.velocity,maxVelocityChange);
     }
     
-    public Vector3 SpawnPoint()
+    public static Vector3 SpawnPoint()
     {
         return spawn.transform.GetChild(Random.Range(0, spawn.transform.childCount)).transform.position;
     }
 
-    [RPC]
-    public void RPCAssignID(int i, NetworkViewID id)
-    {
-        CallBuffered(Group.RPCAssignID, "RPCAssignID", i, id);
-        GameObject g = GameObject.Find(i.ToString());
-        g.GetComponent<Box>().Reset();        
-        NetworkView nw = g.AddComponent<NetworkView>();
-        nw.group = (int)Group.RPCAssignID;        
-        nw.observed = null;
-        nw.stateSynchronization = NetworkStateSynchronization.ReliableDeltaCompressed;
-        nw.viewID = id;
-    }
+    
 
     [RPC]
     void RPCSetNick(string nick)
@@ -185,7 +190,7 @@ public class Player : Base {
     {
         if (isMine)
             foreach (ContactPoint a in collisionInfo.contacts)
-                if (a.otherCollider.tag == "Box" && a.otherCollider.rigidbody.velocity.magnitude > 10 && enabled)
+                if (a.otherCollider.GetComponent<Box>() != null && a.otherCollider.rigidbody.velocity.magnitude > 10 && enabled)
                 {
                     killedyby = a.otherCollider.GetComponent<Base>().OwnerID.Value;
                     RPCSetLife(Life - (int)a.otherCollider.rigidbody.velocity.sqrMagnitude);

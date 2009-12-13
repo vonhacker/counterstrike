@@ -57,14 +57,14 @@ public class Base : MonoBehaviour
         }
     }
 
-    public T Find<T>(string s) where T : Component 
+    public static T Find<T>(string s) where T : Component 
     {
         GameObject g = GameObject.Find(s);
         if (g != null) return g.GetComponent<T>();
         return null;
     }
 
-    public T Find<T> () where T : Component
+    public static T Find<T> () where T : Component
     {        
         return (T)Component.FindObjectOfType(typeof(T));
     }

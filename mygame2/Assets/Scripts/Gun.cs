@@ -25,29 +25,52 @@ public class Gun : Base
             LocalUpdate();
 
     }
-
+    public float dt { get { return Time.deltaTime * 10; } }
     private void LocalUpdate()
     {
-        
+        Energy = Mathf.Min(100, Energy + dt);
         LocalSetMouseDown(Input.GetMouseButton(1));
-     
-        if (Screen.lockCursor && Input.GetMouseButtonDown(0)) 
+
+        if (Screen.lockCursor && Input.GetMouseButtonDown(0) && Energy > 50) 
             LocalReleaseGravitaty();        
         LocalUpdateOwners();
-        LocalUpdateGravityGun();
+        if (MouseDown1 && weapon == Weapon.AntiGrawitaty && Energy > 20)
+            LocalUpdateGravityGun();
+    }
+    public float energy = 100;
+    public float Energy
+    {
+        get { return energy; }
+        set { energy = value; EnergyChanged(); }
     }
 
+    private void EnergyChanged()
+    {
+        Vector3 v = GameObject.Find("energy").guiTexture.transform.localScale;
+        v.x = energy / 100;
+        GameObject.Find("energy").guiTexture.transform.localScale = v;
+
+    }
+    
     private void LocalUpdateGravityGun()
     {
-        if (MouseDown1 && weapon == Weapon.AntiGrawitaty)
-            foreach (GameObject a in GameObject.FindGameObjectsWithTag("Box"))
-            {
-                Box box = a.GetComponent<Box>();
-                if (box.OwnerID != null && box.OwnerID == Network.player)
-                    UpdateBox(box);
-            }
+        foreach (Box box in GameObject.FindObjectsOfType(typeof(Box)))
+        {
+            if (box.OwnerID != null && box.OwnerID == Network.player)
+                UpdateBox(box);
+        }
+        Energy -= dt * 1.2f;
     }
-
+    void LocalReleaseGravitaty()
+    {
+        foreach (Box a in GameObject.FindObjectsOfType(typeof(Box)))
+            if (Vector3.Distance(a.transform.position, cur2.position) < gravdist)
+            {
+                if (!a.rigidbody.IsSleeping())
+                    a.rigidbody.velocity += (transform.TransformDirection(Vector3.forward) * ShootPower);
+            }
+        Energy -= 50f;
+    }
     private void UpdateBox(Box box)
     {        
         //box.rigidbody.AddExplosionForce(-grawforce, cur2.position, gravdist, 0, ForceMode.Force); 
@@ -63,8 +86,7 @@ public class Gun : Base
     }
     private void LocalUpdateOwners()
     {
-
-        foreach (GameObject a in GameObject.FindGameObjectsWithTag("Box"))
+        foreach (Box a in GameObject.FindObjectsOfType(typeof(Box)))
             if (Input.GetMouseButtonDown(1) && Vector3.Distance(a.transform.position, cur2.position) < gravdist)
                 foreach (NetworkView b in a.GetComponents<NetworkView>())
                     if (b.isMine)
@@ -73,12 +95,7 @@ public class Gun : Base
                     }
     }
     
-    void LocalReleaseGravitaty()
-    {
-        foreach (GameObject a in GameObject.FindGameObjectsWithTag("Box"))
-            if (Vector3.Distance(a.transform.position, cur2.position) < gravdist)
-                a.rigidbody.AddForce(transform.TransformDirection(Vector3.forward) * ShootPower);
-    }
+    
 
   
 
