@@ -21,8 +21,8 @@ public class Spawn : Base
         foreach (GameObject a in GameObject.FindGameObjectsWithTag("Box"))
             foreach (NetworkView v in a.GetComponents<NetworkView>())
                 if (v.owner == player) Destroy(v.viewID);
-        Network.DestroyPlayerObjects(player);
-        Network.RemoveRPCs(player);        
+        //Network.DestroyPlayerObjects(player);
+        //Network.RemoveRPCs(player);        
     }
     
 

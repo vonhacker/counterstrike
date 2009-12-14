@@ -25,14 +25,16 @@ public class GuiConnection : Base
         if (GUILayout.Button("Active"))  
             Screen.lockCursor = true;
         if (Network.peerType == NetworkPeerType.Disconnected)
-        {            
+        {
 
+            GUILayout.Label("ipaddress:");
             ip = GUILayout.TextField(ip);
 
             if (GUILayout.Button("Connect") && Nick.Length > 0)
             {                
                 Network.Connect(ip, port);
             }
+            GUILayout.Label("NickName:");
             Nick = GUILayout.TextField(Nick);
 
             if (GUILayout.Button("host") && Nick.Length > 0)

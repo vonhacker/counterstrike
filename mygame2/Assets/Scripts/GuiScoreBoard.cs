@@ -31,7 +31,7 @@ public class GuiScoreBoard : Base
             }
             GUILayout.EndArea();
         }
-        GUILayout.Label(life);
+        
     }    
 
 }

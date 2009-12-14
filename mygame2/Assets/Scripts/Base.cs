@@ -13,13 +13,20 @@ public class Base : MonoBehaviour
     protected virtual void Start() { }
     protected virtual void FixedUpdate() { }
     protected virtual void Update() { }
-
+    protected virtual void OnTriggerEnter(Collider other) { }
     protected virtual void OnNetworkLoadedLevel() { }
     protected virtual void OnGUI() { }
     protected virtual void OnConnectedToServer() { }
     protected virtual void OnDisconnectedFromServer() { }
     protected virtual void Awake() { }
     protected virtual void OnApplicationQuit(){}
+    protected virtual void LateUpdate() { }
+    protected virtual void OnMasterServerEvent(MasterServerEvent msEvent) { }
+    protected virtual void OnPreRender() { }
+    protected virtual void OnWillRenderObject() { }    
+    protected virtual void OnRenderObject(int queueIndex) { }
+    protected virtual void OnRenderImage(RenderTexture source, RenderTexture destination) { }
+    protected virtual void OnParticleCollision(GameObject other) { }
     protected virtual void OnPlayerDisconnected(NetworkPlayer player) { }
     protected virtual void OnCollisionEnter(Collision collisionInfo) { }
     protected virtual void OnNetworkInstantiate(NetworkMessageInfo info) { }
@@ -35,7 +42,14 @@ public class Base : MonoBehaviour
             networkView.RPC(fc, mode, obs);
         }
     }
-    
+    public void Hide() { Show(false); }
+    public void Show() { Show(true); }
+    public void Show(bool value)
+    {
+        enabled = value;
+        foreach (Renderer r in this.GetComponentsInChildren<Renderer>())
+            r.enabled = value;        
+    }    
     public void CallRPC(params object[] obs)   
     {        
         if (networkView.isMine)
