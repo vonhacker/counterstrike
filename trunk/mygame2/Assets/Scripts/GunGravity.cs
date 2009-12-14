@@ -4,28 +4,28 @@ public class GunGravity : GunBase
 {
     public enum Weapon { AntiGrawitaty, RocketLauncher }    
     public static Weapon weapon;
-    Quaternion q;
+    
     public int gravdist = 20;
+    public int shootdist = 10;
     public float ShootPower = 5000f;
     public int grawforce = 20;
     public bool MouseDown1;
     Transform cur2 { get { return transform.Find("cursor2").transform; } }
     public float dt { get { return Time.deltaTime * 10; } }
-    void EnableGravityGun()
-    {
-        enabled = true;
-    }
+    
     void LocalSetMouseDown(bool b)
     {
         if (MouseDown1 == b) return;
         MouseDown1 = b;
         
     }
-    
+    protected override void FixedUpdate()
+    {
+        base.FixedUpdate();
+    }
     protected override void Update()
     {
-        if (isMine) q = Find<Cam>().transform.rotation;
-        this.transform.rotation = q;
+        base.Update();
         if (isMine)
             LocalUpdate();
     }
@@ -33,28 +33,19 @@ public class GunGravity : GunBase
     
     private void LocalUpdate()
     {
-        Energy = Mathf.Min(100, Energy + dt);
+        if (!Screen.lockCursor || bullets < 0) return;        
         LocalSetMouseDown(Input.GetMouseButton(1));
 
-        if (Screen.lockCursor && Input.GetMouseButtonDown(0) && Energy > 50) 
+        if (Screen.lockCursor && Input.GetMouseButtonDown(0)) 
             LocalReleaseGravitaty();        
         LocalUpdateOwners();
-        if (MouseDown1 && weapon == Weapon.AntiGrawitaty && Energy > 20)
+        if (MouseDown1 && weapon == Weapon.AntiGrawitaty)
             LocalUpdateGravityGun();
     }
-    public float energy = 100;
-    public float Energy
-    {
-        get { return energy; }
-        set { energy = value; EnergyChanged(); }
-    }
+    
+    
 
-    private void EnergyChanged()
-    {
-        Vector3 v = GameObject.Find("energy").guiTexture.transform.localScale;
-        v.x = energy / 100;
-        GameObject.Find("energy").guiTexture.transform.localScale = v;
-    }
+    
     
     private void LocalUpdateGravityGun()
     {
@@ -63,17 +54,17 @@ public class GunGravity : GunBase
             if (box.OwnerID != null && box.OwnerID == Network.player)
                 UpdateBox(box);
         }
-        Energy -= dt * 1.2f;
+        bullets -= dt * 1.2f;
     }
     void LocalReleaseGravitaty()
     {
         foreach (Box a in GameObject.FindObjectsOfType(typeof(Box)))
-            if (Vector3.Distance(a.transform.position, cur2.position) < gravdist)
+            if (Vector3.Distance(a.transform.position, cur2.position) < shootdist)
             {
                 if (!a.rigidbody.IsSleeping())
                     a.rigidbody.velocity += (transform.TransformDirection(Vector3.forward) * ShootPower);
             }
-        Energy -= 50f;
+        bullets -= 50;
     }
     private void UpdateBox(Box box)
     {        

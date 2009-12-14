@@ -22,7 +22,7 @@ public class Cam : Base
         y = angles.x;
     }
 
-    void LateUpdate()
+    protected override void LateUpdate()
     {
         if (localplayer == null || localplayer.isdead) return;
 

@@ -19,8 +19,7 @@ public class Player : Base {
     public int Life;
     public string Nick;
     public int score;
-    
-
+        
     protected override void Start()
     { 
         Trace.Log(">>>>>>>>>>>>>>>>>>>player Created" + networkView.owner);
@@ -32,14 +31,13 @@ public class Player : Base {
             Object[] gs = GameObject.FindObjectsOfType(typeof(Box));            
             for (int i = 0; i <  gs.Length; i++)
                 RPCAssignID(int.Parse(gs[i].name), Network.AllocateViewID());
-                
+
             RPCSpawn();
         }
-        
+
     }
 
-
-    
+ 
 
     [RPC]
     public void RPCAssignID(int i, NetworkViewID id)
@@ -72,11 +70,21 @@ public class Player : Base {
         
         base.Awake();
     }
+    GunGravity _GunGravity { get { return this.GetComponentInChildren<GunGravity>(); } }
     protected override void Update()
     {
 
         if (isMine)
         {
+
+            if (movement == Movement.Fly)
+            {
+                if (_GunGravity.GetComponent<GunGravity>().bullets < 0)
+                    RPCSetMovement((int)Movement.Move);
+                else
+                    _GunGravity.bullets -= 4 * Time.deltaTime;
+            }
+
             if (Input.GetKeyDown(KeyCode.F))
                 RPCSetMovement((int)(movement == Movement.Fly ? Movement.Move : Movement.Fly));
             if (Input.GetKeyDown(KeyCode.Alpha1))
@@ -88,7 +96,7 @@ public class Player : Base {
 
 
 
-    GunBase[] gunlist { get { return this.GetComponentsInChildren<GunBase>(); } }
+    public GunBase[] gunlist { get { return this.GetComponentsInChildren<GunBase>(); } }
     [RPC]
     private void RCPSelectGun(int i)
     {
@@ -162,9 +170,7 @@ public class Player : Base {
     {
         CallRPC(NwLife);
         if (isMine)
-        {                        
             blood.Hit(Mathf.Abs(NwLife - Life));
-        }       
         if (NwLife < 0)
             RPCDie();
         Life = NwLife;
@@ -177,8 +183,10 @@ public class Player : Base {
     public void RPCSpawn()
     {
         CallRPC();
-        RCPSelectGun(1);
         Show(true);
+        RCPSelectGun(1);
+        foreach (GunBase gunBase in gunlist)
+            gunBase.bullets = 0;
         rigidbody.velocity = Vector3.zero;
         rigidbody.angularVelocity = Vector3.zero;
         Life = 100;
@@ -191,15 +199,10 @@ public class Player : Base {
     }
     
 
-    private void Show(bool value)
-    {
-        enabled = value;
-        renderer.enabled = value;
-    }
-
+    
+    
     public void RPCDie()
-    {
-        
+    {        
         if (isMine)
         {
             _TimerA.AddMethod(2000, RPCSpawn);
@@ -221,13 +224,17 @@ public class Player : Base {
     
     protected override void OnCollisionEnter(Collision collisionInfo)
     {
+
         if (isMine)
             foreach (ContactPoint a in collisionInfo.contacts)
-                if (a.otherCollider.GetComponent<Box>() != null && a.otherCollider.rigidbody.velocity.magnitude > 10 && enabled)
+            {
+                Base bx = a.otherCollider.GetComponent<Box>();
+                if (bx!= null && collisionInfo.impactForceSum.magnitude > 30 && enabled)
                 {
-                    killedyby = a.otherCollider.GetComponent<Base>().OwnerID.Value;
-                    RPCSetLife(Life - (int)a.otherCollider.rigidbody.velocity.sqrMagnitude);
+                    killedyby = bx.OwnerID ?? Network.player;
+                    RPCSetLife(Life - (int)collisionInfo.impactForceSum.magnitude);
                 }
+            }
 
     }
     
