@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using System.Reflection;
 
 public class Base : MonoBehaviour
 {
@@ -25,6 +26,7 @@ public class Base : MonoBehaviour
     public virtual void OnSetID() { }
     public bool isMine { get { return networkView.isMine; } }  
       
+    [Obsolete]
     public void RPC(Group group, RPCMode mode, string fc, params object[] obs)
     {
         if (networkView.isMine)
@@ -33,29 +35,19 @@ public class Base : MonoBehaviour
             networkView.RPC(fc, mode, obs);
         }
     }
-    public void Call(string fc, params object[] obs)   
-    {
-        if (networkView.isMine)
-            networkView.RPC(fc, RPCMode.Others, obs);
-    }
-    public void CallLast(Group group, string fc, params object[] prs)
-    {
-               
-        if (networkView.isMine)              
-        {
-            networkView.group = (int)group;
-            Network.RemoveRPCs(networkView.owner, (int)group);
-            networkView.RPC(fc, RPCMode.OthersBuffered, prs);
-        }
-    }
-    public void CallBuffered(Group group, string fc, params object[] prs)
-    {
+    
+    public void CallRPC(params object[] obs)   
+    {        
         if (networkView.isMine)
         {
-            networkView.group = (int)group;
-            networkView.RPC(fc, RPCMode.OthersBuffered, prs);
+            
+            foreach (object o in new System.Diagnostics.StackFrame(2, true).GetMethod().GetCustomAttributes(true))
+                if (o is RPC)
+                    return;
+            networkView.RPC(new System.Diagnostics.StackFrame(1, true).GetMethod().Name, RPCMode.Others, obs);            
         }
     }
+    
 
     public static T Find<T>(string s) where T : Component 
     {
@@ -77,3 +69,4 @@ public class Base : MonoBehaviour
     public int pwnerID2 = -2;        
     
 }
+
