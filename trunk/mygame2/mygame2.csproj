@@ -32,7 +32,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Data" />
     <Reference Include="System.XML" />
     <Reference Include="System.Core" />
     <Reference Include="UnityEngine">
@@ -49,6 +48,7 @@
     <Compile Include="Assets\MyGame\Scripts\Box.cs" />
     <Compile Include="Assets\MyGame\Scripts\Bullet.cs" />
     <Compile Include="Assets\MyGame\Scripts\Cam.cs" />
+    <Compile Include="Assets\MyGame\Scripts\Energy.cs" />
     <Compile Include="Assets\MyGame\Scripts\GuiConnection.cs" />
     <Compile Include="Assets\MyGame\Scripts\GuiFpsCounter.cs" />
     <Compile Include="Assets\MyGame\Scripts\GuiPlayer.cs" />
