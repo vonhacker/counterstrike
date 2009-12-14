@@ -29,7 +29,7 @@ public class Spawn : Base
     [RPC]
     private void Destroy(NetworkViewID v)
     {
-        Call("Destroy", v);
+        CallRPC(v);
         NetworkView nw = NetworkView.Find(v);
         nw.viewID = NetworkViewID.unassigned;
         nw.enabled = false;

@@ -1,15 +1,17 @@
 using UnityEngine;
 using System.Collections;
 using doru;
-public enum Movement : int { Fly, Move }
+using System.Collections.Generic;
+
 public class Player : Base {
     public float flyForce = 300;
     public float maxVelocityChange = 10.0f;
     Cam _cam { get { return Find<Cam>(); } }
     Blood blood { get { return Find<Blood>(); } }
+    
     public static Spawn spawn { get { return Find<Spawn>(); } }
-    ConnectionGUI connectionGui { get { return Find<ConnectionGUI>(); } }
-    TimerA _TimerA { get { return Find<FpsCounter>().timer; } }
+    GuiConnection connectionGui { get { return Find<GuiConnection>(); } }
+    TimerA _TimerA { get { return Find<GuiFpsCounter>().timer; } }
     GameObject boxes { get { return GameObject.Find("box"); } }
     public bool isdead { get { return !enabled; } }
     public float force = 400;
@@ -27,20 +29,24 @@ public class Player : Base {
             RPCSetNick(connectionGui.Nick);
             RPCSetID(Network.player);
 
-            Object[] gs = GameObject.FindObjectsOfType(typeof(Box));
+            Object[] gs = GameObject.FindObjectsOfType(typeof(Box));            
             for (int i = 0; i <  gs.Length; i++)
-                RPCAssignID(i, Network.AllocateViewID());
+                RPCAssignID(int.Parse(gs[i].name), Network.AllocateViewID());
                 
             RPCSpawn();
         }
         
     }
+
+
+    
+
     [RPC]
     public void RPCAssignID(int i, NetworkViewID id)
     {
-        Object[] gs = GameObject.FindObjectsOfType(typeof(Box));
-        CallBuffered(Group.RPCAssignID, "RPCAssignID", i, id);
-        GameObject g = ((Box)gs[i]).gameObject;        
+        
+        CallRPC(i, id);
+        GameObject g = GameObject.Find(i.ToString());
         NetworkView nw = g.AddComponent<NetworkView>();
         nw.group = (int)Group.RPCAssignID;
         nw.observed = null;
@@ -59,13 +65,39 @@ public class Player : Base {
     {
         if (isMine)
             LocalFixedUpdate();
-
+    }
+    
+    protected override void Awake()
+    {
+        
+        base.Awake();
     }
     protected override void Update()
     {
+
         if (isMine)
+        {
             if (Input.GetKeyDown(KeyCode.F))
                 RPCSetMovement((int)(movement == Movement.Fly ? Movement.Move : Movement.Fly));
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+                RCPSelectGun(1);
+            if (Input.GetKeyDown(KeyCode.Alpha2))
+                RCPSelectGun(2);            
+        }
+    }
+
+
+
+    GunBase[] gunlist { get { return this.GetComponentsInChildren<GunBase>(); } }
+    [RPC]
+    private void RCPSelectGun(int i)
+    {
+        
+        CallRPC(i);
+        foreach (GunBase gb in gunlist)
+            gb.DisableGun();
+        gunlist[i-1].EnableGun();      
+        
     }
     private void LocalFixedUpdate()
     {
@@ -110,14 +142,14 @@ public class Player : Base {
     [RPC]
     void RPCSetNick(string nick)
     {
-        CallLast(Group.Nick, "RPCSetNick", nick);
+        CallRPC(nick);
         Nick = nick;
     }
     [RPC]
     public void RPCSetID(NetworkPlayer player)
     {
 
-        CallBuffered(Group.RPCSetID, "RPCSetID", player);
+        CallRPC(player);
         foreach (Base a in GetComponentsInChildren(typeof(Base)))
         {
             a.OwnerID = player;
@@ -128,7 +160,7 @@ public class Player : Base {
     [RPC]
     public void RPCSetLife(int NwLife)
     {
-        CallLast(Group.Life, "RPCSetLife", NwLife);
+        CallRPC(NwLife);
         if (isMine)
         {                        
             blood.Hit(Mathf.Abs(NwLife - Life));
@@ -144,7 +176,8 @@ public class Player : Base {
     [RPC]
     public void RPCSpawn()
     {
-        CallLast(Group.Spawn,"RPCSpawn");
+        CallRPC();
+        RCPSelectGun(1);
         Show(true);
         rigidbody.velocity = Vector3.zero;
         rigidbody.angularVelocity = Vector3.zero;
@@ -210,11 +243,11 @@ public class Player : Base {
     public Movement movement = Movement.Move;
     [RPC]
     void RPCSetMovement(int mode)
-    {
-        
-        CallLast(Group.SetMovement, "RPCSetMovement", mode);
+    {        
+        CallRPC(mode);
         movement = (Movement)mode;
         this.rigidbody.useGravity = (movement == Movement.Fly ? false : true);
     }
     
 }
+public enum Movement : int { Fly, Move }
