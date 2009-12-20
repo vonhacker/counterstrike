@@ -1,0 +1,62 @@
+﻿<UserControl x:Name="userControl" x:Class="Starter.Ikonka" 
+    xmlns:fx="clr-namespace:ShaderEffectLibrary;assembly=ShaderEffectLibrary"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Width="50" Height="60">
+	<UserControl.Resources>
+		<Storyboard x:Key="OnMouseEnter1">
+			<DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="img" Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.ShadowDepth)">
+				<SplineDoubleKeyFrame KeyTime="00:00:00.3000000" Value="0"/>
+			</DoubleAnimationUsingKeyFrames>
+			<DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="border" Storyboard.TargetProperty="(UIElement.Effect).(fx:BloomEffect.BaseIntensity)">
+				<SplineDoubleKeyFrame KeyTime="00:00:00.3000000" Value="2"/>
+			</DoubleAnimationUsingKeyFrames>
+			<DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="img" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)">
+				<SplineDoubleKeyFrame KeyTime="00:00:00.3000000" Value="1.348"/>
+			</DoubleAnimationUsingKeyFrames>
+			<DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="img" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)">
+				<SplineDoubleKeyFrame KeyTime="00:00:00.3000000" Value="1.348"/>
+			</DoubleAnimationUsingKeyFrames>
+			<DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="img" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)">
+				<SplineDoubleKeyFrame KeyTime="00:00:00.3000000" Value="0.418"/>
+			</DoubleAnimationUsingKeyFrames>
+			<DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="img" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)">
+				<SplineDoubleKeyFrame KeyTime="00:00:00.3000000" Value="2.084"/>
+			</DoubleAnimationUsingKeyFrames>
+		</Storyboard>
+	</UserControl.Resources>	
+	<UserControl.RenderTransform>
+		<TransformGroup>
+            <ScaleTransform x:Name="_ScaleTransform">                
+            </ScaleTransform>
+            <SkewTransform/>
+			<RotateTransform/>
+			<TranslateTransform/>
+		</TransformGroup>        
+	</UserControl.RenderTransform>
+    <Grid>
+        <Grid.RowDefinitions>
+            
+        	<RowDefinition Height="*"/>
+        	<RowDefinition Height="0.35*"/>
+        </Grid.RowDefinitions>
+        <Border x:Name="border" >
+            <Border.Effect>
+                <fx:BloomEffect BaseIntensity="0"></fx:BloomEffect>
+            </Border.Effect>
+        <Image  x:Name="img" Width="35" Height="35" Grid.Row="0" Source="/Starter;component/default.ico" Stretch="Fill" RenderTransformOrigin="0.5,0.5" >
+        	<Image.RenderTransform>
+        		<TransformGroup>
+        			<ScaleTransform/>
+        			<SkewTransform/>
+        			<RotateTransform/>
+        			<TranslateTransform/>
+        		</TransformGroup>
+        	</Image.RenderTransform>
+            <Image.Effect>
+                <DropShadowEffect/>
+            </Image.Effect>
+        </Image>
+            </Border>
+        <TextBlock x:Name="txt" Foreground="#FFFF0A0A" TextAlignment="Center" Grid.Row="1" Margin="5.25,2.431,3.75,0" FontSize="8">default</TextBlock>
+    </Grid>
+</UserControl>
