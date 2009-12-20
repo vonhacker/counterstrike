@@ -19,52 +19,16 @@ using System.Reflection;
 using System.Windows.Media.Animation;
 using System.Text.RegularExpressions;
 using System.Runtime.InteropServices;
-using ManagedWinapi.Windows;
+
 using System.Runtime.Remoting;
 using Hardcodet.Wpf.TaskbarNotification;
 using Microsoft.Win32;
-using Win32;
+
 using Keys=System.Windows.Forms.Keys;
 
 namespace Starter
 {
-    static class EXT
-    {
-
-        public static T Next<T>(this IEnumerable<T> tt, T t) where T : class
-        {
-            
-            T o = null;
-            foreach (var a in tt)
-            {
-                if (o != null && o == t) return a;
-                o = a;
-            }
-            return tt.First();
-        }
-        public static T Prev<T>(this IEnumerable<T> tt, T t) where T : class
-        {
-            T o = null;
-            foreach (var a in tt)
-            {
-                if (o != null && a == t) return o;
-                o = a;
-            }
-            return o;
-        }
-
-
-
-        public static T GetAt<T>(this IEnumerable<T> t, int i)
-        {
-            foreach (var a in t)
-            {
-                if (i == 0) return a;
-                i--;
-            }
-            return default(T);
-        }
-    }
+    
     public partial class Window1 : Window
     {
         public static Window1 _This;
@@ -102,12 +66,7 @@ namespace Starter
 
             if (this.IsActive)
             {
-                if (Keyboard.IsKeyUp(Key.LeftAlt) && alttab)
-                {
-
-                    selectedicon.Start();
-                    Hide();
-                }
+                
                 var p = ManagedWinapi.Crosshair.MousePosition;
                 mouse = new Point(p.X - Left, p.Y - Top);
                 if (mouse != oldm && oldm != default(Point))
@@ -122,109 +81,50 @@ namespace Starter
             xmls.Deserialize("db.xml", ref db);
         }
 
-        Win32.globalKeyboardHook gh = new globalKeyboardHook();
+        ManagedWinapi.Hooks.LowLevelKeyboardHook _LowLevelKeyboardHook = new ManagedWinapi.Hooks.LowLevelKeyboardHook();
        
         private void EnableHotkey()
         {
-            gh.HookedKeys = new List<Keys> { Keys.LWin, Keys.Space };
-            gh.KeyDown += new System.Windows.Forms.KeyEventHandler(gh_KeyDown);
-            gh.hook();
+
+            _LowLevelKeyboardHook.KeyIntercepted += new ManagedWinapi.Hooks.LowLevelKeyboardHook.KeyCallback(OnGlobalKeyDown);
+            _LowLevelKeyboardHook.StartHook();
         }
 
-        void gh_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
+
+        Keys oldkey;
+        void OnGlobalKeyDown(int msg, int vkCode, int scanCode, int flags, int time, IntPtr dwExtraInfo, ref bool handled)
         {
+           
+            if (flags == 1 || flags == 0)
+            {
+                Keys key = (Keys)vkCode;
+                if (oldkey == Keys.LWin && key == Keys.Space)
+                {
+                    handled = true;
+                    UpdateSearch();
+                    show();
+                }
+                oldkey = (Keys)vkCode;
+            }
 
-            e.Handled = true;
         }
 
-    
-        private void EnableAltTabHotkey()
-        {
-            ManagedWinapi.Hotkey tabhk = new ManagedWinapi.Hotkey();
-            tabhk.Alt = true;
-            tabhk.KeyCode = System.Windows.Forms.Keys.Tab;
-            tabhk.HotkeyPressed += new EventHandler(tabhk_HotkeyPressed);
-
-            tabhk.Enabled = true;
-
-            ManagedWinapi.Hotkey tabhkback = new ManagedWinapi.Hotkey();
-            tabhkback.Alt = true;
-            tabhkback.Shift = true;
-            tabhkback.KeyCode = System.Windows.Forms.Keys.Tab;
-            tabhkback.HotkeyPressed += new EventHandler(tabhkback_HotkeyPressed);
-            tabhkback.Enabled = true;
-        }
+   
 
 
-        
 
 
-        void tabhkback_HotkeyPressed(object sender, EventArgs e)
-        {
+       
 
 
-            if (this.Visibility == Visibility.Visible)
-                UpdateCursorpos(-1);
-            else
-                AltTabnShow();
-        }
 
-        void tabhk_HotkeyPressed(object sender, EventArgs e)
-        {
-
-            if (this.Visibility == Visibility.Visible)
-                UpdateCursorpos(1);
-            else
-                AltTabnShow();
-        }
         public static BitmapSource loadBitmap(System.Drawing.Bitmap source)
         {
             return System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(source.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty,
                 System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
         }
-        public bool alttab;
-        class comp : IEqualityComparer<SystemWindow>
-        {
-
-            public bool Equals(SystemWindow x, SystemWindow y)
-            {
-
-                return x.Process.Id == y.Process.Id && x.Process.ProcessName != "explorer";
-            }
-
-            public int GetHashCode(SystemWindow obj)
-            {
-                return 0;
-            }
-
-        }
 
         DateTime dtmove;
-        public void AltTabnShow()
-        {
-            AlttabUpdate();
-            show();
-        }
-        public void AlttabUpdate()
-        {
-            alttab = true;
-            stackPanel.Children.Clear();
-
-            List<SystemWindow> list = new List<SystemWindow>();
-            foreach (var wnd in ManagedWinapi.Windows.SystemWindow.AllToplevelWindows.Where(a => a.Parent.Title == "" && a.Visible && a.Title != "" && a.Title != "Program Manager").Distinct(new comp()).Take(8))
-            {
-
-                var p = wnd.Process;
-                Ikonka ik = new Ikonka();
-                ik.path = p.MainModule.FileName;
-                ik.wnd = wnd;
-                ik.Load();
-                ik.name = ik.key = wnd.Title;
-                //txt = "";
-            }
-            if (ikonki.GetAt(1) != null)
-                ikonki.GetAt(1).onmouseenter();
-        }
 
         TaskbarIcon ti;
         private void ShowTrayIcon()
@@ -493,13 +393,7 @@ namespace Starter
             this.Hide();
             base.OnDeactivated(e);
         }
-        void hk_HotkeyPressed(object sender, EventArgs e)
-        {
-            alttab = false;
-            UpdateSearch();
-            show();
-
-        }
+      
         private void show()
         {
             dtmove = DateTime.Now;
@@ -536,5 +430,6 @@ namespace Starter
             return c;
         }
     }
+
 }
 //if (!db.favs.Any(a => a.path == filePath))

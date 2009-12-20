@@ -15,7 +15,7 @@ using System.IO;
 using System.Diagnostics;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
-using ManagedWinapi.Windows;
+
 using System.Windows.Media.Animation;
 using ShellLib;
 using System.Threading;
@@ -29,8 +29,8 @@ namespace Starter
         public string path { get { return item.path; } set { item.path = value; } }
         public string key { get { return item.keyword; } set { item.keyword = value; } }
         public DateTime dt { get { return item.dt; } set { item.dt = value; } }
-        Process process { get { return wnd.Process; } }
-        public SystemWindow wnd;
+    
+     
         public string name { set { txt.Text = value; } }
         public Item item = new Item();
         public Ikonka()
@@ -143,32 +143,22 @@ namespace Starter
 
         public void Start()
         {
-            
-            if (wnd != null)
-            { 
-                if (IsIconic(wnd.HWnd))
-                    ShowWindow(wnd.HWnd, 9);
-                else
-                    SetForegroundWindow(wnd.HWnd);
-            }
-            else
+            try
             {
-                try
+                Thread t = new Thread(delegate()
                 {
-                    Thread t =new Thread(delegate()
+                    try
                     {
-                        try
-                        {
-                        Process. Start(this.path);
-                        }
-                        catch (Exception e) { MessageBox.Show(e.Message); }
-                    });
-                    t.Start();
-                    t.Join(1000);
-                }
-                catch (Win32Exception) { }
-                Top();
+                        Process.Start(this.path);
+                    }
+                    catch (Exception e) { MessageBox.Show(e.Message); }
+                });
+                t.Start();
+                t.Join(1000);
             }
+            catch (Win32Exception) { }
+            Top();
+
             window.Hide();
         }
 
@@ -201,21 +191,15 @@ namespace Starter
         [DllImport("user32.dll")]
 
         public static extern int SendMessage(int hWnd, uint Msg, int wParam, int lParam);
-        
+
 
         private void Delete()
         {
-            if (wnd != null)
-            {
-                SendMessage((int)wnd.HWnd, WM_COMMAND, WM_CLOSE, 0);
-                window.stackPanel.Children.Remove(this);
-            }
-            else
-            {
-                db.favs.Remove(this.item);
-                _Window1.UpdateSearch();
-                _Window1.SaveXml();
-            }
+
+            db.favs.Remove(this.item);
+            _Window1.UpdateSearch();
+            _Window1.SaveXml();
+
         }
         
         public static ImageSource GetIcon(string s)

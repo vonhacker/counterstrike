@@ -61,10 +61,7 @@
       <HintPath>..\Helper\dlls\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
     </Reference>
     <Reference Include="Helper, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
-    <Reference Include="ManagedWinapi, Version=0.3.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Helper\dlls\ManagedWinapi.dll</HintPath>
-    </Reference>
+    <Reference Include="ManagedWinapi, Version=0.3.0.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="ShaderEffectLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Desktop\WPFSLFx\WPFSLFx\WPF\ShaderEffectLibrary\bin\Debug\ShaderEffectLibrary.dll</HintPath>
@@ -132,6 +129,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DB.cs" />
+    <Compile Include="Ext.cs" />
     <Compile Include="GlobalHotkeys.cs" />
     <Compile Include="Ikonka.xaml.cs">
       <DependentUpon>Ikonka.xaml</DependentUpon>
