@@ -1,0 +1,58 @@
+﻿<Window
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Starter"
+    xmlns:fx="clr-namespace:ShaderEffectLibrary;assembly=ShaderEffectLibrary"
+    xmlns:fx2="clr-namespace:TransitionEffects;assembly=TransitionEffects"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" x:Class="Starter.Window1"
+    Title="Window1" Height="314" Width="637" AllowsTransparency="True" WindowStyle="None" Background="{x:Null}" AllowDrop="True" Topmost="True" ShowInTaskbar="False" mc:Ignorable="d" >
+	<Window.Resources>
+		<DataTemplate x:Key="ListBoxItems">
+			<Grid Width="219" Height="46">
+				<TextBlock Margin="42.667,-1,0,0" VerticalAlignment="Top" Height="23" Text="{Binding title}" TextWrapping="Wrap" FontSize="18.667" FontWeight="Bold"/>
+				<TextBlock VerticalAlignment="Stretch" Height="Auto" Margin="0,22,8,0" HorizontalAlignment="Right" RenderTransformOrigin="0.5,0.5" Text="{Binding path}" TextAlignment="Right"/>
+				<Image HorizontalAlignment="Left" Source="{Binding image}" Margin="3.333,5.333,0,8" Width="35" Height="35"/>
+			</Grid>
+		</DataTemplate>
+		<!--<Storyboard x:Key="Storyboard1" x:Name="story">
+			<DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="grid" Storyboard.TargetProperty="(UIElement.Effect).(fx:ZoomBlurEffect.BlurAmount)">
+				<SplineDoubleKeyFrame KeyTime="00:00:00" Value=".3"/>
+				<SplineDoubleKeyFrame KeyTime="00:00:00.3000000" Value="0"/>
+			</DoubleAnimationUsingKeyFrames>
+			<DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="grid" Storyboard.TargetProperty="(UIElement.Opacity)">
+				<SplineDoubleKeyFrame KeyTime="00:00:00" Value="0"/>
+				<SplineDoubleKeyFrame KeyTime="00:00:00.3000000" Value="1"/>
+			</DoubleAnimationUsingKeyFrames>
+		</Storyboard>-->
+	</Window.Resources>
+	<!--<Window.Triggers>
+		<EventTrigger RoutedEvent="FrameworkElement.Loaded">
+			<BeginStoryboard Storyboard="{StaticResource Storyboard1}"/>
+		</EventTrigger>
+	</Window.Triggers>-->
+    <Border x:Name="border">
+        <Grid x:Name="grid">
+        	<Grid.Effect>
+        		<fx:ZoomBlurEffect/>
+        	</Grid.Effect>
+
+            <Rectangle x:Name="backg" RadiusX="25.5" RadiusY="25.5" Fill="#01000000" VerticalAlignment="Bottom" Height="141" Margin="0,0,0,75"/>
+            <Rectangle Stroke="Black" Margin="110,98,103,75" RadiusX="25.5" RadiusY="25.5">
+                <Rectangle.Fill>
+                	<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                		<GradientStop Color="Black"/>
+                		<GradientStop Color="White" Offset="1"/>
+                	</LinearGradientBrush>
+                </Rectangle.Fill>
+            </Rectangle>
+            <Image Margin="266.5,19.1,272.409,0" VerticalAlignment="Top" Height="107.9" Source="Untitled-1.png" Stretch="Fill"/>
+            <Canvas x:Name="Canvas1" Margin="0,0,0,-42"/>
+            <TextBox Margin="159,0,143,105" TextChanged="Textbox1_TextChanged" x:Name="TextBox1" TextWrapping="Wrap" VerticalAlignment="Bottom" Height="24"/>
+
+            <!--<ListBox Visibility="Hidden" Margin="159,209,143,84" x:Name="listbox1" ItemTemplate="{DynamicResource ListBoxItems}"/>-->
+            <StackPanel x:Name="stackPanel" Margin="83,0,83,8" Orientation="Horizontal" HorizontalAlignment="Center"/>
+            <TextBlock Margin="128,0,122,85" VerticalAlignment="Bottom" Height="16" x:Name="TextBlock1" TextWrapping="Wrap" TextAlignment="Center"/>
+
+        </Grid>
+    </Border>
+</Window>

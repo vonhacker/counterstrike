@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<DB xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <folders>
+    <Folder>
+      <path>C:\ProgramData\Microsoft\Windows\Start Menu\</path>
+      <level>-1</level>
+    </Folder>
+    <Folder>
+      <path>J:\shared</path>
+      <level>1</level>
+    </Folder>
+    <Folder>
+      <path>C:\Program Files\</path>
+      <level>1</level>
+    </Folder>
+  </folders>
+  <favs />
+</DB>
