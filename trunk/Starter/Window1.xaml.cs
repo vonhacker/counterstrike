@@ -87,24 +87,30 @@ namespace Starter
         {
 
             _LowLevelKeyboardHook.KeyIntercepted += new ManagedWinapi.Hooks.LowLevelKeyboardHook.KeyCallback(OnGlobalKeyDown);
+            
             _LowLevelKeyboardHook.StartHook();
         }
 
 
-        Keys oldkey;
+        List<Keys> pressed = new List<Keys>();
         void OnGlobalKeyDown(int msg, int vkCode, int scanCode, int flags, int time, IntPtr dwExtraInfo, ref bool handled)
         {
-           
+            Keys key = (Keys)vkCode;
+            if (flags == 128 || flags == 129)
+            {
+                if (pressed.Contains(Keys.Space) && key == Keys.LWin) handled = true;
+                pressed.Remove(key);                
+            }
             if (flags == 1 || flags == 0)
             {
-                Keys key = (Keys)vkCode;
-                if (oldkey == Keys.LWin && key == Keys.Space)
+                if (!pressed.Contains(key)) pressed.Add(key);
+                if (pressed.Contains(Keys.LWin) && key == Keys.Space)
                 {
                     handled = true;
                     UpdateSearch();
                     show();
                 }
-                oldkey = (Keys)vkCode;
+              
             }
 
         }
@@ -158,9 +164,15 @@ namespace Starter
         }
         void addDesktop(object sender, RoutedEventArgs e)
         {
-            if (Clipboard.GetText() != "" && Clipboard.GetText()!=null)
+            string clip = Clipboard.GetText();
+
+            if (Directory.Exists(clip) && Clipboard.GetText() != "" && Clipboard.GetText() != null)
+            {
                 AddDesktopToTxt(Clipboard.GetText());
-        }        
+                SetDesktop(clip);
+            }
+            else MessageBox.Show(clip + " not exists");
+        }
         void SetDesktop(object sender, MouseButtonEventArgs e)
         {
             MenuItem a = (MenuItem)sender;
@@ -316,7 +328,7 @@ namespace Starter
 
                     Item ikon = new Item() { path = filePath };
                     ikon.dt = DateTime.Now;
-                    ikon.keyword = txt + " " + replace(Ikonka.getname(filePath));
+                    ikon.keyword = txt + "" + replace(Ikonka.getname(filePath));
                     db.favs.Add(ikon);                    
                 }
                 UpdateSearch();

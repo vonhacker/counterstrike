@@ -14,5 +14,36 @@
       <level>1</level>
     </Folder>
   </folders>
-  <favs />
+  <favs>
+    <Item>
+      <size>0</size>
+      <keyword>zbr</keyword>
+      <dt>2009-12-23T12:53:25.584504+02:00</dt>
+      <path>C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Pixologic\ZBrush 3.5 R3\ZBrush 3.5 R3.lnk</path>
+    </Item>
+    <Item>
+      <size>0</size>
+      <keyword>moti</keyword>
+      <dt>2009-12-22T18:57:55.5325961+02:00</dt>
+      <path>C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Autodesk\Autodesk MotionBuilder 2010\Autodesk MotionBuilder 2010.lnk</path>
+    </Item>
+    <Item>
+      <size>0</size>
+      <keyword>Network Connections  Shortcutlnk</keyword>
+      <dt>2009-12-24T11:26:14.4965114+02:00</dt>
+      <path>C:\Users\doru\Documents\greylink05999\Downloads\Network Connections - Shortcut.lnk</path>
+    </Item>
+    <Item>
+      <size>0</size>
+      <keyword>dow</keyword>
+      <dt>2009-12-27T22:59:43.5060429+02:00</dt>
+      <path>C:\ProgramData\Microsoft\Windows\Start Menu\Programs\DownloadStudio</path>
+    </Item>
+    <Item>
+      <size>0</size>
+      <keyword>dowDownloads</keyword>
+      <dt>2009-12-27T23:00:40.8383221+02:00</dt>
+      <path>C:\Downloads</path>
+    </Item>
+  </favs>
 </DB>
