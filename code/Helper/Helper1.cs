@@ -23,12 +23,41 @@ using System.Windows.Media.Imaging;
 using ICSharpCode.SharpZipLib.Zip;
 using System.Windows.Controls;
 using System.ComponentModel;
+using System.Windows.Input;
 
 namespace doru
 {
     public partial class Helper : H { }
     public partial class H
     {
+
+        private static int ShowPopup(string title)
+        {
+            Window w = new Window();
+            w.Title = title;
+            w.Width = 200;
+            w.Height = 60;
+            TextBox t = new TextBox();
+            w.Focus();
+            t.Focus();
+            w.Content = t;
+            int a = 0;
+            t.PreviewKeyDown += delegate(object sender, KeyEventArgs e)
+            {
+                if (e.Key == Key.Enter)
+                {
+                    try
+                    {
+                        a = int.Parse(t.Text);
+                        w.Close();
+                    }
+                    catch { }
+                }
+            };
+            w.ShowDialog();
+            return a;
+            
+        }
 
         public static string GetLnk(string path)
         {
