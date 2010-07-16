@@ -168,6 +168,7 @@
     <Content Include="dlls\ManagedWinapiNativeHelper.dll" />
     <Content Include="dlls\Physics2DDotNet.dll" />
     <Content Include="dlls\SharpZipLib.dll" />
+    <Content Include="dlls\SWFToImage.DLL" />
     <Content Include="dlls\WPFToolkit.Design.dll" />
     <Content Include="dlls\WPFToolkit.dll" />
     <Content Include="dlls\WPFToolkit.VisualStudio.Design.dll" />
