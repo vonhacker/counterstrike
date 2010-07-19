@@ -31,31 +31,32 @@ namespace doru
     public partial class H
     {
 
-        private static int ShowPopup(string title)
+        public static string ShowPopup(string title,[Optional] string def,[Optional] string allowed)
         {
             Window w = new Window();
             w.Title = title;
             w.Width = 200;
             w.Height = 60;
             TextBox t = new TextBox();
+            
             w.Focus();
             t.Focus();
-            w.Content = t;
-            int a = 0;
+            t.Text = def;
+            w.Content = t;            
             t.PreviewKeyDown += delegate(object sender, KeyEventArgs e)
             {
                 if (e.Key == Key.Enter)
                 {
-                    try
-                    {
-                        a = int.Parse(t.Text);
-                        w.Close();
-                    }
-                    catch { }
+                    
+                    if (allowed != null)
+                        foreach (char q in t.Text.ToLower())
+                            if (!allowed.Contains(q))
+                                return;
+                    w.Close();                    
                 }
             };
             w.ShowDialog();
-            return a;
+            return t.Text;
             
         }
 
