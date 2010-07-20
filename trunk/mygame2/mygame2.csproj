@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{F87154A3-3A6B-0A20-09C0-BE36F2EBFEBA}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -12,6 +12,11 @@
     <AssemblyName>Irrelvant</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,6 +26,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,6 +35,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -42,22 +49,41 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Detonator\System\Detonator.cs" />
+    <Compile Include="Assets\Detonator\System\DetonatorBurstEmitter.cs" />
+    <Compile Include="Assets\Detonator\System\DetonatorCloudRing.cs" />
+    <Compile Include="Assets\Detonator\System\DetonatorFireball.cs" />
+    <Compile Include="Assets\Detonator\System\DetonatorForce.cs" />
+    <Compile Include="Assets\Detonator\System\DetonatorGlow.cs" />
+    <Compile Include="Assets\Detonator\System\DetonatorHeatwave.cs" />
+    <Compile Include="Assets\Detonator\System\DetonatorLight.cs" />
+    <Compile Include="Assets\Detonator\System\DetonatorShockwave.cs" />
+    <Compile Include="Assets\Detonator\System\DetonatorSmoke.cs" />
+    <Compile Include="Assets\Detonator\System\DetonatorSound.cs" />
+    <Compile Include="Assets\Detonator\System\DetonatorSparks.cs" />
+    <Compile Include="Assets\Detonator\System\DetonatorSpray.cs" />
     <Compile Include="Assets\Editor\AddChild.cs" />
-    <Compile Include="Assets\MyGame\Scripts\Base.cs" />
-    <Compile Include="Assets\MyGame\Scripts\Blood.cs" />
-    <Compile Include="Assets\MyGame\Scripts\Box.cs" />
-    <Compile Include="Assets\MyGame\Scripts\Bullet.cs" />
-    <Compile Include="Assets\MyGame\Scripts\Cam.cs" />
-    <Compile Include="Assets\MyGame\Scripts\Energy.cs" />
-    <Compile Include="Assets\MyGame\Scripts\GuiConnection.cs" />
-    <Compile Include="Assets\MyGame\Scripts\GuiFpsCounter.cs" />
-    <Compile Include="Assets\MyGame\Scripts\GuiPlayer.cs" />
-    <Compile Include="Assets\MyGame\Scripts\GuiScoreBoard.cs" />
-    <Compile Include="Assets\MyGame\Scripts\GunBase.cs" />
-    <Compile Include="Assets\MyGame\Scripts\GunBazoka.cs" />
-    <Compile Include="Assets\MyGame\Scripts\GunGravity.cs" />
-    <Compile Include="Assets\MyGame\Scripts\Player.cs" />
-    <Compile Include="Assets\MyGame\Scripts\Spawn.cs" />
+    <Compile Include="Assets\~MyGame\Scripts\Base.cs" />
+    <Compile Include="Assets\~MyGame\Scripts\Blood.cs" />
+    <Compile Include="Assets\~MyGame\Scripts\Box.cs" />
+    <Compile Include="Assets\~MyGame\Scripts\BulletBase.cs" />
+    <Compile Include="Assets\~MyGame\Scripts\BulletBazoka.cs" />
+    <Compile Include="Assets\~MyGame\Scripts\BulletMini.cs" />
+    <Compile Include="Assets\~MyGame\Scripts\Cam.cs" />
+    <Compile Include="Assets\~MyGame\Scripts\Energy.cs" />
+    <Compile Include="Assets\~MyGame\Scripts\GuiConnection.cs" />
+    <Compile Include="Assets\~MyGame\Scripts\GuiFpsCounter.cs" />
+    <Compile Include="Assets\~MyGame\Scripts\GuiPlayer.cs" />
+    <Compile Include="Assets\~MyGame\Scripts\GuiScoreBoard.cs" />
+    <Compile Include="Assets\~MyGame\Scripts\GunBase.cs" />
+    <Compile Include="Assets\~MyGame\Scripts\GunBazoka.cs" />
+    <Compile Include="Assets\~MyGame\Scripts\GunGravity.cs" />
+    <Compile Include="Assets\~MyGame\Scripts\GunMini.cs" />
+    <Compile Include="Assets\~MyGame\Scripts\Player.cs" />
+    <Compile Include="Assets\~MyGame\Scripts\Spawn.cs" />
+    <None Include="Assets\Detonator\Resources\Detonator\Textures\HeatDistort.shader" />
+    <None Include="Assets\Detonator\Sample Supporting Emitters\Detonator Spray Helper.js" />
+    <None Include="Assets\Detonator\TestScene\DetonatorTest.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

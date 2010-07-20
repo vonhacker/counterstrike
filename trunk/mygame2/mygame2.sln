@@ -1,7 +1,6 @@
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
-
-Project("{47105212-D237-937D-845C-97D5AE377E64}") = "mygame2", "mygame2.csproj", "{F87154A3-3A6B-0A20-09C0-BE36F2EBFEBA}"
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mygame2", "mygame2.csproj", "{F87154A3-3A6B-0A20-09C0-BE36F2EBFEBA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
