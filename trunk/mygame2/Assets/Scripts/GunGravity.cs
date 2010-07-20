@@ -9,16 +9,11 @@ public class GunGravity : GunBase
     public int shootdist = 10;
     public float ShootPower = 5000f;
     public int grawforce = 20;
-    public bool MouseDown1;
+    
     Transform cur2 { get { return transform.Find("cursor2").transform; } }
     public float dt { get { return Time.deltaTime * 10; } }
     
-    void LocalSetMouseDown(bool b)
-    {
-        if (MouseDown1 == b) return;
-        MouseDown1 = b;
-        
-    }
+    
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
@@ -31,16 +26,16 @@ public class GunGravity : GunBase
     }
     
     
-    private void LocalUpdate()
+    protected override void LocalUpdate()
     {
-        if (!Screen.lockCursor || bullets < 0) return;        
-        LocalSetMouseDown(Input.GetMouseButton(1));
-
-        if (Screen.lockCursor && Input.GetMouseButtonDown(0)) 
-            LocalReleaseGravitaty();        
-        LocalUpdateOwners();
-        if (MouseDown1 && weapon == Weapon.AntiGrawitaty)
-            LocalUpdateGravityGun();
+        if (Screen.lockCursor && bullets > 0)
+        {
+            if (Screen.lockCursor && Input.GetMouseButtonDown(0))
+                LocalReleaseGravitaty();
+            LocalUpdateOwners();
+            if (Input.GetMouseButton(1) && weapon == Weapon.AntiGrawitaty)
+                LocalUpdateGravityGun();
+        }
     }
     
     

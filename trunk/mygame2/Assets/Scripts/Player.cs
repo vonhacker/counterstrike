@@ -19,7 +19,6 @@ public class Player : Base {
     public int Life;
     public string Nick;
     public int score;
-        
     protected override void Start()
     { 
         Trace.Log(">>>>>>>>>>>>>>>>>>>player Created" + networkView.owner);
@@ -37,8 +36,6 @@ public class Player : Base {
 
     }
 
- 
-
     [RPC]
     public void RPCAssignID(int i, NetworkViewID id)
     {
@@ -51,7 +48,6 @@ public class Player : Base {
         nw.stateSynchronization = NetworkStateSynchronization.ReliableDeltaCompressed;
         nw.viewID = id;
     }
-
     public override void OnSetID()
     {
         if (isMine)
@@ -64,7 +60,6 @@ public class Player : Base {
         if (isMine)
             LocalFixedUpdate();
     }
-    
     protected override void Awake()
     {
         
@@ -90,12 +85,11 @@ public class Player : Base {
             if (Input.GetKeyDown(KeyCode.Alpha1))
                 RCPSelectGun(1);
             if (Input.GetKeyDown(KeyCode.Alpha2))
-                RCPSelectGun(2);            
+                RCPSelectGun(2);
+            if (Input.GetKeyDown(KeyCode.Alpha3))
+                RCPSelectGun(3);            
         }
     }
-
-
-
     public GunBase[] gunlist { get { return this.GetComponentsInChildren<GunBase>(); } }
     [RPC]
     private void RCPSelectGun(int i)
@@ -139,13 +133,10 @@ public class Player : Base {
         this.rigidbody.AddForce(moveDirection * Time.deltaTime * flyForce);
         this.rigidbody.velocity = Clamp(this.rigidbody.velocity,maxVelocityChange);
     }
-    
     public static Vector3 SpawnPoint()
     {
         return spawn.transform.GetChild(Random.Range(0, spawn.transform.childCount)).transform.position;
     }
-
-    
 
     [RPC]
     void RPCSetNick(string nick)
@@ -164,7 +155,6 @@ public class Player : Base {
             a.OnSetID();
         }
     }
-
     [RPC]
     public void RPCSetLife(int NwLife)
     {
@@ -176,9 +166,6 @@ public class Player : Base {
         Life = NwLife;
 
     }
-
-    
-
     [RPC]
     public void RPCSpawn()
     {
@@ -186,7 +173,7 @@ public class Player : Base {
         Show(true);
         RCPSelectGun(1);
         foreach (GunBase gunBase in gunlist)
-            gunBase.bullets = 0;
+            gunBase.Reset();
         rigidbody.velocity = Vector3.zero;
         rigidbody.angularVelocity = Vector3.zero;
         Life = 100;
@@ -197,10 +184,6 @@ public class Player : Base {
     {        
         score = i;
     }
-    
-
-    
-    
     public void RPCDie()
     {        
         if (isMine)
@@ -219,9 +202,7 @@ public class Player : Base {
 
         Show(false);                
     }
-    
     public NetworkPlayer killedyby;
-    
     protected override void OnCollisionEnter(Collision collisionInfo)
     {
 
@@ -237,8 +218,6 @@ public class Player : Base {
             }
 
     }
-    
-    
     public static Vector3 Clamp(Vector3 velocityChange,float maxVelocityChange)
     {
         velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
@@ -246,7 +225,6 @@ public class Player : Base {
         velocityChange.y = Mathf.Clamp(velocityChange.y, -maxVelocityChange, maxVelocityChange);
         return velocityChange;
     }
-
     public Movement movement = Movement.Move;
     [RPC]
     void RPCSetMovement(int mode)
