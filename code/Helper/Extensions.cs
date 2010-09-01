@@ -592,6 +592,12 @@ namespace doru
         }
         private static Random _Random = new Random();
 
+        public static T2 AddOrSelect<T, T2>(this Dictionary<T, T2> _Vars, T key, T2 o)
+        {
+            if (!_Vars.ContainsKey(key)) _Vars.Add(key, o);
+            return _Vars[key];
+        }
+
         public static void AddOrCreate<T,T2>(this Dictionary<T,T2> _Vars, T key, T2 o)
         {
             if (!_Vars.ContainsKey(key)) _Vars.Add(key, o);

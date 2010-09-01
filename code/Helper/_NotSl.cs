@@ -346,7 +346,7 @@ namespace doru
         #endregion
     }
     //[DebuggerStepThrough]
-    public class MemoryStreamA : MemoryStream
+    public class MemoryStreamA : MemoryStream //zapesi mezhdu baitami
     {
         public SortedList<int, byte[]> _List = new SortedList<int, byte[]>();
         public int _i;

@@ -100,8 +100,6 @@ namespace doru
                 lock ("Get")
                 {
                     List<byte[]> _Return = _Messages;
-                    foreach (byte[] bts in _Return)
-                        bts.Trace("Received", DebugState.Tcp);
                     _Messages = new List<byte[]>();
                     return _Return;
                 }

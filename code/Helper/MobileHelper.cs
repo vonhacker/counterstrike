@@ -9,7 +9,7 @@ using System.Collections;
 using System.Net.Sockets;
 using System.Threading;
 using System.Drawing;
-using FarseerGames.FarseerPhysics.Mathematics;
+//using FarseerGames.FarseerPhysics.Mathematics;
 
 namespace doru
 {
@@ -23,10 +23,10 @@ namespace doru
             Debug.WriteLine(o);
         }
         
-        public static Point ToPoint(Vector2 v)
-        {
-            return new Point((int)v.X, (int)v.Y);
-        }
+        //public static Point ToPoint(Vector2 v)
+        //{
+        //    return new Point((int)v.X, (int)v.Y);
+        //}
         public static IEnumerable<T> Add<T>(IEnumerable<T> tt,T t)
         {
             foreach (var a in tt)
@@ -76,6 +76,17 @@ namespace doru
             foreach (char c in ss)
                 s.WriteByte((byte)c);
         }
+        public static string WriteLine(Stream _Stream, string s)
+        {
+            WriteString(_Stream,s + "\r\n");
+            return s;
+        }
+
+        public static string ToStr(byte[] _Bytes)
+        {
+            return Encoding.Default.GetString(_Bytes,0,_Bytes.Length);
+        }
+
         public static MemoryStream Serialize(XmlSerializer xs,object o)
         {
             MemoryStream ms = new MemoryStream();            
@@ -150,7 +161,22 @@ namespace doru
             }
         }
 
-        
+        public static byte[] Cut(NetworkStream source, byte[] pattern)
+        {
+            MemoryStream _MemoryStream = new MemoryStream();
+            while (true)
+            {
+                for (int i = 0; i < pattern.Length; i++)
+                {
+                    
+                    int b = source.ReadByte();
+                    if (b == -1) throw new IOException("Cut: unable to cut");
+                    _MemoryStream.WriteByte((byte)b);
+                    if (pattern[i] != b) break;
+                    if (i == pattern.Length - 1) return _MemoryStream.ToArray();
+                }
+            }
+        }
 
         //public static void Trace(object p)
         //{
