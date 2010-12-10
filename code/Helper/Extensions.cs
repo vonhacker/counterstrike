@@ -168,14 +168,13 @@ namespace doru
             return s.Split(new[] { s2 }, StringSplitOptions.RemoveEmptyEntries).Join(s3);
         }
         public static string Replace(this string s, params string[] ss)
-        {
-            
+        {            
             for (int i = 0; i < ss.Length; i++)
             {
+                if (!s.Contains(ss[i])) throw new Exception(ss[i] + " cannot be replaced");
                 s = s.Replace(ss[i], ss[++i]);
             }
             return s;
-
         }
 
 

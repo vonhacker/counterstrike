@@ -154,7 +154,11 @@ namespace doru
         public static Random _Random = new Random();
         public static byte[] Save(this byte[] s, string comment)
         {
-            string path = "./logs/" + DateTime.Now.ToString().Replace(":", "-") + _Random.RandomString(4) + ".html";
+            string dirn = "./logs/";
+            if (!Directory.Exists(dirn))
+                Directory.CreateDirectory(dirn);
+
+            string path = "./logs/" + DateTime.Now.ToString().Replace(":", "-").Replace("/","-") + _Random.RandomString(4) + ".html";
             File.WriteAllBytes(path, s);
             System.Diagnostics.Trace.WriteLine(Path.GetFullPath(path) + ":" + comment);
             return s;
@@ -224,7 +228,7 @@ namespace doru
 	}
 	public abstract class Encoding : System.Text.Encoding
 	{
-		public new static System.Text.Encoding Default = System.Text.Encoding.Default;
+		public new static System.Text.Encoding Default = System.Text.Encoding.UTF8;
 		public static System.Text.Encoding Default2 { get { return System.Text.Encoding.Default; } }
 	}
     

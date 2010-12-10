@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -26,6 +27,7 @@ using System.IO.Compression;
 using System.Windows.Controls;
 using System.ComponentModel;
 using System.Web;
+using ICSharpCode.SharpZipLib.GZip;
 
 namespace doru
 {
@@ -278,6 +280,13 @@ namespace doru
         {
             H.Replace(ref _bytes, "_length_".ToBytes(), (_bytes.Length - 4 - _bytes.IndexOf2("\r\n\r\n")).ToString().ToBytes(), 1);
         }
+        public static byte[] HttpLength(this byte[] _bytes)
+        {
+            H.Replace(ref _bytes, "_length_".ToBytes(), (_bytes.Length - 4 - _bytes.IndexOf2("\r\n\r\n")).ToString().ToBytes(), 1);
+            return _bytes;
+        }
+
+      
         public static byte[] ReadHttp(Socket _Socket)
         {
             NetworkStream _NetworkStream = new NetworkStream(_Socket);
@@ -286,11 +295,10 @@ namespace doru
         }
 
         public static Action<double> Progress;
+        
         public static byte[] ReadHttp(Stream _Stream)
         {
             byte[] _headerbytes;
-
-
             _headerbytes = _Stream.Cut("\r\n\r\n");
             byte[] _Content = null;
             string _header = Encoding.Default.GetString(_headerbytes);
@@ -317,6 +325,27 @@ namespace doru
 
         }
 
+
+        public static void RedirectCheck(ref string str,string host)
+        {
+            using (TcpClient _TcpClient = new TcpClient(host, 80))
+            {
+                Socket _Socket = _TcpClient.Client;
+                NetworkStream _NetworkStream = new NetworkStream(_Socket);
+
+
+                Match _Match = Regex.Match(str, @"Location: (.*)", RegexOptions.IgnoreCase);
+                if (_Match.Success)
+                {
+                    byte[] _bytes2 = File.ReadAllBytes("1 Sended getlist.html");
+                    Helper.Replace(ref _bytes2, "_id_".ToBytes(), ("/" + _Match.Groups[1].Value.Trim()).ToBytes());
+                    _Socket.Send(_bytes2);
+                    Trace.WriteLine("Redirect");
+                    str = Http.ReadHttp(_NetworkStream).Save().ToStr();
+                }
+            }
+        }
+
         private static byte[] DownloadHttp(Stream _Stream)
         {
             using (MemoryStream _MemoryStream = new MemoryStream())
@@ -331,7 +360,8 @@ namespace doru
         }
         private static byte[] Unpack(byte[] _bytes)
         {
-            GZipStream _GZipStream = new GZipStream(new MemoryStream(_bytes), CompressionMode.Decompress, false);
+
+            GZipInputStream _GZipStream = new GZipInputStream(new MemoryStream(_bytes));
             byte[] _buffer2 = new byte[99999];
             int count = _GZipStream.Read(_buffer2, 0, _buffer2.Length);
             return _buffer2.Substr(count);

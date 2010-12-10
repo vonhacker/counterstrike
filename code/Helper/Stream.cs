@@ -94,11 +94,13 @@ namespace doru
         {
             s.Write(BitConverter.GetBytes(str).CV());
         }
+        
         public static byte[] Cut(this Stream source, string pattern)
         {
             return Cut(source, Encoding.Default.GetBytes(pattern));
         }
 
+        
         public static byte[] Cut(this Stream source, byte[] pattern)
         {
             MemoryStream _MemoryStream = new MemoryStream();
@@ -107,7 +109,7 @@ namespace doru
                 for (int i = 0; i < pattern.Length; i++)
                 {
                     int b = source.ReadByte();
-                    if (b == -1) throw new IOException("Cut: unable to cut");
+                    if (b == -1) throw new IOException("Cut: unable to cut\r\n"+ _MemoryStream.ToArray().ToStr());
                     _MemoryStream.WriteByte((byte)b);
                     if (pattern[i] != b) break;
                     if (i == pattern.Length - 1) return _MemoryStream.ToArray();
