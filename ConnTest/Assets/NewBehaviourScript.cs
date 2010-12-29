@@ -11,54 +11,32 @@ using System.IO;
 
 public class NewBehaviourScript : MonoBehaviour {
 
+    Socket s;
 	// Use this for initialization
     void Start()
     {
-
+        
+        var t = new Thread(delegate()
+        {
+            Security.PrefetchSocketPolicy("127.0.0.1", 80);
+            print("Load");
+            s = Proxy.Socks5Connect("127.0.0.1", 1080, "google.com", 80);
+            print("success");
+            NetworkStream ns = new NetworkStream(s);
+            BinaryReader br = new BinaryReader(ns);
+            BinaryWriter bw = new BinaryWriter(ns);
+            StreamReader sr = new StreamReader(ns);
+            bw.Write("adad");
+            string st = sr.ReadLine();
+            Debug.Log(st);
+        });
+        t.IsBackground = true;
+        t.Start();
     }
-
-    //void Start()
-    //{
-    //    Thread t = new Thread(delegate()
-    //    {
-    //        print("th strt");
-    //        var p = new Socks5ProxyClient("127.0.0.1", 1080);
-    //        print("1");
-
-    //        TcpClient tcp = p.CreateConnection("google.com", 80);
-    //        print("success");
-    //    });
-    //    t.Start();
-
-    //}
-
-    //void Start () {
-    //    new Thread(delegate()
-    //    {
-    //        print("1");
-    //        Security.PrefetchSocketPolicy("127.0.0.1", 80);
-    //        ProxyClientFactory factory = new ProxyClientFactory();
-    //        IProxyClient proxy = null;
-    //        proxy = factory.CreateProxyClient(ProxyType.Socks5, "127.0.0.1", 1080);
-    //        proxy.CreateConnectionAsyncCompleted += new EventHandler<CreateConnectionAsyncCompletedEventArgs>(proxy_CreateConnectionAsyncCompleted);
-    //        proxy.CreateConnectionAsync(host, 80);
-    //        print("2");
-    //    }).Start();
-    //}
-    //string host = "google.com";
-    //private void proxy_CreateConnectionAsyncCompleted(object sender, CreateConnectionAsyncCompletedEventArgs e)
-    //{
-    //    // test to see if an error occurred
-    //    if (e.Error != null)
-    //    {
-    //        Debug.Log(e.Error.Message+": Connection Error");
-    //        return;
-    //    }
-    //    print("success");
-    //}
-    //// Update is called once per frame
-    //void Update () {
-    //}
+    void OnApplicationQuit()
+    {
+        s.Close();
+    }
 }
 
 public static class Ext
@@ -122,4 +100,4 @@ public static class Proxy
         if (_response[1] != 0) throw new Exception("socket Error: " + _response[1]);
         return _Socket;
     }
-}
+} 
