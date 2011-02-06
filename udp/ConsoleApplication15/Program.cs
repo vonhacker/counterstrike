@@ -11,71 +11,58 @@ namespace ConsoleApplication15
 {
     public class bs
     {
-        public static List<Client> clients = new List<Client>();
     }
-    public class Programm : bs
+    public class Program : bs
     {
         
         private static void Main(string[] arrgs)
         {
-            new Programm();
+            new Program();
         }
-        public Programm()
+        IPEndPoint epf = null;
+        IPEndPoint ept = null;
+        UdpClient f ;
+        UdpClient t ;
+        int w = 30;
+        public Program()
         {
-            var ca = new Client() { listenPort = 5301, sendPort = 5300 }.Init().Start();
-            var cl = clients;
-            while (true)
-            {
-                
-                Thread.Sleep(200);
-            }
-            
-        }
-    }
-    public class Client:bs
-    {
-        public Thread t;
-        public UdpClient to;
-        public UdpClient from;
-        public int listenPort;
-        public int sendPort;
-        public long total = 0;
-        public Client Init()
-        {
-            from = new UdpClient(listenPort);
-            to = new UdpClient();            
-            to.Connect(new IPEndPoint(IPAddress.Loopback, sendPort));
-            return this;
-        }
-        public Client Start()
-        {
-            clients.Add(this);
-            t = new Thread(StartThread);
-            t.IsBackground = true;
-            t.Start();
-            return this;
+            asd();
         }
 
-        void StartThread()
+        private void asd()
         {
-            Debug.WriteLine("started");
-            IPEndPoint ep=null;
             while (true)
-            {
-                var bts = from.Receive(ref ep);
-                if (listenPort != 0)
+                try
                 {
-                    from.Connect(IPAddress.Loopback, listenPort);
-                    new Client { from = to, to = from }.Start();
+                    f = new UdpClient(5301);
+                    t = new UdpClient();
+                    t.Connect(IPAddress.Loopback, 5300);
+                    new Thread(Start).Start();
+                    while (true)
+                    {
+                        var bts = f.Receive(ref ept);
+                        t.Send(bts, bts.Length);
+                        Thread.Sleep(w);
+                    }
                 }
-                total += bts.Length;
-                to.Send(bts, bts.Length);
-                Thread.Sleep(2);
-            }
+                catch (Exception e) { Debug.WriteLine(e.Message); Thread.Sleep(1000); }
         }
-        public override string ToString()
+
+        private void Start()
         {
-            return "listen port" + listenPort + " sendport" + sendPort;
+            try
+            {
+                while (true)
+                {
+
+                    var bts = t.Receive(ref epf);
+                    if (!f.Client.Connected)
+                        f.Connect(ept);
+                    f.Send(bts, bts.Length);
+                    Thread.Sleep(w);
+                }
+            }
+            catch { Thread.Sleep(1000); }
         }
     }
 
